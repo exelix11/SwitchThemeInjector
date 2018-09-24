@@ -43,7 +43,6 @@
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.label1 = new System.Windows.Forms.Label();
-			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialTabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -121,7 +120,6 @@
 			// tabPage2
 			// 
 			this.tabPage2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.tabPage2.Controls.Add(this.materialLabel4);
 			this.tabPage2.Controls.Add(this.materialLabel3);
 			this.tabPage2.Controls.Add(this.materialFlatButton1);
 			this.tabPage2.Controls.Add(this.materialLabel2);
@@ -240,20 +238,6 @@
 			this.label1.Text = "Exelix @ Team Qcean";
 			this.label1.Click += new System.EventHandler(this.label1_Click);
 			// 
-			// materialLabel4
-			// 
-			this.materialLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel4.Depth = 0;
-			this.materialLabel4.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel4.Location = new System.Drawing.Point(3, 201);
-			this.materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel4.Name = "materialLabel4";
-			this.materialLabel4.Size = new System.Drawing.Size(448, 24);
-			this.materialLabel4.TabIndex = 6;
-			this.materialLabel4.Text = "This file has already been patched, only the bntx was added";
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -295,7 +279,6 @@
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton2;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton3;
 		private System.Windows.Forms.Label label1;
-		private MaterialSkin.Controls.MaterialLabel materialLabel4;
 	}
 }
 
