@@ -137,7 +137,8 @@ namespace SwitchThemes
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
-			CommonSzs.Files[@"timg/__Combined.bntx"] = File.ReadAllBytes(tbBntxFile.Text);
+			if (tbBntxFile.Text.Trim() != "")
+				CommonSzs.Files[@"timg/__Combined.bntx"] = File.ReadAllBytes(tbBntxFile.Text);
 			BflytFile f = new BflytFile(new MemoryStream(CommonSzs.Files[@"blyt/BgNml.bflyt"]));
 			BflytFile.PatchResult res;
 			if (detectedVer == 6)
@@ -182,7 +183,7 @@ namespace SwitchThemes
 
 		private void label1_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Team Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
+			MessageBox.Show("Switch theme injector V 1.0\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
 		}
 	}
 
@@ -270,10 +271,9 @@ namespace SwitchThemes
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = bin.ByteOrder;
 				int matCount = dataReader.ReadInt32();
-				var Offsets = dataReader.ReadInt32s(matCount);
+				var Offsets = dataReader.ReadInt32s(matCount).Select(x => x - 8).ToArray(); // offsets relative to the stream
 				for (int i = 0; i < matCount; i++)
 				{
-					dataReader.Position = Offsets[i] - 8;
 					int matLen = (i == matCount - 1 ? (int)dataReader.BaseStream.Length : Offsets[i + 1]) - (int)dataReader.Position;
 					Materials.Add(dataReader.ReadBytes(matLen));
 				}
@@ -384,10 +384,17 @@ namespace SwitchThemes
 		public PatchResult PatchMainLayout5x(string TexName = "White1x1_180^r")
 		{
 			#region add picture
-			foreach (var p in Panels.Where(x => x is PicturePanel))
+			for (int i = 0; i < Panels.Count; i++)
 			{
-				if (((PicturePanel)p).name == "exelixBG") return PatchResult.AlreadyPatched;
-				if (((PicturePanel)p).name == "3x3lxBG") return PatchResult.CorruptedFile;
+				if (!(Panels[i] is PicturePanel)) continue;
+				var p = Panels[i] as PicturePanel;
+				if (p.PanelName == "exelixBG") return PatchResult.AlreadyPatched;
+				if (p.PanelName == "3x3lxBG") //Fix old layout
+				{
+					Panels.Remove(p);
+					GetTex.Textures[0] = "White1x1^r";
+					GetMat.Materials.RemoveAt(1);
+				}
 			}
 			int target = -1;
 			int targetSkip = 1;
@@ -508,6 +515,14 @@ namespace SwitchThemes
 					default:
 						Panels.Add(new BasePanel(name, bin));
 						break;
+				}
+				if (i == sectionCount - 1 && bin.BaseStream.Position != bin.BaseStream.Length) //load sections not counted in the section count (my old bflyt patch)
+				{
+					while (bin.PeekChar() == 0 && bin.BaseStream.Position < bin.BaseStream.Length) bin.ReadChar();
+					if (bin.BaseStream.Length - bin.BaseStream.Position >= 8) //min section size
+					{
+						sectionCount++;
+					}
 				}
 			}
 		}
