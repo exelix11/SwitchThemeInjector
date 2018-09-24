@@ -146,9 +146,7 @@ namespace SwitchThemes
 			else
 				res = f.PatchMainLayout5x();
 
-			if (res == BflytFile.PatchResult.AlreadyPatched)
-				MessageBox.Show("This file has already been patched, only the bntx will be replaced.\r\nIf you have issues try with an unmodified file");
-			else if (res == BflytFile.PatchResult.Fail)
+			if (res == BflytFile.PatchResult.Fail)
 			{
 				MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 				return;
@@ -178,7 +176,10 @@ namespace SwitchThemes
 			var sarc = SARC.PackN(CommonSzs);
 			File.WriteAllBytes(sav.FileName, YAZ0.Compress(sarc.Item2, 3, (uint)sarc.Item1));
 
-			MessageBox.Show("Done");
+			if (res == BflytFile.PatchResult.AlreadyPatched)
+				MessageBox.Show("Done, This file has already been patched, only the bntx was replaced.\r\nIf you have issues try with an unmodified file");
+			else 
+				MessageBox.Show("Done");
 		}
 
 		private void label1_Click(object sender, EventArgs e)
