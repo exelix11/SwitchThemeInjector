@@ -121,15 +121,17 @@
     <value>This page allows you to extract the bntx file containing all the textures used in the layout.
 You'll have to edit it with bntx editor to inject your background,follow these steps: 
 1) Open the bntx
-2) On the bottom of the window select the image called "White1x1_180^r" without quotes
+2) On the bottom of the window select the image called "{0}" without quotes
 3) click replace and open your dds, the resolution should be 1280x720 (720p)
 4) don't change anything in the window that appears and press OK 
-5) save the file, then go to the Inject and patch tab</value>
+5) save the file, then go to the Inject and patch tab
+
+IF YOU'RE MAKING A THEME FOR BOTH 5.X AND 6.0 YOU'LL HAVE TO DO THIS TWICE BECAUSE THE BNTX FILES ARE DIFFERENT AND THE IMAGE NAME CHANGES</value>
   </data>
   <data name="materialLabel3.Text" xml:space="preserve">
     <value>Once you have the final szs you have to place it in your sd card like this:
-SdCard:\*Your cfw folder*\titles\0100000000001000\romfs\lyt\common.szs
-(Where common.szs if the file name)
+SdCard:\*Your cfw folder*\titles\0100000000001000\romfs\lyt\{0}
+(Where {0} if the file name)
 *your cfw folder* can be either atmosphere or ReiNx.
 Since the menu is a system title you'll have to create a "fsmitm.flag" as well:
 SdCard:\*Your cfw folder*\titles\0100000000001000\fsmitm.flag
