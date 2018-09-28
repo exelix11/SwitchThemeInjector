@@ -19,22 +19,35 @@ namespace SwitchThemes
 		SarcData CommonSzs = null;
 		int detectedVer = -1;
 
+		readonly string ExtractLabelText = "";
+		readonly string PatchLabelText = "";
+		const string LoadFileText = 
+			"To create a theme open an szs first, the file you're looking for depends on the firmware:\r\n" +
+			"For 5.x and earlier it's called common.szs\r\n" +
+			"For 6.0 it's ResidentMenu.szs\r\n\r\n" +
+			"Always read the instructions because they are slightly different for each version";
+
 		public Form1()
 		{
 			InitializeComponent();
+			ExtractLabelText = materialLabel1.Text;
+			PatchLabelText = materialLabel3.Text;
+
+			materialLabel1.Text = LoadFileText;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
 			materialLabel1.ForeColor = Color.White;
+			LblThemeVersion.ForeColor = Color.White;
 		}
 
-		private void materialRaisedButton1_Click(object sender, EventArgs e)
+		private void ExtractBntxButton(object sender, EventArgs e)
 		{
 			if (!materialTabSelector1.Enabled || CommonSzs == null)
 			{
-				MessageBox.Show("Open a common.szs first");
+				MessageBox.Show("Open a theme file first");
 				return;
 			}
 			if (detectedVer == -1)
@@ -63,12 +76,12 @@ namespace SwitchThemes
 			}
 		}
 
-		private void materialRaisedButton3_Click(object sender, EventArgs e)
+		private void OpenSzsButton(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog()
 			{
-				Title = "open common.szs",
-				Filter = "common.szs|*.szs|all files|*.*",
+				Title = "open szs",
+				Filter = "szs file|*.szs|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
 				return;
@@ -79,27 +92,44 @@ namespace SwitchThemes
 			}
 			CommonSzs = SARCExt.SARC.UnpackRamN(YAZ0.Decompress(File.ReadAllBytes(opn.FileName)));
 
-			foreach (string k in CommonSzs.Files.Keys)
+			if (CommonSzs.Files.ContainsKey(@"blyt/SystemAppletFader.bflyt"))
 			{
-				if (UTF8Encoding.Default.GetString(CommonSzs.Files[k]).Contains("White1x1A128^s"))
+				LblThemeVersion.Text = "Detected 5.x <= theme file";
+				if (CommonSzs.Files.ContainsKey(@"blyt/DHdrSoft.bflyt")) //"blyt/DHdrSoft.bflyt" was added with 6.0
 				{
-					Console.WriteLine(k);
+					MessageBox.Show("This is a common.szs file from a firmware higher than 5.1, for 6.0 you should use ResidentMenu.szs");
+					LblThemeVersion.Text += " (?)";
 				}
+				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1_180^r");
+				materialLabel3.Text = string.Format(PatchLabelText, "common.szs");
+				detectedVer = 5;
+
+			}
+			if (CommonSzs.Files.ContainsKey(@"blyt/IconError.bflyt")) 
+			{				
+				LblThemeVersion.Text = "Detected 6.0 theme file";
+				if (CommonSzs.Files.ContainsKey(@"anim/RdtBtnShop_LimitB.bflan")) //@"anim/RdtBtnShop_LimitB.bflan" is not in a 6.0 szs
+				{
+					MessageBox.Show("This is a ResidentMenu.szs file from a firmware different than 6.0, for older versions you should use common.szs, newer versions aren't supported yet.");
+					LblThemeVersion.Text += " (?)";
+				}
+				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1A128^s");
+				materialLabel3.Text = string.Format(PatchLabelText, "ResidentMenu.szs");
+				detectedVer = 6;
+
 			}
 
-
-			if (CommonSzs.Files.ContainsKey(@"blyt/SystemAppletFader.bflyt")) detectedVer = 5;
-			else if (CommonSzs.Files.ContainsKey(@"blyt/IconError.bflyt")) detectedVer = 6;
-
-			if (detectedVer != 5 ||
+			if (detectedVer == -1 ||
 				!CommonSzs.Files.ContainsKey(@"timg/__Combined.bntx") ||
 				!CommonSzs.Files.ContainsKey(@"blyt/BgNml.bflyt"))
 			{
-				MessageBox.Show("This is not a valid common.szs file, if it's from a newer firmware it's not compatible with this tool yet");
+				MessageBox.Show("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
 				CommonSzs = null;
+				LblThemeVersion.Text = "";
+				btnExportBntx.Visible = false;
 				return;
 			}
-
+			btnExportBntx.Visible = true;
 			materialTabSelector1.Enabled = true;
 		}
 
@@ -116,29 +146,31 @@ namespace SwitchThemes
 				tbBntxFile.Text = opn.FileName;
 		}
 
-		private void materialRaisedButton2_Click(object sender, EventArgs e)
+		private void PatchButtonClick(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
 			{
-				if (MessageBox.Show("Are you sure you want to continue without a bntx ? The theme will most likely crash on the console", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ? Unless the szs already contains a custom one the theme will most likely crash", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
 			else if (!File.Exists(tbBntxFile.Text))
 			{
 				MessageBox.Show($"{tbBntxFile.Text} not found !");
 				return;
-			}
-
+			}			
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
-				FileName = "common.szs",
 				Filter = "szs file|*.szs"
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
 			if (tbBntxFile.Text.Trim() != "")
-				CommonSzs.Files[@"timg/__Combined.bntx"] = File.ReadAllBytes(tbBntxFile.Text);
+			{
+				if (PatchBntx(File.ReadAllBytes(tbBntxFile.Text)) == BflytFile.PatchResult.Fail)
+					return;
+			}
+
 			BflytFile f = new BflytFile(new MemoryStream(CommonSzs.Files[@"blyt/BgNml.bflyt"]));
 			BflytFile.PatchResult res;
 			if (detectedVer == 6)
@@ -153,7 +185,7 @@ namespace SwitchThemes
 			}
 			else if (res == BflytFile.PatchResult.CorruptedFile)
 			{
-				MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unpatched layout (either one from your nand or one that has just color hacks).");
+				MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 				return;
 			}
 			else
@@ -182,9 +214,83 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
+		int eggCounter = 0;
 		private void label1_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("Switch theme injector V 1.0\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
+			if (eggCounter++ == 5)
+				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
+			else
+				MessageBox.Show("Switch theme injector V 2.0\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
+		}
+
+		BflytFile.PatchResult PatchBntx(byte[] Bntx)
+		{
+			var ImportBntxReader = new BinaryDataReader(new MemoryStream(Bntx));
+			ImportBntxReader.ByteOrder = ByteOrder.LittleEndian;
+			ImportBntxReader.BaseStream.Position = 0x18;
+			ImportBntxReader.BaseStream.Position = ImportBntxReader.ReadUInt32();
+			int fileRltLen = (int)(ImportBntxReader.BaseStream.Length - ImportBntxReader.BaseStream.Position);
+			if (fileRltLen == 0x80) //this file has an original rlt
+			{
+				ImportBntxReader.Dispose();
+				CommonSzs.Files[@"timg/__Combined.bntx"] = Bntx;
+				return BflytFile.PatchResult.OK;
+			}
+			else //the rlt has to be fixed
+			{
+				var reader = new BinaryDataReader(new MemoryStream(CommonSzs.Files[@"timg/__Combined.bntx"]));
+				reader.ByteOrder = ByteOrder.LittleEndian;
+				reader.BaseStream.Position = 0x18;
+				reader.BaseStream.Position = reader.ReadUInt32();
+				if (reader.BaseStream.Length - reader.BaseStream.Position > 0x80) //the rlt in the theme is corrupted
+				{
+					if (detectedVer == 6)
+					{
+						MessageBox.Show(
+							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
+							"without this information it is not possible to build themes for 6.0." +
+							"You should use an original or at least working ResidentMenu.szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return BflytFile.PatchResult.Fail;
+					}
+					else
+					{
+						if (MessageBox.Show(
+							"Warning: the szs you opened doesn't contain some information needed to patch the bntx," +
+							"this means that this theme will work on 5.1 but might randomly crash on startup.\r\n" +
+							"It's strongly recommended to use another szs with such information as a base to build themes " +
+							"(you can get one by dumping it from your own console or using one of the first color only themes).\r\n" +
+							"From now on this tool will leave the required data in the themes, so themes built from this version can be used as a base.\r\n\r\n" +
+							"Do you still want to build this theme ?",
+							"Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+								return BflytFile.PatchResult.Fail;
+						ImportBntxReader.Dispose(); //Corrupted bntx work on 5.1
+						reader.Dispose();
+						CommonSzs.Files[@"timg/__Combined.bntx"] = Bntx;
+						return BflytFile.PatchResult.OK;
+					}
+				}
+				reader.BaseStream.Position += 8;
+				var OriginalRlt = reader.ReadBytes(0x80 - 8);
+				reader.Dispose();
+				MemoryStream mem = new MemoryStream();
+				var writer = new BinaryDataWriter(mem);
+				writer.ByteOrder = ByteOrder.LittleEndian;
+				ImportBntxReader.BaseStream.Position = 0;
+				writer.Write(ImportBntxReader.ReadBytes(0x18));
+				int rltOffset = ImportBntxReader.ReadInt32();
+				int fileLen = rltOffset + OriginalRlt.Length + 8;
+				writer.Write(rltOffset);
+				writer.Write(fileLen);
+				ImportBntxReader.ReadInt32(); //skip file size
+				writer.Write(ImportBntxReader.ReadBytes(rltOffset - 0x20));
+				writer.Write("_RLT", BinaryStringFormat.NoPrefixOrTermination);
+				writer.Write(rltOffset);
+				writer.Write(OriginalRlt);
+				CommonSzs.Files[@"timg/__Combined.bntx"] = mem.ToArray();
+				writer.Dispose();
+				mem.Dispose();
+				return BflytFile.PatchResult.OK;
+			}
 		}
 	}
 
@@ -404,7 +510,7 @@ namespace SwitchThemes
 				if (Panels[i] is PicturePanel && ((PicturePanel)Panels[i]).PanelName == "P_Bg_00")
 				{
 					target = i;
-					targetSkip = Panels[i + 1].name == "usd1" ? 2 : 1; //use latest image panel
+					targetSkip = Panels[i + 1].name == "usd1" ? 2 : 1;
 				}
 			}
 			if (target == -1) return PatchResult.Fail;

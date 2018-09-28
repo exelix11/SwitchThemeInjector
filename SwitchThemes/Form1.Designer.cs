@@ -32,7 +32,7 @@
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.materialRaisedButton1 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.btnExportBntx = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
@@ -43,6 +43,7 @@
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.label1 = new System.Windows.Forms.Label();
+			this.LblThemeVersion = new MaterialSkin.Controls.MaterialLabel();
 			this.materialTabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -55,10 +56,10 @@
 			this.materialTabSelector1.BaseTabControl = this.materialTabControl1;
 			this.materialTabSelector1.Depth = 0;
 			this.materialTabSelector1.Enabled = false;
-			this.materialTabSelector1.Location = new System.Drawing.Point(-1, 103);
+			this.materialTabSelector1.Location = new System.Drawing.Point(-1, 121);
 			this.materialTabSelector1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabSelector1.Name = "materialTabSelector1";
-			this.materialTabSelector1.Size = new System.Drawing.Size(665, 52);
+			this.materialTabSelector1.Size = new System.Drawing.Size(665, 43);
 			this.materialTabSelector1.TabIndex = 5;
 			this.materialTabSelector1.Text = "materialTabSelector1";
 			// 
@@ -70,38 +71,39 @@
 			this.materialTabControl1.Controls.Add(this.tabPage1);
 			this.materialTabControl1.Controls.Add(this.tabPage2);
 			this.materialTabControl1.Depth = 0;
-			this.materialTabControl1.Location = new System.Drawing.Point(-1, 151);
+			this.materialTabControl1.Location = new System.Drawing.Point(-1, 161);
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabControl1.Name = "materialTabControl1";
 			this.materialTabControl1.SelectedIndex = 0;
-			this.materialTabControl1.Size = new System.Drawing.Size(645, 269);
+			this.materialTabControl1.Size = new System.Drawing.Size(645, 279);
 			this.materialTabControl1.TabIndex = 4;
 			// 
 			// tabPage1
 			// 
 			this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.tabPage1.Controls.Add(this.materialRaisedButton1);
+			this.tabPage1.Controls.Add(this.btnExportBntx);
 			this.tabPage1.Controls.Add(this.materialLabel1);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(637, 243);
+			this.tabPage1.Size = new System.Drawing.Size(637, 253);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Extract resources";
 			// 
-			// materialRaisedButton1
+			// btnExportBntx
 			// 
-			this.materialRaisedButton1.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.materialRaisedButton1.Depth = 0;
-			this.materialRaisedButton1.Location = new System.Drawing.Point(248, 164);
-			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialRaisedButton1.Name = "materialRaisedButton1";
-			this.materialRaisedButton1.Primary = true;
-			this.materialRaisedButton1.Size = new System.Drawing.Size(142, 36);
-			this.materialRaisedButton1.TabIndex = 10;
-			this.materialRaisedButton1.Text = "Export BNTX";
-			this.materialRaisedButton1.UseVisualStyleBackColor = true;
-			this.materialRaisedButton1.Click += new System.EventHandler(this.materialRaisedButton1_Click);
+			this.btnExportBntx.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.btnExportBntx.Depth = 0;
+			this.btnExportBntx.Location = new System.Drawing.Point(248, 209);
+			this.btnExportBntx.MouseState = MaterialSkin.MouseState.HOVER;
+			this.btnExportBntx.Name = "btnExportBntx";
+			this.btnExportBntx.Primary = true;
+			this.btnExportBntx.Size = new System.Drawing.Size(142, 36);
+			this.btnExportBntx.TabIndex = 10;
+			this.btnExportBntx.Text = "Export BNTX";
+			this.btnExportBntx.UseVisualStyleBackColor = true;
+			this.btnExportBntx.Visible = false;
+			this.btnExportBntx.Click += new System.EventHandler(this.ExtractBntxButton);
 			// 
 			// materialLabel1
 			// 
@@ -113,7 +115,7 @@
 			this.materialLabel1.Location = new System.Drawing.Point(9, 13);
 			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel1.Name = "materialLabel1";
-			this.materialLabel1.Size = new System.Drawing.Size(618, 148);
+			this.materialLabel1.Size = new System.Drawing.Size(618, 193);
 			this.materialLabel1.TabIndex = 0;
 			this.materialLabel1.Text = resources.GetString("materialLabel1.Text");
 			// 
@@ -128,7 +130,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(637, 243);
+			this.tabPage2.Size = new System.Drawing.Size(637, 253);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Inject & patch";
 			// 
@@ -189,7 +191,7 @@
 			// 
 			this.materialRaisedButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialRaisedButton2.Depth = 0;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(457, 192);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(457, 208);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -197,7 +199,7 @@
 			this.materialRaisedButton2.TabIndex = 0;
 			this.materialRaisedButton2.Text = "Patch and save";
 			this.materialRaisedButton2.UseVisualStyleBackColor = true;
-			this.materialRaisedButton2.Click += new System.EventHandler(this.materialRaisedButton2_Click);
+			this.materialRaisedButton2.Click += new System.EventHandler(this.PatchButtonClick);
 			// 
 			// materialDivider1
 			// 
@@ -208,7 +210,7 @@
 			this.materialDivider1.Location = new System.Drawing.Point(-1, 63);
 			this.materialDivider1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialDivider1.Name = "materialDivider1";
-			this.materialDivider1.Size = new System.Drawing.Size(646, 52);
+			this.materialDivider1.Size = new System.Drawing.Size(646, 61);
 			this.materialDivider1.TabIndex = 6;
 			this.materialDivider1.Text = "materialDivider1";
 			this.materialDivider1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.materialDivider1_MouseDown);
@@ -217,32 +219,47 @@
 			// 
 			this.materialRaisedButton3.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.materialRaisedButton3.Depth = 0;
-			this.materialRaisedButton3.Location = new System.Drawing.Point(252, 70);
+			this.materialRaisedButton3.Location = new System.Drawing.Point(251, 63);
 			this.materialRaisedButton3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton3.Name = "materialRaisedButton3";
 			this.materialRaisedButton3.Primary = true;
 			this.materialRaisedButton3.Size = new System.Drawing.Size(142, 36);
 			this.materialRaisedButton3.TabIndex = 11;
-			this.materialRaisedButton3.Text = "Open common.szs";
+			this.materialRaisedButton3.Text = "Open szs";
 			this.materialRaisedButton3.UseVisualStyleBackColor = true;
-			this.materialRaisedButton3.Click += new System.EventHandler(this.materialRaisedButton3_Click);
+			this.materialRaisedButton3.Click += new System.EventHandler(this.OpenSzsButton);
 			// 
 			// label1
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 409);
+			this.label1.Location = new System.Drawing.Point(0, 429);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 12;
 			this.label1.Text = "Exelix @ Team Qcean";
 			this.label1.Click += new System.EventHandler(this.label1_Click);
 			// 
+			// LblThemeVersion
+			// 
+			this.LblThemeVersion.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.LblThemeVersion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(79)))));
+			this.LblThemeVersion.Depth = 0;
+			this.LblThemeVersion.Font = new System.Drawing.Font("Roboto", 11F);
+			this.LblThemeVersion.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.LblThemeVersion.Location = new System.Drawing.Point(209, 102);
+			this.LblThemeVersion.MouseState = MaterialSkin.MouseState.HOVER;
+			this.LblThemeVersion.Name = "LblThemeVersion";
+			this.LblThemeVersion.Size = new System.Drawing.Size(227, 22);
+			this.LblThemeVersion.TabIndex = 13;
+			this.LblThemeVersion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 422);
+			this.ClientSize = new System.Drawing.Size(645, 442);
+			this.Controls.Add(this.LblThemeVersion);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialRaisedButton3);
 			this.Controls.Add(this.materialTabSelector1);
@@ -250,9 +267,9 @@
 			this.Controls.Add(this.materialTabControl1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(645, 422);
+			this.MinimumSize = new System.Drawing.Size(645, 442);
 			this.Name = "Form1";
-			this.Text = "Qcean\'s Switch theme injector - only for 5.1.0";
+			this.Text = "Qcean\'s Switch theme injector";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.materialTabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
@@ -271,7 +288,7 @@
 		private System.Windows.Forms.TabPage tabPage2;
 		private MaterialSkin.Controls.MaterialDivider materialDivider1;
 		private MaterialSkin.Controls.MaterialLabel materialLabel1;
-		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton1;
+		private MaterialSkin.Controls.MaterialRaisedButton btnExportBntx;
 		private MaterialSkin.Controls.MaterialLabel materialLabel3;
 		private MaterialSkin.Controls.MaterialFlatButton materialFlatButton1;
 		private MaterialSkin.Controls.MaterialLabel materialLabel2;
@@ -279,6 +296,7 @@
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton2;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton3;
 		private System.Windows.Forms.Label label1;
+		private MaterialSkin.Controls.MaterialLabel LblThemeVersion;
 	}
 }
 
