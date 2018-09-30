@@ -16,8 +16,16 @@ namespace SwitchThemes
 {
 	public partial class Form1 : MaterialSkin.Controls.MaterialForm
 	{
+		enum DetectedVer : int
+		{
+			NotSet = -1,
+			Theme5x,
+			Theme6x,
+			Lock5x,
+		}
+
 		SarcData CommonSzs = null;
-		int detectedVer = -1;
+		DetectedVer detectedVer = DetectedVer.NotSet;
 
 		readonly string ExtractLabelText = "";
 		readonly string PatchLabelText = "";
@@ -50,7 +58,7 @@ namespace SwitchThemes
 				MessageBox.Show("Open a theme file first");
 				return;
 			}
-			if (detectedVer == -1)
+			if (detectedVer == DetectedVer.NotSet)
 			{
 				MessageBox.Show("Version unsupported");
 				return;
@@ -76,6 +84,9 @@ namespace SwitchThemes
 			}
 		}
 
+		bool SzsHasKey(string key) =>
+			CommonSzs.Files.ContainsKey(key);
+
 		private void OpenSzsButton(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog()
@@ -92,36 +103,49 @@ namespace SwitchThemes
 			}
 			CommonSzs = SARCExt.SARC.UnpackRamN(YAZ0.Decompress(File.ReadAllBytes(opn.FileName)));
 
-			if (CommonSzs.Files.ContainsKey(@"blyt/SystemAppletFader.bflyt"))
+			foreach (string k in CommonSzs.Files.Keys)
+			{
+				if (UTF8Encoding.Default.GetString(CommonSzs.Files[k]).Contains("White1x1^s"))
+				{
+					Console.WriteLine(k);
+				}
+			}
+
+			if (SzsHasKey(@"blyt/SystemAppletFader.bflyt") && SzsHasKey(@"blyt/BgNml.bflyt"))
 			{
 				LblThemeVersion.Text = "Detected 5.x <= theme file";
-				if (CommonSzs.Files.ContainsKey(@"blyt/DHdrSoft.bflyt")) //"blyt/DHdrSoft.bflyt" was added with 6.0
+				if (SzsHasKey(@"blyt/DHdrSoft.bflyt")) //"blyt/DHdrSoft.bflyt" was added with 6.0
 				{
 					MessageBox.Show("This is a common.szs file from a firmware higher than 5.1, for 6.0 you should use ResidentMenu.szs");
 					LblThemeVersion.Text += " (?)";
 				}
 				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1_180^r");
 				materialLabel3.Text = string.Format(PatchLabelText, "common.szs");
-				detectedVer = 5;
+				detectedVer = DetectedVer.Theme5x;
 
 			}
-			if (CommonSzs.Files.ContainsKey(@"blyt/IconError.bflyt")) 
-			{				
+			else if (SzsHasKey(@"blyt/IconError.bflyt") && SzsHasKey(@"blyt/BgNml.bflyt"))
+			{
 				LblThemeVersion.Text = "Detected 6.0 theme file";
-				if (CommonSzs.Files.ContainsKey(@"anim/RdtBtnShop_LimitB.bflan")) //@"anim/RdtBtnShop_LimitB.bflan" is not in a 6.0 szs
+				if (SzsHasKey(@"anim/RdtBtnShop_LimitB.bflan")) //@"anim/RdtBtnShop_LimitB.bflan" is not in a 6.0 szs
 				{
 					MessageBox.Show("This is a ResidentMenu.szs file from a firmware different than 6.0, for older versions you should use common.szs, newer versions aren't supported yet.");
 					LblThemeVersion.Text += " (?)";
 				}
 				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1A128^s");
 				materialLabel3.Text = string.Format(PatchLabelText, "ResidentMenu.szs");
-				detectedVer = 6;
-
+				detectedVer = DetectedVer.Theme6x;
+			}
+			else if (SzsHasKey(@"blyt/EntBtnResumeSystemApplet.bflyt") && SzsHasKey(@"blyt/EntMain.bflyt"))
+			{
+				LblThemeVersion.Text = "Lockscreen detected";
+				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1^s");
+				materialLabel3.Text = string.Format(PatchLabelText, "Entrance.szs");
+				detectedVer = DetectedVer.Lock5x;
 			}
 
-			if (detectedVer == -1 ||
-				!CommonSzs.Files.ContainsKey(@"timg/__Combined.bntx") ||
-				!CommonSzs.Files.ContainsKey(@"blyt/BgNml.bflyt"))
+			if (detectedVer == DetectedVer.NotSet ||
+				!SzsHasKey(@"timg/__Combined.bntx"))
 			{
 				MessageBox.Show("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
 				CommonSzs = null;
@@ -146,6 +170,16 @@ namespace SwitchThemes
 				tbBntxFile.Text = opn.FileName;
 		}
 
+		static readonly Dictionary<DetectedVer, string> MainFilesDict = new Dictionary<DetectedVer, string>()
+		{
+			{ DetectedVer.Theme5x, @"blyt/BgNml.bflyt" },
+			{ DetectedVer.Theme6x, @"blyt/BgNml.bflyt" },
+			{ DetectedVer.Lock5x, @"blyt/EntMain.bflyt" },
+		};
+
+		BflytFile BflytFromSzs(string name) =>
+			new BflytFile(new MemoryStream(CommonSzs.Files[name]));
+
 		private void PatchButtonClick(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
@@ -157,7 +191,7 @@ namespace SwitchThemes
 			{
 				MessageBox.Show($"{tbBntxFile.Text} not found !");
 				return;
-			}			
+			}
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
@@ -171,12 +205,18 @@ namespace SwitchThemes
 					return;
 			}
 
-			BflytFile f = new BflytFile(new MemoryStream(CommonSzs.Files[@"blyt/BgNml.bflyt"]));
-			BflytFile.PatchResult res;
-			if (detectedVer == 6)
-				res = f.PatchMainLayout6x();
-			else
-				res = f.PatchMainLayout5x();
+			string targetFile = MainFilesDict[detectedVer];
+			BflytFile f = BflytFromSzs(targetFile);
+			BflytFile.PatchResult res = BflytFile.PatchResult.Fail;
+
+			//Main layout patch
+			if (detectedVer == DetectedVer.Theme6x)
+				res = f.PatchMainLayout6x();			
+			else if (detectedVer == DetectedVer.Theme5x)
+				res = f.PatchMainLayout5x();			
+			else if (detectedVer == DetectedVer.Lock5x)			
+				res = f.PatchLockLayout5x();
+			
 
 			if (res == BflytFile.PatchResult.Fail)
 			{
@@ -188,20 +228,26 @@ namespace SwitchThemes
 				MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 				return;
 			}
-			else
+			else //Additional patches (usually to free the texture we're replacing)
 			{
-				CommonSzs.Files[@"blyt/BgNml.bflyt"] = f.SaveFile();
-				if (detectedVer == 6)
+				CommonSzs.Files[targetFile] = f.SaveFile();
+				if (detectedVer == DetectedVer.Theme6x)
 				{
-					f = new BflytFile(new MemoryStream(CommonSzs.Files[@"blyt/IconError.bflyt"]));
+					f = BflytFromSzs(@"blyt/IconError.bflyt");
 					f.PatchIconError6x();
 					CommonSzs.Files[@"blyt/IconError.bflyt"] = f.SaveFile();
 				}
-				else
+				else if (detectedVer == DetectedVer.Theme5x)
 				{
-					f = new BflytFile(new MemoryStream(CommonSzs.Files[@"blyt/SystemAppletFader.bflyt"]));
+					f = BflytFromSzs(@"blyt/SystemAppletFader.bflyt");
 					f.PatchFaderLayout5x();
 					CommonSzs.Files[@"blyt/SystemAppletFader.bflyt"] = f.SaveFile();
+				}
+				else if (detectedVer == DetectedVer.Lock5x)
+				{
+					f = BflytFromSzs(@"blyt/EntBtnResumeSystemApplet.bflyt");
+					f.PatchEntResumeSysApplet5x();
+					CommonSzs.Files[@"blyt/EntBtnResumeSystemApplet.bflyt"] = f.SaveFile();
 				}
 			}
 
@@ -210,7 +256,7 @@ namespace SwitchThemes
 
 			if (res == BflytFile.PatchResult.AlreadyPatched)
 				MessageBox.Show("Done, This file has already been patched, only the bntx was replaced.\r\nIf you have issues try with an unmodified file");
-			else 
+			else
 				MessageBox.Show("Done");
 		}
 
@@ -244,12 +290,12 @@ namespace SwitchThemes
 				reader.BaseStream.Position = reader.ReadUInt32();
 				if (reader.BaseStream.Length - reader.BaseStream.Position > 0x80) //the rlt in the theme is corrupted
 				{
-					if (detectedVer == 6)
+					if (detectedVer != DetectedVer.Theme5x)
 					{
 						MessageBox.Show(
 							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-							"without this information it is not possible to build themes for 6.0." +
-							"You should use an original or at least working ResidentMenu.szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							"without this information it is not possible to rebuild the bntx." +
+							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return BflytFile.PatchResult.Fail;
 					}
 					else
@@ -477,6 +523,10 @@ namespace SwitchThemes
 			}
 		}
 
+		// blyt/EntBtnResumeSystemApplet.bflyt
+		public void PatchEntResumeSysApplet5x() =>
+			PatchTextureName("White1x1^s", "White1x1^r");
+
 		public void PatchFaderLayout5x() =>
 			PatchTextureName("White1x1_180^r", "White1x1^r");
 
@@ -490,7 +540,7 @@ namespace SwitchThemes
 
 		public PatchResult PatchMainLayout5x(string TexName = "White1x1_180^r")
 		{
-			#region add picture
+			#region DetectPatch
 			for (int i = 0; i < Panels.Count; i++)
 			{
 				if (!(Panels[i] is PicturePanel)) continue;
@@ -503,6 +553,8 @@ namespace SwitchThemes
 					GetMat.Materials.RemoveAt(1);
 				}
 			}
+			#endregion
+			#region FindAndRemoveTargetBgPanel
 			int target = -1;
 			int targetSkip = 1;
 			for (int i = 0; i < Panels.Count -1; i++)
@@ -527,7 +579,50 @@ namespace SwitchThemes
 				bin.Write(700f);
 				Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
 			}
-			Panels.Insert(target + targetSkip, new BasePanel("pic1", 0x8));
+			#endregion
+			return AddBgPanel(target + targetSkip, TexName, "exelixBG");
+		}
+
+		public PatchResult PatchLockLayout5x(string TexName = "White1x1^s")
+		{
+			#region DetectPatch
+			for (int i = 0; i < Panels.Count; i++)
+			{
+				if (!(Panels[i] is PicturePanel)) continue;
+				var p = Panels[i] as PicturePanel;
+				if (p.PanelName == "exelixLK") return PatchResult.AlreadyPatched;
+			}
+			#endregion
+			#region FindAndRemoveTargetBgPanel
+			int target = int.MaxValue;
+			for (int i = 0; i < Panels.Count - 1; i++)
+			{
+				if (Panels[i] is PicturePanel && 
+					(((PicturePanel)Panels[i]).PanelName == "P_BgL" || ((PicturePanel)Panels[i]).PanelName == "P_BgR"))
+				{
+					if (i < target) target = i;
+					using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[i].data)))
+					{
+						bin.ByteOrder = ByteOrder.LittleEndian;
+						bin.BaseStream.Position = 0x24;
+						bin.Write(5000f);
+						bin.Write(60000f);
+						Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
+					}
+				}
+			}
+			if (target == int.MaxValue) return PatchResult.Fail;			
+			#endregion
+			return AddBgPanel(target, TexName, "exelixLK");
+		}
+
+		PatchResult AddBgPanel(int index,string TexName, string Pic1Name)
+		{
+			#region add picture
+			if (Pic1Name.Length != 8)
+				throw new Exception("Pic1Name should be 8 chars"); //TODO: proper padding 
+			var BgPanel = new BasePanel("pic1", 0x8);
+			Panels.Insert(index, BgPanel);
 			var MatSect = GetMat;
 			var strm = new MemoryStream();
 			using (BinaryDataWriter bin = new BinaryDataWriter(strm))
@@ -537,7 +632,7 @@ namespace SwitchThemes
 				bin.Write((byte)0x00);
 				bin.Write((byte)0xFF);
 				bin.Write((byte)0x04);
-				bin.Write("exelixBG", BinaryStringFormat.NoPrefixOrTermination);
+				bin.Write(Pic1Name, BinaryStringFormat.NoPrefixOrTermination);
 				bin.Write(new byte[0x30]);
 				bin.Write(1f);
 				bin.Write(1f);
@@ -557,7 +652,7 @@ namespace SwitchThemes
 				bin.Write(1f);
 				bin.Write(1f);
 				bin.Write(1f);
-				Panels[target + 2].data = strm.ToArray();
+				BgPanel.data = strm.ToArray();
 			}
 			#endregion
 			#region AddTextures
