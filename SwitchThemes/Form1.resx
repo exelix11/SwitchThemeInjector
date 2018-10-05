@@ -130,11 +130,11 @@ IF YOU'RE MAKING A THEME FOR BOTH 5.X AND 6.0 YOU'LL HAVE TO DO THIS TWICE BECAU
   </data>
   <data name="materialLabel3.Text" xml:space="preserve">
     <value>Once you have the final szs you have to place it in your sd card like this:
-SdCard:\*Your cfw folder*\titles\0100000000001000\romfs\lyt\{0}
+SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}
 (Where {0} if the file name)
 *your cfw folder* can be either atmosphere or ReiNx.
 Since the menu is a system title you'll have to create a "fsmitm.flag" as well:
-SdCard:\*Your cfw folder*\titles\0100000000001000\fsmitm.flag
+SdCard:\*Your cfw folder*\titles\{1}\fsmitm.flag
 You can do it in notepad: save an empty text file and change the extension to .flag</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
