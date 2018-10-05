@@ -16,24 +16,17 @@ namespace SwitchThemes
 {
 	public partial class Form1 : MaterialSkin.Controls.MaterialForm
 	{
-		enum DetectedVer : int
-		{
-			NotSet = -1,
-			Theme5x,
-			Theme6x,
-			Lock5x,
-		}
-
+		PatchTemplate targetPatch;
 		SarcData CommonSzs = null;
-		DetectedVer detectedVer = DetectedVer.NotSet;
-
+		
 		readonly string ExtractLabelText = "";
 		readonly string PatchLabelText = "";
-		const string LoadFileText = 
-			"To create a theme open an szs first, the file you're looking for depends on the firmware:\r\n" +
-			"For 5.x and earlier it's called common.szs\r\n" +
-			"For 6.0 it's ResidentMenu.szs\r\n\r\n" +
+		readonly string LoadFileText = 
+			"To create a theme open an szs first, these are the patches available in this version:" +
+			"{0} \r\n" +
 			"Always read the instructions because they are slightly different for each version";
+
+		List<PatchTemplate> Templates = new List<PatchTemplate>();
 
 		public Form1()
 		{
@@ -41,14 +34,35 @@ namespace SwitchThemes
 			ExtractLabelText = materialLabel1.Text;
 			PatchLabelText = materialLabel3.Text;
 
-			materialLabel1.Text = LoadFileText;
+			//PatchTemplate.BuildTemplateFile();
+			Templates.AddRange(DefaultTemplates.templates);
+			if (File.Exists("ExtraTemplates.json"))
+				Templates.AddRange(PatchTemplate.LoadTemplates());
+
+			var sortedTemplates = Templates.OrderBy(x => x.FirmName).Reverse();
+
+			string curSection = "";
+			string FileList = "";
+			foreach (var p in sortedTemplates)
+			{
+				if (curSection != p.FirmName)
+				{
+					curSection = p.FirmName;
+					FileList += $"\r\nFor {curSection}: \r\n";
+				}
+				FileList += $"  - {p.TemplateName} : the file is called {p.szsName} from title {p.TitleId}\r\n";
+			}
+			LoadFileText = string.Format(LoadFileText, FileList);
+			tbPatches.Text = LoadFileText;
+
+			materialTabSelector1.Enabled = false;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
 			materialLabel1.ForeColor = Color.White;
-			LblThemeVersion.ForeColor = Color.White;
+			lblDetected.ForeColor = Color.White;
 		}
 
 		private void ExtractBntxButton(object sender, EventArgs e)
@@ -58,7 +72,7 @@ namespace SwitchThemes
 				MessageBox.Show("Open a theme file first");
 				return;
 			}
-			if (detectedVer == DetectedVer.NotSet)
+			if (targetPatch == null)
 			{
 				MessageBox.Show("Version unsupported");
 				return;
@@ -75,7 +89,7 @@ namespace SwitchThemes
 			MessageBox.Show("Done");
 		}
 		
-		private void materialDivider1_MouseDown(object sender, MouseEventArgs e)
+		private void DragForm_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.Left)
 			{
@@ -101,58 +115,98 @@ namespace SwitchThemes
 				MessageBox.Show("Could not open file");
 				return;
 			}
+
+			targetPatch = null;
 			CommonSzs = SARCExt.SARC.UnpackRamN(YAZ0.Decompress(File.ReadAllBytes(opn.FileName)));
 
-			foreach (string k in CommonSzs.Files.Keys)
-			{
-				if (UTF8Encoding.Default.GetString(CommonSzs.Files[k]).Contains("White1x1^s"))
-				{
-					Console.WriteLine(k);
-				}
-			}
+#if DEBUG
+			#region Check snippets
+			//diff file lists :
+			//if (opn.ShowDialog() != DialogResult.OK)
+			//	return;
+			//var szs2 = SARCExt.SARC.UnpackRamN(YAZ0.Decompress(File.ReadAllBytes(opn.FileName)));
+			//foreach (var f in szs2.Files.Keys)
+			//{
+			//	if (CommonSzs.Files.ContainsKey(f))
+			//		CommonSzs.Files.Remove(f);
+			//	else
+			//		Console.WriteLine($"{f} missing");
+			//}
+			//if (CommonSzs.Files.Count != 0)
+			//{
+			//	Console.WriteLine($"Files left : \r\n {string.Join("\r\n", CommonSzs.Files.Keys.ToArray())}");
+			//}
+			//find a string or a panel by name
+			//foreach (string k in CommonSzs.Files.Keys)
+			//{
+			//	if (UTF8Encoding.Default.GetString(CommonSzs.Files[k]).Contains("NavBg_03^d"))
+			//	{
+			//		Console.WriteLine(k);
+			//	}
+			//if (k.EndsWith(".bflyt"))
+			//{
+			//	var l = BflytFromSzs(k);
+			//	foreach (var p in l.Panels)
+			//	{
+			//		string pName = BflytFile.TryGetPanelName(p);
+			//		if (pName == null) continue;
+			//		if (pName.ToLower().Contains("bg")) Console.WriteLine($"{k} : {p.name} {pName}");
+			//	}
+			//}
+			//}
+			#endregion
+#endif
 
-			if (SzsHasKey(@"blyt/SystemAppletFader.bflyt") && SzsHasKey(@"blyt/BgNml.bflyt"))
+			foreach (var p in Templates)
 			{
-				LblThemeVersion.Text = "Detected 5.x <= theme file";
-				if (SzsHasKey(@"blyt/DHdrSoft.bflyt")) //"blyt/DHdrSoft.bflyt" was added with 6.0
+				if (!SzsHasKey(p.MainLayoutName))
+					continue;
+				bool isTarget = true;
+				foreach (string s in p.SecondaryLayouts)
 				{
-					MessageBox.Show("This is a common.szs file from a firmware higher than 5.1, for 6.0 you should use ResidentMenu.szs");
-					LblThemeVersion.Text += " (?)";
+					if (!SzsHasKey(s))
+					{
+						isTarget = false;
+						break;
+					}
 				}
-				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1_180^r");
-				materialLabel3.Text = string.Format(PatchLabelText, "common.szs");
-				detectedVer = DetectedVer.Theme5x;
-
-			}
-			else if (SzsHasKey(@"blyt/IconError.bflyt") && SzsHasKey(@"blyt/BgNml.bflyt"))
-			{
-				LblThemeVersion.Text = "Detected 6.0 theme file";
-				if (SzsHasKey(@"anim/RdtBtnShop_LimitB.bflan")) //@"anim/RdtBtnShop_LimitB.bflan" is not in a 6.0 szs
+				if (!isTarget) continue;
+				foreach (string s in p.FnameIdentifier)
 				{
-					MessageBox.Show("This is a ResidentMenu.szs file from a firmware different than 6.0, for older versions you should use common.szs, newer versions aren't supported yet.");
-					LblThemeVersion.Text += " (?)";
+					if (!SzsHasKey(s))
+					{
+						isTarget = false;
+						break;
+					}
 				}
-				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1A128^s");
-				materialLabel3.Text = string.Format(PatchLabelText, "ResidentMenu.szs");
-				detectedVer = DetectedVer.Theme6x;
-			}
-			else if (SzsHasKey(@"blyt/EntBtnResumeSystemApplet.bflyt") && SzsHasKey(@"blyt/EntMain.bflyt"))
-			{
-				LblThemeVersion.Text = "Lockscreen detected";
-				materialLabel1.Text = string.Format(ExtractLabelText, "White1x1^s");
-				materialLabel3.Text = string.Format(PatchLabelText, "Entrance.szs");
-				detectedVer = DetectedVer.Lock5x;
-			}
+				if (!isTarget) continue;
+				foreach (string s in p.FnameNotIdentifier)
+				{
+					if (SzsHasKey(s))
+					{
+						isTarget = false;
+						break;
+					}
+				}
+				if (!isTarget) continue;
+				targetPatch = p;
+				break;
+			}			
 
-			if (detectedVer == DetectedVer.NotSet ||
-				!SzsHasKey(@"timg/__Combined.bntx"))
+			if (targetPatch == null || !SzsHasKey(@"timg/__Combined.bntx"))
 			{
 				MessageBox.Show("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
 				CommonSzs = null;
-				LblThemeVersion.Text = "";
+				lblDetected.Text = "";
 				btnExportBntx.Visible = false;
+				materialLabel1.Text = LoadFileText;
 				return;
 			}
+
+			materialLabel1.Text = string.Format(ExtractLabelText, targetPatch.MaintextureName);
+			materialLabel3.Text = string.Format(PatchLabelText, targetPatch.szsName, targetPatch.TitleId);
+			lblDetected.Text = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
+
 			btnExportBntx.Visible = true;
 			materialTabSelector1.Enabled = true;
 		}
@@ -169,14 +223,7 @@ namespace SwitchThemes
 			if (opn.FileName != "")
 				tbBntxFile.Text = opn.FileName;
 		}
-
-		static readonly Dictionary<DetectedVer, string> MainFilesDict = new Dictionary<DetectedVer, string>()
-		{
-			{ DetectedVer.Theme5x, @"blyt/BgNml.bflyt" },
-			{ DetectedVer.Theme6x, @"blyt/BgNml.bflyt" },
-			{ DetectedVer.Lock5x, @"blyt/EntMain.bflyt" },
-		};
-
+		
 		BflytFile BflytFromSzs(string name) =>
 			new BflytFile(new MemoryStream(CommonSzs.Files[name]));
 
@@ -195,7 +242,8 @@ namespace SwitchThemes
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
-				Filter = "szs file|*.szs"
+				Filter = "szs file|*.szs",
+				FileName = targetPatch.szsName
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
@@ -204,19 +252,12 @@ namespace SwitchThemes
 				if (PatchBntx(File.ReadAllBytes(tbBntxFile.Text)) == BflytFile.PatchResult.Fail)
 					return;
 			}
-
-			string targetFile = MainFilesDict[detectedVer];
-			BflytFile f = BflytFromSzs(targetFile);
+			
+			BflytFile MainFile = BflytFromSzs(targetPatch.MainLayoutName);
 			BflytFile.PatchResult res = BflytFile.PatchResult.Fail;
 
 			//Main layout patch
-			if (detectedVer == DetectedVer.Theme6x)
-				res = f.PatchMainLayout6x();			
-			else if (detectedVer == DetectedVer.Theme5x)
-				res = f.PatchMainLayout5x();			
-			else if (detectedVer == DetectedVer.Lock5x)			
-				res = f.PatchLockLayout5x();
-			
+			res = MainFile.PatchMainLayout(targetPatch);
 
 			if (res == BflytFile.PatchResult.Fail)
 			{
@@ -230,24 +271,12 @@ namespace SwitchThemes
 			}
 			else //Additional patches (usually to free the texture we're replacing)
 			{
-				CommonSzs.Files[targetFile] = f.SaveFile();
-				if (detectedVer == DetectedVer.Theme6x)
+				CommonSzs.Files[targetPatch.MainLayoutName] = MainFile.SaveFile();
+				foreach (var f in targetPatch.SecondaryLayouts)
 				{
-					f = BflytFromSzs(@"blyt/IconError.bflyt");
-					f.PatchIconError6x();
-					CommonSzs.Files[@"blyt/IconError.bflyt"] = f.SaveFile();
-				}
-				else if (detectedVer == DetectedVer.Theme5x)
-				{
-					f = BflytFromSzs(@"blyt/SystemAppletFader.bflyt");
-					f.PatchFaderLayout5x();
-					CommonSzs.Files[@"blyt/SystemAppletFader.bflyt"] = f.SaveFile();
-				}
-				else if (detectedVer == DetectedVer.Lock5x)
-				{
-					f = BflytFromSzs(@"blyt/EntBtnResumeSystemApplet.bflyt");
-					f.PatchEntResumeSysApplet5x();
-					CommonSzs.Files[@"blyt/EntBtnResumeSystemApplet.bflyt"] = f.SaveFile();
+					BflytFile curTarget = BflytFromSzs(f);
+					curTarget.PatchTextureName(targetPatch.SecondaryTexReplace.Item1, targetPatch.SecondaryTexReplace.Item2);
+					CommonSzs.Files[f] = curTarget.SaveFile();
 				}
 			}
 
@@ -266,7 +295,7 @@ namespace SwitchThemes
 			if (eggCounter++ == 5)
 				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
 			else
-				MessageBox.Show("Switch theme injector V 2.0\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
+				MessageBox.Show("Switch theme injector V 2.1\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
 		}
 
 		BflytFile.PatchResult PatchBntx(byte[] Bntx)
@@ -290,30 +319,11 @@ namespace SwitchThemes
 				reader.BaseStream.Position = reader.ReadUInt32();
 				if (reader.BaseStream.Length - reader.BaseStream.Position > 0x80) //the rlt in the theme is corrupted
 				{
-					if (detectedVer != DetectedVer.Theme5x)
-					{
-						MessageBox.Show(
+					MessageBox.Show(
 							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
 							"without this information it is not possible to rebuild the bntx." +
 							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return BflytFile.PatchResult.Fail;
-					}
-					else
-					{
-						if (MessageBox.Show(
-							"Warning: the szs you opened doesn't contain some information needed to patch the bntx," +
-							"this means that this theme will work on 5.1 but might randomly crash on startup.\r\n" +
-							"It's strongly recommended to use another szs with such information as a base to build themes " +
-							"(you can get one by dumping it from your own console or using one of the first color only themes).\r\n" +
-							"From now on this tool will leave the required data in the themes, so themes built from this version can be used as a base.\r\n\r\n" +
-							"Do you still want to build this theme ?",
-							"Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-								return BflytFile.PatchResult.Fail;
-						ImportBntxReader.Dispose(); //Corrupted bntx work on 5.1
-						reader.Dispose();
-						CommonSzs.Files[@"timg/__Combined.bntx"] = Bntx;
-						return BflytFile.PatchResult.OK;
-					}
+					return BflytFile.PatchResult.Fail;
 				}
 				reader.BaseStream.Position += 8;
 				var OriginalRlt = reader.ReadBytes(0x80 - 8);
@@ -393,6 +403,8 @@ namespace SwitchThemes
 				}
 			}
 
+			public TextureSection() : base("txl1", 8) { }
+
 			public override void WritePanel(BinaryDataWriter bin)
 			{
 				var newData = new MemoryStream();
@@ -432,6 +444,8 @@ namespace SwitchThemes
 				}
 			}
 
+			public MaterialsSection() : base("mat1", 8) { }
+
 			public override void WritePanel(BinaryDataWriter bin)
 			{
 				var newData = new MemoryStream();
@@ -458,22 +472,29 @@ namespace SwitchThemes
 			public string PanelName;
 			public PicturePanel(BinaryDataReader bin) : base("pic1", bin)
 			{
-				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-				dataReader.ByteOrder = bin.ByteOrder;
-				dataReader.ReadInt32(); //Unknown
-				PanelName = "";
-				for (int i = 0; i < 0x18; i++)
-				{
-					var c = dataReader.ReadChar();
-					if (c == 0) break;
-					PanelName += c;
-				}
+				PanelName = TryGetPanelName(this);
 			}
 
 			public override string ToString()
 			{
 				return $"Picture {PanelName}";
 			}
+		}
+
+		public static string TryGetPanelName(BasePanel p)
+		{
+			if (p.data.Length < 0x18 + 4) return null;
+			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(p.data), Encoding.ASCII, false);
+			dataReader.ByteOrder = ByteOrder.LittleEndian;
+			dataReader.ReadInt32(); //Unknown
+			string PanelName = "";
+			for (int i = 0; i < 0x18; i++)
+			{
+				var c = dataReader.ReadChar();
+				if (c == 0) break;
+				PanelName += c;
+			}
+			return PanelName;
 		}
 
 		public List<BasePanel> Panels = new List<BasePanel>();
@@ -511,7 +532,7 @@ namespace SwitchThemes
 			OK
 		}
 
-		void PatchTextureName(string original, string _new)
+		public void PatchTextureName(string original, string _new)
 		{
 			var texSection = GetTex;
 			for (int i = 0; i < texSection.Textures.Count; i++)
@@ -523,104 +544,11 @@ namespace SwitchThemes
 			}
 		}
 
-		// blyt/EntBtnResumeSystemApplet.bflyt
-		public void PatchEntResumeSysApplet5x() =>
-			PatchTextureName("White1x1^s", "White1x1^r");
-
-		public void PatchFaderLayout5x() =>
-			PatchTextureName("White1x1_180^r", "White1x1^r");
-
-		// blyt/IconError.bflyt
-		public void PatchIconError6x() =>
-			PatchTextureName("White1x1A128^s", "White1x1A64^t");
-
-
-		public PatchResult PatchMainLayout6x()
-			=> PatchMainLayout5x("White1x1A128^s");
-
-		public PatchResult PatchMainLayout5x(string TexName = "White1x1_180^r")
-		{
-			#region DetectPatch
-			for (int i = 0; i < Panels.Count; i++)
-			{
-				if (!(Panels[i] is PicturePanel)) continue;
-				var p = Panels[i] as PicturePanel;
-				if (p.PanelName == "exelixBG") return PatchResult.AlreadyPatched;
-				if (p.PanelName == "3x3lxBG") //Fix old layout
-				{
-					Panels.Remove(p);
-					GetTex.Textures[0] = "White1x1^r";
-					GetMat.Materials.RemoveAt(1);
-				}
-			}
-			#endregion
-			#region FindAndRemoveTargetBgPanel
-			int target = -1;
-			int targetSkip = 1;
-			for (int i = 0; i < Panels.Count -1; i++)
-			{
-				if (Panels[i] is PicturePanel && ((PicturePanel)Panels[i]).PanelName == "P_Bg_00")
-				{
-					target = i;
-					targetSkip = Panels[i + 1].name == "usd1" ? 2 : 1;
-				}
-			}
-			if (target == -1) return PatchResult.Fail;
-			using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[target].data)))
-			{
-				bin.ByteOrder = ByteOrder.LittleEndian;
-				bin.BaseStream.Position = 0x24;
-				bin.Write(5000f);
-				bin.Write(60000f);
-				bin.BaseStream.Position = 0x3C;
-				bin.Write(100f);
-				bin.Write(100f);
-				bin.Write(1200f);
-				bin.Write(700f);
-				Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
-			}
-			#endregion
-			return AddBgPanel(target + targetSkip, TexName, "exelixBG");
-		}
-
-		public PatchResult PatchLockLayout5x(string TexName = "White1x1^s")
-		{
-			#region DetectPatch
-			for (int i = 0; i < Panels.Count; i++)
-			{
-				if (!(Panels[i] is PicturePanel)) continue;
-				var p = Panels[i] as PicturePanel;
-				if (p.PanelName == "exelixLK") return PatchResult.AlreadyPatched;
-			}
-			#endregion
-			#region FindAndRemoveTargetBgPanel
-			int target = int.MaxValue;
-			for (int i = 0; i < Panels.Count - 1; i++)
-			{
-				if (Panels[i] is PicturePanel && 
-					(((PicturePanel)Panels[i]).PanelName == "P_BgL" || ((PicturePanel)Panels[i]).PanelName == "P_BgR"))
-				{
-					if (i < target) target = i;
-					using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[i].data)))
-					{
-						bin.ByteOrder = ByteOrder.LittleEndian;
-						bin.BaseStream.Position = 0x24;
-						bin.Write(5000f);
-						bin.Write(60000f);
-						Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
-					}
-				}
-			}
-			if (target == int.MaxValue) return PatchResult.Fail;			
-			#endregion
-			return AddBgPanel(target, TexName, "exelixLK");
-		}
-
 		PatchResult AddBgPanel(int index,string TexName, string Pic1Name)
 		{
 			#region add picture
-			if (Pic1Name.Length != 8)
-				throw new Exception("Pic1Name should be 8 chars"); //TODO: proper padding 
+			if (Pic1Name.Length > 0x18)
+				throw new Exception("Pic1Name should not be longer than 24 chars");
 			var BgPanel = new BasePanel("pic1", 0x8);
 			Panels.Insert(index, BgPanel);
 			var MatSect = GetMat;
@@ -633,7 +561,9 @@ namespace SwitchThemes
 				bin.Write((byte)0xFF);
 				bin.Write((byte)0x04);
 				bin.Write(Pic1Name, BinaryStringFormat.NoPrefixOrTermination);
-				bin.Write(new byte[0x30]);
+				int zerCount = Pic1Name.Length;
+				while (zerCount++ < 0x38)
+					bin.Write((byte)0x00);
 				bin.Write(1f);
 				bin.Write(1f);
 				bin.Write(1280f);
@@ -686,8 +616,76 @@ namespace SwitchThemes
 			return PatchResult.OK;
 		}
 
-		public TextureSection GetTex => (TextureSection)Panels.Find(x => x is TextureSection);
-		public MaterialsSection GetMat => (MaterialsSection)Panels.Find(x => x is MaterialsSection);
+		public PatchResult PatchMainLayout(PatchTemplate patch)
+		{
+			#region DetectPatch
+			for (int i = 0; i < Panels.Count; i++)
+			{
+				if (!(Panels[i] is PicturePanel)) continue;
+				var p = Panels[i] as PicturePanel;
+				if (p.PanelName == patch.PatchIdentifier) return PatchResult.AlreadyPatched;
+				if (p.PanelName == "3x3lxBG") //Fix old layout
+				{
+					Panels.Remove(p);
+					GetTex.Textures[0] = "White1x1^r";
+					GetMat.Materials.RemoveAt(1);
+				}
+			}
+			#endregion
+			#region FindAndRemoveTargetBgPanels
+			int target = int.MaxValue;
+			for (int i = 0; i < Panels.Count - 1; i++)
+			{
+				string name = TryGetPanelName(Panels[i]);
+				if (name != null && patch.targetPanels.Contains(name))
+				{
+					if (i < target) target = i;
+					if (!patch.NoRemovePanel)
+					{
+						using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[i].data)))
+						{
+							bin.ByteOrder = ByteOrder.LittleEndian;
+							bin.BaseStream.Position = 0x24;
+							bin.Write(5000f);
+							bin.Write(60000f);
+							Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
+						}
+					}
+				}
+			}
+			if (target == int.MaxValue) return PatchResult.Fail;
+			#endregion
+			return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
+		}
+
+		public TextureSection GetTex
+		{
+			get
+			{
+				var res = (TextureSection)Panels.Find(x => x is TextureSection); ;
+				if (res == null)
+				{
+					res = new TextureSection();
+					Panels.Insert(2, res);
+				}
+				return res;
+			}
+		}
+		
+		public MaterialsSection GetMat
+		{
+			get
+			{
+				var res = (MaterialsSection)Panels.Find(x => x is MaterialsSection);
+				if (res == null)
+				{
+					res = new MaterialsSection();
+					Panels.Insert(3,res);
+				}
+				return res;
+			}
+		}
+
 
 		public BflytFile(Stream file)
 		{
@@ -718,7 +716,7 @@ namespace SwitchThemes
 						Panels.Add(new BasePanel(name, bin));
 						break;
 				}
-				if (i == sectionCount - 1 && bin.BaseStream.Position != bin.BaseStream.Length) //load sections not counted in the section count (my old bflyt patch)
+				if (i == sectionCount - 1 && bin.BaseStream.Position != bin.BaseStream.Length) //load sections missing in the section count (my old bflyt patch)
 				{
 					while (bin.PeekChar() == 0 && bin.BaseStream.Position < bin.BaseStream.Length) bin.ReadChar();
 					if (bin.BaseStream.Length - bin.BaseStream.Position >= 8) //min section size
