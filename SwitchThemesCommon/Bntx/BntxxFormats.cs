@@ -1,4 +1,4 @@
-﻿namespace BnTxx.Formats
+﻿namespace SwitchThemes.Common.Bntxx
 {
     public enum TextureFormatType
     {

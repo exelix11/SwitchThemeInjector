@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SwitchThemes
+namespace SwitchThemes.Common
 {
 	public class PatchTemplate
 	{
@@ -29,6 +29,7 @@ namespace SwitchThemes
 		//public PatchTemplate[] UnpatchTargets;
 
 #if DEBUG
+#if WIN
 		public static void BuildTemplateFile()
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
@@ -42,6 +43,7 @@ namespace SwitchThemes
 			string json = JsonConvert.SerializeObject(DefaultTemplates.templates, settings);
 			System.IO.File.WriteAllText("DefaultTemplates.json", json);
 		}
+#endif
 #endif
 		public static PatchTemplate[] LoadTemplates()=>
 			JsonConvert.DeserializeObject<PatchTemplate[]>(System.IO.File.ReadAllText("ExtraTemplates.json"));

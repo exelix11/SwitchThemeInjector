@@ -8,10 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BnTxx.Formats;
-using EveryFileExplorer;
 using SARCExt;
-using SwitchThemes.Bntx;
+using SwitchThemes.Common;
+using SwitchThemes.Common.Bntxx;
 using Syroot.BinaryData;
 
 namespace SwitchThemes
@@ -22,10 +21,7 @@ namespace SwitchThemes
 		SarcData CommonSzs = null;
 		
 		readonly string PatchLabelText = "";
-		readonly string LoadFileText = 
-			"To create a theme open an szs first, these are the patches available in this version:" +
-			"{0} \r\n" +
-			"Always read the instructions because they are slightly different for each version";
+		readonly string LoadFileText = "";
 
 		List<PatchTemplate> Templates = new List<PatchTemplate>();
 
@@ -39,20 +35,7 @@ namespace SwitchThemes
 			if (File.Exists("ExtraTemplates.json"))
 				Templates.AddRange(PatchTemplate.LoadTemplates());
 
-			var sortedTemplates = Templates.OrderBy(x => x.FirmName).Reverse();
-
-			string curSection = "";
-			string FileList = "";
-			foreach (var p in sortedTemplates)
-			{
-				if (curSection != p.FirmName)
-				{
-					curSection = p.FirmName;
-					FileList += $"\r\nFor {curSection}: \r\n";
-				}
-				FileList += $"  - {p.TemplateName} : the file is called {p.szsName} from title {p.TitleId}\r\n";
-			}
-			LoadFileText = string.Format(LoadFileText, FileList);
+			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = LoadFileText;
 
 			materialTabSelector1.Enabled = false;
@@ -98,8 +81,6 @@ namespace SwitchThemes
 			}
 		}
 
-		bool SzsHasKey(string key) =>
-			CommonSzs.Files.ContainsKey(key);
 
 		private void OpenSzsButton(object sender, EventArgs e)
 		{
@@ -117,7 +98,8 @@ namespace SwitchThemes
 			}
 
 			targetPatch = null;
-			CommonSzs = SARCExt.SARC.UnpackRamN(YAZ0.Decompress(File.ReadAllBytes(opn.FileName)));
+
+			CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 
 #if DEBUG
 			#region Check snippets
@@ -157,43 +139,9 @@ namespace SwitchThemes
 			#endregion
 #endif
 
-			foreach (var p in Templates)
-			{
-				if (!SzsHasKey(p.MainLayoutName))
-					continue;
-				bool isTarget = true;
-				foreach (string s in p.SecondaryLayouts)
-				{
-					if (!SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
-				foreach (string s in p.FnameIdentifier)
-				{
-					if (!SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
-				foreach (string s in p.FnameNotIdentifier)
-				{
-					if (SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
-				targetPatch = p;
-				break;
-			}			
+			targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, Templates);
 
-			if (targetPatch == null || !SzsHasKey(@"timg/__Combined.bntx"))
+			if (targetPatch == null)
 			{
 				MessageBox.Show("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
 				CommonSzs = null;
@@ -221,8 +169,6 @@ namespace SwitchThemes
 				tbBntxFile.Text = opn.FileName;
 		}
 		
-		BflytFile BflytFromSzs(string name) =>
-			new BflytFile(new MemoryStream(CommonSzs.Files[name]));
 
 		private void PatchButtonClick(object sender, EventArgs e)
 		{
@@ -251,15 +197,17 @@ namespace SwitchThemes
 
 			if (tbBntxFile.Text.Trim() != "")
 			{
-				if (PatchBntx(File.ReadAllBytes(tbBntxFile.Text)) == BflytFile.PatchResult.Fail)
+				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
+				{
+					MessageBox.Show(
+							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
+							"without this information it is not possible to rebuild the bntx." +
+							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
+				}
 			}
-			
-			BflytFile MainFile = BflytFromSzs(targetPatch.MainLayoutName);
-			BflytFile.PatchResult res = BflytFile.PatchResult.Fail;
 
-			//Main layout patch
-			res = MainFile.PatchMainLayout(targetPatch);
+			var res = SwitchThemesCommon.PatchLayouts(CommonSzs, targetPatch);
 
 			if (res == BflytFile.PatchResult.Fail)
 			{
@@ -271,19 +219,10 @@ namespace SwitchThemes
 				MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 				return;
 			}
-			else //Additional patches (usually to free the texture we're replacing)
-			{
-				CommonSzs.Files[targetPatch.MainLayoutName] = MainFile.SaveFile();
-				foreach (var f in targetPatch.SecondaryLayouts)
-				{
-					BflytFile curTarget = BflytFromSzs(f);
-					curTarget.PatchTextureName(targetPatch.SecondaryTexReplace.Item1, targetPatch.SecondaryTexReplace.Item2);
-					CommonSzs.Files[f] = curTarget.SaveFile();
-				}
-			}
 
 			var sarc = SARC.PackN(CommonSzs);
-			File.WriteAllBytes(sav.FileName, YAZ0.Compress(sarc.Item2, 3, (uint)sarc.Item1));
+			
+			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
 
 			if (res == BflytFile.PatchResult.AlreadyPatched)
@@ -301,23 +240,7 @@ namespace SwitchThemes
 				MessageBox.Show("Switch theme injector V 3.0\r\nby exelix\r\n\r\nTeam Qcean:\r\nCreatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\nDiscord invite code : GrKPJZt");
 		}
 
-		BflytFile.PatchResult PatchBntx(byte[] DDS)
-		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(CommonSzs.Files[@"timg/__Combined.bntx"])));
-			if (q.Rlt.Length != 0x80)
-			{
-				MessageBox.Show(
-						"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-						"without this information it is not possible to rebuild the bntx." +
-						"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return BflytFile.PatchResult.Fail;
-			}
-			q.ReplaceTex(targetPatch.MaintextureName, DDS);
-			DDS = null;
-			CommonSzs.Files[@"timg/__Combined.bntx"] = null;
-			CommonSzs.Files[@"timg/__Combined.bntx"] = q.Write();
-			return BflytFile.PatchResult.OK;
-		}
+		
 
 		// old implementation
 		//BflytFile.PatchResult PatchBntx(byte[] Bntx)
