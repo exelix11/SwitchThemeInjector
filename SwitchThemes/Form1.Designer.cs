@@ -32,10 +32,8 @@
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
 			this.PatchListPage = new System.Windows.Forms.TabPage();
 			this.tbPatches = new System.Windows.Forms.TextBox();
-			this.ExtractPage = new System.Windows.Forms.TabPage();
-			this.btnExportBntx = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.InjectPage = new System.Windows.Forms.TabPage();
+			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialFlatButton1 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
@@ -48,7 +46,6 @@
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
-			this.ExtractPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -58,7 +55,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialTabControl1.Controls.Add(this.PatchListPage);
-			this.materialTabControl1.Controls.Add(this.ExtractPage);
 			this.materialTabControl1.Controls.Add(this.InjectPage);
 			this.materialTabControl1.Depth = 0;
 			this.materialTabControl1.Location = new System.Drawing.Point(-1, 152);
@@ -95,53 +91,10 @@
 			this.tbPatches.Size = new System.Drawing.Size(628, 256);
 			this.tbPatches.TabIndex = 12;
 			// 
-			// ExtractPage
-			// 
-			this.ExtractPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.ExtractPage.Controls.Add(this.btnExportBntx);
-			this.ExtractPage.Controls.Add(this.materialLabel1);
-			this.ExtractPage.Location = new System.Drawing.Point(4, 22);
-			this.ExtractPage.Name = "ExtractPage";
-			this.ExtractPage.Padding = new System.Windows.Forms.Padding(3);
-			this.ExtractPage.Size = new System.Drawing.Size(637, 262);
-			this.ExtractPage.TabIndex = 0;
-			this.ExtractPage.Text = "Extract resources";
-			// 
-			// btnExportBntx
-			// 
-			this.btnExportBntx.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.btnExportBntx.AutoSize = true;
-			this.btnExportBntx.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.btnExportBntx.Depth = 0;
-			this.btnExportBntx.Icon = null;
-			this.btnExportBntx.Location = new System.Drawing.Point(519, 268);
-			this.btnExportBntx.MouseState = MaterialSkin.MouseState.HOVER;
-			this.btnExportBntx.Name = "btnExportBntx";
-			this.btnExportBntx.Primary = true;
-			this.btnExportBntx.Size = new System.Drawing.Size(111, 36);
-			this.btnExportBntx.TabIndex = 10;
-			this.btnExportBntx.Text = "Export BNTX";
-			this.btnExportBntx.UseVisualStyleBackColor = true;
-			this.btnExportBntx.Visible = false;
-			this.btnExportBntx.Click += new System.EventHandler(this.ExtractBntxButton);
-			// 
-			// materialLabel1
-			// 
-			this.materialLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel1.Depth = 0;
-			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel1.Location = new System.Drawing.Point(9, 13);
-			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel1.Name = "materialLabel1";
-			this.materialLabel1.Size = new System.Drawing.Size(618, 232);
-			this.materialLabel1.TabIndex = 0;
-			this.materialLabel1.Text = resources.GetString("materialLabel1.Text");
-			// 
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.InjectPage.Controls.Add(this.materialLabel1);
 			this.InjectPage.Controls.Add(this.materialLabel3);
 			this.InjectPage.Controls.Add(this.materialFlatButton1);
 			this.InjectPage.Controls.Add(this.materialLabel2);
@@ -154,6 +107,20 @@
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "Inject & patch";
 			// 
+			// materialLabel1
+			// 
+			this.materialLabel1.AutoSize = true;
+			this.materialLabel1.Depth = 0;
+			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel1.Location = new System.Drawing.Point(20, 9);
+			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel1.Name = "materialLabel1";
+			this.materialLabel1.Size = new System.Drawing.Size(603, 19);
+			this.materialLabel1.TabIndex = 6;
+			this.materialLabel1.Text = "Since version 3.0 you don\'t need bntx_editor anymore, just click on ... and open " +
+    "your dds !";
+			// 
 			// materialLabel3
 			// 
 			this.materialLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -161,10 +128,10 @@
 			this.materialLabel3.Depth = 0;
 			this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel3.Location = new System.Drawing.Point(11, 50);
+			this.materialLabel3.Location = new System.Drawing.Point(11, 69);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
-			this.materialLabel3.Size = new System.Drawing.Size(652, 148);
+			this.materialLabel3.Size = new System.Drawing.Size(612, 148);
 			this.materialLabel3.TabIndex = 5;
 			this.materialLabel3.Text = resources.GetString("materialLabel3.Text");
 			// 
@@ -174,8 +141,9 @@
 			this.materialFlatButton1.AutoSize = true;
 			this.materialFlatButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialFlatButton1.Depth = 0;
+			this.materialFlatButton1.ForeColor = System.Drawing.Color.White;
 			this.materialFlatButton1.Icon = null;
-			this.materialFlatButton1.Location = new System.Drawing.Point(601, 10);
+			this.materialFlatButton1.Location = new System.Drawing.Point(600, 31);
 			this.materialFlatButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
 			this.materialFlatButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialFlatButton1.Name = "materialFlatButton1";
@@ -192,18 +160,18 @@
 			this.materialLabel2.Depth = 0;
 			this.materialLabel2.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel2.Location = new System.Drawing.Point(11, 18);
+			this.materialLabel2.Location = new System.Drawing.Point(10, 39);
 			this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel2.Name = "materialLabel2";
 			this.materialLabel2.Size = new System.Drawing.Size(71, 19);
 			this.materialLabel2.TabIndex = 2;
-			this.materialLabel2.Text = "Bntx file: ";
+			this.materialLabel2.Text = "DDS file: ";
 			// 
 			// tbBntxFile
 			// 
 			this.tbBntxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbBntxFile.Location = new System.Drawing.Point(86, 17);
+			this.tbBntxFile.Location = new System.Drawing.Point(85, 38);
 			this.tbBntxFile.Name = "tbBntxFile";
 			this.tbBntxFile.Size = new System.Drawing.Size(514, 20);
 			this.tbBntxFile.TabIndex = 1;
@@ -215,7 +183,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 268);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 220);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -284,6 +252,8 @@
 			// 
 			// materialDivider1
 			// 
+			this.materialDivider1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialDivider1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(55)))), ((int)(((byte)(71)))), ((int)(((byte)(78)))));
 			this.materialDivider1.Depth = 0;
 			this.materialDivider1.Location = new System.Drawing.Point(-1, 63);
@@ -314,8 +284,6 @@
 			this.materialTabControl1.ResumeLayout(false);
 			this.PatchListPage.ResumeLayout(false);
 			this.PatchListPage.PerformLayout();
-			this.ExtractPage.ResumeLayout(false);
-			this.ExtractPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
 			this.ResumeLayout(false);
@@ -325,10 +293,7 @@
 
 		#endregion
 		private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
-		private System.Windows.Forms.TabPage ExtractPage;
 		private System.Windows.Forms.TabPage InjectPage;
-		private MaterialSkin.Controls.MaterialLabel materialLabel1;
-		private MaterialSkin.Controls.MaterialRaisedButton btnExportBntx;
 		private MaterialSkin.Controls.MaterialLabel materialLabel3;
 		private MaterialSkin.Controls.MaterialFlatButton materialFlatButton1;
 		private MaterialSkin.Controls.MaterialLabel materialLabel2;
@@ -341,6 +306,7 @@
 		private System.Windows.Forms.TextBox tbPatches;
 		private MaterialSkin.Controls.MaterialLabel lblDetected;
 		private MaterialSkin.Controls.MaterialDivider materialDivider1;
+		private MaterialSkin.Controls.MaterialLabel materialLabel1;
 	}
 }
 

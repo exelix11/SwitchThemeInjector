@@ -36,19 +36,20 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EditorCoreCommon">
+      <HintPath>..\lib\EditorCoreCommon.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialSkin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialSkin.Updated.0.2.2\lib\MaterialSkin.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="SARCExt, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\EditorCoreProject\EditorCore\EditorCore\bin\Debug\Ext\SARCExt.dll</HintPath>
+    <Reference Include="SARCExt">
+      <HintPath>..\lib\SARCExt.dll</HintPath>
     </Reference>
-    <Reference Include="Syroot.BinaryData, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\EditorCoreProject\EditorCore\EditorCore\bin\Debug\Ext\Syroot.BinaryData.dll</HintPath>
+    <Reference Include="Syroot.BinaryData">
+      <HintPath>..\lib\Syroot.BinaryData.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -63,6 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bflyt.cs" />
+    <Compile Include="Bntx\Bntx.cs" />
+    <Compile Include="Bntx\DDSEncoder.cs" />
+    <Compile Include="Bntx\Texture.cs" />
+    <Compile Include="Bntx\BntxxFormats.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
