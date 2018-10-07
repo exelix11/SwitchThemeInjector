@@ -1,5 +1,4 @@
-﻿using BnTxx.Formats;
-using Syroot.BinaryData;
+﻿using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwitchThemes.Bntx
+namespace SwitchThemes.Common.Bntxx
 {
 	class QuickBntx
 	{
@@ -55,8 +54,13 @@ namespace SwitchThemes.Bntx
 		//this will work only for a BC1 image, other formats are not implemented, sizes different than 720p haven't been tested
 		public void ReplaceTex(string texName, byte[] DDS)
 		{
-			var target = Textures.Where(x => x.Name == texName).First();
 			var dds = DDSEncoder.LoadDDS(DDS);
+			ReplaceTex(texName, dds);
+		}
+
+		public void ReplaceTex(string texName, DDSEncoder.DDSLoadResult dds)
+		{
+			var target = Textures.Where(x => x.Name == texName).First();
 			target.Data = DDSEncoder.EncodeTex(dds);
 			target.TextureType = (int)TextureType.Image2D;
 			target.Format = 0x00001a01;
@@ -79,7 +83,7 @@ namespace SwitchThemes.Bntx
 			target.Alignment = 0x200;
 			target.AccessFlags = 0x20;
 		}
-		
+
 		public List<Texture> Textures = new List<Texture>();
 		byte[] Head;
 		public byte[] Rlt;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwitchThemes.Bntx
+namespace SwitchThemes.Common.Bntxx
 {
 	//mostly based on https://github.com/aboood40091/BNTX-Editor
 	public static class DDSEncoder  //Hardcoded valuses for DXT1 1280x720

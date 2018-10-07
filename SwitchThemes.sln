@@ -5,7 +5,16 @@ VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemes", "SwitchThemes\SwitchThemes.csproj", "{CFBF6EF0-8237-442A-8997-A30072F0B9F8}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwitchThemesCommon", "SwitchThemesCommon\SwitchThemesCommon.shproj", "{11174F92-402D-4064-B278-F52842A48251}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesOnline", "SwitchThemesOnline\SwitchThemesOnline.csproj", "{3EE76B71-422A-4E80-8F17-63DA105BB4BC}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{3ee76b71-422a-4e80-8f17-63da105bb4bc}*SharedItemsImports = 4
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{cfbf6ef0-8237-442a-8997-a30072f0b9f8}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -15,6 +24,10 @@ Global
 		{CFBF6EF0-8237-442A-8997-A30072F0B9F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFBF6EF0-8237-442A-8997-A30072F0B9F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFBF6EF0-8237-442A-8997-A30072F0B9F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
