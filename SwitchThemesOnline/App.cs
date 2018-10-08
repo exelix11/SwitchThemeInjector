@@ -1,5 +1,6 @@
 ﻿using Bridge;
 using Bridge.Html5;
+using ExtensionMethods;
 using Newtonsoft.Json;
 using SARCExt;
 using SwitchThemes.Common;
@@ -44,6 +45,8 @@ namespace SwitchThemesOnline
 			lblDDSPath = Document.GetElementById<HTMLParagraphElement>("P_DDSPath");
 
 			Document.GetElementById<HTMLParagraphElement>("P_PatchList").InnerHTML = SwitchThemesCommon.GeneratePatchListString(DefaultTemplates.templates).Replace("\r\n", "<br />");
+
+			LoadAutoThemeState();
 		}
 
 		public static void UploadSZS(Uint8Array arr) //called from js
@@ -98,7 +101,6 @@ namespace SwitchThemesOnline
 			}
 			DoActionWithloading(() =>
 			{
-				LoaderText.TextContent = "bntx";
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, LoadedDDS, targetPatch) == BflytFile.PatchResult.Fail)
 				{
 					Window.Alert(
@@ -107,8 +109,7 @@ namespace SwitchThemesOnline
 							"You should use an original or at least working szs");
 					return;
 				}
-
-				LoaderText.TextContent = "layout";
+				
 				var res = SwitchThemesCommon.PatchLayouts(CommonSzs, targetPatch);
 
 				if (res == BflytFile.PatchResult.Fail)
@@ -121,15 +122,71 @@ namespace SwitchThemesOnline
 					Window.Alert("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 					return;
 				}
-				LoaderText.TextContent = "packing";
 				var sarc = SARC.PackN(CommonSzs);
-				LoaderText.TextContent = "compressing";
 				byte[] yaz0 = ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
 				sarc = null;
 				Uint8Array dwn = new Uint8Array(yaz0);
 				string DownloadFname = targetPatch.szsName;
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
 			});
+		}
+
+		static string AutoThemePartName = "";
+		public static void AutoThemeUploadBtn(string PartName)
+		{
+			AutoThemePartName = PartName;
+			Document.GetElementById<HTMLInputElement>("AutoThemeUploader").Click();
+		}
+
+		public readonly static string[] ValidAutoThemeParts = new string[] { "home", "lock", "user" };
+		public static void AutoThemeFileUploaded(Uint8Array arr)
+		{
+			if (!ValidAutoThemeParts.ContainsStr(AutoThemePartName))
+			{
+				Window.Alert("An invalid part name has been selected");
+				return;
+			}
+			DoActionWithloading(() =>
+			{
+				byte[] szs = arr.ToArray();
+				byte[] sarc = ManagedYaz0.Decompress(szs);
+				var szsData = SARCExt.SARC.UnpackRamN(sarc);
+				sarc = null;
+				var detected = SwitchThemesCommon.DetectSarc(szsData, DefaultTemplates.templates);
+				if (detected == null)
+				{
+					Window.Alert("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
+					return;
+				}
+				if (!detected.TemplateName.Contains(AutoThemePartName))
+				{
+					Window.Alert("This szs is valid but it doesn't look like the right one, you can keep it but it might generate themes that affect the wrong parts of the menu");
+				}
+				Window.LocalStorage.SetItem(AutoThemePartName, Convert.ToBase64String(szs));
+				Window.LocalStorage.SetItem(AutoThemePartName + "Name", "Detected " + detected.TemplateName + " " + detected.FirmName);
+				LoadAutoThemeState();				
+			});
+		}
+
+		public static void AutoThemeDeleteAll()
+		{
+			if (!Window.Confirm("This will delete all the szs files stored in your browser. Auto-theme won't work anymore. Are you sure ?")) 
+				return;
+			foreach (var p in ValidAutoThemeParts)
+			{
+				Window.LocalStorage.RemoveItem(p);
+				Window.LocalStorage.RemoveItem(p + "Name");
+			}
+			LoadAutoThemeState();
+		}
+
+		public static void LoadAutoThemeState()
+		{
+			foreach (var p in ValidAutoThemeParts)
+			{
+				string name = Window.LocalStorage.GetItem(p + "Name") as string;
+				Document.GetElementById<HTMLParagraphElement>("P_" + p + "SZS").TextContent = name ?? "not uploaded yet";
+			}
 		}
 
 		static void DoActionWithloading(Action action)

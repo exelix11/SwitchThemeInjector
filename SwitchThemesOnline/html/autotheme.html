@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-theme</title>
+    <link href="css/surface_styles.css" rel="stylesheet">
+    <link href="css/custom_styles.css" rel="stylesheet">
+    <script src="bridge.js"></script>
+    <script src="bridge.console.js"></script>
+    <script src="bridge.meta.js"></script>
+    <script src="newtonsoft.json.js"></script>
+    <script src="SwitchThemesOnline.js"></script>
+    <script src="SwitchThemesOnline.meta.js"></script>
+    <script src="jsFunctions.js"></script>
+</head>
+<body onload="SwitchThemesOnline.AutoTheme.OnLoad();">
+    <div class="loaderdiv" id="loaderDiv" style="display:none;">
+        <div class="loadinganim"> </div>
+        <p class="loadingText" id="LoadingText">Loading</p>
+    </div>
+
+    <div class="BigScreenContent">
+        <header class="header">
+            <div class="card WarnCard" id="D_JsWarn">
+                This tool requires JavaScript !
+            </div>
+            <div class="card WarnCard" id="D_IeWarn" hidden>
+                Internet explorer is not supported, please get a proper browser
+            </div>
+            <p class="g--12 nudge--left HeaderTextBig">Switch theme injector 🌐</p>
+            <p class="g--12 nudge--left HeaderTextSmall">by exelix @ team Qcean</p>
+        </header>
+
+        <div class="card WarnCard" id="CardLoad" style="background: rgb(55,71,79) !important; color:#fff" hidden>
+            Wait while your theme is being generated....
+        </div>
+
+        <div class="card WarnCard" id="CardTutorial" style="background: rgb(55,71,79) !important; color:#fff">
+            This page is used to generate themes with the Auto-Theme feature. <br />
+            To create themes use this template : <br />
+            pageaddr.com/autotheme.html?type=<b>*theme type*</b>&dds=<b>*url to a dds file*</b> <br />
+            valid theme types are: <br />
+            home : for home menu background <br />
+            lock : for lock screen background <br />
+            user : for user settings page background <br />
+            the url for the dds parameter must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image <br />
+            example of a valid url to make a theme for the home menu: <br />
+            pageaddr.com/autotheme.html?type=home&dds=<br />
+        </div>
+
+    </div>
+</body>
+</html>
+
