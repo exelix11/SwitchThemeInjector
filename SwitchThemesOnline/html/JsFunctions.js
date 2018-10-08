@@ -22,6 +22,18 @@ function JsDDSRead(ev) {
     reader.readAsArrayBuffer(ev[0]);
 }
 
+function JsThemePartRead(ev) {
+    if (!ev[0].name.endsWith('szs')) {
+        alert('This is not an szs file');
+        return;
+    }
+    var reader = new FileReader();
+    reader.onloadend = function (evt) {
+        SwitchThemesOnline.App.AutoThemeFileUploaded(new Uint8Array(evt.target.result));
+    }
+    reader.readAsArrayBuffer(ev[0]);
+}
+
 downloadBlob = function (data, fileName, mimeType) {
     var blob, url;
     blob = new Blob([data], {

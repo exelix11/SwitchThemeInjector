@@ -19,6 +19,13 @@ namespace ExtensionMethods
 				if (arr[i + startIndex] != magic[i]) return false;
 			}
 			return true;
-		}				
+		}
+
+		public static bool ContainsStr(this string[] arr, string t)
+		{
+			for (int i = 0; i < arr.Length; i++)
+				if (arr[i] == t) return true;
+			return false;
+		}
 	}
 }

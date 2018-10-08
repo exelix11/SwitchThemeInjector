@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="AutoTheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syroot.BinaryData\BinaryDataFormats.cs" />
     <Compile Include="Syroot.BinaryData\BinaryDataReader.cs" />
@@ -67,6 +68,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="html\autotheme.html" />
     <Content Include="html\index.html" />
     <Content Include="html\JsFunctions.js" />
   </ItemGroup>
