@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
 			this.PatchListPage = new System.Windows.Forms.TabPage();
@@ -39,6 +40,18 @@
 			this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbBntxFile = new System.Windows.Forms.TextBox();
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
+			this.AdvPanel = new System.Windows.Forms.Panel();
+			this.materialRaisedButton4 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
+			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.materialRaisedButton1 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.materialRaisedButton5 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.label1 = new System.Windows.Forms.Label();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
@@ -47,6 +60,9 @@
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.AdvPanel.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// materialTabControl1
@@ -56,6 +72,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialTabControl1.Controls.Add(this.PatchListPage);
 			this.materialTabControl1.Controls.Add(this.InjectPage);
+			this.materialTabControl1.Controls.Add(this.tabPage1);
 			this.materialTabControl1.Depth = 0;
 			this.materialTabControl1.Location = new System.Drawing.Point(-1, 152);
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
@@ -193,6 +210,167 @@
 			this.materialRaisedButton2.UseVisualStyleBackColor = true;
 			this.materialRaisedButton2.Click += new System.EventHandler(this.PatchButtonClick);
 			// 
+			// tabPage1
+			// 
+			this.tabPage1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.tabPage1.Controls.Add(this.AdvPanel);
+			this.tabPage1.Controls.Add(this.checkBox1);
+			this.tabPage1.Controls.Add(this.materialLabel4);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(637, 262);
+			this.tabPage1.TabIndex = 3;
+			this.tabPage1.Text = "Advanced";
+			// 
+			// AdvPanel
+			// 
+			this.AdvPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.AdvPanel.Controls.Add(this.materialRaisedButton4);
+			this.AdvPanel.Controls.Add(this.materialLabel5);
+			this.AdvPanel.Controls.Add(this.listBox1);
+			this.AdvPanel.Controls.Add(this.materialRaisedButton1);
+			this.AdvPanel.Controls.Add(this.materialRaisedButton5);
+			this.AdvPanel.Enabled = false;
+			this.AdvPanel.Location = new System.Drawing.Point(9, 52);
+			this.AdvPanel.Name = "AdvPanel";
+			this.AdvPanel.Size = new System.Drawing.Size(619, 204);
+			this.AdvPanel.TabIndex = 7;
+			this.AdvPanel.Visible = false;
+			// 
+			// materialRaisedButton4
+			// 
+			this.materialRaisedButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.materialRaisedButton4.AutoSize = true;
+			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton4.Depth = 0;
+			this.materialRaisedButton4.Icon = null;
+			this.materialRaisedButton4.Location = new System.Drawing.Point(184, 162);
+			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton4.Name = "materialRaisedButton4";
+			this.materialRaisedButton4.Primary = true;
+			this.materialRaisedButton4.Size = new System.Drawing.Size(110, 36);
+			this.materialRaisedButton4.TabIndex = 8;
+			this.materialRaisedButton4.Text = "Diff file list";
+			this.materialRaisedButton4.UseVisualStyleBackColor = true;
+			this.materialRaisedButton4.Click += new System.EventHandler(this.materialRaisedButton4_Click);
+			// 
+			// materialLabel5
+			// 
+			this.materialLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel5.Depth = 0;
+			this.materialLabel5.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel5.Location = new System.Drawing.Point(3, 0);
+			this.materialLabel5.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel5.Name = "materialLabel5";
+			this.materialLabel5.Size = new System.Drawing.Size(613, 23);
+			this.materialLabel5.TabIndex = 7;
+			this.materialLabel5.Text = "Files in the SZS : (left click to replace or export)";
+			// 
+			// listBox1
+			// 
+			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.listBox1.ContextMenuStrip = this.contextMenuStrip1;
+			this.listBox1.ForeColor = System.Drawing.Color.White;
+			this.listBox1.FormattingEnabled = true;
+			this.listBox1.Location = new System.Drawing.Point(3, 26);
+			this.listBox1.Name = "listBox1";
+			this.listBox1.Size = new System.Drawing.Size(613, 130);
+			this.listBox1.Sorted = true;
+			this.listBox1.TabIndex = 5;
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractToolStripMenuItem,
+            this.replaceToolStripMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(116, 48);
+			// 
+			// extractToolStripMenuItem
+			// 
+			this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
+			this.extractToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+			this.extractToolStripMenuItem.Text = "Extract";
+			this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
+			// 
+			// replaceToolStripMenuItem
+			// 
+			this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
+			this.replaceToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+			this.replaceToolStripMenuItem.Text = "Replace";
+			this.replaceToolStripMenuItem.Click += new System.EventHandler(this.replaceToolStripMenuItem_Click);
+			// 
+			// materialRaisedButton1
+			// 
+			this.materialRaisedButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialRaisedButton1.AutoSize = true;
+			this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton1.Depth = 0;
+			this.materialRaisedButton1.Icon = null;
+			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 162);
+			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton1.Name = "materialRaisedButton1";
+			this.materialRaisedButton1.Primary = true;
+			this.materialRaisedButton1.Size = new System.Drawing.Size(132, 36);
+			this.materialRaisedButton1.TabIndex = 4;
+			this.materialRaisedButton1.Text = "Save edited SZS";
+			this.materialRaisedButton1.UseVisualStyleBackColor = true;
+			this.materialRaisedButton1.Click += new System.EventHandler(this.materialRaisedButton1_Click);
+			// 
+			// materialRaisedButton5
+			// 
+			this.materialRaisedButton5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.materialRaisedButton5.AutoSize = true;
+			this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton5.Depth = 0;
+			this.materialRaisedButton5.Icon = null;
+			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 162);
+			this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton5.Name = "materialRaisedButton5";
+			this.materialRaisedButton5.Primary = true;
+			this.materialRaisedButton5.Size = new System.Drawing.Size(175, 36);
+			this.materialRaisedButton5.TabIndex = 3;
+			this.materialRaisedButton5.Text = "Texture usage Count";
+			this.materialRaisedButton5.UseVisualStyleBackColor = true;
+			this.materialRaisedButton5.Click += new System.EventHandler(this.materialRaisedButton5_Click);
+			// 
+			// checkBox1
+			// 
+			this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.checkBox1.AutoSize = true;
+			this.checkBox1.ForeColor = System.Drawing.Color.White;
+			this.checkBox1.Location = new System.Drawing.Point(493, 28);
+			this.checkBox1.Name = "checkBox1";
+			this.checkBox1.Size = new System.Drawing.Size(135, 17);
+			this.checkBox1.TabIndex = 0;
+			this.checkBox1.Text = "Enable advanced tools";
+			this.checkBox1.UseVisualStyleBackColor = true;
+			this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+			// 
+			// materialLabel4
+			// 
+			this.materialLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel4.Depth = 0;
+			this.materialLabel4.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel4.Location = new System.Drawing.Point(0, 3);
+			this.materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel4.Name = "materialLabel4";
+			this.materialLabel4.Size = new System.Drawing.Size(637, 46);
+			this.materialLabel4.TabIndex = 6;
+			this.materialLabel4.Text = "Advanced tools allow you to manually edit the szs and more to create custom patch" +
+    "es, enable them only if you know what you\'re doing";
+			// 
 			// materialRaisedButton3
 			// 
 			this.materialRaisedButton3.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -286,6 +464,11 @@
 			this.PatchListPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
+			this.AdvPanel.ResumeLayout(false);
+			this.AdvPanel.PerformLayout();
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -307,6 +490,18 @@
 		private MaterialSkin.Controls.MaterialLabel lblDetected;
 		private MaterialSkin.Controls.MaterialDivider materialDivider1;
 		private MaterialSkin.Controls.MaterialLabel materialLabel1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.CheckBox checkBox1;
+		private MaterialSkin.Controls.MaterialLabel materialLabel4;
+		private System.Windows.Forms.Panel AdvPanel;
+		private MaterialSkin.Controls.MaterialLabel materialLabel5;
+		private System.Windows.Forms.ListBox listBox1;
+		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton1;
+		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton5;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem extractToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
+		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton4;
 	}
 }
 

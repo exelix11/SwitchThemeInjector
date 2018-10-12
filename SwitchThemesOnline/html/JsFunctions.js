@@ -7,7 +7,8 @@
     reader.onloadend = function (evt) {
         SwitchThemesOnline.App.UploadSZS(new Uint8Array(evt.target.result));
     }
-    reader.readAsArrayBuffer(ev[0]);
+    if (typeof ev[0] != 'undefined')
+        reader.readAsArrayBuffer(ev[0]);
 }
 
 function JsDDSRead(ev) {
@@ -17,9 +18,10 @@ function JsDDSRead(ev) {
     }
     var reader = new FileReader();
     reader.onloadend = function (evt) {
-        SwitchThemesOnline.App.UploadDDS(new Uint8Array(evt.target.result), ev[0].name);
+            SwitchThemesOnline.App.UploadDDS(new Uint8Array(evt.target.result), ev[0].name);
     }
-    reader.readAsArrayBuffer(ev[0]);
+    if (typeof ev[0] != 'undefined')
+        reader.readAsArrayBuffer(ev[0]);
 }
 
 function JsThemePartRead(ev) {
@@ -31,7 +33,8 @@ function JsThemePartRead(ev) {
     reader.onloadend = function (evt) {
         SwitchThemesOnline.App.AutoThemeFileUploaded(new Uint8Array(evt.target.result));
     }
-    reader.readAsArrayBuffer(ev[0]);
+    if (typeof ev[0] != 'undefined')
+        reader.readAsArrayBuffer(ev[0]);
 }
 
 downloadBlob = function (data, fileName, mimeType) {

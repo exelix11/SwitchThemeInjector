@@ -14,7 +14,7 @@
     <script src="SwitchThemesOnline.meta.js"></script>
     <script src="jsFunctions.js"></script>
 </head>
-<body onload="SwitchThemesOnline.App.OnLoaded();">
+<body onload="SwitchThemesOnline.App.OnLoad();">
     <div class="loaderdiv" id="loaderDiv" style="display:none;">
         <div class="loadinganim"> </div>
         <p class="loadingText" id="LoadingText">Loading</p>
@@ -24,6 +24,10 @@
         <header class="header">
             <div class="card WarnCard" id="D_JsWarn">
                 This tool requires JavaScript !
+            </div>
+            <div class="card WarnCard" style="background: #ffbd00 !important;" id="DebugFlag" hidden>
+                This tool is in private beta. The link should not be shared with people not in the team.<br />
+                The public version will be hosted on github along with the source code.
             </div>
             <div class="card WarnCard" id="D_IeWarn" hidden>
                 Internet explorer is not supported, please get a proper browser
@@ -85,13 +89,12 @@
                     <p id="P_lockSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('user');">User settings (MyPage.szs)</button>
                     <p id="P_userSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised btn--red buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeDeleteAll();">Delete all</button>
+                    <button class="btn--raised btn--red buttonCenter" style="margin-bottom:5px" onclick="SwitchThemesOnline.App.AutoThemeDeleteAll();">Delete all</button>
                     <p>
-                        Note that these files will be removed when you clear your browser history data or if you're using incognito.
-
-                        To share a theme upload your DDS somewhere it will be always available and create a link like this:
-                        thisPageUrl.com/index.html?AutoTheme=1&type=Home&url=YourDDSUrl
-                        and everyone who has Auto-theme setup will be able to make your theme on the fly and save it
+                        Note that these files will be removed when you clear your browser history data and are not saved if you're using incognito.
+                        <br />
+                        To share a theme upload your DDS somewhere it will be always available and create a link on the <a href="autotheme.html">Auto-theme page</a>,
+                        everyone who has Auto-theme setup will be able to make your theme on the fly and save it.
                     </p>
                 </div>
             </div>
@@ -112,8 +115,8 @@
                         <a href="https://gbatemp.net/threads/release-tutorial-switch-theme-injector-easily-make-custom-themes.519036/">Gbatemp thread</a>
                         <br /><br />
                         Thanks to: <br />
-                        Syroot for his <a href="https://github.com/Syroot/BinaryData"> BinaryData lib </a> <br />
-                        AboodXD for his <a href="https://github.com/aboood40091/BNTX-Editor"> Bntx editor </a> <br />
+                        Syroot for <a href="https://github.com/Syroot/BinaryData"> BinaryData lib </a> <br />
+                        AboodXD for <a href="https://github.com/aboood40091/BNTX-Editor"> Bntx editor </a> <br />
                     </p>
                     <p style="color:#333333; font-size:5px">
                         --- ALL YOU THEMES ARE BELONG TO US ---

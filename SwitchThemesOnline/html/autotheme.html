@@ -25,6 +25,10 @@
             <div class="card WarnCard" id="D_JsWarn">
                 This tool requires JavaScript !
             </div>
+            <div class="card WarnCard" style="background: #ffbd00 !important;" id="DebugFlag" hidden>
+                This tool is in private beta. The link should not be shared with people not in the team.<br />
+                The public version will be hosted on github along with the source code.
+            </div>
             <div class="card WarnCard" id="D_IeWarn" hidden>
                 Internet explorer is not supported, please get a proper browser
             </div>
@@ -37,16 +41,22 @@
         </div>
 
         <div class="card WarnCard" id="CardTutorial" style="background: rgb(55,71,79) !important; color:#fff">
-            This page is used to generate themes with the Auto-Theme feature. <br />
-            To create themes use this template : <br />
-            pageaddr.com/autotheme.html?type=<b>*theme type*</b>&dds=<b>*url to a dds file*</b> <br />
-            valid theme types are: <br />
-            home : for home menu background <br />
-            lock : for lock screen background <br />
-            user : for user settings page background <br />
-            the url for the dds parameter must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image <br />
-            example of a valid url to make a theme for the home menu: <br />
-            pageaddr.com/autotheme.html?type=home&dds=<br />
+            Auto-theme allows legally sharing switch themes by uploading just the background picture,
+            you can use this page to generate Auto-theme links, to use these links you must setup Auto-theme first, go to the <a href="\index.html">home page</a> for that. <br/><br />
+            To create an Auto-Theme link fill the following form: <br />
+            Theme target :
+            <select id="TargetSelect" style="background-color:#DDD;margin-left:10px">
+                <option value="home">Home menu</option>
+                <option value="lock">Lock screen</option>
+                <option value="user">User page</option>
+            </select>
+            <br />
+            DDS Url:<input id="DDSUrlInput" placeholder="http://blablabla" style="margin-bottom:1%;width:100%;background-color:#DDD;height:1vw;" type="text">
+            This must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image, <b>not every host works</b> because the server must have <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> support<br />
+            <br />
+            <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.AutoTheme.MakeLink();">Generate link</button>
+            <p id="Linkis" hidden>Your link is :</p>
+            <a id="OutLink"></a>
         </div>
 
     </div>

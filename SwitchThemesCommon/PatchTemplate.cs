@@ -103,28 +103,6 @@ namespace SwitchThemes.Common
 				SecondaryLayouts = new string[] { @"blyt/IconError.bflyt" },
 				SecondaryTexReplace = new Tuple<string, string>("White1x1A128^s", "White1x1A64^t")
 			},
-
-
-			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = "6.0",
-				FnameIdentifier = new string[] { @"blyt/SetCntDataMngPhoto.bflyt" , @"blyt/SetSideStory.bflyt"}, //blyt/SetSideStory.bflyt for 6.0 detection
-				FnameNotIdentifier = new string[] { } ,
-				MainLayoutName = @"blyt/BgNml.bflyt",
-				MaintextureName = "White1x1A0^s",
-				PatchIdentifier = "exelixSET",
-				targetPanels = new string[] { "P_Bg_00" },
-				SecondaryLayouts = new string[] { @"blyt/MeterDataMngSide.bflyt" , @"blyt/IllustMigUser.bflyt", @"blyt/TextH1Ex.bflyt"}, 
-				SecondaryTexReplace = new Tuple<string, string>("White1x1A0^s", "White1x1A0^t")
-			},
-			new PatchTemplate() { TemplateName = "news applet" , szsName = "Notification.szs", TitleId = "0100000000001000", FirmName = "6.0",
-				FnameIdentifier = new string[] { @"blyt/NtfBase.bflyt", @"blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
-				FnameNotIdentifier = new string[] { } ,
-				MainLayoutName = @"blyt/BgNml.bflyt",
-				MaintextureName = "White1x1A0^s",
-				PatchIdentifier = "exelixNEW",
-				targetPanels = new string[] { "P_Bg_00" },
-				SecondaryLayouts = new string[] { @"blyt/NtfIconChannel.bflyt"},
-				SecondaryTexReplace = new Tuple<string, string>("White1x1A0^s", "White1x1A0^t")
-			},
 			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "FLaunch.szs", TitleId = "0100000000001000", FirmName = "6.0",
 				FnameIdentifier = new string[] { @"blyt/FlcBtnIconGame.bflyt", @"anim/BaseBg_Loading.bflan" }, //anim/BaseBg_Loading.bflan for 6.0
 				FnameNotIdentifier = new string[] { } ,
@@ -134,6 +112,26 @@ namespace SwitchThemes.Common
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryLayouts = new string[] { @"blyt/BgNav_Root.bflyt"},
 				SecondaryTexReplace = new Tuple<string, string>("NavBg_03^d", "White1x1A64^t")
+			},			
+			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = "6.0",
+				FnameIdentifier = new string[] { @"blyt/SetCntDataMngPhoto.bflyt" , @"blyt/SetSideStory.bflyt"}, //blyt/SetSideStory.bflyt for 6.0 detection
+				FnameNotIdentifier = new string[] { } ,
+				MainLayoutName = @"blyt/BgNml.bflyt",
+				MaintextureName = "NavBg_03^d",
+				PatchIdentifier = "exelixSET",
+				targetPanels = new string[] { "P_Bg_00" },
+				SecondaryLayouts = new string[] { @"blyt/BgNav_Root.bflyt"}, 
+				SecondaryTexReplace = new Tuple<string, string>("NavBg_03^d", "White1x1A0^t")
+			},
+			new PatchTemplate() { TemplateName = "news applet" , szsName = "Notification.szs", TitleId = "0100000000001000", FirmName = "6.0",
+				FnameIdentifier = new string[] { @"blyt/NtfBase.bflyt", @"blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
+				FnameNotIdentifier = new string[] { } ,
+				MainLayoutName = @"blyt/BgNml.bflyt",
+				MaintextureName = "NavBg_03^d",
+				PatchIdentifier = "exelixNEW",
+				targetPanels = new string[] { "P_Bg_00" },
+				SecondaryLayouts = new string[] { @"blyt/BgNavNoHeader.bflyt",@"blyt/BgNav_Root.bflyt"},
+				SecondaryTexReplace = new Tuple<string, string>("NavBg_03^d", "White1x1^r")
 			},
 		};
 	}

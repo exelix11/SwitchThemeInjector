@@ -26,8 +26,11 @@ namespace SwitchThemesOnline
 		static DDSLoadResult LoadedDDS = null;
 		static PatchTemplate targetPatch = null;
 
-		public static void OnLoaded()
+		public static void OnLoad()
 		{
+#if DEBUG
+			Document.GetElementById<HTMLDivElement>("DebugFlag").Hidden = false;
+#endif
 			Document.GetElementById<HTMLParagraphElement>("P_Version").TextContent = "Switch theme injector online - Version : " + AppVersion + " - Core version : " + SwitchThemesCommon.CoreVer;
 			Document.GetElementById<HTMLDivElement>("D_JsWarn").Remove();
 			string useragent = Window.Navigator.UserAgent.ToLower();
