@@ -14,10 +14,15 @@ namespace SwitchThemesOnline
 {
 	public class AutoTheme
 	{
+		const string Domain = "";
+
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;
 		public static void OnLoad()
 		{
+#if DEBUG
+			Document.GetElementById<HTMLDivElement>("DebugFlag").Hidden = false;
+#endif
 			Document.GetElementById<HTMLDivElement>("D_JsWarn").Remove();
 			string useragent = Window.Navigator.UserAgent.ToLower();
 			if (useragent.Contains("msie") || useragent.Contains("trident"))
@@ -52,6 +57,13 @@ namespace SwitchThemesOnline
 
 		static void DoAutoTheme(string type, string url)
 		{
+			void endWithError(string error)
+			{
+				Window.Alert(error);
+				Document.GetElementById<HTMLDivElement>("CardLoad").InnerHTML = "There was an error generating the theme: <br>" + error;
+				EndLoading();
+			}
+			
 			Document.GetElementById<HTMLDivElement>("CardTutorial").Hidden = true;
 			Document.GetElementById<HTMLDivElement>("CardLoad").Hidden = false;
 			StartLoading();
@@ -63,10 +75,15 @@ namespace SwitchThemesOnline
 				ArrayBuffer DownloadRes = req.Response as ArrayBuffer;
 				if (DownloadRes == null)
 				{
-					Window.Alert("DDS download failed, check the url");
+					endWithError("DDS download failed, check the url");
 					return;
 				}
 				var arr = new Uint8Array(DownloadRes);
+				if (arr.Length == 0)
+				{
+					endWithError("Error downloading the DDS, most likely the link you provided is not a direct link or the host doesn't support Cross-Origin Resource Sharing");
+					return;
+				}
 				var LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
 				arr = null;
 				DownloadRes = null;
@@ -78,7 +95,7 @@ namespace SwitchThemesOnline
 				var targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, LoadedDDS, targetPatch) == BflytFile.PatchResult.Fail)
 				{
-					Window.Alert(
+					endWithError(
 							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
 							"without this information it is not possible to rebuild the bntx." +
 							"You should use an original or at least working szs");
@@ -89,12 +106,12 @@ namespace SwitchThemesOnline
 
 				if (res == BflytFile.PatchResult.Fail)
 				{
-					Window.Alert("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
+					endWithError("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 					return;
 				}
 				else if (res == BflytFile.PatchResult.CorruptedFile)
 				{
-					Window.Alert("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
+					endWithError("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 					return;
 				}
 				var sarc = SARC.PackN(CommonSzs);
@@ -108,6 +125,27 @@ namespace SwitchThemesOnline
 			};
 			req.Open("GET", url, true);
 			req.Send();
+		}
+
+		public static void MakeLink()
+		{
+			string type = Document.GetElementById<HTMLSelectElement>("TargetSelect").Value;
+			string url = Document.GetElementById<HTMLInputElement>("DDSUrlInput").Value;
+			if (!App.ValidAutoThemeParts.ContainsStr(type))
+			{
+				Window.Alert("The selected type is invalid");
+				return;
+			}
+			if (url.Length < 5)
+			{
+				Window.Alert("Enter a valid url");
+				return;
+			}
+			Document.GetElementById<HTMLParagraphElement>("Linkis").Hidden = false;
+			var str = "https://"+ Domain + "/autotheme.html?type=" + type + "&dds=" + url;
+			var link = Document.GetElementById<HTMLLinkElement>("OutLink");
+			link.TextContent = str;
+			link.Href = str;
 		}
 
 		static void StartLoading()

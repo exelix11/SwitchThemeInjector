@@ -22,5 +22,17 @@ namespace SwitchThemes.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Adv {
+            get {
+                return ((bool)(this["Adv"]));
+            }
+            set {
+                this["Adv"] = value;
+            }
+        }
     }
 }
