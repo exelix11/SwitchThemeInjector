@@ -37,7 +37,7 @@
         </header>
 
         <div class="card WarnCard" id="CardLoad" style="background: rgb(55,71,79) !important; color:#fff" hidden>
-            Wait while your theme is being generated....
+            loading....
         </div>
 
         <div class="card WarnCard" id="CardTutorial" style="background: rgb(55,71,79) !important; color:#fff">
@@ -55,8 +55,9 @@
             This must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image, <b>not every host works</b> because the server must have <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> support<br />
             <br />
             <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.AutoTheme.MakeLink();">Generate link</button>
-            <p id="Linkis" hidden>Your link is :</p>
+            <p id="Linkis" style="margin-bottom:5px" hidden>Your link is :</p>
             <a id="OutLink"></a>
+            <button class="btn--raised btn--secondary buttonCenter" id="BtnLinkCopy" onclick="SwitchThemesOnline.AutoTheme.CopyLink();" style="margin-top:15px;display:none">Copy Link</button>
         </div>
 
     </div>

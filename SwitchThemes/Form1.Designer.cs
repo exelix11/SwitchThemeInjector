@@ -269,7 +269,7 @@
 			this.materialLabel5.Name = "materialLabel5";
 			this.materialLabel5.Size = new System.Drawing.Size(613, 23);
 			this.materialLabel5.TabIndex = 7;
-			this.materialLabel5.Text = "Files in the SZS : (left click to replace or export)";
+			this.materialLabel5.Text = "Files in the SZS : (left click to replace or extract)";
 			// 
 			// listBox1
 			// 
