@@ -20,12 +20,12 @@ So our patch format must store all the information needed for this process.
 Here we take a look at the values in the format.
 For reference you can download the default patches as a json from this repo (These are hardcodes, the json).\
 First the Metadata : \
-"FirmName", "TemplateName", "szsName" and "TitleId" are the strings shown when the SZS is loaded, they're not used in the patching process \
-"FnameIdentifier" and "FnameNotIdentifier" are array of strings used to identify the loaded SZS, your patch gets selected only if the SZS contains ALL the files in "FnameIdentifier" 
-and NONE of the files in "FnameNotIdentifier". "FnameIdentifier" implicitly includes "MainLayoutName" and "SecondaryLayouts" \
-"MainLayoutName" is the name of the layout file that renders the background. \
-"MaintextureName" is the name of the texture that will be replaced. \
-"PatchIdentifier" is the name of the pane that will be added, it is used to identify the patch so it should be unique for each patch. It must be shorter than 24 chars
-"targetPanels" is an array of strings of all the panes that should be removed from the main layout (so panes that already render the background), you need at least one because it's also used to detect where to place the new background pane. \
-"SecondaryLayouts" contains the names of the layouts that use the texture that was replaced, you can find them from the advanced tab of the program.
-"SecondaryTexReplace" is the name of the texture that will replace "MaintextureName"
+`FirmName`, `TemplateName`, `szsName` and `TitleId` are the strings shown when the SZS is loaded, they're not used in the patching process \
+`FnameIdentifier` and `FnameNotIdentifier` are array of strings used to identify the loaded SZS, your patch gets selected only if the SZS contains ALL the files in `FnameIdentifier` 
+and NONE of the files in `FnameNotIdentifier`. `FnameIdentifier` implicitly includes `MainLayoutName` and `SecondaryLayouts` \
+`MainLayoutName` is the name of the layout file that renders the background. \
+`MaintextureName` is the name of the texture that will be replaced. \
+`PatchIdentifier` is the name of the pane that will be added, it is used to identify the patch so it should be unique for each patch. It must be shorter than 24 chars
+`targetPanels` is an array of strings of all the panes that should be removed from the main layout (so panes that already render the background), you need at least one because it's also used to detect where to place the new background pane. \
+`SecondaryLayouts` contains the names of the layouts that use the texture that was replaced, you can find them from the advanced tab of the program.
+`SecondaryTexReplace` is the name of the texture that will replace `MaintextureName`
