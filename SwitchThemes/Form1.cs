@@ -39,8 +39,7 @@ namespace SwitchThemes
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = LoadFileText;
-
-			materialTabSelector1.Enabled = false;
+			
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -226,7 +225,6 @@ namespace SwitchThemes
 				{
 					AdvancedUpdate();
 					lblDetected.Text = "Unknown szs file";
-					materialTabSelector1.Enabled = true;
 					return;
 				}
 
@@ -241,7 +239,6 @@ namespace SwitchThemes
 			materialLabel3.Text = string.Format(PatchLabelText, targetPatch.szsName, targetPatch.TitleId);
 			lblDetected.Text = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
 			
-			materialTabSelector1.Enabled = true;
 		}
 
 		private void materialFlatButton1_Click(object sender, EventArgs e)
