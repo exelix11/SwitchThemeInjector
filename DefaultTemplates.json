@@ -1,0 +1,166 @@
+[
+  {
+    "FirmName": "<= 5.X",
+    "TemplateName": "home and applets",
+    "szsName": "common.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [],
+    "FnameNotIdentifier": [
+      "blyt/DHdrSoft.bflyt"
+    ],
+    "MainLayoutName": "blyt/BgNml.bflyt",
+    "MaintextureName": "White1x1_180^r",
+    "PatchIdentifier": "exelixBG",
+    "targetPanels": [
+      "P_Bg_00"
+    ],
+    "SecondaryLayouts": [
+      "blyt/SystemAppletFader.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1^r"
+  },
+  {
+    "FirmName": "6.X",
+    "TemplateName": "home menu",
+    "szsName": "ResidentMenu.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [],
+    "FnameNotIdentifier": [
+      "anim/RdtBtnShop_LimitB.bflan"
+    ],
+    "MainLayoutName": "blyt/BgNml.bflyt",
+    "MaintextureName": "White1x1A128^s",
+    "PatchIdentifier": "exelixBG",
+    "targetPanels": [
+      "P_Bg_00"
+    ],
+    "SecondaryLayouts": [
+      "blyt/IconError.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1A64^t"
+  },
+  {
+    "FirmName": "all firmwares",
+    "TemplateName": "lock screen",
+    "szsName": "Entrance.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/EntMain.bflyt",
+    "MaintextureName": "White1x1^s",
+    "PatchIdentifier": "exelixLK",
+    "targetPanels": [
+      "P_BgL",
+      "P_BgR"
+    ],
+    "SecondaryLayouts": [
+      "blyt/EntBtnResumeSystemApplet.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1^r"
+  },
+  {
+    "FirmName": "all firmwares",
+    "TemplateName": "user page",
+    "szsName": "MyPage.szs",
+    "TitleId": "0100000000001013",
+    "FnameIdentifier": [
+      "blyt/MypUserIconMini.bflyt"
+    ],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/BaseTop.bflyt",
+    "MaintextureName": "NavBg_03^d",
+    "PatchIdentifier": "exelixMY",
+    "targetPanels": [
+      "L_AreaNav",
+      "L_AreaMain"
+    ],
+    "SecondaryLayouts": [
+      "blyt/BgNav_Root.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1A0^t"
+  },
+  {
+    "FirmName": "<= 5.X",
+    "TemplateName": "home menu only",
+    "szsName": "ResidentMenu.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [
+      "anim/RdtBtnShop_LimitB.bflan"
+    ],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/RdtBase.bflyt",
+    "MaintextureName": "White1x1A128^s",
+    "PatchIdentifier": "exelixResBG",
+    "targetPanels": [
+      "L_BgNml"
+    ],
+    "SecondaryLayouts": [
+      "blyt/IconError.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1A64^t"
+  },
+  {
+    "FirmName": "6.X",
+    "TemplateName": "all apps menu",
+    "szsName": "FLaunch.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [
+      "blyt/FlcBtnIconGame.bflyt",
+      "anim/BaseBg_Loading.bflan"
+    ],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/BgNml.bflyt",
+    "MaintextureName": "NavBg_03^d",
+    "PatchIdentifier": "exelixFBG",
+    "targetPanels": [
+      "P_Bg_00"
+    ],
+    "SecondaryLayouts": [
+      "blyt/BgNav_Root.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1A64^t"
+  },
+  {
+    "FirmName": "6.X",
+    "TemplateName": "settings applet",
+    "szsName": "Set.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [
+      "blyt/SetCntDataMngPhoto.bflyt",
+      "blyt/SetSideStory.bflyt"
+    ],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/BgNml.bflyt",
+    "MaintextureName": "NavBg_03^d",
+    "PatchIdentifier": "exelixSET",
+    "targetPanels": [
+      "P_Bg_00"
+    ],
+    "SecondaryLayouts": [
+      "blyt/BgNav_Root.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1A0^t"
+  },
+  {
+    "FirmName": "6.X",
+    "TemplateName": "news applet",
+    "szsName": "Notification.szs",
+    "TitleId": "0100000000001000",
+    "FnameIdentifier": [
+      "blyt/NtfBase.bflyt",
+      "blyt/NtfImage.bflyt"
+    ],
+    "FnameNotIdentifier": [],
+    "MainLayoutName": "blyt/BgNml.bflyt",
+    "MaintextureName": "NavBg_03^d",
+    "PatchIdentifier": "exelixNEW",
+    "targetPanels": [
+      "P_Bg_00"
+    ],
+    "SecondaryLayouts": [
+      "blyt/BgNavNoHeader.bflyt",
+      "blyt/BgNav_Root.bflyt"
+    ],
+    "SecondaryTexReplace": "White1x1^r"
+  }
+]

@@ -166,7 +166,7 @@ namespace SwitchThemesOnline
 					Window.Alert("This szs is valid but it doesn't look like the right one, you can keep it but it might generate themes that affect the wrong parts of the menu");
 				}
 				Window.LocalStorage.SetItem(AutoThemePartName, Convert.ToBase64String(szs));
-				Window.LocalStorage.SetItem(AutoThemePartName + "Name", "Detected " + detected.TemplateName + " " + detected.FirmName);
+				Window.LocalStorage.SetItem(AutoThemePartName + "Name", detected.TemplateName + " " + detected.FirmName);
 				LoadAutoThemeState();				
 			});
 		}
@@ -187,7 +187,7 @@ namespace SwitchThemesOnline
 		{
 			foreach (var p in ValidAutoThemeParts)
 			{
-				string name = Window.LocalStorage.GetItem(p + "Name") as string;
+				string name = "Detected " + Window.LocalStorage.GetItem(p + "Name") as string;
 				Document.GetElementById<HTMLParagraphElement>("P_" + p + "SZS").TextContent = name ?? "not uploaded yet";
 			}
 		}

@@ -57,15 +57,18 @@ namespace SwitchThemesOnline
 
 		static void DoAutoTheme(string type, string url)
 		{
+			var cardLoad = Document.GetElementById<HTMLDivElement>("CardLoad");
+
 			void endWithError(string error)
 			{
 				Window.Alert(error);
-				Document.GetElementById<HTMLDivElement>("CardLoad").InnerHTML = "There was an error generating the theme: <br>" + error;
+				cardLoad.InnerHTML = "There was an error generating the theme: <br/>" + error;
 				EndLoading();
 			}
 			
 			Document.GetElementById<HTMLDivElement>("CardTutorial").Hidden = true;
-			Document.GetElementById<HTMLDivElement>("CardLoad").Hidden = false;
+			cardLoad.InnerHTML = "Wait while your theme is being generated.... <br/><br/>This theme is for " + Window.LocalStorage.GetItem(type + "Name") as string + "<br/>To change the target version upload another szs for Auto-Theme on the <a href=\"index.html\">Home page</a>";
+			cardLoad.Hidden = false;
 			StartLoading();
 			XMLHttpRequest req = new XMLHttpRequest();
 			req.ResponseType = XMLHttpRequestResponseType.ArrayBuffer;
@@ -142,10 +145,21 @@ namespace SwitchThemesOnline
 				return;
 			}
 			Document.GetElementById<HTMLParagraphElement>("Linkis").Hidden = false;
+			Document.GetElementById<HTMLButtonElement>("BtnLinkCopy").Style.Display = Display.Block;
 			var str = "https://"+ Domain + "/autotheme.html?type=" + type + "&dds=" + url;
 			var link = Document.GetElementById<HTMLLinkElement>("OutLink");
 			link.TextContent = str;
 			link.Href = str;
+		}
+
+		public static void CopyLink()
+		{
+			HTMLTextAreaElement a = new HTMLTextAreaElement();
+			Document.Body.AppendChild(a);
+			a.Value = Document.GetElementById<HTMLLinkElement>("OutLink").Href;
+			a.Select();
+			Document.ExecCommand("copy");
+			a.Remove();
 		}
 
 		static void StartLoading()

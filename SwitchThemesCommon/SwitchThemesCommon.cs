@@ -45,7 +45,7 @@ namespace SwitchThemes.Common
 				foreach (var f in template.SecondaryLayouts)
 				{
 					BflytFile curTarget = BflytFromSzs(f);
-					curTarget.PatchTextureName(template.SecondaryTexReplace.Item1, template.SecondaryTexReplace.Item2);
+					curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace);
 					sarc.Files[f] = curTarget.SaveFile();
 				}
 			}
