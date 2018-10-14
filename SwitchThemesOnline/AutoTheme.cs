@@ -147,7 +147,7 @@ namespace SwitchThemesOnline
 			}
 			Document.GetElementById<HTMLParagraphElement>("Linkis").Hidden = false;
 			Document.GetElementById<HTMLButtonElement>("BtnLinkCopy").Style.Display = Display.Block;
-			var str = "https://"+ Domain + "/autotheme.html?type=" + type + "&dds=" + url;
+			var str = "https://"+ Domain + "/autotheme.html?type=" + type + "&dds=" + Window.EncodeURIComponent(url);
 			var link = Document.GetElementById<HTMLLinkElement>("OutLink");
 			link.TextContent = str;
 			link.Href = str;
