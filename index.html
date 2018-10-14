@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -10,9 +10,129 @@
 
   gtag('config', 'UA-112437411-2');
 </script>
-<title>Coming Soon</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Switch theme injector Online</title>
+    <link href="css/surface_styles.css" rel="stylesheet">
+    <link href="css/custom_styles.css" rel="stylesheet">
+    <script src="compressed.js"></script>
 </head>
-<body>
-Hello world
+<body onload="SwitchThemesOnline.App.OnLoad();">
+    <div class="loaderdiv" id="loaderDiv" style="display:none;">
+        <div class="loadinganim"> </div>
+        <p class="loadingText" id="LoadingText">Loading</p>
+    </div>
+
+    <div class="BigScreenContent">
+        <header class="header">
+            <div class="card WarnCard" id="D_JsWarn">
+                This tool requires JavaScript !
+            </div>
+            <div class="card WarnCard" style="background: #ffbd00 !important;" id="DebugFlag" hidden>
+                This tool is in private beta. The link should not be shared with people not in the team.<br />
+                The public version will be hosted on github along with the source code.
+            </div>
+            <div class="card WarnCard" id="D_IeWarn" hidden>
+                Internet explorer is not supported, please get a proper browser
+            </div>
+            <p class="g--12 nudge--left HeaderTextBig">Switch theme injector 🌐</p>
+            <p class="g--12 nudge--left HeaderTextSmall">by exelix @ team Qcean</p>
+        </header>
+
+        <div class="g--12 tabs" style="margin-top:0; padding-top:0;">
+            <input type="radio" name="tabs" id="tab1" checked>
+            <div class="tab-label-content" id="tab1-content">
+                <label for="tab1" class="tabColor">Patch list</label>
+                <div class="tab-content">
+                    <p id="P_PatchList">
+                        No patches have been loaded. Did you enable Javascript ?
+                    </p>
+                </div>
+            </div>
+
+            <input type="radio" name="tabs" id="tab2">
+            <div class="tab-label-content" id="tab2-content">
+                <label for="tab2" class="tabColor">Inject &amp; Patch</label>
+                <div class="tab-content">
+                    <p style="margin-top:10px">To make a theme open an SZS file from the home menu: </p>
+                    <button class="btn--raised buttonCenter" onclick="document.getElementById('SzsUploader').click();">Open SZS</button>
+                    <p id="P_DetectedSZS" class="PathLabel">no theme opened yet</p>
+                    <p>Then open a <b>720p</b> <a href="https://www.aconvert.com/image/png-to-dds/">DDS image</a> to inject: </p>
+                    <button class="btn--raised btn--green buttonCenter" onclick="SwitchThemesOnline.App.UploadDDSBtn()">Open image</button>
+                    <p id="P_DDSPath" class="PathLabel">no image opened yet</p>
+                    <p id="P_Tutorial">
+                        Finally press on Patch and save to make your theme. <br />
+                        Once you have the final szs you have to place it in your sd card like this:<br />
+                        SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}<br />
+                        (Where {0} if the file name)<br />
+                        *your cfw folder* can be either atmosphere or ReiNx.<br />
+                        Since the menu is a system title you'll have to create a "fsmitm.flag" as well:<br />
+                        SdCard:\*Your cfw folder*\titles\{1}\fsmitm.flag<br />
+                        You can do it in notepad: save an empty text file and change the extension to .flag<br />
+                    </p>
+                    <button class="btn--raised btn--red buttonCenter" onclick="SwitchThemesOnline.App.PatchAndSave();">Patch and save</button>
+                </div>
+            </div>
+
+            <input type="radio" name="tabs" id="tab3">
+            <div class="tab-label-content" id="tab3-content">
+                <label for="tab3" class="tabColor">Auto-theme</label>
+                <div class="tab-content">
+                    <p>
+                        Auto-theme is a feature that allows sharing themes legally.<br />
+                        How does it work ? <br />
+                        To make a theme you need two things : a dds picture (legal to share) and an szs file from the home menu (illegal to share).<br />
+                        A custom theme still contains most of the original szs so it's illegal to share as well. <br />
+                        This feature allows to store the szs files for your firmware in your browser (so no file leaves your computer) and automatically download a dds from a link to generate a theme. <br />
+                        To setup this feature upload at least one of the following files :
+                    </p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('home');">Home menu (ResidentMenu.szs or common.szs)</button>
+                    <p id="P_homeSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('lock');">Lock screen (entrance.szs)</button>
+                    <p id="P_lockSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('user');">User settings (MyPage.szs)</button>
+                    <p id="P_userSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised btn--red buttonCenter" style="margin-bottom:5px" onclick="SwitchThemesOnline.App.AutoThemeDeleteAll();">Delete all</button>
+                    <p>
+                        Note that these files will be removed when you clear your browser history data and are not saved if you're using incognito.
+                        <br />
+                        To share a theme upload your DDS somewhere it will be always available and create a link on the <a href="autotheme.html">Auto-theme page</a>,
+                        everyone who has Auto-theme setup will be able to make your theme on the fly and save it.
+                    </p>
+                </div>
+            </div>
+
+            <input type="radio" name="tabs" id="tab4">
+            <div class="tab-label-content" id="tab4-content">
+                <label for="tab4" class="tabColor">Credits</label>
+                <div class="tab-content">
+                    <p id="P_Version" style="margin:0">
+                        Switch theme injector - no js :(
+                    </p>
+                    <p>
+                        by exelix - <a href="https://github.com/exelix11/SwitchThemeInjector">Github repo</a><br /><br />
+                        Team Qcean:<br />
+                        Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, exelix<br />
+                        <br />
+                        <a href="https://discord.gg/p27kEST">Discord server</a> <br />
+                        <a href="https://gbatemp.net/threads/release-tutorial-switch-theme-injector-easily-make-custom-themes.519036/">Gbatemp thread</a>
+                        <br /><br />
+                        Thanks to: <br />
+                        Syroot for <a href="https://github.com/Syroot/BinaryData"> BinaryData lib </a> <br />
+                        AboodXD for <a href="https://github.com/aboood40091/BNTX-Editor"> Bntx editor </a> <br />
+                    </p>
+                    <p style="color:#333333; font-size:5px">
+                        --- ALL YOU THEMES ARE BELONG TO US ---
+                    </p>
+                </div>
+            </div>
+
+            <div class="slide slide-demo-4"></div>
+        </div>
+    </div>
+    <input type="file" id="SzsUploader" onchange="JsSZSRead(files)" hidden />
+    <input type="file" id="DdsUploader" onchange="JsDDSRead(files)" hidden />
+    <input type="file" id="AutoThemeUploader" onchange="JsThemePartRead(files)" hidden />
 </body>
 </html>
+

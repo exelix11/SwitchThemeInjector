@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-112437411-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-112437411-2');
+</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-theme</title>
+    <link href="css/surface_styles.css" rel="stylesheet">
+    <link href="css/custom_styles.css" rel="stylesheet">
+    <script src="compressed.js"></script>
+</head>
+<body onload="SwitchThemesOnline.AutoTheme.OnLoad();">
+    <div class="loaderdiv" id="loaderDiv" style="display:none;">
+        <div class="loadinganim"> </div>
+        <p class="loadingText" id="LoadingText">Loading</p>
+    </div>
+
+    <div class="BigScreenContent">
+        <header class="header">
+            <div class="card WarnCard" id="D_JsWarn">
+                This tool requires JavaScript !
+            </div>
+            <div class="card WarnCard" style="background: #ffbd00 !important;" id="DebugFlag" hidden>
+                This tool is in private beta. The link should not be shared with people not in the team.<br />
+                The public version will be hosted on github along with the source code.
+            </div>
+            <div class="card WarnCard" id="D_IeWarn" hidden>
+                Internet explorer is not supported, please get a proper browser
+            </div>
+            <p class="g--12 nudge--left HeaderTextBig">Switch theme injector 🌐</p>
+            <p class="g--12 nudge--left HeaderTextSmall">by exelix @ team Qcean</p>
+        </header>
+
+        <div class="card WarnCard" id="CardLoad" style="background: rgb(55,71,79) !important; color:#fff" hidden>
+            loading....
+        </div>
+
+        <div class="card WarnCard" id="CardTutorial" style="background: rgb(55,71,79) !important; color:#fff">
+            Auto-theme allows legally sharing switch themes by uploading just the background picture,
+            you can use this page to generate Auto-theme links, to use these links you must setup Auto-theme first, go to the <a href="\index.html">home page</a> for that. <br/><br />
+            To create an Auto-Theme link fill the following form: <br />
+            Theme target :
+            <select id="TargetSelect" style="background-color:#DDD;margin-left:10px">
+                <option value="home">Home menu</option>
+                <option value="lock">Lock screen</option>
+                <option value="user">User page</option>
+            </select>
+            <br />
+            DDS Url:<input id="DDSUrlInput" placeholder="http://blablabla" style="margin-bottom:1%;width:100%;background-color:#DDD;height:1vw;" type="text">
+            This must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image, <b>not every host works</b> because the server must have <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> support<br />
+            <br />
+            <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.AutoTheme.MakeLink();">Generate link</button>
+            <p id="Linkis" style="margin-bottom:5px" hidden>Your link is :</p>
+            <a id="OutLink"></a>
+            <button class="btn--raised btn--secondary buttonCenter" id="BtnLinkCopy" onclick="SwitchThemesOnline.AutoTheme.CopyLink();" style="margin-top:15px;display:none">Copy Link</button>
+        </div>
+
+    </div>
+</body>
+</html>
+
