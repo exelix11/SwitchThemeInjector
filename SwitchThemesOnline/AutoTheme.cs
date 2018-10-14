@@ -67,7 +67,8 @@ namespace SwitchThemesOnline
 			}
 			
 			Document.GetElementById<HTMLDivElement>("CardTutorial").Hidden = true;
-			cardLoad.InnerHTML = "Wait while your theme is being generated.... <br/><br/>This theme is for " + Window.LocalStorage.GetItem(type + "Name") as string + "<br/>To change the target version upload another szs for Auto-Theme on the <a href=\"index.html\">Home page</a>";
+			string themeTarget = "<br/><br/>This theme is for " + Window.LocalStorage.GetItem(type + "Name") as string + "<br/>To change the target version upload another szs for Auto-Theme on the <a href=\"index.html\">Home page</a>";
+			cardLoad.InnerHTML = "Wait while your theme is being generated.... " + themeTarget;
 			cardLoad.Hidden = false;
 			StartLoading();
 			XMLHttpRequest req = new XMLHttpRequest();
@@ -123,7 +124,7 @@ namespace SwitchThemesOnline
 				Uint8Array dwn = new Uint8Array(yaz0);
 				string DownloadFname = targetPatch.szsName;
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
-				Document.GetElementById<HTMLDivElement>("CardLoad").TextContent = "Your theme has been generated !";
+				Document.GetElementById<HTMLDivElement>("CardLoad").InnerHTML = "Your theme has been generated !" + themeTarget;
 				EndLoading();
 			};
 			req.Open("GET", url, true);
