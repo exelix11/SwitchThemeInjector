@@ -14,7 +14,7 @@ namespace SwitchThemesOnline
 {
 	public class AutoTheme
 	{
-		const string Domain = "";
+		const string Domain = "exelix11.github.io/SwitchThemeInjector";
 
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;

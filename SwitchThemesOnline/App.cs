@@ -187,8 +187,12 @@ namespace SwitchThemesOnline
 		{
 			foreach (var p in ValidAutoThemeParts)
 			{
-				string name = "Detected " + Window.LocalStorage.GetItem(p + "Name") as string;
-				Document.GetElementById<HTMLParagraphElement>("P_" + p + "SZS").TextContent = name ?? "not uploaded yet";
+				string name = Window.LocalStorage.GetItem(p + "Name") as string;
+				if (name != null)
+					name = "Detected " + name;
+				else
+					name = "not uploaded yet";
+				Document.GetElementById<HTMLParagraphElement>("P_" + p + "SZS").TextContent = name;
 			}
 		}
 
