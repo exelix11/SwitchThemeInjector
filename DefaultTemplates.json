@@ -102,7 +102,7 @@
   {
     "FirmName": "6.X",
     "TemplateName": "all apps menu",
-    "szsName": "FLaunch.szs",
+    "szsName": "Flaunch.szs",
     "TitleId": "0100000000001000",
     "FnameIdentifier": [
       "blyt/FlcBtnIconGame.bflyt",

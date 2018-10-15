@@ -323,7 +323,7 @@ namespace SwitchThemes
 				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
 			else
 				MessageBox.Show(
-					"Switch theme injector V 3.0\r\n" +
+					"Switch theme injector V "+ SwitchThemesCommon.CoreVer + "\r\n" +
 					"by exelix\r\n\r\n" +
 					"Team Qcean:\r\n" +
 					"Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\n" +

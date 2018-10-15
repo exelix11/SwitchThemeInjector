@@ -103,7 +103,7 @@ namespace SwitchThemes.Common
 				SecondaryLayouts = new string[] { @"blyt/IconError.bflyt" },
 				SecondaryTexReplace = "White1x1A64^t"
 			},
-			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "FLaunch.szs", TitleId = "0100000000001000", FirmName = "6.X",
+			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = "6.X",
 				FnameIdentifier = new string[] { @"blyt/FlcBtnIconGame.bflyt", @"anim/BaseBg_Loading.bflan" }, //anim/BaseBg_Loading.bflan for 6.0
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
