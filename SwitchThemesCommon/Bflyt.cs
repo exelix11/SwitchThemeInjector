@@ -306,7 +306,7 @@ namespace SwitchThemes.Common
 							bin.BaseStream.Position = 0x24;
 							bin.Write(5000f);
 							bin.Write(60000f);
-							Panels[target].data = ((MemoryStream)bin.BaseStream).ToArray();
+							Panels[i].data = ((MemoryStream)bin.BaseStream).ToArray();
 						}
 					}
 				}
