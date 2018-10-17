@@ -113,7 +113,7 @@ namespace SwitchThemesOnline
 					return;
 				}
 				
-				var res = SwitchThemesCommon.PatchLayouts(CommonSzs, targetPatch);
+				var res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
 
 				if (res == BflytFile.PatchResult.Fail)
 				{

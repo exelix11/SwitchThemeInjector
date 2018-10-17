@@ -44,7 +44,7 @@
 			this.AdvPanel = new System.Windows.Forms.Panel();
 			this.materialRaisedButton4 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
-			this.listBox1 = new System.Windows.Forms.ListBox();
+			this.SzsFileList = new System.Windows.Forms.ListBox();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.extractToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -57,6 +57,8 @@
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
+			this.materialLabel6 = new MaterialSkin.Controls.MaterialLabel();
+			this.LayoutPatchList = new System.Windows.Forms.ComboBox();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
@@ -78,7 +80,7 @@
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabControl1.Name = "materialTabControl1";
 			this.materialTabControl1.SelectedIndex = 0;
-			this.materialTabControl1.Size = new System.Drawing.Size(645, 288);
+			this.materialTabControl1.Size = new System.Drawing.Size(645, 310);
 			this.materialTabControl1.TabIndex = 4;
 			// 
 			// PatchListPage
@@ -111,6 +113,8 @@
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.InjectPage.Controls.Add(this.LayoutPatchList);
+			this.InjectPage.Controls.Add(this.materialLabel6);
 			this.InjectPage.Controls.Add(this.materialLabel1);
 			this.InjectPage.Controls.Add(this.materialLabel3);
 			this.InjectPage.Controls.Add(this.materialFlatButton1);
@@ -120,7 +124,7 @@
 			this.InjectPage.Location = new System.Drawing.Point(4, 22);
 			this.InjectPage.Name = "InjectPage";
 			this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
-			this.InjectPage.Size = new System.Drawing.Size(637, 262);
+			this.InjectPage.Size = new System.Drawing.Size(637, 284);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "Inject & patch";
 			// 
@@ -145,7 +149,7 @@
 			this.materialLabel3.Depth = 0;
 			this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel3.Location = new System.Drawing.Point(11, 69);
+			this.materialLabel3.Location = new System.Drawing.Point(11, 90);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
 			this.materialLabel3.Size = new System.Drawing.Size(612, 148);
@@ -200,7 +204,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 220);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 242);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -219,7 +223,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(637, 262);
+			this.tabPage1.Size = new System.Drawing.Size(637, 284);
 			this.tabPage1.TabIndex = 3;
 			this.tabPage1.Text = "Advanced";
 			// 
@@ -230,13 +234,13 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AdvPanel.Controls.Add(this.materialRaisedButton4);
 			this.AdvPanel.Controls.Add(this.materialLabel5);
-			this.AdvPanel.Controls.Add(this.listBox1);
+			this.AdvPanel.Controls.Add(this.SzsFileList);
 			this.AdvPanel.Controls.Add(this.materialRaisedButton1);
 			this.AdvPanel.Controls.Add(this.materialRaisedButton5);
 			this.AdvPanel.Enabled = false;
 			this.AdvPanel.Location = new System.Drawing.Point(9, 52);
 			this.AdvPanel.Name = "AdvPanel";
-			this.AdvPanel.Size = new System.Drawing.Size(619, 204);
+			this.AdvPanel.Size = new System.Drawing.Size(619, 226);
 			this.AdvPanel.TabIndex = 7;
 			this.AdvPanel.Visible = false;
 			// 
@@ -247,7 +251,7 @@
 			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton4.Depth = 0;
 			this.materialRaisedButton4.Icon = null;
-			this.materialRaisedButton4.Location = new System.Drawing.Point(184, 162);
+			this.materialRaisedButton4.Location = new System.Drawing.Point(184, 184);
 			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
@@ -271,21 +275,21 @@
 			this.materialLabel5.TabIndex = 7;
 			this.materialLabel5.Text = "Files in the SZS : (left click to replace or extract)";
 			// 
-			// listBox1
+			// SzsFileList
 			// 
-			this.listBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.SzsFileList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.listBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-			this.listBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.listBox1.ContextMenuStrip = this.contextMenuStrip1;
-			this.listBox1.ForeColor = System.Drawing.Color.White;
-			this.listBox1.FormattingEnabled = true;
-			this.listBox1.Location = new System.Drawing.Point(3, 26);
-			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(613, 130);
-			this.listBox1.Sorted = true;
-			this.listBox1.TabIndex = 5;
+			this.SzsFileList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+			this.SzsFileList.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.SzsFileList.ContextMenuStrip = this.contextMenuStrip1;
+			this.SzsFileList.ForeColor = System.Drawing.Color.White;
+			this.SzsFileList.FormattingEnabled = true;
+			this.SzsFileList.Location = new System.Drawing.Point(3, 26);
+			this.SzsFileList.Name = "SzsFileList";
+			this.SzsFileList.Size = new System.Drawing.Size(613, 143);
+			this.SzsFileList.Sorted = true;
+			this.SzsFileList.TabIndex = 5;
 			// 
 			// contextMenuStrip1
 			// 
@@ -316,7 +320,7 @@
 			this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton1.Depth = 0;
 			this.materialRaisedButton1.Icon = null;
-			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 162);
+			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 184);
 			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton1.Name = "materialRaisedButton1";
 			this.materialRaisedButton1.Primary = true;
@@ -333,7 +337,7 @@
 			this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton5.Depth = 0;
 			this.materialRaisedButton5.Icon = null;
-			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 162);
+			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 184);
 			this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton5.Name = "materialRaisedButton5";
 			this.materialRaisedButton5.Primary = true;
@@ -392,7 +396,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 429);
+			this.label1.Location = new System.Drawing.Point(0, 451);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 12;
@@ -442,11 +446,34 @@
 			this.materialDivider1.Text = "materialDivider1";
 			this.materialDivider1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DragForm_MouseDown);
 			// 
+			// materialLabel6
+			// 
+			this.materialLabel6.AutoSize = true;
+			this.materialLabel6.Depth = 0;
+			this.materialLabel6.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel6.Location = new System.Drawing.Point(11, 68);
+			this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel6.Name = "materialLabel6";
+			this.materialLabel6.Size = new System.Drawing.Size(103, 19);
+			this.materialLabel6.TabIndex = 7;
+			this.materialLabel6.Text = "Layout patch: ";
+			// 
+			// LayoutPatchList
+			// 
+			this.LayoutPatchList.FormattingEnabled = true;
+			this.LayoutPatchList.Items.AddRange(new object[] {
+            "Don\'t patch"});
+			this.LayoutPatchList.Location = new System.Drawing.Point(114, 66);
+			this.LayoutPatchList.Name = "LayoutPatchList";
+			this.LayoutPatchList.Size = new System.Drawing.Size(485, 21);
+			this.LayoutPatchList.TabIndex = 8;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 442);
+			this.ClientSize = new System.Drawing.Size(645, 464);
 			this.Controls.Add(this.lblDetected);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialRaisedButton3);
@@ -495,13 +522,15 @@
 		private MaterialSkin.Controls.MaterialLabel materialLabel4;
 		private System.Windows.Forms.Panel AdvPanel;
 		private MaterialSkin.Controls.MaterialLabel materialLabel5;
-		private System.Windows.Forms.ListBox listBox1;
+		private System.Windows.Forms.ListBox SzsFileList;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton1;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton5;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem extractToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton4;
+		private System.Windows.Forms.ComboBox LayoutPatchList;
+		private MaterialSkin.Controls.MaterialLabel materialLabel6;
 	}
 }
 

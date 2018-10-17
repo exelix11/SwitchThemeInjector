@@ -26,16 +26,23 @@ namespace SwitchThemes
 		bool Advanced = false;
 
 		List<PatchTemplate> Templates = new List<PatchTemplate>();
+		List<LayoutPatch> Layouts = new List<LayoutPatch>();
 
 		public Form1()
 		{
 			InitializeComponent();
 			PatchLabelText = materialLabel3.Text;
 
+			//LayoutPatch.CreateTestTemplates();
 			//PatchTemplate.BuildTemplateFile();
 			Templates.AddRange(DefaultTemplates.templates);
 			if (File.Exists("ExtraTemplates.json"))
 				Templates.AddRange(PatchTemplate.LoadTemplates());
+			if (Directory.Exists("Layouts"))
+			{
+				foreach (var f in Directory.GetFiles("Layouts").Where(x => x.EndsWith(".json")))
+					Layouts.Add(LayoutPatch.LoadTemplate(File.ReadAllText(f)));
+			}
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = LoadFileText;
@@ -85,9 +92,9 @@ namespace SwitchThemes
 		{
 			if (!Advanced)
 				return;
-			listBox1.Items.Clear();
+			SzsFileList.Items.Clear();
 			if (CommonSzs != null)
-				listBox1.Items.AddRange(CommonSzs.Files.Keys.ToArray());
+				SzsFileList.Items.AddRange(CommonSzs.Files.Keys.ToArray());
 		}
 
 		private void materialRaisedButton5_Click(object sender, EventArgs e)
@@ -151,20 +158,20 @@ namespace SwitchThemes
 
 		private void extractToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (listBox1.SelectedItem == null || CommonSzs == null) return;
+			if (SzsFileList.SelectedItem == null || CommonSzs == null) return;
 			SaveFileDialog sav = new SaveFileDialog();
-			sav.FileName = listBox1.SelectedItem as string;
+			sav.FileName = SzsFileList.SelectedItem as string;
 			if (sav.ShowDialog() == DialogResult.OK)
-				File.WriteAllBytes(sav.FileName, CommonSzs.Files[listBox1.SelectedItem as string]);
+				File.WriteAllBytes(sav.FileName, CommonSzs.Files[SzsFileList.SelectedItem as string]);
 		}
 
 		private void replaceToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			if (listBox1.SelectedItem == null || CommonSzs == null) return;
+			if (SzsFileList.SelectedItem == null || CommonSzs == null) return;
 			OpenFileDialog opn = new OpenFileDialog();
-			opn.FileName = listBox1.SelectedItem as string;
+			opn.FileName = SzsFileList.SelectedItem as string;
 			if (opn.ShowDialog() == DialogResult.OK)
-				CommonSzs.Files[listBox1.SelectedItem as string] = File.ReadAllBytes(opn.FileName);
+				CommonSzs.Files[SzsFileList.SelectedItem as string] = File.ReadAllBytes(opn.FileName);
 		}
 
 		private void materialRaisedButton1_Click(object sender, EventArgs e)
@@ -215,6 +222,8 @@ namespace SwitchThemes
 			}
 
 			targetPatch = null;
+			LayoutPatchList.Items.Clear();
+			LayoutPatchList.Items.Add("Don't patch");
 
 			CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, Templates);
@@ -238,7 +247,10 @@ namespace SwitchThemes
 			AdvancedUpdate();
 			materialLabel3.Text = string.Format(PatchLabelText, targetPatch.szsName, targetPatch.TitleId);
 			lblDetected.Text = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
-			
+
+			foreach (var l in Layouts)
+				if (l.IsCompatible(CommonSzs))
+					LayoutPatchList.Items.Add(l);	
 		}
 
 		private void materialFlatButton1_Click(object sender, EventArgs e)
@@ -292,7 +304,7 @@ namespace SwitchThemes
 				}
 			}
 
-			var res = SwitchThemesCommon.PatchLayouts(CommonSzs, targetPatch);
+			var res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
 
 			if (res == BflytFile.PatchResult.Fail)
 			{
@@ -305,13 +317,28 @@ namespace SwitchThemes
 				return;
 			}
 
+			if (LayoutPatchList.SelectedIndex != 0)
+			{
+				res = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files);
+				if (res == BflytFile.PatchResult.Fail)
+				{
+					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+					return;
+				}
+				else if (res == BflytFile.PatchResult.CorruptedFile)
+				{
+					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
+					return;
+				}
+			}
+
 			var sarc = SARC.PackN(CommonSzs);
 			
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
 
 			if (res == BflytFile.PatchResult.AlreadyPatched)
-				MessageBox.Show("Done, This file has already been patched, only the bntx was replaced.\r\nIf you have issues try with an unmodified file");
+				MessageBox.Show("Done, This file has already been patched before.\r\nIf you have issues try with an unmodified file");
 			else
 				MessageBox.Show("Done");
 		}
