@@ -28,8 +28,8 @@ namespace SwitchThemes.Common
 		//public bool ReplaceTarget = false;
 		//public PatchTemplate[] UnpatchTargets;
 
-#if DEBUG
 #if WIN
+#if DEBUG
 		public static void BuildTemplateFile()
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
@@ -44,9 +44,9 @@ namespace SwitchThemes.Common
 			System.IO.File.WriteAllText("DefaultTemplates.json", json);
 		}
 #endif
-#endif
 		public static PatchTemplate[] LoadTemplates()=>
 			JsonConvert.DeserializeObject<PatchTemplate[]>(System.IO.File.ReadAllText("ExtraTemplates.json"));
+#endif
 	}
 
 	public static class DefaultTemplates

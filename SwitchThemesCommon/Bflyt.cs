@@ -1,4 +1,5 @@
-﻿using Syroot.BinaryData;
+﻿using ExtensionMethods;
+using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace SwitchThemes.Common
 				return $"Panel {name} len: 0x{length.ToString("X")}";
 			}
 
-			public string name;
+			public readonly string name;
 			public Int32 length;
 			public byte[] data;
 
@@ -26,6 +27,14 @@ namespace SwitchThemes.Common
 				name = _name;
 				length = len;
 				data = new byte[length - 8];
+			}
+
+			//used for PropertyEditablePanel, data is not cloned so it can be changed from the other classs
+			public BasePanel(BasePanel basePane) 
+			{
+				name = basePane.name;
+				length = basePane.length;
+				data = basePane.data;
 			}
 
 			public BasePanel(string _name, BinaryDataReader bin)
@@ -41,6 +50,86 @@ namespace SwitchThemes.Common
 				length = data.Length + 8;
 				bin.Write(length);
 				bin.Write(data);
+			}
+		}
+
+		public class PropertyEditablePanel : BasePanel
+		{
+			public override string ToString()
+			{
+				return $"Panel {name} {PaneName}";
+			}
+
+			public readonly string PaneName;
+			public Vector3 Position;
+			public Vector3 Rotation;
+			public Vector2 Scale;
+
+			byte _flag1;
+			public bool Visible
+			{
+				get => (_flag1 & 0x1) == 0x1;
+				set
+				{
+					if (value)
+						_flag1 |= 0x1;
+					else
+						_flag1 &= 0xFE;
+				}
+			}
+
+			public uint[] ColorData = null; //only for pic1 panes
+
+			public PropertyEditablePanel(BasePanel p) : base(p)
+			{
+				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
+				dataReader.ByteOrder = ByteOrder.LittleEndian;
+				_flag1 = dataReader.ReadByte();
+				dataReader.BaseStream.Position += 3;
+				PaneName = "";
+				for (int i = 0; i < 0x18; i++)
+				{
+					var c = dataReader.ReadChar();
+					if (c == 0) break;
+					PaneName += c;
+				}
+				dataReader.BaseStream.Position = 0x2C - 8;
+				Position = dataReader.ReadVector3();
+				Rotation = dataReader.ReadVector3();
+				Scale = dataReader.ReadVector2();
+				if (name == "pic1")
+				{
+					dataReader.BaseStream.Position = 0x54 - 8;
+					ColorData = dataReader.ReadUInt32s(4);
+				}
+			}
+
+			public void ApplyChanges()
+			{
+				using (var mem = new MemoryStream())
+				{
+					BinaryDataWriter bin = new BinaryDataWriter(mem);
+					bin.ByteOrder = ByteOrder.LittleEndian;
+					bin.Write(data);
+					bin.BaseStream.Position = 0;
+					bin.Write(_flag1);
+					bin.BaseStream.Position = 0x2C - 8;
+					bin.Write(Position);
+					bin.Write(Rotation);
+					bin.Write(Scale);
+					if (name == "pic1")
+					{
+						bin.BaseStream.Position = 0x54 - 8;
+						bin.Write(ColorData);
+					}
+					data = mem.ToArray();
+				}
+			}
+
+			public override void WritePanel(BinaryDataWriter bin)
+			{
+				ApplyChanges();
+				base.WritePanel(bin);
 			}
 		}
 
@@ -127,7 +216,7 @@ namespace SwitchThemes.Common
 
 		public class PicturePanel : BasePanel
 		{
-			public string PanelName;
+			public readonly string PanelName;
 			public PicturePanel(BinaryDataReader bin) : base("pic1", bin)
 			{
 				PanelName = TryGetPanelName(this);
@@ -274,7 +363,58 @@ namespace SwitchThemes.Common
 			return PatchResult.OK;
 		}
 
-		public PatchResult PatchMainLayout(PatchTemplate patch)
+		public PatchResult ApplyLayoutPatch(PanePatch[] Patches)
+		{
+			string[] paneNames = new string[Panels.Count];
+			for (int i = 0; i < Panels.Count; i++)
+				paneNames[i] = TryGetPanelName(Panels[i]);
+			for (int i = 0; i < Patches.Length; i++)
+			{
+				int index = Array.IndexOf(paneNames, Patches[i].PaneName);
+				if (index == -1)
+					return PatchResult.CorruptedFile;
+				var p = Patches[i];
+				var e = new PropertyEditablePanel(Panels[index]);
+				Panels[index] = e;
+				if (p.Visible != null)
+					e.Visible = p.Visible.Value;
+				#region ChangeTransform
+				if (p.Position != null)
+				{
+					e.Position.X = p.Position.Value.X ?? e.Position.X;
+					e.Position.Y = p.Position.Value.Y ?? e.Position.Y;
+					e.Position.Z = p.Position.Value.Z ?? e.Position.Z;
+				}
+				if (p.Rotation != null)
+				{
+					e.Rotation.X = p.Rotation.Value.X ?? e.Rotation.X;
+					e.Rotation.Y = p.Rotation.Value.Y ?? e.Rotation.Y;
+					e.Rotation.Z = p.Rotation.Value.Z ?? e.Rotation.Z;
+				}
+				if (p.Scale != null)
+				{
+					e.Scale.X = p.Scale.Value.X ?? e.Scale.X;
+					e.Scale.Y = p.Scale.Value.Y ?? e.Scale.Y;
+				}
+				#endregion
+				#region ColorDataForPic1
+				if (e.name == "pic1")
+				{
+					if (p.ColorTL != null)
+						e.ColorData[0] = Convert.ToUInt32(p.ColorTL, 16);
+					if (p.ColorTR != null)
+						e.ColorData[1] = Convert.ToUInt32(p.ColorTR, 16);
+					if (p.ColorBL != null)
+						e.ColorData[2] = Convert.ToUInt32(p.ColorBL, 16);
+					if (p.ColorBR != null)
+						e.ColorData[3] = Convert.ToUInt32(p.ColorBR, 16);
+				}
+				#endregion
+			}
+			return PatchResult.OK;
+		}
+
+		public PatchResult PatchBgLayout(PatchTemplate patch)
 		{
 			#region DetectPatch
 			for (int i = 0; i < Panels.Count; i++)
@@ -344,6 +484,7 @@ namespace SwitchThemes.Common
 			}
 		}
 
+		public BflytFile(byte[] data) : this(new MemoryStream(data)) { }
 
 		public BflytFile(Stream file)
 		{

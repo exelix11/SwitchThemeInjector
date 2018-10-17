@@ -34,11 +34,26 @@ namespace SwitchThemes.Common
 			return string.Format(LoadFileText, FileList);
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, PatchTemplate template)
+		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files)
 		{
-			BflytFile BflytFromSzs(string name) => new BflytFile(new MemoryStream(sarc.Files[name]));
+			foreach (var p in Files)
+			{
+				if (!sarc.Files.ContainsKey(p.FileName))
+					return BflytFile.PatchResult.Fail;
+				var target = new BflytFile(sarc.Files[p.FileName]);
+				var res = target.ApplyLayoutPatch(p.Patches);
+				if (res != BflytFile.PatchResult.OK)
+					return res;
+				sarc.Files[p.FileName] = target.SaveFile();
+			}
+			return BflytFile.PatchResult.OK;
+		}
+
+		public static BflytFile.PatchResult PatchBgLayouts(SARCExt.SarcData sarc, PatchTemplate template)
+		{
+			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
 			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
-			var res = MainFile.PatchMainLayout(template);
+			var res = MainFile.PatchBgLayout(template);
 			if (res == BflytFile.PatchResult.OK)
 			{
 				sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
