@@ -99,7 +99,7 @@ namespace SARCExt
 			else if (f.Matches("CGFX")) return 0x80;
 			else if (f.Matches("AAMP")) return 8;
 			else if (f.Matches("MsgStdBn") || f.Matches("MsgPrjBn")) return 0x80;
-			else return 0x10;
+			else return 0x4;
 		}
 
 		public static Tuple<int, byte[]> PackN(SarcData data, int _align = -1)
@@ -114,7 +114,8 @@ namespace SARCExt
 			bw.Write((UInt16)0xFEFF); // BOM
 			bw.Write((UInt32)0x00); //filesize update later
 			bw.Write((UInt32)0x00); //Beginning of data
-			bw.Write((UInt32)0x00000100);
+			bw.Write((UInt16)0x100);
+			bw.Write((UInt16)0x00);
 			bw.Write("SFAT", BinaryStringFormat.NoPrefixOrTermination);
 			bw.Write((UInt16)0xc);
 			bw.Write((UInt16)data.Files.Keys.Count);

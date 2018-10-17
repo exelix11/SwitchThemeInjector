@@ -116,8 +116,6 @@ namespace SwitchThemes
 			foreach (string k in CommonSzs.Files.Keys)
 			{
 				string fileText = UTF8Encoding.Default.GetString(CommonSzs.Files[k]);
-				if (fileText.Contains("common"))
-					MessageBox.Show("NANI");
 				foreach (string s in TexList)
 				{
 					if (fileText.Contains(s))
@@ -200,7 +198,20 @@ namespace SwitchThemes
 			if (opn.ShowDialog() == DialogResult.OK)
 				CommonSzs.Files[SzsFileList.SelectedItem as string] = File.ReadAllBytes(opn.FileName);
 		}
-#endregion
+
+		private void materialRaisedButton7_Click(object sender, EventArgs e)
+		{
+			if (CommonSzs == null) return;
+			OpenFileDialog opn = new OpenFileDialog();
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			List<string> diffFiles = new List<string>();
+			foreach (string f in originalSzs.Files.Keys)
+				if (!originalSzs.Files[f].SequenceEqual(CommonSzs.Files[f]))
+					diffFiles.Add(f);
+			MessageBox.Show(string.Join("\r\n", diffFiles.ToArray()));
+		}
+		#endregion
 
 		private void materialRaisedButton1_Click(object sender, EventArgs e)
 		{
@@ -252,7 +263,7 @@ namespace SwitchThemes
 			targetPatch = null;
 			LayoutPatchList.Items.Clear();
 			LayoutPatchList.Items.Add("Don't patch");
-
+			
 			CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, Templates);
 

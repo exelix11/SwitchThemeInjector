@@ -44,6 +44,7 @@
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.AdvPanel = new System.Windows.Forms.Panel();
+			this.materialRaisedButton6 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialRaisedButton4 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
 			this.SzsFileList = new System.Windows.Forms.ListBox();
@@ -59,7 +60,7 @@
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
-			this.materialRaisedButton6 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.materialRaisedButton7 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
@@ -260,6 +261,7 @@
 			this.AdvPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.AdvPanel.Controls.Add(this.materialRaisedButton7);
 			this.AdvPanel.Controls.Add(this.materialRaisedButton6);
 			this.AdvPanel.Controls.Add(this.materialRaisedButton4);
 			this.AdvPanel.Controls.Add(this.materialLabel5);
@@ -273,6 +275,23 @@
 			this.AdvPanel.TabIndex = 7;
 			this.AdvPanel.Visible = false;
 			// 
+			// materialRaisedButton6
+			// 
+			this.materialRaisedButton6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.materialRaisedButton6.AutoSize = true;
+			this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton6.Depth = 0;
+			this.materialRaisedButton6.Icon = null;
+			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 177);
+			this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton6.Name = "materialRaisedButton6";
+			this.materialRaisedButton6.Primary = true;
+			this.materialRaisedButton6.Size = new System.Drawing.Size(104, 36);
+			this.materialRaisedButton6.TabIndex = 9;
+			this.materialRaisedButton6.Text = "Layout diff";
+			this.materialRaisedButton6.UseVisualStyleBackColor = true;
+			this.materialRaisedButton6.Click += new System.EventHandler(this.materialRaisedButton6_Click);
+			// 
 			// materialRaisedButton4
 			// 
 			this.materialRaisedButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -280,7 +299,7 @@
 			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton4.Depth = 0;
 			this.materialRaisedButton4.Icon = null;
-			this.materialRaisedButton4.Location = new System.Drawing.Point(184, 177);
+			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 177);
 			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
@@ -475,22 +494,22 @@
 			this.materialDivider1.Text = "materialDivider1";
 			this.materialDivider1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DragForm_MouseDown);
 			// 
-			// materialRaisedButton6
+			// materialRaisedButton7
 			// 
-			this.materialRaisedButton6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.materialRaisedButton6.AutoSize = true;
-			this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.materialRaisedButton6.Depth = 0;
-			this.materialRaisedButton6.Icon = null;
-			this.materialRaisedButton6.Location = new System.Drawing.Point(300, 177);
-			this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialRaisedButton6.Name = "materialRaisedButton6";
-			this.materialRaisedButton6.Primary = true;
-			this.materialRaisedButton6.Size = new System.Drawing.Size(104, 36);
-			this.materialRaisedButton6.TabIndex = 9;
-			this.materialRaisedButton6.Text = "Layout diff";
-			this.materialRaisedButton6.UseVisualStyleBackColor = true;
-			this.materialRaisedButton6.Click += new System.EventHandler(this.materialRaisedButton6_Click);
+			this.materialRaisedButton7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.materialRaisedButton7.AutoSize = true;
+			this.materialRaisedButton7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton7.Depth = 0;
+			this.materialRaisedButton7.Icon = null;
+			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 177);
+			this.materialRaisedButton7.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton7.Name = "materialRaisedButton7";
+			this.materialRaisedButton7.Primary = true;
+			this.materialRaisedButton7.Size = new System.Drawing.Size(79, 36);
+			this.materialRaisedButton7.TabIndex = 10;
+			this.materialRaisedButton7.Text = "File diff";
+			this.materialRaisedButton7.UseVisualStyleBackColor = true;
+			this.materialRaisedButton7.Click += new System.EventHandler(this.materialRaisedButton7_Click);
 			// 
 			// Form1
 			// 
@@ -555,6 +574,7 @@
 		private System.Windows.Forms.ComboBox LayoutPatchList;
 		private MaterialSkin.Controls.MaterialLabel materialLabel6;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton6;
+		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton7;
 	}
 }
 
