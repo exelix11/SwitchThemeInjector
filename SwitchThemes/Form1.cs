@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
 using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Bntxx;
@@ -61,6 +62,7 @@ namespace SwitchThemes
 			}
 		}
 
+		#region AdvancedTools
 		void EnableAdvanced()
 		{
 			if (!Advanced)
@@ -156,6 +158,31 @@ namespace SwitchThemes
 			}
 		}
 
+		private void materialRaisedButton6_Click(object sender, EventArgs e)
+		{
+			if (CommonSzs == null)
+			{
+				MessageBox.Show("Open the modded file from Open szs first");
+				return;
+			}
+			OpenFileDialog opn = new OpenFileDialog()
+			{
+				Title = "open the original szs to diff",
+				Filter = "szs file|*.szs"
+			};
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			var res = LayoutDiff.Diff(originalSzs, CommonSzs);
+			if (res == null) return;
+			SaveFileDialog sav = new SaveFileDialog()
+			{
+				Title = "save the patch file",
+				Filter = "json patch file|*.json"
+			};
+			if (sav.ShowDialog() != DialogResult.OK) return;
+			File.WriteAllText(sav.FileName, res.AsJson());
+		}
+
 		private void extractToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (SzsFileList.SelectedItem == null || CommonSzs == null) return;
@@ -173,6 +200,7 @@ namespace SwitchThemes
 			if (opn.ShowDialog() == DialogResult.OK)
 				CommonSzs.Files[SzsFileList.SelectedItem as string] = File.ReadAllBytes(opn.FileName);
 		}
+#endregion
 
 		private void materialRaisedButton1_Click(object sender, EventArgs e)
 		{
@@ -250,7 +278,8 @@ namespace SwitchThemes
 
 			foreach (var l in Layouts)
 				if (l.IsCompatible(CommonSzs))
-					LayoutPatchList.Items.Add(l);	
+					LayoutPatchList.Items.Add(l);
+			LayoutPatchList.SelectedIndex = 0;
 		}
 
 		private void materialFlatButton1_Click(object sender, EventArgs e)
@@ -276,7 +305,7 @@ namespace SwitchThemes
 			}
 			if (tbBntxFile.Text.Trim() == "")
 			{
-				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ? Unless the szs already contains a custom one the theme will most likely crash", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
 			else if (!File.Exists(tbBntxFile.Text))
@@ -292,6 +321,7 @@ namespace SwitchThemes
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
+			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
@@ -302,30 +332,30 @@ namespace SwitchThemes
 							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
 				}
-			}
 
-			var res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
+				res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
 
-			if (res == BflytFile.PatchResult.Fail)
-			{
-				MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
-				return;
-			}
-			else if (res == BflytFile.PatchResult.CorruptedFile)
-			{
-				MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-				return;
+				if (res == BflytFile.PatchResult.Fail)
+				{
+					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
+					return;
+				}
+				else if (res == BflytFile.PatchResult.CorruptedFile)
+				{
+					MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
+					return;
+				}
 			}
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				res = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files);
-				if (res == BflytFile.PatchResult.Fail)
+				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files);
+				if (layoutres == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
 					return;
 				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
+				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
 				{
 					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
 					return;

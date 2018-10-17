@@ -11,6 +11,12 @@ namespace SwitchThemes.Common
 {
 	class BflytFile
 	{
+		public BasePanel this[int index]
+		{
+			get => Panels[index];
+			set => Panels[index] = value;
+		}
+
 		public class BasePanel
 		{
 			public override string ToString()
@@ -64,6 +70,7 @@ namespace SwitchThemes.Common
 			public Vector3 Position;
 			public Vector3 Rotation;
 			public Vector2 Scale;
+			public Vector2 Size;
 
 			byte _flag1;
 			public bool Visible
@@ -97,6 +104,7 @@ namespace SwitchThemes.Common
 				Position = dataReader.ReadVector3();
 				Rotation = dataReader.ReadVector3();
 				Scale = dataReader.ReadVector2();
+				Size = dataReader.ReadVector2();
 				if (name == "pic1")
 				{
 					dataReader.BaseStream.Position = 0x54 - 8;
@@ -117,6 +125,7 @@ namespace SwitchThemes.Common
 					bin.Write(Position);
 					bin.Write(Rotation);
 					bin.Write(Scale);
+					bin.Write(Size);
 					if (name == "pic1")
 					{
 						bin.BaseStream.Position = 0x54 - 8;
@@ -363,11 +372,17 @@ namespace SwitchThemes.Common
 			return PatchResult.OK;
 		}
 
-		public PatchResult ApplyLayoutPatch(PanePatch[] Patches)
+		public string[] GetPaneNames()
 		{
 			string[] paneNames = new string[Panels.Count];
 			for (int i = 0; i < Panels.Count; i++)
 				paneNames[i] = TryGetPanelName(Panels[i]);
+			return paneNames;
+		}
+
+		public PatchResult ApplyLayoutPatch(PanePatch[] Patches)
+		{
+			string[] paneNames = GetPaneNames();
 			for (int i = 0; i < Patches.Length; i++)
 			{
 				int index = Array.IndexOf(paneNames, Patches[i].PaneName);
@@ -395,6 +410,11 @@ namespace SwitchThemes.Common
 				{
 					e.Scale.X = p.Scale.Value.X ?? e.Scale.X;
 					e.Scale.Y = p.Scale.Value.Y ?? e.Scale.Y;
+				}
+				if (p.Size != null)
+				{
+					e.Size.X = p.Size.Value.X ?? e.Size.X;
+					e.Size.Y = p.Size.Value.Y ?? e.Size.Y;
 				}
 				#endregion
 				#region ColorDataForPic1

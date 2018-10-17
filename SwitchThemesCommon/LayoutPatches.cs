@@ -27,7 +27,20 @@ namespace SwitchThemes.Common
 			}
 			return true;
 		}
-#if WIN
+
+#if WIN		
+		public string AsJson()
+		{
+			JsonSerializerSettings settings = new JsonSerializerSettings()
+			{
+				Formatting = Formatting.Indented,
+				DefaultValueHandling = DefaultValueHandling.Ignore,
+				NullValueHandling = NullValueHandling.Ignore,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+			};
+			return JsonConvert.SerializeObject(this, settings);
+		}
+
 #if DEBUG
 		public static void CreateTestTemplates()
 		{
@@ -71,6 +84,7 @@ namespace SwitchThemes.Common
 		public NullableVector3? Position = null;
 		public NullableVector3? Rotation = null;
 		public NullableVector2? Scale = null;
+		public NullableVector2? Size = null;
 		public bool? Visible = null;
 
 		public string ColorTL = null;
