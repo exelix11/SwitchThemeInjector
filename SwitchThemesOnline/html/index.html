@@ -57,17 +57,21 @@
                     <p>Then open a <b>720p</b> <a href="https://www.aconvert.com/image/png-to-dds/">DDS image</a> to inject: </p>
                     <button class="btn--raised btn--green buttonCenter" onclick="SwitchThemesOnline.App.UploadDDSBtn()">Open image</button>
                     <p id="P_DDSPath" class="PathLabel">no image opened yet</p>
+                    <p style="margin-bottom:5px">(Optional) select a custom layuot :</p>
+                    <select class="buttonCenter" style="margin-bottom:10px;width:20%" id="LayoutsBox">
+                        <option value="-1">None</option>
+                    </select>
                     <p id="P_Tutorial">
                         Finally press on Patch and save to make your theme. <br />
                         Once you have the final szs you have to place it in your sd card like this:<br />
                         SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}<br />
-                        (Where {0} if the file name)<br />
+                        (Where {0} is the file name)<br />
                         *your cfw folder* can be either atmosphere or ReiNx.<br />
                         Since the menu is a system title you'll have to create a "fsmitm.flag" as well:<br />
                         SdCard:\*Your cfw folder*\titles\{1}\fsmitm.flag<br />
                         You can do it in notepad: save an empty text file and change the extension to .flag<br />
                     </p>
-                    <button class="btn--raised btn--red buttonCenter" onclick="SwitchThemesOnline.App.PatchAndSave();">Patch and save</button>
+                    <button class="btn--raised btn--red buttonCenter" style="margin-bottom:60px" onclick="SwitchThemesOnline.App.PatchAndSave();">Patch and save</button>
                 </div>
             </div>
 
@@ -83,6 +87,7 @@
                         This feature allows to store the szs files for your firmware in your browser (so no file leaves your computer) and automatically download a dds from a link to generate a theme. <br />
                         To setup this feature upload at least one of the following files :
                     </p>
+                    <p class="PathLabel">Note that for only ResidentMenu.szs is supported for custom layouts</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('home');">Home menu (ResidentMenu.szs or common.szs)</button>
                     <p id="P_homeSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('lock');">Lock screen (entrance.szs)</button>

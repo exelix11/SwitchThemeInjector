@@ -50,7 +50,7 @@
   // Default is "Managed"
   "rules": {
     "anonymousType": "Plain",
-    "arrayIndex": "Managed",
+    "arrayIndex": "Plain", //changed
     "autoProperty": "Plain",
     "boxing": "Managed",
     "externalCast": "Plain",

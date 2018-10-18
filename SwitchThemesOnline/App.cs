@@ -14,25 +14,31 @@ namespace SwitchThemesOnline
 {
 	public class App
 	{
-		const float AppVersion = 1f;
+		const float AppVersion = 2f;
+		static HTMLDivElement topError;
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;
 		static HTMLParagraphElement lblDetected = null;
 		static HTMLParagraphElement lblTutorial = null;
 		static HTMLParagraphElement lblDDSPath = null;
+		static HTMLSelectElement LayoutsComboBox = null;
 		static string DefaultTutorialText = "";
 
 		static SarcData CommonSzs = null;
 		static DDSLoadResult LoadedDDS = null;
 		static PatchTemplate targetPatch = null;
 
+		public readonly static string[] embedLyouts = new string[] { "DogeHome" };
+		static LayoutPatch[] layoutPatches;
+
 		public static void OnLoad()
 		{
 #if DEBUG
 			Document.GetElementById<HTMLDivElement>("DebugFlag").Hidden = false;
 #endif
+			topError = Document.GetElementById<HTMLDivElement>("D_JsWarn");
+			topError.Hidden = true;
 			Document.GetElementById<HTMLParagraphElement>("P_Version").TextContent = "Switch theme injector online - Version : " + AppVersion + " - Core version : " + SwitchThemesCommon.CoreVer;
-			Document.GetElementById<HTMLDivElement>("D_JsWarn").Remove();
 			string useragent = Window.Navigator.UserAgent.ToLower();
 			if (useragent.Contains("msie") || useragent.Contains("trident"))
 			{
@@ -46,10 +52,41 @@ namespace SwitchThemesOnline
 			DefaultTutorialText = lblTutorial.InnerHTML;
 			lblTutorial.InnerHTML = string.Format(DefaultTutorialText, "*szs name*", "*title id*").Replace("\r\n", "<br />");
 			lblDDSPath = Document.GetElementById<HTMLParagraphElement>("P_DDSPath");
+			LayoutsComboBox = Document.GetElementById<HTMLSelectElement>("LayoutsBox");
 
 			Document.GetElementById<HTMLParagraphElement>("P_PatchList").InnerHTML = SwitchThemesCommon.GeneratePatchListString(DefaultTemplates.templates).Replace("\r\n", "<br />");
 
+			layoutPatches = new LayoutPatch[embedLyouts.Length];
+			for (int i = 0; i < layoutPatches.Length; i++)
+				GetLayoutPart(i);
+
 			LoadAutoThemeState();
+		}
+
+		static void PrintError(string err)
+		{
+			topError.TextContent = err;
+			topError.Hidden = false;
+		}
+
+		static void GetLayoutPart(int i)
+		{
+			XMLHttpRequest req = new XMLHttpRequest();
+			req.ResponseType = XMLHttpRequestResponseType.String;
+			req.OnReadyStateChange = () =>
+			{
+				if (req.ReadyState != AjaxReadyState.Done) return;
+				string DownloadRes = req.Response as string;
+				if (DownloadRes == null || DownloadRes.Length == 0)
+				{
+					PrintError("Error downloading one of the embedded layots : " + embedLyouts[i] + ", it won't be available to make themes");
+					return;
+				}
+				layoutPatches[i] = LayoutPatch.LoadTemplate(DownloadRes);
+				DownloadRes = null;
+			};
+			req.Open("GET", "layouts/" + embedLyouts[i] + ".json", true);
+			req.Send();
 		}
 
 		public static void UploadSZS(Uint8Array arr) //called from js
@@ -59,6 +96,8 @@ namespace SwitchThemesOnline
 				byte[] sarc = ManagedYaz0.Decompress(arr.ToArray());
 				CommonSzs = SARCExt.SARC.UnpackRamN(sarc);
 				sarc = null;
+				while (LayoutsComboBox.LastChild.TextContent != "None")
+					LayoutsComboBox.RemoveChild(LayoutsComboBox.LastChild);
 				targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
 				if (targetPatch == null)
 				{
@@ -70,6 +109,9 @@ namespace SwitchThemesOnline
 				}
 				lblDetected.TextContent = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
 				lblTutorial.InnerHTML = string.Format(DefaultTutorialText, targetPatch.szsName, targetPatch.TitleId).Replace("\r\n", "<br />");
+				for (int i = 0; i < layoutPatches.Length; i++)
+					if (layoutPatches[i].IsCompatible(CommonSzs))
+						LayoutsComboBox.Add(new HTMLOptionElement() { TextContent = layoutPatches[i].ToString(), Value = i.ToString() });
 			});
 		}
 
@@ -89,7 +131,7 @@ namespace SwitchThemesOnline
 				LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
 			});
 		}
-
+		
 		public static void PatchAndSave()
 		{
 			if (CommonSzs == null)
@@ -104,30 +146,13 @@ namespace SwitchThemesOnline
 			}
 			DoActionWithloading(() =>
 			{
-				if (SwitchThemesCommon.PatchBntx(CommonSzs, LoadedDDS, targetPatch) == BflytFile.PatchResult.Fail)
-				{
-					Window.Alert(
-							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-							"without this information it is not possible to rebuild the bntx." +
-							"You should use an original or at least working szs");
-					return;
-				}
+				LayoutPatch targetLayout = null;
+				if (LayoutsComboBox.SelectedIndex > 0)
+					targetLayout = layoutPatches[int.Parse(
+						((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value)];	
 				
-				var res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
-
-				if (res == BflytFile.PatchResult.Fail)
-				{
-					Window.Alert("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
-					return;
-				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
-				{
-					Window.Alert("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-					return;
-				}
-				var sarc = SARC.PackN(CommonSzs);
-				byte[] yaz0 = ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
-				sarc = null;
+				var yaz0 = Theme.Make(CommonSzs,LoadedDDS,targetPatch,targetLayout);
+				if (yaz0 == null) return;
 				Uint8Array dwn = new Uint8Array(yaz0);
 				string DownloadFname = targetPatch.szsName;
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
@@ -220,5 +245,48 @@ namespace SwitchThemesOnline
 			"(つ◕౪◕)つ━☆ﾟ.*･｡ﾟ","(つ˵•́ω•̀˵)つ━☆ﾟ.*･｡ﾟ҉̛༽̨҉҉ﾉ",
 			"✩°｡⋆⸜(ू˙꒳​˙ )","╰( ⁰ ਊ ⁰ )━☆ﾟ.*･｡ﾟ"
 		};
+	}
+
+	public class Theme
+	{
+		public static byte[] Make(SarcData input, DDSLoadResult dds, PatchTemplate targetPatch, LayoutPatch layout)
+		{
+			if (layout != null)
+			{
+				var layoutres = SwitchThemesCommon.PatchLayouts(input, layout.Files);
+				if (layoutres == BflytFile.PatchResult.Fail)
+				{
+					Window.Alert("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS or the wrong layout");
+					return null;
+				}
+				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
+				{
+					Window.Alert("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS or the wrong layout");
+					return null;
+				}
+			}
+
+			if (SwitchThemesCommon.PatchBntx(input, dds, targetPatch) == BflytFile.PatchResult.Fail)
+			{
+				Window.Alert(
+						"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
+						"without this information it is not possible to rebuild the bntx." +
+						"You should use an original or at least working szs");
+				return null;
+			}
+			var res = SwitchThemesCommon.PatchBgLayouts(input, targetPatch);
+			if (res == BflytFile.PatchResult.Fail)
+			{
+				Window.Alert("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
+				return null;
+			}
+			else if (res == BflytFile.PatchResult.CorruptedFile)
+			{
+				Window.Alert("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
+				return null;
+			}
+			var sarc = SARC.PackN(input);
+			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
+		}
 	}
 }

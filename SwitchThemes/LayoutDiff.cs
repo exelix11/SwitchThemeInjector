@@ -31,7 +31,7 @@ namespace SwitchThemes
 				List<PanePatch> curFile = new List<PanePatch>();
 				for (int i = 0; i < edPaneNames.Length; i++)
 				{
-					if (ed[i].data.Length < 0x4C) continue;
+					if (ed[i].data.Length < 0x4C || ed[i].name == "usd1") continue;
 					if (f == skipLayoutName && targetPatch.targetPanels.Contains(edPaneNames[i])) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
