@@ -18,6 +18,7 @@ namespace SwitchThemesOnline
 
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;
+		static HTMLDivElement cardLoad;
 		public static void OnLoad()
 		{
 #if DEBUG
@@ -51,90 +52,124 @@ namespace SwitchThemesOnline
 					Window.Alert("No url for the DDS has been specified");
 					return;
 				}
-				DoAutoTheme(type, Url);
+				string layout = GetUriVar("layout");
+				DoAutoTheme(type, Url, layout);
 			}
 		}
 
-		static void DoAutoTheme(string type, string url)
-		{
-			var cardLoad = Document.GetElementById<HTMLDivElement>("CardLoad");
+		static void endWithError(string error)
+		{			
+			Window.Alert(error);
+			cardLoad.InnerHTML = "There was an error generating the theme: <br/>" + error;
+			EndLoading();
+		}
 
-			void endWithError(string error)
+		const string DwnErr = "Error downloading the {0}, most likely the link you provided is not a direct link or the host doesn't support Cross-Origin Resource Sharing";
+		static void HttpRequest(string url, Action<Uint8Array> CallBack, string partName)
+		{
+			XMLHttpRequest req = new XMLHttpRequest();
+			req.ResponseType = XMLHttpRequestResponseType.ArrayBuffer;
+			req.OnReadyStateChange = () =>
 			{
-				Window.Alert(error);
-				cardLoad.InnerHTML = "There was an error generating the theme: <br/>" + error;
-				EndLoading();
-			}
-			
+				if (req.ReadyState != AjaxReadyState.Done) return;
+				ArrayBuffer DownloadRes = req.Response as ArrayBuffer;
+				if (DownloadRes == null)
+				{
+					endWithError(partName + " download failed, check the url");
+					return;
+				}
+				var arr = new Uint8Array(DownloadRes);
+				DownloadRes = null;
+				if (arr.Length == 0)
+				{
+					endWithError(string.Format(DwnErr, partName));
+					return;
+				}
+				CallBack(arr);
+			};
+			req.Open("GET", url, true);
+			req.Send();
+		}
+
+		public static void HttpRequest(string url, Action<string> CallBack, string partName)
+		{
+			XMLHttpRequest req = new XMLHttpRequest();
+			req.ResponseType = XMLHttpRequestResponseType.String;
+			req.OnReadyStateChange = () =>
+			{
+				if (req.ReadyState != AjaxReadyState.Done) return;
+				string DownloadRes = req.Response as string;
+				if (DownloadRes == null || DownloadRes.Length == 0)
+				{
+					endWithError(string.Format(DwnErr, partName));
+					return;
+				}
+				CallBack(DownloadRes);
+			};
+			req.Open("GET", url, true);
+			req.Send();
+		}
+
+		static void DoAutoTheme(string type, string url,string layout)
+		{
+			cardLoad = Document.GetElementById<HTMLDivElement>("CardLoad");
 			Document.GetElementById<HTMLDivElement>("CardTutorial").Hidden = true;
 			string themeTarget = "<br/><br/>This theme is for " + Window.LocalStorage.GetItem(type + "Name") as string + "<br/>To change the target version upload another szs for Auto-Theme on the <a href=\"index.html\">Home page</a>";
 			cardLoad.InnerHTML = "Wait while your theme is being generated.... " + themeTarget;
 			cardLoad.Hidden = false;
 			StartLoading();
-			XMLHttpRequest req = new XMLHttpRequest();
-			req.ResponseType = XMLHttpRequestResponseType.ArrayBuffer;
-			req.OnReadyStateChange = () =>
+
+			DDSEncoder.DDSLoadResult LoadedDDS;
+			SarcData CommonSzs;
+			PatchTemplate targetPatch;
+			LayoutPatch targetLayout = null;
+
+			void BuildTheme()
 			{
-				if (req.ReadyState !=  AjaxReadyState.Done) return;
-				ArrayBuffer DownloadRes = req.Response as ArrayBuffer;
-				if (DownloadRes == null)
+				var yaz0 = Theme.Make(CommonSzs, LoadedDDS, targetPatch, targetLayout);
+				if (yaz0 == null)
 				{
-					endWithError("DDS download failed, check the url");
+					endWithError("Theme.Make() failed :(");
 					return;
 				}
-				var arr = new Uint8Array(DownloadRes);
-				if (arr.Length == 0)
-				{
-					endWithError("Error downloading the DDS, most likely the link you provided is not a direct link or the host doesn't support Cross-Origin Resource Sharing");
-					return;
-				}
-				var LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
-				arr = null;
-				DownloadRes = null;
-				var CommonSzs = SARC.UnpackRamN(
-					ManagedYaz0.Decompress(
-						Convert.FromBase64String(
-							Window.LocalStorage.GetItem(type) as string)));
-
-				var targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
-				if (SwitchThemesCommon.PatchBntx(CommonSzs, LoadedDDS, targetPatch) == BflytFile.PatchResult.Fail)
-				{
-					endWithError(
-							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-							"without this information it is not possible to rebuild the bntx." +
-							"You should use an original or at least working szs");
-					return;
-				}
-
-				var res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
-
-				if (res == BflytFile.PatchResult.Fail)
-				{
-					endWithError("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
-					return;
-				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
-				{
-					endWithError("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-					return;
-				}
-				var sarc = SARC.PackN(CommonSzs);
-				byte[] yaz0 = ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
-				sarc = null;
 				Uint8Array dwn = new Uint8Array(yaz0);
 				string DownloadFname = targetPatch.szsName;
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
 				Document.GetElementById<HTMLDivElement>("CardLoad").InnerHTML = "Your theme has been generated !" + themeTarget;
 				EndLoading();
-			};
-			req.Open("GET", url, true);
-			req.Send();
+			}
+
+			void DDSDownloaded(Uint8Array arr)
+			{				
+				LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
+				arr = null;
+				CommonSzs = SARC.UnpackRamN(
+					ManagedYaz0.Decompress(
+						Convert.FromBase64String(
+							Window.LocalStorage.GetItem(type) as string)));
+
+				targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
+
+				if (layout == null)
+					BuildTheme();
+				else
+					HttpRequest(layout, LayoutDownloaded, "Layout");
+			}
+
+			void LayoutDownloaded(string req)
+			{
+				targetLayout = LayoutPatch.LoadTemplate(req);
+				BuildTheme();
+			}
+
+			HttpRequest(url, DDSDownloaded, "DDS");
 		}
 
 		public static void MakeLink()
 		{
 			string type = Document.GetElementById<HTMLSelectElement>("TargetSelect").Value;
 			string url = Document.GetElementById<HTMLInputElement>("DDSUrlInput").Value;
+			string layout = Document.GetElementById<HTMLInputElement>("LayoutUrlInput").Value;
 			if (!App.ValidAutoThemeParts.ContainsStr(type))
 			{
 				Window.Alert("The selected type is invalid");
@@ -147,7 +182,10 @@ namespace SwitchThemesOnline
 			}
 			Document.GetElementById<HTMLParagraphElement>("Linkis").Hidden = false;
 			Document.GetElementById<HTMLButtonElement>("BtnLinkCopy").Style.Display = Display.Block;
-			var str = "https://"+ Domain + "/autotheme.html?type=" + type + "&dds=" + Window.EncodeURIComponent(url);
+			var str =
+				"https://"+ Domain + "/autotheme.html?type=" + type +
+				"&dds=" + Window.EncodeURIComponent(url) +
+				"&layout=" + Window.EncodeURIComponent(layout);
 			var link = Document.GetElementById<HTMLLinkElement>("OutLink");
 			link.TextContent = str;
 			link.Href = str;
@@ -169,10 +207,7 @@ namespace SwitchThemesOnline
 			loader.Style.Display = "";
 		}
 
-		static void EndLoading()
-		{
-			loader.Style.Display = "none";
-		}
+		static void EndLoading() =>	loader.Style.Display = "none";		
 
 		public static string GetUriVar(string name)
 		{

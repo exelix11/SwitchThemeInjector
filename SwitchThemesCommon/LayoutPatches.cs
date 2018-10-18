@@ -20,7 +20,7 @@ namespace SwitchThemes.Common
 			for (int i = 0; i < Files.Length; i++)
 			{
 				if (!szs.Files.ContainsKey(Files[i].FileName)) return false;
-				string TargetFileAsString = UTF8Encoding.Default.GetString(szs.Files[Files[i].FileName]);
+				string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
 				for (int j = 0; j < Files[i].Patches.Length; j++)
 					if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
 						return false;
@@ -93,8 +93,8 @@ namespace SwitchThemes.Common
 		public string ColorBR = null;
 	}
 
-	public struct NullableVector3 { public float? X, Y, Z; }
-	public struct Vector3 { public float X, Y, Z; }
-	public struct NullableVector2 { public float? X, Y; }
-	public struct Vector2 { public float X, Y; }
+	public struct NullableVector3 { public float? X, Y, Z; public NullableVector3(float x, float y, float z) { X = x;Y = y;Z = z; } }
+	public struct Vector3 { public float X, Y, Z; public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; } }
+	public struct NullableVector2 { public float? X, Y; public NullableVector2(float x, float y) { X = x; Y = y;} }
+	public struct Vector2 { public float X, Y; public Vector2(float x, float y) { X = x; Y = y; } }
 }
