@@ -135,7 +135,6 @@ namespace SwitchThemes.Common
 				}
 				if (!isTarget) continue;
 				return p;
-				break;
 			}
 			return null;
 		}

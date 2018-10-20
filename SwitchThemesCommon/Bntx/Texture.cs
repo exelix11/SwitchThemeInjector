@@ -140,7 +140,7 @@ namespace SwitchThemes.Common.Bntxx
 			for (int Mip = 1; Mip < MipmapCount; Mip++)
 			{
 				throw new Exception("mipmaps are not supported");
-				MipOffsets[Mip] = Reader.ReadInt64() - BaseOffset;
+				//MipOffsets[Mip] = Reader.ReadInt64() - BaseOffset;
 			}
 
 			Reader.BaseStream.Seek(BaseOffset, SeekOrigin.Begin);
