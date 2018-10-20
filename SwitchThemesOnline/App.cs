@@ -87,7 +87,7 @@ namespace SwitchThemesOnline
 				string DownloadRes = req.Response as string;
 				if (DownloadRes == null || DownloadRes.Length == 0)
 				{
-					PrintError("Error downloading one of the embedded layots : " + embedLyouts[i] + ", it won't be available to make themes");
+					PrintError("Error downloading one of the embedded layouts : " + embedLyouts[i] + ", it won't be available to make themes");
 					return;
 				}
 				layoutPatches[i] = LayoutPatch.LoadTemplate(DownloadRes);
