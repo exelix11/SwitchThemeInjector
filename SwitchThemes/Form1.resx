@@ -117,14 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="materialLabel7.Text" xml:space="preserve">
+    <value>Warning: when changing layouts you should always use an SZS with the original layout
+(bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
+  </data>
   <data name="materialLabel3.Text" xml:space="preserve">
     <value>Once you have the final szs you have to place it in your sd card like this:
 SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}
 (Where {0} if the file name)
 *your cfw folder* can be either atmosphere or ReiNx.
-Since the menu is a system title you'll have to create a "fsmitm.flag" as well:
-SdCard:\*Your cfw folder*\titles\{1}\fsmitm.flag
-You can do it in notepad: save an empty text file and change the extension to .flag</value>
+Since the menu is a system title remember to create a "fsmitm.flag".</value>
   </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

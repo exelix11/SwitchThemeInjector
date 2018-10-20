@@ -22,14 +22,15 @@ namespace SwitchThemesOnline
 		static HTMLParagraphElement lblTutorial = null;
 		static HTMLParagraphElement lblDDSPath = null;
 		static HTMLSelectElement LayoutsComboBox = null;
+		static HTMLLinkElement layoutPrev = null;
 		static string DefaultTutorialText = "";
 
 		static SarcData CommonSzs = null;
 		static DDSLoadResult LoadedDDS = null;
 		static PatchTemplate targetPatch = null;
 
-		public readonly static string[] embedLyouts = new string[] { "DogeHome" };
-		static LayoutPatch[] layoutPatches;
+		public readonly static string[] embedLyouts = new string[] { "SuchHm", "SuchLk" , "ZnHm"};
+		public static LayoutPatch[] layoutPatches;
 
 		public static void OnLoad()
 		{
@@ -53,14 +54,19 @@ namespace SwitchThemesOnline
 			lblTutorial.InnerHTML = string.Format(DefaultTutorialText, "*szs name*", "*title id*").Replace("\r\n", "<br />");
 			lblDDSPath = Document.GetElementById<HTMLParagraphElement>("P_DDSPath");
 			LayoutsComboBox = Document.GetElementById<HTMLSelectElement>("LayoutsBox");
+			layoutPrev = Document.GetElementById<HTMLLinkElement>("LayoutPrev");
 
 			Document.GetElementById<HTMLParagraphElement>("P_PatchList").InnerHTML = SwitchThemesCommon.GeneratePatchListString(DefaultTemplates.templates).Replace("\r\n", "<br />");
 
-			layoutPatches = new LayoutPatch[embedLyouts.Length];
-			for (int i = 0; i < layoutPatches.Length; i++)
-				GetLayoutPart(i);
-
+			LoadCustomLayouts();
 			LoadAutoThemeState();
+		}
+		
+		public static void LoadCustomLayouts()
+		{
+			layoutPatches = new LayoutPatch[embedLyouts.Length];
+				for (int i = 0; i < layoutPatches.Length; i++)
+					GetLayoutPart(i);
 		}
 
 		static void PrintError(string err)
@@ -96,7 +102,7 @@ namespace SwitchThemesOnline
 				byte[] sarc = ManagedYaz0.Decompress(arr.ToArray());
 				CommonSzs = SARCExt.SARC.UnpackRamN(sarc);
 				sarc = null;
-				while (LayoutsComboBox.LastChild.TextContent != "None")
+				while (LayoutsComboBox.LastChild.TextContent != "Don't patch")
 					LayoutsComboBox.RemoveChild(LayoutsComboBox.LastChild);
 				targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
 				if (targetPatch == null)
@@ -130,6 +136,18 @@ namespace SwitchThemesOnline
 				lblDDSPath.TextContent = fileName;
 				LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
 			});
+		}
+
+		public static void LayoutBoxOnChange()
+		{
+			if (LayoutsComboBox.SelectedIndex <= 0)
+				layoutPrev.Hidden = true;
+			else
+			{
+				int index = int.Parse(((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value);
+				layoutPrev.Href = "layouts/" + embedLyouts[index] + ".jpg";
+				layoutPrev.Hidden = false;
+			}
 		}
 		
 		public static void PatchAndSave()

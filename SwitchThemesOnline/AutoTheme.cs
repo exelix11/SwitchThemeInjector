@@ -55,6 +55,8 @@ namespace SwitchThemesOnline
 				string layout = GetUriVar("layout");
 				DoAutoTheme(type, Url, layout);
 			}
+
+			//todo : dynamically add options for the layout
 		}
 
 		static void endWithError(string error)
@@ -169,7 +171,7 @@ namespace SwitchThemesOnline
 		{
 			string type = Document.GetElementById<HTMLSelectElement>("TargetSelect").Value;
 			string url = Document.GetElementById<HTMLInputElement>("DDSUrlInput").Value;
-			string layout = Document.GetElementById<HTMLInputElement>("LayoutUrlInput").Value;
+			string layout = Document.GetElementById<HTMLInputElement>("LayoutUrlInput").Value.Trim();
 			if (!App.ValidAutoThemeParts.ContainsStr(type))
 			{
 				Window.Alert("The selected type is invalid");
@@ -183,9 +185,10 @@ namespace SwitchThemesOnline
 			Document.GetElementById<HTMLParagraphElement>("Linkis").Hidden = false;
 			Document.GetElementById<HTMLButtonElement>("BtnLinkCopy").Style.Display = Display.Block;
 			var str =
-				"https://"+ Domain + "/autotheme.html?type=" + type +
-				"&dds=" + Window.EncodeURIComponent(url) +
-				"&layout=" + Window.EncodeURIComponent(layout);
+				"https://" + Domain + "/autotheme.html?type=" + type +
+				"&dds=" + Window.EncodeURIComponent(url);
+			if (layout != "")
+				str += "&layout=" + Window.EncodeURIComponent(layout);
 			var link = Document.GetElementById<HTMLLinkElement>("OutLink");
 			link.TextContent = str;
 			link.Href = str;

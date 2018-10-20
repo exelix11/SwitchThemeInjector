@@ -27,7 +27,7 @@ namespace SwitchThemes
 		bool Advanced = false;
 
 		List<PatchTemplate> Templates = new List<PatchTemplate>();
-		List<LayoutPatch> Layouts = new List<LayoutPatch>();
+		Dictionary<string,LayoutPatch> Layouts = new Dictionary<string, LayoutPatch>();
 
 		public Form1()
 		{
@@ -42,7 +42,7 @@ namespace SwitchThemes
 			if (Directory.Exists("Layouts"))
 			{
 				foreach (var f in Directory.GetFiles("Layouts").Where(x => x.EndsWith(".json")))
-					Layouts.Add(LayoutPatch.LoadTemplate(File.ReadAllText(f)));
+					Layouts.Add(f,LayoutPatch.LoadTemplate(File.ReadAllText(f)));
 			}
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
@@ -244,6 +244,18 @@ namespace SwitchThemes
 			}
 		}
 
+		private void materialFlatButton1_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog opn = new OpenFileDialog()
+			{
+				Title = "open dds picture",
+				Filter = "*.dds|*.dds|all files|*.*",
+			};
+			if (opn.ShowDialog() != DialogResult.OK)
+				return;
+			if (opn.FileName != "")
+				tbBntxFile.Text = opn.FileName;
+		}
 
 		private void OpenSzsButton(object sender, EventArgs e)
 		{
@@ -287,25 +299,12 @@ namespace SwitchThemes
 			materialLabel3.Text = string.Format(PatchLabelText, targetPatch.szsName, targetPatch.TitleId);
 			lblDetected.Text = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
 
-			foreach (var l in Layouts)
+			foreach (var l in Layouts.Values)
 				if (l.IsCompatible(CommonSzs))
 					LayoutPatchList.Items.Add(l);
 			LayoutPatchList.SelectedIndex = 0;
 		}
 
-		private void materialFlatButton1_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog opn = new OpenFileDialog()
-			{
-				Title = "open dds picture",
-				Filter = "*.dds|*.dds|all files|*.*",
-			};
-			if (opn.ShowDialog() != DialogResult.OK)
-				return;
-			if (opn.FileName != "")
-				tbBntxFile.Text = opn.FileName;
-		}
-		
 
 		private void PatchButtonClick(object sender, EventArgs e)
 		{
@@ -316,6 +315,11 @@ namespace SwitchThemes
 			}
 			if (tbBntxFile.Text.Trim() == "")
 			{
+				if (LayoutPatchList.SelectedIndex <= 0)
+				{
+					MessageBox.Show("There is nothing to patch");
+					return;
+				}
 				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
@@ -397,6 +401,22 @@ namespace SwitchThemes
 					"Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\n" +
 					"Discord invite code : p27kEST\r\n\r\n" +
 					"Thanks to:\r\nSyroot for BinaryData lib\r\nAboodXD for Bntx editor");
+		}
+
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			var patch = LayoutPatchList.SelectedItem as LayoutPatch;
+			if (patch == null)
+				MessageBox.Show("Select a layout first");
+			else
+			{
+				string imagePath = Layouts.FirstOrDefault(x => x.Value == patch).Key;
+				imagePath = imagePath.Substring(0, imagePath.Length - 5) + ".jpg";
+				if (!File.Exists(imagePath))
+					MessageBox.Show("This theme doesn't have a preview");
+				else
+					System.Diagnostics.Process.Start(imagePath);
+			}
 		}
 	}
 }

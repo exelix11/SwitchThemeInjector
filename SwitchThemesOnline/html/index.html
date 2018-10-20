@@ -57,10 +57,12 @@
                     <p>Then open a <b>720p</b> <a href="https://www.aconvert.com/image/png-to-dds/">DDS image</a> to inject: </p>
                     <button class="btn--raised btn--green buttonCenter" onclick="SwitchThemesOnline.App.UploadDDSBtn()">Open image</button>
                     <p id="P_DDSPath" class="PathLabel">no image opened yet</p>
-                    <p style="margin-bottom:5px">(Optional) select a custom layuot :</p>
-                    <select class="buttonCenter" style="margin-bottom:10px;width:20%" id="LayoutsBox">
-                        <option value="-1">None</option>
+                    <p style="margin-bottom:5px">(Optional) Select a custom layuot :</p>
+                    <select class="buttonCenter" style="margin-bottom:10px;width:30%" id="LayoutsBox" onchange="SwitchThemesOnline.App.LayoutBoxOnChange();">
+                        <option value="-1">Don't patch</option>
                     </select>
+                    <p class="PathLabel"><a href="" id="LayoutPrev" hidden>Layout preview</a></p>
+					<p><b>Warning</b>: when changing layouts you should always use an SZS with the original layout (bg doesn't matter), if the layout in the SZS you uploaded has already been modified, either manually or with this tool, the new layout may behave incorrectly.</p>
                     <p id="P_Tutorial">
                         Finally press on Patch and save to make your theme. <br />
                         Once you have the final szs you have to place it in your sd card like this:<br />
@@ -84,10 +86,13 @@
                         How does it work ? <br />
                         To make a theme you need two things : a dds picture (legal to share) and an szs file from the home menu (illegal to share).<br />
                         A custom theme still contains most of the original szs so it's illegal to share as well. <br />
-                        This feature allows to store the szs files for your firmware in your browser (so no file leaves your computer) and automatically download a dds from a link to generate a theme. <br />
+                        This feature allows you to store the szs files for your firmware in your browser (so no file leaves your computer) and automatically download a dds from a link to generate a theme. <br />
                         To setup this feature upload at least one of the following files :
                     </p>
-                    <p class="PathLabel">Note that for only ResidentMenu.szs is supported for custom layouts</p>
+                    <p class="PathLabel">
+						<b>Warning:</b> only ResidentMenu.szs is supported for custom layouts.<br>
+						It is adviced to upload <b>unmodified files</b> because custom layouts may behave incorrectly if applied on a theme whose layout has already been changed
+					</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('home');">Home menu (ResidentMenu.szs or common.szs)</button>
                     <p id="P_homeSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('lock');">Lock screen (entrance.szs)</button>
