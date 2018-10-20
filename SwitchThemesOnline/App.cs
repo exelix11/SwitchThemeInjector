@@ -22,7 +22,8 @@ namespace SwitchThemesOnline
 		static HTMLParagraphElement lblTutorial = null;
 		static HTMLParagraphElement lblDDSPath = null;
 		static HTMLSelectElement LayoutsComboBox = null;
-		static HTMLLinkElement layoutPrev = null;
+		static HTMLDivElement LayoutPrevDiv = null;
+		static HTMLImageElement LayoutPrevImg = null;
 		static string DefaultTutorialText = "";
 
 		static SarcData CommonSzs = null;
@@ -54,7 +55,8 @@ namespace SwitchThemesOnline
 			lblTutorial.InnerHTML = string.Format(DefaultTutorialText, "*szs name*", "*title id*").Replace("\r\n", "<br />");
 			lblDDSPath = Document.GetElementById<HTMLParagraphElement>("P_DDSPath");
 			LayoutsComboBox = Document.GetElementById<HTMLSelectElement>("LayoutsBox");
-			layoutPrev = Document.GetElementById<HTMLLinkElement>("LayoutPrev");
+			LayoutPrevDiv = Document.GetElementById<HTMLDivElement>("PreviewDiv");
+			LayoutPrevImg = Document.GetElementById<HTMLImageElement>("PreviewImg");
 
 			Document.GetElementById<HTMLParagraphElement>("P_PatchList").InnerHTML = SwitchThemesCommon.GeneratePatchListString(DefaultTemplates.templates).Replace("\r\n", "<br />");
 
@@ -141,12 +143,12 @@ namespace SwitchThemesOnline
 		public static void LayoutBoxOnChange()
 		{
 			if (LayoutsComboBox.SelectedIndex <= 0)
-				layoutPrev.Hidden = true;
+				LayoutPrevDiv.Hidden = true;
 			else
 			{
 				int index = int.Parse(((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value);
-				layoutPrev.Href = "layouts/" + embedLyouts[index] + ".jpg";
-				layoutPrev.Hidden = false;
+				LayoutPrevImg.Src = "layouts/" + embedLyouts[index] + ".jpg";
+				LayoutPrevDiv.Hidden = false;
 			}
 		}
 		

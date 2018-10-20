@@ -61,8 +61,14 @@
                     <select class="buttonCenter" style="margin-bottom:10px;width:30%" id="LayoutsBox" onchange="SwitchThemesOnline.App.LayoutBoxOnChange();">
                         <option value="-1">Don't patch</option>
                     </select>
-                    <p class="PathLabel"><a href="" id="LayoutPrev" hidden>Layout preview</a></p>
-					<p><b>Warning</b>: when changing layouts you should always use an SZS with the original layout (bg doesn't matter), if the layout in the SZS you uploaded has already been modified, either manually or with this tool, the new layout may behave incorrectly.</p>
+                    <div id="PreviewDiv" hidden>
+                        <p class="PathLabel">Preview (Click to enlarge)</p>
+                        <div style="width:30%;margin:auto;margin-top:4%;">
+                            <input id="lightbox-1" type="checkbox">
+                            <label for="lightbox-1"><img id="PreviewImg" src=""></label>
+                        </div>
+                    </div>
+                    <p><b>Warning</b>: when changing layouts you should always use an SZS with the original layout (bg doesn't matter), if the layout in the SZS you uploaded has already been modified, either manually or with this tool, the new layout may behave incorrectly.</p>
                     <p id="P_Tutorial">
                         Finally press on Patch and save to make your theme. <br />
                         Once you have the final szs you have to place it in your sd card like this:<br />

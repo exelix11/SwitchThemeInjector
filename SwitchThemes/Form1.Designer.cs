@@ -84,7 +84,7 @@
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabControl1.Name = "materialTabControl1";
 			this.materialTabControl1.SelectedIndex = 0;
-			this.materialTabControl1.Size = new System.Drawing.Size(645, 285);
+			this.materialTabControl1.Size = new System.Drawing.Size(645, 288);
 			this.materialTabControl1.TabIndex = 4;
 			// 
 			// PatchListPage
@@ -117,6 +117,7 @@
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.InjectPage.Controls.Add(this.tbBntxFile);
 			this.InjectPage.Controls.Add(this.materialLabel7);
 			this.InjectPage.Controls.Add(this.linkLabel1);
 			this.InjectPage.Controls.Add(this.LayoutPatchList);
@@ -124,13 +125,12 @@
 			this.InjectPage.Controls.Add(this.materialLabel1);
 			this.InjectPage.Controls.Add(this.materialFlatButton1);
 			this.InjectPage.Controls.Add(this.materialLabel2);
-			this.InjectPage.Controls.Add(this.tbBntxFile);
 			this.InjectPage.Controls.Add(this.materialRaisedButton2);
 			this.InjectPage.Controls.Add(this.materialLabel3);
 			this.InjectPage.Location = new System.Drawing.Point(4, 22);
 			this.InjectPage.Name = "InjectPage";
 			this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
-			this.InjectPage.Size = new System.Drawing.Size(637, 259);
+			this.InjectPage.Size = new System.Drawing.Size(637, 262);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "Inject & patch";
 			// 
@@ -187,17 +187,16 @@
 			// 
 			// materialLabel1
 			// 
-			this.materialLabel1.AutoSize = true;
 			this.materialLabel1.Depth = 0;
 			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel1.Location = new System.Drawing.Point(9, 8);
+			this.materialLabel1.Location = new System.Drawing.Point(6, 8);
 			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel1.Name = "materialLabel1";
-			this.materialLabel1.Size = new System.Drawing.Size(603, 19);
+			this.materialLabel1.Size = new System.Drawing.Size(628, 20);
 			this.materialLabel1.TabIndex = 6;
-			this.materialLabel1.Text = "Since version 3.0 you don\'t need bntx_editor anymore, just click on ... and open " +
-    "your dds !";
+			this.materialLabel1.Text = "Since version 3.2 you don\'t need a DDS anymore, just open any 720p image !";
+			this.materialLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// materialFlatButton1
 			// 
@@ -223,20 +222,20 @@
 			this.materialLabel2.Depth = 0;
 			this.materialLabel2.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel2.Location = new System.Drawing.Point(6, 39);
+			this.materialLabel2.Location = new System.Drawing.Point(6, 38);
 			this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel2.Name = "materialLabel2";
-			this.materialLabel2.Size = new System.Drawing.Size(71, 19);
+			this.materialLabel2.Size = new System.Drawing.Size(63, 19);
 			this.materialLabel2.TabIndex = 2;
-			this.materialLabel2.Text = "DDS file: ";
+			this.materialLabel2.Text = "Image: ";
 			// 
 			// tbBntxFile
 			// 
 			this.tbBntxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbBntxFile.Location = new System.Drawing.Point(75, 38);
+			this.tbBntxFile.Location = new System.Drawing.Point(65, 38);
 			this.tbBntxFile.Name = "tbBntxFile";
-			this.tbBntxFile.Size = new System.Drawing.Size(515, 20);
+			this.tbBntxFile.Size = new System.Drawing.Size(525, 20);
 			this.tbBntxFile.TabIndex = 1;
 			// 
 			// materialRaisedButton2
@@ -246,7 +245,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 217);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 220);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -279,7 +278,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(637, 259);
+			this.tabPage1.Size = new System.Drawing.Size(637, 262);
 			this.tabPage1.TabIndex = 3;
 			this.tabPage1.Text = "Advanced";
 			// 
@@ -298,7 +297,7 @@
 			this.AdvPanel.Enabled = false;
 			this.AdvPanel.Location = new System.Drawing.Point(9, 52);
 			this.AdvPanel.Name = "AdvPanel";
-			this.AdvPanel.Size = new System.Drawing.Size(619, 219);
+			this.AdvPanel.Size = new System.Drawing.Size(619, 207);
 			this.AdvPanel.TabIndex = 7;
 			this.AdvPanel.Visible = false;
 			// 
@@ -309,7 +308,7 @@
 			this.materialRaisedButton7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton7.Depth = 0;
 			this.materialRaisedButton7.Icon = null;
-			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 177);
+			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 165);
 			this.materialRaisedButton7.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton7.Name = "materialRaisedButton7";
 			this.materialRaisedButton7.Primary = true;
@@ -326,7 +325,7 @@
 			this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton6.Depth = 0;
 			this.materialRaisedButton6.Icon = null;
-			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 177);
+			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 165);
 			this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton6.Name = "materialRaisedButton6";
 			this.materialRaisedButton6.Primary = true;
@@ -343,7 +342,7 @@
 			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton4.Depth = 0;
 			this.materialRaisedButton4.Icon = null;
-			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 177);
+			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 165);
 			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
@@ -379,7 +378,7 @@
 			this.SzsFileList.FormattingEnabled = true;
 			this.SzsFileList.Location = new System.Drawing.Point(3, 26);
 			this.SzsFileList.Name = "SzsFileList";
-			this.SzsFileList.Size = new System.Drawing.Size(613, 143);
+			this.SzsFileList.Size = new System.Drawing.Size(613, 130);
 			this.SzsFileList.Sorted = true;
 			this.SzsFileList.TabIndex = 5;
 			// 
@@ -412,7 +411,7 @@
 			this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton1.Depth = 0;
 			this.materialRaisedButton1.Icon = null;
-			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 177);
+			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 165);
 			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton1.Name = "materialRaisedButton1";
 			this.materialRaisedButton1.Primary = true;
@@ -429,7 +428,7 @@
 			this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton5.Depth = 0;
 			this.materialRaisedButton5.Icon = null;
-			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 177);
+			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 165);
 			this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton5.Name = "materialRaisedButton5";
 			this.materialRaisedButton5.Primary = true;
@@ -488,7 +487,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 426);
+			this.label1.Location = new System.Drawing.Point(0, 429);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 12;
@@ -542,7 +541,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 439);
+			this.ClientSize = new System.Drawing.Size(645, 442);
 			this.Controls.Add(this.lblDetected);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialRaisedButton3);

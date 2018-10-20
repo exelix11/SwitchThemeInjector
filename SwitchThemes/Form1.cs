@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -248,8 +249,8 @@ namespace SwitchThemes
 		{
 			OpenFileDialog opn = new OpenFileDialog()
 			{
-				Title = "open dds picture",
-				Filter = "*.dds|*.dds|all files|*.*",
+				Title = "open a picture",
+				Filter = "Supported files (dds,jpg,png)|*.dds;*.jpg;*.jpeg;*.png|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
 				return;
@@ -305,6 +306,34 @@ namespace SwitchThemes
 			LayoutPatchList.SelectedIndex = 0;
 		}
 
+		bool ImageToDDS()
+		{
+			if (!File.Exists("texconv.exe"))
+			{
+				MessageBox.Show("texconv.exe is missing, this program is needed to convert images to dds.\r\nYou can download it from https://github.com/Microsoft/DirectXTex/releases");
+				return false;
+			}
+			Process p = new Process();
+			p.StartInfo = new ProcessStartInfo()
+			{
+				FileName = "texconv",
+				Arguments = $"-y -f DXT1 -ft dds -o {Path.GetTempPath()} {tbBntxFile.Text}",
+				CreateNoWindow = true,
+				UseShellExecute = false,
+				RedirectStandardOutput = true,
+			};
+			p.Start();
+			p.WaitForExit();
+			string target = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
+			if (!File.Exists(target))
+			{
+				string pOut = p.StandardOutput.ReadToEnd();
+				MessageBox.Show("There was an error converting the image to DDS : \r\n\r\n" + pOut);
+				return false;
+			}
+			tbBntxFile.Text = target;
+			return true;
+		}
 
 		private void PatchButtonClick(object sender, EventArgs e)
 		{
@@ -354,6 +383,8 @@ namespace SwitchThemes
 			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
+				if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
+					return;
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show(
