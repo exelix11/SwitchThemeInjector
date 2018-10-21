@@ -46,7 +46,7 @@
 
         <div class="card WarnCard" id="CardTutorial" style="background: rgb(55,71,79) !important; color:#fff">
             Auto-theme allows legally sharing switch themes by uploading just the background picture,
-            you can use this page to generate Auto-theme links, to use these links you must setup Auto-theme first, go to the <a href="https://exelix11.github.io/SwitchThemeInjector/">home page</a> for that. <br/><br />
+            you can use this page to generate Auto-theme links, to use these links you must setup Auto-theme first, go to the <a href="https://exelix11.github.io/SwitchThemeInjector/">home page</a> for that. <br /><br />
             To create an Auto-Theme link fill the following form: <br />
             Theme target :
             <select id="TargetSelect" style="background-color:#DDD;margin-left:10px">
@@ -56,11 +56,19 @@
             </select>
             <br />
             DDS Url:<input id="DDSUrlInput" placeholder="http://blablabla" style="margin-bottom:1%;width:100%;background-color:#DDD;height:1vw;" type="text">
-            This must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image, <b>not every host works</b> because the server must have <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> support<br />
-            <br />
+            This must point to a <b>direct download</b> of a 720p DTX1-encoded DDS image, <b>not every host works</b> because the server must have <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">CORS</a> support <br />
+            <br>Built-in layout patch OR url (Optional) : <br />
+            <input type="text" id="LayoutUrlInput" style="margin-bottom:1%;width:100%;background-color:#DDD;height:1vw;" list="LayoutPatches" />
+            <datalist id="LayoutPatches">
+                <option value="layouts/SuchHm.json">ClearLayout (menu small icons) by Such Meme, Many Skill</option>
+                <option value="layouts/SuchLk.json">Clear lockscreen by Such Meme, Many Skill</option>
+                <option value="layouts/ZnHm.json">Two rows home by zaigenshi</option>
+            </datalist>
+            If using an url for the layout patch same limitation as the DDS url apply: the host must support CORS
+            <br /> <br />
             <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.AutoTheme.MakeLink();">Generate link</button>
             <p id="Linkis" style="margin-bottom:5px" hidden>Your link is :</p>
-            <a id="OutLink"></a>
+            <a id="OutLink" style="word-wrap:break-word;"></a>
             <button class="btn--raised btn--secondary buttonCenter" id="BtnLinkCopy" onclick="SwitchThemesOnline.AutoTheme.CopyLink();" style="margin-top:15px;display:none">Copy Link</button>
         </div>
 
