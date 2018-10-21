@@ -31,7 +31,7 @@ Select an unused drive letter, check the read-only box and click on mount.
 Now open the drive you just mounted and go in the "Contents/registered/" folder, you should see many folder with alphanumeric names, find the right one for your firmware :
 Home menu :
 - for 6.0.1 96860a2605d8890dee7a8d4154bbe483
-- for 6.0.0 97c64495df444e948dcfaec986a5da02
+- for 6.0.0 33dd03103f1ac6a50e13d27ce5e00b2f or 97c64495df444e948dcfaec986a5da02
 - for 5.1.0 8684b0ddab1581d300a15ebc96c6bf2c
 - for 5.0.1/2 a4d9e98bf95e906a8f7176a25cc57ca1
 - for 5.0.0 7e31371be988f89efd80843417496947
