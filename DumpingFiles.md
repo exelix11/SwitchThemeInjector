@@ -40,7 +40,7 @@ Home menu :
 
 You might also want to get the user settings applet : 
 - for 6.0.1 2a59543bf2eced1ed352cacd2067ba48
-- for 6.0.0 b359c72323454d948066f0ff0b46e762
+- for 6.0.0 b359c72323454d948066f0ff0b46e762 or 2a59543bf2eced1ed352cacd2067ba48
 - for 5.1.0 326e844de97bb17899afd0eacf474c0d
 - for 5.0.2 c27a76572faa4263ae12258ba991f4e5
 - for 5.0.1 0c927ffd11ae2a021e3e551fde524c8a
