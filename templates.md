@@ -38,7 +38,7 @@ and NONE of the files in `FnameNotIdentifier`. `FnameIdentifier` implicitly incl
 Layout patches are slightly more complex and have nested properties but you can create them automatically :\
 ## Generating a layout patch with "LayoutDiff"
 You need 2 SZS files : the one you patched and the original one, they must be for the same firmware version, the background image doesn't matter.
-1) Open Switch theme injector and open the PATCHED SZS
+1) Open the Switch theme injector **Windows app** and open the PATCHED SZS
 2) Go to the advanced tab and click on the "Layout Diff" button, it will show a dialog to open another SZS, open the ORIGINAL one.
 3) If everything went ok you should be able to save your json patch.
 4) Open the json you just saved with a text editor and change the name and the author
