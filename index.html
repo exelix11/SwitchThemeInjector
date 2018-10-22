@@ -100,15 +100,21 @@
                         To setup this feature upload at least one of the following files :
                     </p>
                     <p class="PathLabel">
-						<b>Warning:</b> only ResidentMenu.szs is supported for custom layouts.<br>
-						It is adviced to upload <b>unmodified files</b> because custom layouts may behave incorrectly if applied on a theme whose layout has already been changed
-					</p>
+                        <b>Warning:</b> only ResidentMenu.szs is supported for home menu custom layouts.<br>
+                        It is recommended to upload <b>unmodified files</b> because custom layouts may behave incorrectly if applied on a theme whose layout has already been changed
+                    </p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('home');">Home menu (ResidentMenu.szs or common.szs)</button>
                     <p id="P_homeSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('lock');">Lock screen (entrance.szs)</button>
                     <p id="P_lockSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('user');">User settings (MyPage.szs)</button>
                     <p id="P_userSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('apps');">All apps menu (Flaunch.szs) 6.x only</button>
+                    <p id="P_appsSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('set');">Console settings (Set.szs) 6.x only</button>
+                    <p id="P_setSZS" class="PathLabel">not uploaded yet</p>
+                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('news');">News applet (Notification.szs) 6.x only</button>
+                    <p id="P_newsSZS" class="PathLabel">not uploaded yet</p>
                     <button class="btn--raised btn--red buttonCenter" style="margin-bottom:5px" onclick="SwitchThemesOnline.App.AutoThemeDeleteAll();">Delete all</button>
                     <p>
                         Note that these files will be removed when you clear your browser history data and are not saved if you're using incognito.
