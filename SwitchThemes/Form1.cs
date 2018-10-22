@@ -314,16 +314,21 @@ namespace SwitchThemes
 				return false;
 			}
 			Process p = new Process();
+			string tempPath = Path.GetTempPath();
+			if (tempPath.EndsWith("\\") || tempPath.EndsWith("/"))
+				tempPath = tempPath.Substring(0, tempPath.Length - 1); //fix wierd bug with quotes of texconv
 			p.StartInfo = new ProcessStartInfo()
 			{
 				FileName = "texconv",
-				Arguments = $"-y -f DXT1 -ft dds -o {Path.GetTempPath()} {tbBntxFile.Text}",
+				Arguments = $"-y -f DXT1 -ft dds -o \"{tempPath}\" \"{tbBntxFile.Text}\"",
 				CreateNoWindow = true,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
 			};
 			p.Start();
-			p.WaitForExit();
+			p.WaitForExit(8000);
+			if (!p.HasExited)
+				p.Kill();
 			string target = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
 			if (!File.Exists(target))
 			{
