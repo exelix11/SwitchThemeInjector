@@ -14,7 +14,7 @@ namespace SwitchThemesOnline
 {
 	public class App
 	{
-		const float AppVersion = 2f;
+		const string AppVersion = "2.1";
 		static HTMLDivElement topError;
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;
@@ -30,7 +30,7 @@ namespace SwitchThemesOnline
 		static DDSLoadResult LoadedDDS = null;
 		static PatchTemplate targetPatch = null;
 
-		public readonly static string[] embedLyouts = new string[] { "SuchHm", "SuchLk" , "ZnHm"};
+		public readonly static string[] embedLyouts = new string[] { "SuchHm", "SuchLk" , "ZnHm", "GleLk" };
 		public static LayoutPatch[] layoutPatches;
 
 		public static void OnLoad()
@@ -186,7 +186,7 @@ namespace SwitchThemesOnline
 			Document.GetElementById<HTMLInputElement>("AutoThemeUploader").Click();
 		}
 
-		public readonly static string[] ValidAutoThemeParts = new string[] { "home", "lock", "user" };
+		public readonly static string[] ValidAutoThemeParts = new string[] { "home", "lock", "user", "set" , "apps", "news" };
 		public static void AutoThemeFileUploaded(Uint8Array arr)
 		{
 			if (!ValidAutoThemeParts.ContainsStr(AutoThemePartName))
