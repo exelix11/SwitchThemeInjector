@@ -328,12 +328,15 @@ namespace SwitchThemes
 			p.Start();
 			p.WaitForExit(8000);
 			if (!p.HasExited)
+			{
 				p.Kill();
+				MessageBox.Show("The texture converter has timed out and the process was killed, it may have generated a corrupted image");
+			}
 			string target = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
 			if (!File.Exists(target))
 			{
 				string pOut = p.StandardOutput.ReadToEnd();
-				MessageBox.Show("There was an error converting the image to DDS : \r\n\r\n" + pOut);
+				MessageBox.Show("Couldn't convert the image to DDS, output of the converter : \r\n\r\n" + pOut);
 				return false;
 			}
 			tbBntxFile.Text = target;
