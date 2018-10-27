@@ -128,6 +128,11 @@ SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}
 *your cfw folder* can be either atmosphere or ReiNx.
 Since the menu is a system title remember to create a "fsmitm.flag".</value>
   </data>
+  <data name="materialLabel8.Text" xml:space="preserve">
+    <value>Use this page to convert images to DDS you can use for Auto-Theme or the web injector.
+
+If you just want to make themes with this tool you don't need this step as the images you provide in the Inject &amp;&amp; Patch tab will automatically be converted</value>
+  </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

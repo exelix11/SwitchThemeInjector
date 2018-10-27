@@ -306,7 +306,7 @@ namespace SwitchThemes
 			LayoutPatchList.SelectedIndex = 0;
 		}
 
-		bool ImageToDDS()
+		bool ImageToDDS(string fileName, string outPath)
 		{
 			if (!File.Exists("texconv.exe"))
 			{
@@ -314,13 +314,13 @@ namespace SwitchThemes
 				return false;
 			}
 			Process p = new Process();
-			string tempPath = Path.GetTempPath();
-			if (tempPath.EndsWith("\\") || tempPath.EndsWith("/"))
-				tempPath = tempPath.Substring(0, tempPath.Length - 1); //fix wierd bug with quotes of texconv
+			string pathName = outPath;
+			if (pathName.EndsWith("\\") || pathName.EndsWith("/"))
+				pathName = pathName.Substring(0, pathName.Length - 1); //fix wierd bug with quotes of texconv
 			p.StartInfo = new ProcessStartInfo()
 			{
 				FileName = "texconv",
-				Arguments = $"-y -f DXT1 -ft dds -o \"{tempPath}\" \"{tbBntxFile.Text}\"",
+				Arguments = $"-y -f DXT1 -ft dds -o \"{pathName}\" \"{fileName}\"",
 				CreateNoWindow = true,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
@@ -332,15 +332,22 @@ namespace SwitchThemes
 				p.Kill();
 				MessageBox.Show("The texture converter has timed out and the process was killed, it may have generated a corrupted image");
 			}
-			string target = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
+			string target = Path.Combine(pathName, Path.GetFileNameWithoutExtension(fileName) + ".dds");
 			if (!File.Exists(target))
 			{
 				string pOut = p.StandardOutput.ReadToEnd();
 				MessageBox.Show("Couldn't convert the image to DDS, output of the converter : \r\n\r\n" + pOut);
 				return false;
 			}
-			tbBntxFile.Text = target;
 			return true;
+		}
+
+		bool ImageToDDS()
+		{
+			var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
+			if (res)
+				tbBntxFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
+			return res;
 		}
 
 		private void PatchButtonClick(object sender, EventArgs e)
@@ -456,6 +463,24 @@ namespace SwitchThemes
 				else
 					System.Diagnostics.Process.Start(imagePath);
 			}
+		}
+
+		private void ImageToDDSBtn_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog opn = new OpenFileDialog()
+			{
+				Multiselect = true,
+				Title = "Select one or more images",
+				Filter = "Common image files|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*"
+			};
+			if (opn.ShowDialog() != DialogResult.OK)
+				return;
+			foreach (var f in opn.FileNames)
+			{
+				if (!ImageToDDS(f, Path.GetDirectoryName(f)))
+					return;
+			}
+			MessageBox.Show("Done !");
 		}
 	}
 }
