@@ -44,6 +44,23 @@
 			this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
+			this.DdsConvPage = new System.Windows.Forms.TabPage();
+			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
+			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+			this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
+			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
+			this.NCADumpPage = new System.Windows.Forms.TabPage();
+			this.NCARunBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.NCALogTb = new System.Windows.Forms.TextBox();
+			this.OutputPathTb = new System.Windows.Forms.TextBox();
+			this.OutputBtn = new MaterialSkin.Controls.MaterialFlatButton();
+			this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
+			this.mountPathTb = new System.Windows.Forms.TextBox();
+			this.MountBtn = new MaterialSkin.Controls.MaterialFlatButton();
+			this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
+			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
+			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
 			this.AdvancedPage = new System.Windows.Forms.TabPage();
 			this.AdvPanel = new System.Windows.Forms.Panel();
 			this.materialRaisedButton7 = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -63,17 +80,14 @@
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
-			this.DdsConvPage = new System.Windows.Forms.TabPage();
-			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
-			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
+			this.DdsConvPage.SuspendLayout();
+			this.NCADumpPage.SuspendLayout();
 			this.AdvancedPage.SuspendLayout();
 			this.AdvPanel.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
-			this.DdsConvPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// materialTabControl1
@@ -84,13 +98,14 @@
 			this.materialTabControl1.Controls.Add(this.PatchListPage);
 			this.materialTabControl1.Controls.Add(this.InjectPage);
 			this.materialTabControl1.Controls.Add(this.DdsConvPage);
+			this.materialTabControl1.Controls.Add(this.NCADumpPage);
 			this.materialTabControl1.Controls.Add(this.AdvancedPage);
 			this.materialTabControl1.Depth = 0;
-			this.materialTabControl1.Location = new System.Drawing.Point(-1, 152);
+			this.materialTabControl1.Location = new System.Drawing.Point(-1, 150);
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabControl1.Name = "materialTabControl1";
 			this.materialTabControl1.SelectedIndex = 0;
-			this.materialTabControl1.Size = new System.Drawing.Size(645, 288);
+			this.materialTabControl1.Size = new System.Drawing.Size(646, 287);
 			this.materialTabControl1.TabIndex = 4;
 			// 
 			// PatchListPage
@@ -99,7 +114,7 @@
 			this.PatchListPage.Controls.Add(this.tbPatches);
 			this.PatchListPage.Location = new System.Drawing.Point(4, 22);
 			this.PatchListPage.Name = "PatchListPage";
-			this.PatchListPage.Size = new System.Drawing.Size(637, 262);
+			this.PatchListPage.Size = new System.Drawing.Size(638, 261);
 			this.PatchListPage.TabIndex = 2;
 			this.PatchListPage.Text = "Patch list";
 			// 
@@ -112,12 +127,12 @@
 			this.tbPatches.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.tbPatches.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tbPatches.ForeColor = System.Drawing.Color.White;
-			this.tbPatches.Location = new System.Drawing.Point(9, 0);
+			this.tbPatches.Location = new System.Drawing.Point(3, 3);
 			this.tbPatches.Multiline = true;
 			this.tbPatches.Name = "tbPatches";
 			this.tbPatches.ReadOnly = true;
 			this.tbPatches.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbPatches.Size = new System.Drawing.Size(628, 249);
+			this.tbPatches.Size = new System.Drawing.Size(635, 246);
 			this.tbPatches.TabIndex = 12;
 			// 
 			// InjectPage
@@ -136,7 +151,7 @@
 			this.InjectPage.Location = new System.Drawing.Point(4, 22);
 			this.InjectPage.Name = "InjectPage";
 			this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
-			this.InjectPage.Size = new System.Drawing.Size(637, 262);
+			this.InjectPage.Size = new System.Drawing.Size(638, 261);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "Inject & patch";
 			// 
@@ -146,7 +161,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbBntxFile.Location = new System.Drawing.Point(65, 38);
 			this.tbBntxFile.Name = "tbBntxFile";
-			this.tbBntxFile.Size = new System.Drawing.Size(525, 20);
+			this.tbBntxFile.Size = new System.Drawing.Size(530, 20);
 			this.tbBntxFile.TabIndex = 1;
 			// 
 			// materialLabel7
@@ -165,7 +180,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel1.Location = new System.Drawing.Point(553, 67);
+			this.linkLabel1.Location = new System.Drawing.Point(547, 67);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(84, 21);
 			this.linkLabel1.TabIndex = 9;
@@ -185,7 +200,7 @@
             "Don\'t patch"});
 			this.LayoutPatchList.Location = new System.Drawing.Point(108, 67);
 			this.LayoutPatchList.Name = "LayoutPatchList";
-			this.LayoutPatchList.Size = new System.Drawing.Size(439, 21);
+			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 8;
 			// 
 			// materialLabel6
@@ -202,6 +217,8 @@
 			// 
 			// materialLabel1
 			// 
+			this.materialLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialLabel1.Depth = 0;
 			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
@@ -221,7 +238,7 @@
 			this.materialFlatButton1.Depth = 0;
 			this.materialFlatButton1.ForeColor = System.Drawing.Color.White;
 			this.materialFlatButton1.Icon = null;
-			this.materialFlatButton1.Location = new System.Drawing.Point(594, 29);
+			this.materialFlatButton1.Location = new System.Drawing.Point(602, 30);
 			this.materialFlatButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
 			this.materialFlatButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialFlatButton1.Name = "materialFlatButton1";
@@ -251,7 +268,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 220);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(499, 219);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -271,9 +288,264 @@
 			this.materialLabel3.Location = new System.Drawing.Point(6, 158);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
-			this.materialLabel3.Size = new System.Drawing.Size(624, 101);
+			this.materialLabel3.Size = new System.Drawing.Size(525, 101);
 			this.materialLabel3.TabIndex = 5;
 			this.materialLabel3.Text = resources.GetString("materialLabel3.Text");
+			// 
+			// DdsConvPage
+			// 
+			this.DdsConvPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.DdsConvPage.Controls.Add(this.linkLabel3);
+			this.DdsConvPage.Controls.Add(this.linkLabel2);
+			this.DdsConvPage.Controls.Add(this.materialLabel9);
+			this.DdsConvPage.Controls.Add(this.ImageToDDSBtn);
+			this.DdsConvPage.Controls.Add(this.materialLabel8);
+			this.DdsConvPage.ForeColor = System.Drawing.Color.White;
+			this.DdsConvPage.Location = new System.Drawing.Point(4, 22);
+			this.DdsConvPage.Name = "DdsConvPage";
+			this.DdsConvPage.Padding = new System.Windows.Forms.Padding(3);
+			this.DdsConvPage.Size = new System.Drawing.Size(638, 261);
+			this.DdsConvPage.TabIndex = 4;
+			this.DdsConvPage.Text = "Image to DDS";
+			// 
+			// linkLabel3
+			// 
+			this.linkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel3.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+			this.linkLabel3.Location = new System.Drawing.Point(0, 218);
+			this.linkLabel3.Name = "linkLabel3";
+			this.linkLabel3.Size = new System.Drawing.Size(638, 16);
+			this.linkLabel3.TabIndex = 11;
+			this.linkLabel3.TabStop = true;
+			this.linkLabel3.Text = "Open the Auto-Theme page";
+			this.linkLabel3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel3_LinkClicked);
+			// 
+			// linkLabel2
+			// 
+			this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel2.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+			this.linkLabel2.Location = new System.Drawing.Point(0, 199);
+			this.linkLabel2.Name = "linkLabel2";
+			this.linkLabel2.Size = new System.Drawing.Size(638, 16);
+			this.linkLabel2.TabIndex = 10;
+			this.linkLabel2.TabStop = true;
+			this.linkLabel2.Text = "Open the web version of the injector";
+			this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked);
+			// 
+			// materialLabel9
+			// 
+			this.materialLabel9.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel9.Depth = 0;
+			this.materialLabel9.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel9.Location = new System.Drawing.Point(6, 146);
+			this.materialLabel9.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel9.Name = "materialLabel9";
+			this.materialLabel9.Size = new System.Drawing.Size(629, 26);
+			this.materialLabel9.TabIndex = 9;
+			this.materialLabel9.Text = "The converted files will be saved in the same directory of the originals";
+			this.materialLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// ImageToDDSBtn
+			// 
+			this.ImageToDDSBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.ImageToDDSBtn.AutoSize = true;
+			this.ImageToDDSBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.ImageToDDSBtn.Depth = 0;
+			this.ImageToDDSBtn.Icon = null;
+			this.ImageToDDSBtn.Location = new System.Drawing.Point(265, 106);
+			this.ImageToDDSBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.ImageToDDSBtn.Name = "ImageToDDSBtn";
+			this.ImageToDDSBtn.Primary = true;
+			this.ImageToDDSBtn.Size = new System.Drawing.Size(111, 36);
+			this.ImageToDDSBtn.TabIndex = 8;
+			this.ImageToDDSBtn.Text = "Open images";
+			this.ImageToDDSBtn.UseVisualStyleBackColor = true;
+			this.ImageToDDSBtn.Click += new System.EventHandler(this.ImageToDDSBtn_Click);
+			// 
+			// materialLabel8
+			// 
+			this.materialLabel8.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel8.Depth = 0;
+			this.materialLabel8.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel8.Location = new System.Drawing.Point(2, 3);
+			this.materialLabel8.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel8.Name = "materialLabel8";
+			this.materialLabel8.Size = new System.Drawing.Size(633, 101);
+			this.materialLabel8.TabIndex = 7;
+			this.materialLabel8.Text = resources.GetString("materialLabel8.Text");
+			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// NCADumpPage
+			// 
+			this.NCADumpPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.NCADumpPage.Controls.Add(this.NCARunBtn);
+			this.NCADumpPage.Controls.Add(this.NCALogTb);
+			this.NCADumpPage.Controls.Add(this.OutputPathTb);
+			this.NCADumpPage.Controls.Add(this.OutputBtn);
+			this.NCADumpPage.Controls.Add(this.materialLabel14);
+			this.NCADumpPage.Controls.Add(this.mountPathTb);
+			this.NCADumpPage.Controls.Add(this.MountBtn);
+			this.NCADumpPage.Controls.Add(this.materialLabel13);
+			this.NCADumpPage.Controls.Add(this.linkLabel4);
+			this.NCADumpPage.Controls.Add(this.materialLabel10);
+			this.NCADumpPage.Location = new System.Drawing.Point(4, 22);
+			this.NCADumpPage.Name = "NCADumpPage";
+			this.NCADumpPage.Padding = new System.Windows.Forms.Padding(3);
+			this.NCADumpPage.Size = new System.Drawing.Size(638, 261);
+			this.NCADumpPage.TabIndex = 5;
+			this.NCADumpPage.Text = "Extract NCA";
+			// 
+			// NCARunBtn
+			// 
+			this.NCARunBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.NCARunBtn.AutoSize = true;
+			this.NCARunBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.NCARunBtn.Depth = 0;
+			this.NCARunBtn.Icon = null;
+			this.NCARunBtn.Location = new System.Drawing.Point(584, 219);
+			this.NCARunBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.NCARunBtn.Name = "NCARunBtn";
+			this.NCARunBtn.Primary = true;
+			this.NCARunBtn.Size = new System.Drawing.Size(48, 36);
+			this.NCARunBtn.TabIndex = 28;
+			this.NCARunBtn.Text = "RUN";
+			this.NCARunBtn.UseVisualStyleBackColor = true;
+			this.NCARunBtn.Click += new System.EventHandler(this.NCARunBtn_Click);
+			// 
+			// NCALogTb
+			// 
+			this.NCALogTb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.NCALogTb.BackColor = System.Drawing.Color.Black;
+			this.NCALogTb.ForeColor = System.Drawing.Color.White;
+			this.NCALogTb.Location = new System.Drawing.Point(6, 125);
+			this.NCALogTb.Multiline = true;
+			this.NCALogTb.Name = "NCALogTb";
+			this.NCALogTb.ReadOnly = true;
+			this.NCALogTb.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.NCALogTb.Size = new System.Drawing.Size(572, 126);
+			this.NCALogTb.TabIndex = 27;
+			this.NCALogTb.Text = "Hactool LOG:";
+			this.NCALogTb.Visible = false;
+			// 
+			// OutputPathTb
+			// 
+			this.OutputPathTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.OutputPathTb.Location = new System.Drawing.Point(99, 89);
+			this.OutputPathTb.Name = "OutputPathTb";
+			this.OutputPathTb.Size = new System.Drawing.Size(492, 20);
+			this.OutputPathTb.TabIndex = 24;
+			// 
+			// OutputBtn
+			// 
+			this.OutputBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.OutputBtn.AutoSize = true;
+			this.OutputBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.OutputBtn.Depth = 0;
+			this.OutputBtn.ForeColor = System.Drawing.Color.White;
+			this.OutputBtn.Icon = null;
+			this.OutputBtn.Location = new System.Drawing.Point(598, 80);
+			this.OutputBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+			this.OutputBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.OutputBtn.Name = "OutputBtn";
+			this.OutputBtn.Primary = false;
+			this.OutputBtn.Size = new System.Drawing.Size(32, 36);
+			this.OutputBtn.TabIndex = 26;
+			this.OutputBtn.Text = "...";
+			this.OutputBtn.UseVisualStyleBackColor = true;
+			this.OutputBtn.Click += new System.EventHandler(this.OutputBtn_Click);
+			// 
+			// materialLabel14
+			// 
+			this.materialLabel14.Depth = 0;
+			this.materialLabel14.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel14.Location = new System.Drawing.Point(9, 89);
+			this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel14.Name = "materialLabel14";
+			this.materialLabel14.Size = new System.Drawing.Size(145, 20);
+			this.materialLabel14.TabIndex = 25;
+			this.materialLabel14.Text = "Output path: ";
+			// 
+			// mountPathTb
+			// 
+			this.mountPathTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.mountPathTb.Location = new System.Drawing.Point(145, 45);
+			this.mountPathTb.Name = "mountPathTb";
+			this.mountPathTb.Size = new System.Drawing.Size(446, 20);
+			this.mountPathTb.TabIndex = 21;
+			// 
+			// MountBtn
+			// 
+			this.MountBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.MountBtn.AutoSize = true;
+			this.MountBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.MountBtn.Depth = 0;
+			this.MountBtn.ForeColor = System.Drawing.Color.White;
+			this.MountBtn.Icon = null;
+			this.MountBtn.Location = new System.Drawing.Point(598, 37);
+			this.MountBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+			this.MountBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.MountBtn.Name = "MountBtn";
+			this.MountBtn.Primary = false;
+			this.MountBtn.Size = new System.Drawing.Size(32, 36);
+			this.MountBtn.TabIndex = 23;
+			this.MountBtn.Text = "...";
+			this.MountBtn.UseVisualStyleBackColor = true;
+			this.MountBtn.Click += new System.EventHandler(this.MountBtn_Click);
+			// 
+			// materialLabel13
+			// 
+			this.materialLabel13.Depth = 0;
+			this.materialLabel13.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel13.Location = new System.Drawing.Point(9, 45);
+			this.materialLabel13.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel13.Name = "materialLabel13";
+			this.materialLabel13.Size = new System.Drawing.Size(145, 20);
+			this.materialLabel13.TabIndex = 22;
+			this.materialLabel13.Text = "Switch mount path: ";
+			// 
+			// linkLabel4
+			// 
+			this.linkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel4.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+			this.linkLabel4.Location = new System.Drawing.Point(0, 26);
+			this.linkLabel4.Name = "linkLabel4";
+			this.linkLabel4.Size = new System.Drawing.Size(631, 16);
+			this.linkLabel4.TabIndex = 12;
+			this.linkLabel4.TabStop = true;
+			this.linkLabel4.Text = "Click to open the guide";
+			this.linkLabel4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
+			// 
+			// materialLabel10
+			// 
+			this.materialLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel10.Depth = 0;
+			this.materialLabel10.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel10.Location = new System.Drawing.Point(6, 3);
+			this.materialLabel10.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel10.Name = "materialLabel10";
+			this.materialLabel10.Size = new System.Drawing.Size(625, 23);
+			this.materialLabel10.TabIndex = 8;
+			this.materialLabel10.Text = "Use this page to extract the home menu files from your nand, FOLLOW THE ONLINE GU" +
+    "IDE.";
+			this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// AdvancedPage
 			// 
@@ -284,7 +556,7 @@
 			this.AdvancedPage.Location = new System.Drawing.Point(4, 22);
 			this.AdvancedPage.Name = "AdvancedPage";
 			this.AdvancedPage.Padding = new System.Windows.Forms.Padding(3);
-			this.AdvancedPage.Size = new System.Drawing.Size(637, 262);
+			this.AdvancedPage.Size = new System.Drawing.Size(638, 261);
 			this.AdvancedPage.TabIndex = 3;
 			this.AdvancedPage.Text = "Advanced";
 			// 
@@ -303,7 +575,7 @@
 			this.AdvPanel.Enabled = false;
 			this.AdvPanel.Location = new System.Drawing.Point(9, 52);
 			this.AdvPanel.Name = "AdvPanel";
-			this.AdvPanel.Size = new System.Drawing.Size(619, 207);
+			this.AdvPanel.Size = new System.Drawing.Size(620, 206);
 			this.AdvPanel.TabIndex = 7;
 			this.AdvPanel.Visible = false;
 			// 
@@ -314,7 +586,7 @@
 			this.materialRaisedButton7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton7.Depth = 0;
 			this.materialRaisedButton7.Icon = null;
-			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 165);
+			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 164);
 			this.materialRaisedButton7.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton7.Name = "materialRaisedButton7";
 			this.materialRaisedButton7.Primary = true;
@@ -331,7 +603,7 @@
 			this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton6.Depth = 0;
 			this.materialRaisedButton6.Icon = null;
-			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 165);
+			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 164);
 			this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton6.Name = "materialRaisedButton6";
 			this.materialRaisedButton6.Primary = true;
@@ -348,7 +620,7 @@
 			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton4.Depth = 0;
 			this.materialRaisedButton4.Icon = null;
-			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 165);
+			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 164);
 			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
@@ -368,7 +640,7 @@
 			this.materialLabel5.Location = new System.Drawing.Point(3, 0);
 			this.materialLabel5.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel5.Name = "materialLabel5";
-			this.materialLabel5.Size = new System.Drawing.Size(613, 23);
+			this.materialLabel5.Size = new System.Drawing.Size(614, 23);
 			this.materialLabel5.TabIndex = 7;
 			this.materialLabel5.Text = "Files in the SZS : (left click to replace or extract)";
 			// 
@@ -384,7 +656,7 @@
 			this.SzsFileList.FormattingEnabled = true;
 			this.SzsFileList.Location = new System.Drawing.Point(3, 26);
 			this.SzsFileList.Name = "SzsFileList";
-			this.SzsFileList.Size = new System.Drawing.Size(613, 130);
+			this.SzsFileList.Size = new System.Drawing.Size(614, 117);
 			this.SzsFileList.Sorted = true;
 			this.SzsFileList.TabIndex = 5;
 			// 
@@ -417,7 +689,7 @@
 			this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton1.Depth = 0;
 			this.materialRaisedButton1.Icon = null;
-			this.materialRaisedButton1.Location = new System.Drawing.Point(484, 165);
+			this.materialRaisedButton1.Location = new System.Drawing.Point(485, 164);
 			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton1.Name = "materialRaisedButton1";
 			this.materialRaisedButton1.Primary = true;
@@ -434,7 +706,7 @@
 			this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton5.Depth = 0;
 			this.materialRaisedButton5.Icon = null;
-			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 165);
+			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 164);
 			this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton5.Name = "materialRaisedButton5";
 			this.materialRaisedButton5.Primary = true;
@@ -449,7 +721,7 @@
 			this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.checkBox1.AutoSize = true;
 			this.checkBox1.ForeColor = System.Drawing.Color.White;
-			this.checkBox1.Location = new System.Drawing.Point(493, 28);
+			this.checkBox1.Location = new System.Drawing.Point(494, 28);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(135, 17);
 			this.checkBox1.TabIndex = 0;
@@ -467,7 +739,7 @@
 			this.materialLabel4.Location = new System.Drawing.Point(0, 3);
 			this.materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel4.Name = "materialLabel4";
-			this.materialLabel4.Size = new System.Drawing.Size(637, 46);
+			this.materialLabel4.Size = new System.Drawing.Size(638, 46);
 			this.materialLabel4.TabIndex = 6;
 			this.materialLabel4.Text = "Advanced tools allow you to manually edit the szs and more to create custom patch" +
     "es, enable them only if you know what you\'re doing";
@@ -493,7 +765,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 429);
+			this.label1.Location = new System.Drawing.Point(0, 426);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 12;
@@ -543,68 +815,11 @@
 			this.materialDivider1.Text = "materialDivider1";
 			this.materialDivider1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DragForm_MouseDown);
 			// 
-			// DdsConvPage
-			// 
-			this.DdsConvPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.DdsConvPage.Controls.Add(this.materialLabel9);
-			this.DdsConvPage.Controls.Add(this.ImageToDDSBtn);
-			this.DdsConvPage.Controls.Add(this.materialLabel8);
-			this.DdsConvPage.ForeColor = System.Drawing.Color.White;
-			this.DdsConvPage.Location = new System.Drawing.Point(4, 22);
-			this.DdsConvPage.Name = "DdsConvPage";
-			this.DdsConvPage.Padding = new System.Windows.Forms.Padding(3);
-			this.DdsConvPage.Size = new System.Drawing.Size(637, 262);
-			this.DdsConvPage.TabIndex = 4;
-			this.DdsConvPage.Text = "Image to DDS";
-			// 
-			// materialLabel8
-			// 
-			this.materialLabel8.Depth = 0;
-			this.materialLabel8.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel8.Location = new System.Drawing.Point(2, 3);
-			this.materialLabel8.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel8.Name = "materialLabel8";
-			this.materialLabel8.Size = new System.Drawing.Size(628, 101);
-			this.materialLabel8.TabIndex = 7;
-			this.materialLabel8.Text = resources.GetString("materialLabel8.Text");
-			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// ImageToDDSBtn
-			// 
-			this.ImageToDDSBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.ImageToDDSBtn.AutoSize = true;
-			this.ImageToDDSBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ImageToDDSBtn.Depth = 0;
-			this.ImageToDDSBtn.Icon = null;
-			this.ImageToDDSBtn.Location = new System.Drawing.Point(259, 107);
-			this.ImageToDDSBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.ImageToDDSBtn.Name = "ImageToDDSBtn";
-			this.ImageToDDSBtn.Primary = true;
-			this.ImageToDDSBtn.Size = new System.Drawing.Size(111, 36);
-			this.ImageToDDSBtn.TabIndex = 8;
-			this.ImageToDDSBtn.Text = "Open images";
-			this.ImageToDDSBtn.UseVisualStyleBackColor = true;
-			this.ImageToDDSBtn.Click += new System.EventHandler(this.ImageToDDSBtn_Click);
-			// 
-			// materialLabel9
-			// 
-			this.materialLabel9.Depth = 0;
-			this.materialLabel9.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel9.Location = new System.Drawing.Point(6, 146);
-			this.materialLabel9.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel9.Name = "materialLabel9";
-			this.materialLabel9.Size = new System.Drawing.Size(628, 26);
-			this.materialLabel9.TabIndex = 9;
-			this.materialLabel9.Text = "The converted files will be saved in the same directory of the originals";
-			this.materialLabel9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 442);
+			this.ClientSize = new System.Drawing.Size(645, 439);
 			this.Controls.Add(this.lblDetected);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialRaisedButton3);
@@ -622,13 +837,15 @@
 			this.PatchListPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
+			this.DdsConvPage.ResumeLayout(false);
+			this.DdsConvPage.PerformLayout();
+			this.NCADumpPage.ResumeLayout(false);
+			this.NCADumpPage.PerformLayout();
 			this.AdvancedPage.ResumeLayout(false);
 			this.AdvancedPage.PerformLayout();
 			this.AdvPanel.ResumeLayout(false);
 			this.AdvPanel.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
-			this.DdsConvPage.ResumeLayout(false);
-			this.DdsConvPage.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -672,6 +889,19 @@
 		private MaterialSkin.Controls.MaterialLabel materialLabel8;
 		private MaterialSkin.Controls.MaterialRaisedButton ImageToDDSBtn;
 		private MaterialSkin.Controls.MaterialLabel materialLabel9;
+		private System.Windows.Forms.LinkLabel linkLabel3;
+		private System.Windows.Forms.LinkLabel linkLabel2;
+		private System.Windows.Forms.TabPage NCADumpPage;
+		private System.Windows.Forms.TextBox OutputPathTb;
+		private MaterialSkin.Controls.MaterialFlatButton OutputBtn;
+		private MaterialSkin.Controls.MaterialLabel materialLabel14;
+		private System.Windows.Forms.TextBox mountPathTb;
+		private MaterialSkin.Controls.MaterialFlatButton MountBtn;
+		private MaterialSkin.Controls.MaterialLabel materialLabel13;
+		private System.Windows.Forms.LinkLabel linkLabel4;
+		private MaterialSkin.Controls.MaterialLabel materialLabel10;
+		private MaterialSkin.Controls.MaterialRaisedButton NCARunBtn;
+		private System.Windows.Forms.TextBox NCALogTb;
 	}
 }
 
