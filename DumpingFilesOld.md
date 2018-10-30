@@ -1,6 +1,6 @@
 # Dumping Files
-This guide explains how to obtain the files needed to make custom themes from your own switch.
-**This guide is outdated, you should use the [new automated one](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md) **
+This guide explains how to obtain the files needed to make custom themes from your own switch. \
+**This guide is outdated, you should use the [new automated one](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md)**
 
 ## Tools you'll need
 - BisKeyDump
