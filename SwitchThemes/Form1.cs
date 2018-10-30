@@ -47,8 +47,10 @@ namespace SwitchThemes
 			}
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
-			tbPatches.Text = LoadFileText;
-			
+			tbPatches.Text = "(To dump the following files check the guide at https://git.io/fxdyF )\r\n" + LoadFileText;
+
+			if (!File.Exists("hactool\\hactool.exe") && !File.Exists("hactool\\keys.dat"))
+				materialTabControl1.TabPages.Remove(NCADumpPage);
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -482,5 +484,10 @@ namespace SwitchThemes
 			}
 			MessageBox.Show("Done !");
 		}
+
+		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/");
+		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/autotheme.html");
 	}
 }
