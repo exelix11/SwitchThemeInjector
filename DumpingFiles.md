@@ -12,7 +12,7 @@ This guide explains how to obtain the files needed to make custom themes from yo
 
 ## Guide
 ### Setup
-Go to the switch theme injector directory and create a new folder called `hactool`, inside of it copy `hactool.exe` and its dlls.\
+Go to the switch theme injector directory and create a new folder called `hactool`, inside of it copy `hactool.exe` and its dlls, **make sure you're using latest version**.\
 Get all the switch keys, either dump them from your console or search on google (coff coff pastebin) and put them in a file called `keys.dat` in the `hactool` folder. **Make sure you have up to date keys check that you have `master_key` 0 to 5** \
 Now open switch theme injector, if you did everything correctly you should see the "Extract NCA" tab. Close it for now, you'll need it later.
 ### Getting your nand keys
