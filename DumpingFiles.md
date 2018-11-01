@@ -40,7 +40,24 @@ For output path select an empty folder on your pc in which the home menu will be
 (you can click on ... to browse) \
 Click on RUN \
 The process shouldn't take more than 5 minutes (it usually takes much less), at the end if everything went fine it should have extracted the home menu and user settings applet romfs to the folder you selected earlier.\
-The files you're looking for are in the `lyt` folder.\
-If the process failed check you did all the steps correctly, try the [old guide](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFilesOld.md) or save the log and contact me.
-\
-Before closing hactool remember to unmount.
+The files you're looking for are in the `lyt` folder.
+
+Before closing hactool remember to click on unmount.
+
+#### Troubleshooting
+If the process failed check you did all the steps correctly, especially the keys. \
+To know if you have the correct keys check the LOG, it should look like this:
+```
+Checking file ........
+Nca: .....
+Magic: ..........
+[many lines with other info about the file]
+Done!
+
+Checking file ........
+```
+If your log is missing the file info or contains errors about decryption you're missing some keys. \
+If the log looks ok manually check if hactool works: open the command prompt in the hactool folder and type `hactool -k keys.dat *your switch nand*:/contents/registered/*any folder*/00` doesn't matter which folder you pick, this is just to check if hactool works properly. Check if the output contains any errors.
+
+
+If you still have issues try the [old guide](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFilesOld.md) or save the log and contact me.
