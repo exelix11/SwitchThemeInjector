@@ -38,7 +38,7 @@ namespace SwitchThemes
 		bool HactoolExtract(string fname, string target)
 		{
 			NCALogTb.AppendText( "Extracting file " + fname + " target " + target + "\r\n");
-			string cmdline = $"/C {HactoolExe} -k \"{KeyFile}\" --romfsdir=\"{OutputPathTb.Text}\\{target}RomFS\" \"{fname}\"";
+			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" --romfsdir=\"{OutputPathTb.Text}\\{target}RomFS\" \"{fname}\"\"";
 			Console.WriteLine(cmdline);
 			var start = new ProcessStartInfo()
 			{
@@ -74,7 +74,7 @@ namespace SwitchThemes
 		string HactoolInfo(string fname)
 		{
 			NCALogTb.AppendText( "Checking file " + fname + "\r\n");
-			string cmdline = $"/C {HactoolExe} -k \"{KeyFile}\" \"{fname}\"";
+			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" \"{fname}\"\"";
 			Console.WriteLine(cmdline);
 			var start = new ProcessStartInfo()
 			{

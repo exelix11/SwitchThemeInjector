@@ -10,7 +10,7 @@ namespace SwitchThemes.Common
 {
     static class SwitchThemesCommon
     {
-		public const string CoreVer = "3.3";
+		public const string CoreVer = "3.3.1";
 		const string LoadFileText =
 			"To create a theme open an szs first, these are the patches available in this version:" +
 			"{0} \r\n" +

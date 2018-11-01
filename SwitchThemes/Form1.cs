@@ -49,7 +49,7 @@ namespace SwitchThemes
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = "(To dump the following files check the guide at https://git.io/fxdyF )\r\n" + LoadFileText;
 
-			if (!File.Exists("hactool\\hactool.exe") && !File.Exists("hactool\\keys.dat"))
+			if (!File.Exists("hactool\\hactool.exe") || !File.Exists("hactool\\keys.dat"))
 				materialTabControl1.TabPages.Remove(NCADumpPage);
 		}
 
