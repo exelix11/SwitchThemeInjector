@@ -12,8 +12,8 @@ This guide explains how to obtain the files needed to make custom themes from yo
 
 ## Guide
 ### Setup
-Go to the switch theme injector directory and create a new folder called `hactool`, inside of it copy `hactool.exe` and its dlls.\
-Get all the switch keys, either dump them from your console or search on google and put them in a file called `keys.dat` in the `hactool` folder. If you got them from the internet to make sure you have up to date keys check that you have `master_key_05`\
+Go to the switch theme injector directory and create a new folder called `hactool`, inside of it copy `hactool.exe` and its dlls, **make sure you're using latest version**.\
+Get all the switch keys, either dump them from your console or search on google (coff coff pastebin) and put them in a file called `keys.dat` in the `hactool` folder. **Make sure you have up to date keys check that you have `master_key` 0 to 5** \
 Now open switch theme injector, if you did everything correctly you should see the "Extract NCA" tab. Close it for now, you'll need it later.
 ### Getting your nand keys
 Boot your switch in RCM mode and launch the BisKeyDump payload, it will show several keys and a qr code.\
@@ -24,7 +24,7 @@ Follow ONLY ONE of these options :
 #### From USB
 Fully read this part before attempting it, also make sure to have a nand backup. \
 Download the memloader payload by rajkosto and unzip it. Inside the zip there should be a folder called `samples`, copy its contents to the root of the sd card.\
-Run the `memloader.bin` payload, with the volume buttons choose `ums_emmci.ini` and press the power button to confirm, windows should detect a new device **if it asks to format it CLICK NO or else you'll brick**.\
+Run the `memloader.bin` payload, with the volume buttons choose `ums_emmc.ini` and press the power button to confirm, windows should detect a new device **if it asks to format it CLICK NO or else you'll brick**.\
 Now open HacDiskMount, click on File and Open physical drive, select your switch from the list (should be called `Linux UMS drive`, the size should be around 29GB). \
 If you did everything correctly now you should see a list of all the partitions on your switch nand, skip to the "Dumping the home menu" section
 #### From Nand backup
@@ -40,7 +40,24 @@ For output path select an empty folder on your pc in which the home menu will be
 (you can click on ... to browse) \
 Click on RUN \
 The process shouldn't take more than 5 minutes (it usually takes much less), at the end if everything went fine it should have extracted the home menu and user settings applet romfs to the folder you selected earlier.\
-The files you're looking for are in the `lyt` folder.\
-If the process failed check you did all the steps correctly, try the [old guide](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFilesOld.md) or save the log and contact me.
-\
-Before closing hactool remember to unmount.
+The files you're looking for are in the `lyt` folder.
+
+Before closing hactool remember to click on unmount.
+
+#### Troubleshooting
+If the process failed check you did all the steps correctly, especially the keys. \
+To know if you have the correct keys check the LOG, it should look like this:
+```
+Checking file ........
+Nca: .....
+Magic: ..........
+[many lines with other info about the file]
+Done!
+
+Checking file ........
+```
+If your log is missing the file info or contains errors about decryption you're missing some keys. \
+If the log looks ok manually check if hactool works: open the command prompt in the hactool folder and type `hactool -k keys.dat *your switch nand*:/contents/registered/*any folder*/00` doesn't matter which folder you pick, this is just to check if hactool works properly. Check if the output contains any errors.
+
+
+If you still have issues try the [old guide](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFilesOld.md) or save the log and contact me.
