@@ -24,7 +24,7 @@ Follow ONLY ONE of these options :
 #### From USB
 Fully read this part before attempting it, also make sure to have a nand backup. \
 Download the memloader payload by rajkosto and unzip it. Inside the zip there should be a folder called `samples`, copy its contents to the root of the sd card.\
-Run the `memloader.bin` payload, with the volume buttons choose `ums_emmci.ini` and press the power button to confirm, windows should detect a new device **if it asks to format it CLICK NO or else you'll brick**.\
+Run the `memloader.bin` payload, with the volume buttons choose `ums_emmc.ini` and press the power button to confirm, windows should detect a new device **if it asks to format it CLICK NO or else you'll brick**.\
 Now open HacDiskMount, click on File and Open physical drive, select your switch from the list (should be called `Linux UMS drive`, the size should be around 29GB). \
 If you did everything correctly now you should see a list of all the partitions on your switch nand, skip to the "Dumping the home menu" section
 #### From Nand backup
