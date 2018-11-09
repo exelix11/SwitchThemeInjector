@@ -118,7 +118,7 @@ namespace SwitchThemesOnline
 				lblDetected.TextContent = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
 				lblTutorial.InnerHTML = string.Format(DefaultTutorialText, targetPatch.szsName, targetPatch.TitleId).Replace("\r\n", "<br />");
 				for (int i = 0; i < layoutPatches.Length; i++)
-					if (layoutPatches[i].IsCompatible(CommonSzs))
+					if (layoutPatches[i] != null && layoutPatches[i].IsCompatible(CommonSzs))
 						LayoutsComboBox.Add(new HTMLOptionElement() { TextContent = layoutPatches[i].ToString(), Value = i.ToString() });
 			});
 		}

@@ -39,18 +39,6 @@
     <Compile Include="App.cs" />
     <Compile Include="AutoTheme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Syroot.BinaryData\BinaryDataFormats.cs" />
-    <Compile Include="Syroot.BinaryData\BinaryDataReader.cs" />
-    <Compile Include="Syroot.BinaryData\BinaryDataWriter.cs" />
-    <Compile Include="Syroot.BinaryData\ByteOrder.cs" />
-    <Compile Include="Syroot.BinaryData\Core\EncodingExtensions.cs" />
-    <Compile Include="Syroot.BinaryData\Meta\BinaryConverterCache.cs" />
-    <Compile Include="Syroot.BinaryData\Meta\BinaryMemberAttribute.cs" />
-    <Compile Include="Syroot.BinaryData\Meta\BinaryObjectAttribute.cs" />
-    <Compile Include="Syroot.BinaryData\Meta\IBinaryConverter.cs" />
-    <Compile Include="Syroot.BinaryData\Meta\MemberData.cs" />
-    <Compile Include="Syroot.BinaryData\Offset.cs" />
-    <Compile Include="Syroot.BinaryData\SeekTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />

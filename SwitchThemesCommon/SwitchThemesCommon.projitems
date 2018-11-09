@@ -20,5 +20,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\SARC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\Yaz0.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SwitchThemesCommon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataFormats.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\BinaryDataWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\ByteOrder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Core\EncodingExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\BinaryConverterCache.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\BinaryMemberAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\BinaryObjectAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\IBinaryConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\MemberData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Offset.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\SeekTask.cs" />
   </ItemGroup>
 </Project>
