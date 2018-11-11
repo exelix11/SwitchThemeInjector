@@ -2,7 +2,7 @@
 This guide explains how to obtain the files needed to make custom themes from your own switch.
 
 ## Tools you'll need
-- [Latest version of switch theme injector](https://github.com/exelix11/SwitchThemeInjector/releases/tag/v-3.31)
+- [Latest version of switch theme injector](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
 - [BisKeyDump](https://files.sshnuke.net/biskeydumpv6.zip)
 - [HacDiskMount](https://files.sshnuke.net/HacDiskMount1055.zip)
 - [HacTool](https://github.com/SciresM/hactool/releases/latest)
