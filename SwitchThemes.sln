@@ -9,6 +9,8 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwitchThemesCommon", "Switc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesOnline", "SwitchThemesOnline\SwitchThemesOnline.csproj", "{3EE76B71-422A-4E80-8F17-63DA105BB4BC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNX", "SwitchThemesNX\SwitchThemesNX.vcxproj", "{3044B160-1764-420F-B4AE-9EFC2768C71E}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
@@ -48,6 +50,17 @@ Global
 		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Release|x64.Build.0 = Release|Any CPU
 		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Release|x86.ActiveCfg = Release|Any CPU
 		{3EE76B71-422A-4E80-8F17-63DA105BB4BC}.Release|x86.Build.0 = Release|Any CPU
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|Any CPU.Build.0 = Debug|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|x64.ActiveCfg = Debug|x64
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|x64.Build.0 = Debug|x64
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|x86.ActiveCfg = Debug|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Debug|x86.Build.0 = Debug|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Release|Any CPU.ActiveCfg = Release|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Release|x64.ActiveCfg = Release|x64
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Release|x64.Build.0 = Release|x64
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Release|x86.ActiveCfg = Release|Win32
+		{3044B160-1764-420F-B4AE-9EFC2768C71E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
