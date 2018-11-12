@@ -3,9 +3,9 @@ This guide explains how to obtain the files needed to make custom themes from yo
 **This guide is outdated, you should use the [new automated one](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md)**
 
 ## Tools you'll need
-- BisKeyDump
-- HacDiskMount
-- Hactool
+- [BisKeyDump](https://files.sshnuke.net/biskeydumpv6.zip)
+- [HacDiskMount](https://files.sshnuke.net/HacDiskMount1055.zip)
+- [HacTool](https://github.com/SciresM/hactool/releases/latest)
 - A Full nand backup (RawNand.bin) OR a usb-c cable
 
 **Payloads have full control on your console so aways download them from the authors' official link**

@@ -2,10 +2,10 @@
 This guide explains how to obtain the files needed to make custom themes from your own switch.
 
 ## Tools you'll need
-- Latest version of switch theme injector
-- BisKeyDump
-- HacDiskMount
-- Hactool
+- [Latest version of switch theme injector](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
+- [BisKeyDump](https://files.sshnuke.net/biskeydumpv6.zip)
+- [HacDiskMount](https://files.sshnuke.net/HacDiskMount1055.zip)
+- [HacTool](https://github.com/SciresM/hactool/releases/latest)
 - A way to read the console's nand: a usb-c cable OR a full nand backup (RawNand.bin)
 
 **Payloads have full control on your console so aways download them from the authors' official link**
