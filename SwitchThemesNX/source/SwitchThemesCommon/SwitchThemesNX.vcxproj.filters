@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="BinaryReadWrite\Buffer.cpp">
+      <Filter>BinaryReadWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="SarcLib\Sarc.cpp">
+      <Filter>SarcLib</Filter>
+    </ClCompile>
+    <ClCompile Include="SarcLib\Yaz0.cpp">
+      <Filter>SarcLib</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\DefaultTemplates.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="Layouts\Bflyt.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="SwitchThemesCommon.cpp" />
+    <ClCompile Include="Bntx\QuickBntx.cpp">
+      <Filter>Bntx</Filter>
+    </ClCompile>
+    <ClCompile Include="Bntx\DDS.cpp">
+      <Filter>Bntx</Filter>
+    </ClCompile>
+    <ClCompile Include="Bntx\BRTI.cpp">
+      <Filter>Bntx</Filter>
+    </ClCompile>
+    <ClCompile Include="NXTheme.cpp" />
+    <ClCompile Include="WindowsOnly\SwitchThemesNX.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BinaryReadWrite\Buffer.hpp">
+      <Filter>BinaryReadWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTypes.h" />
+    <ClInclude Include="SarcLib\Sarc.hpp">
+      <Filter>SarcLib</Filter>
+    </ClInclude>
+    <ClInclude Include="SarcLib\Yaz0.hpp">
+      <Filter>SarcLib</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\Bflyt.hpp">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\Patches.hpp">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="SwitchThemesCommon.hpp" />
+    <ClInclude Include="Bntx\QuickBntx.hpp">
+      <Filter>Bntx</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\json.hpp">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Bntx\DDS.hpp">
+      <Filter>Bntx</Filter>
+    </ClInclude>
+    <ClInclude Include="Bntx\BRTI.hpp">
+      <Filter>Bntx</Filter>
+    </ClInclude>
+    <ClInclude Include="NXTheme.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SarcLib">
+      <UniqueIdentifier>{faa0acca-6674-4700-8f53-b19810c890a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Layouts">
+      <UniqueIdentifier>{98eac0f9-dca6-45ca-810d-b83c89bb827a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bntx">
+      <UniqueIdentifier>{2cab32e3-cdf9-4d73-8b05-637e60d64903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BinaryReadWrite">
+      <UniqueIdentifier>{764fe7f2-bbf2-46e5-9703-fd268906781a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

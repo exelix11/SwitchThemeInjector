@@ -331,3 +331,10 @@ ASALocalRun/
 SwitchThemesOnline/html/analytics.txt
 *.szs
 *.nxtheme
+*.o
+*.d
+*.elf
+*.nacp
+*.nro
+*.nso
+*.pfs0
