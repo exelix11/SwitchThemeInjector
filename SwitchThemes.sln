@@ -9,7 +9,7 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwitchThemesCommon", "Switc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesOnline", "SwitchThemesOnline\SwitchThemesOnline.csproj", "{3EE76B71-422A-4E80-8F17-63DA105BB4BC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNX", "SwitchThemesNX\SwitchThemesNX.vcxproj", "{3044B160-1764-420F-B4AE-9EFC2768C71E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNX", "SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesNX.vcxproj", "{3044B160-1764-420F-B4AE-9EFC2768C71E}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
