@@ -27,6 +27,7 @@
     <ClCompile Include="Bntx\BRTI.cpp">
       <Filter>Bntx</Filter>
     </ClCompile>
+    <ClCompile Include="NXTheme.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryReadWrite\Buffer.hpp">
@@ -58,6 +59,7 @@
     <ClInclude Include="Bntx\BRTI.hpp">
       <Filter>Bntx</Filter>
     </ClInclude>
+    <ClInclude Include="NXTheme.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SarcLib">

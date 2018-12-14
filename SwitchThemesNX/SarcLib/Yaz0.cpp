@@ -1,14 +1,13 @@
 #include "Yaz0.hpp"
 
 using namespace std;
-
 vector<u8> Yaz0::Decompress(vector<u8> &Data) 
 {
 	u32 leng = (u32)(Data[4] << 24 | Data[5] << 16 | Data[6] << 8 | Data[7]);
 	vector<u8> _Result(leng);
 	u8* ResPtr = _Result.data();	
 	int Offs = 16;
-	int dstoffs = 0;
+	u32 dstoffs = 0;
 	while (true)
 	{
 		u8 header = Data[Offs++];

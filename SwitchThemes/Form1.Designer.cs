@@ -34,6 +34,8 @@
 			this.PatchListPage = new System.Windows.Forms.TabPage();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
+			this.materialRaisedButton8 = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.linkLabel5 = new System.Windows.Forms.LinkLabel();
 			this.tbBntxFile = new System.Windows.Forms.TextBox();
 			this.materialLabel7 = new MaterialSkin.Controls.MaterialLabel();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -52,12 +54,11 @@
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
 			this.NCADumpPage = new System.Windows.Forms.TabPage();
 			this.NCARunBtn = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.NCALogTb = new System.Windows.Forms.TextBox();
-			this.OutputPathTb = new System.Windows.Forms.TextBox();
-			this.OutputBtn = new MaterialSkin.Controls.MaterialFlatButton();
+			this.SdCardTb = new System.Windows.Forms.TextBox();
+			this.SdCardBtn = new MaterialSkin.Controls.MaterialFlatButton();
 			this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
-			this.mountPathTb = new System.Windows.Forms.TextBox();
-			this.MountBtn = new MaterialSkin.Controls.MaterialFlatButton();
+			this.keyFileTb = new System.Windows.Forms.TextBox();
+			this.KeyFileBtn = new MaterialSkin.Controls.MaterialFlatButton();
 			this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
 			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
 			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
@@ -138,6 +139,8 @@
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.InjectPage.Controls.Add(this.materialRaisedButton8);
+			this.InjectPage.Controls.Add(this.linkLabel5);
 			this.InjectPage.Controls.Add(this.tbBntxFile);
 			this.InjectPage.Controls.Add(this.materialLabel7);
 			this.InjectPage.Controls.Add(this.linkLabel1);
@@ -154,6 +157,36 @@
 			this.InjectPage.Size = new System.Drawing.Size(638, 261);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "Inject & patch";
+			// 
+			// materialRaisedButton8
+			// 
+			this.materialRaisedButton8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialRaisedButton8.AutoSize = true;
+			this.materialRaisedButton8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton8.Depth = 0;
+			this.materialRaisedButton8.Icon = null;
+			this.materialRaisedButton8.Location = new System.Drawing.Point(342, 218);
+			this.materialRaisedButton8.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton8.Name = "materialRaisedButton8";
+			this.materialRaisedButton8.Primary = true;
+			this.materialRaisedButton8.Size = new System.Drawing.Size(147, 36);
+			this.materialRaisedButton8.TabIndex = 11;
+			this.materialRaisedButton8.Text = "Build theme pack";
+			this.materialRaisedButton8.UseVisualStyleBackColor = true;
+			this.materialRaisedButton8.Click += new System.EventHandler(this.materialRaisedButton8_Click);
+			// 
+			// linkLabel5
+			// 
+			this.linkLabel5.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.linkLabel5.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+			this.linkLabel5.Location = new System.Drawing.Point(353, 194);
+			this.linkLabel5.Name = "linkLabel5";
+			this.linkLabel5.Size = new System.Drawing.Size(128, 21);
+			this.linkLabel5.TabIndex = 12;
+			this.linkLabel5.TabStop = true;
+			this.linkLabel5.Text = "What is a theme pack ?";
+			this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
 			// 
 			// tbBntxFile
 			// 
@@ -196,12 +229,11 @@
 			this.LayoutPatchList.BackColor = System.Drawing.Color.White;
 			this.LayoutPatchList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.LayoutPatchList.FormattingEnabled = true;
-			this.LayoutPatchList.Items.AddRange(new object[] {
-            "Don\'t patch"});
 			this.LayoutPatchList.Location = new System.Drawing.Point(108, 67);
 			this.LayoutPatchList.Name = "LayoutPatchList";
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 8;
+			this.LayoutPatchList.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
 			// 
 			// materialLabel6
 			// 
@@ -268,7 +300,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(499, 219);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 219);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -280,17 +312,16 @@
 			// 
 			// materialLabel3
 			// 
-			this.materialLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialLabel3.Depth = 0;
 			this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
 			this.materialLabel3.Location = new System.Drawing.Point(6, 158);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
-			this.materialLabel3.Size = new System.Drawing.Size(525, 101);
-			this.materialLabel3.TabIndex = 5;
-			this.materialLabel3.Text = resources.GetString("materialLabel3.Text");
+			this.materialLabel3.Size = new System.Drawing.Size(475, 57);
+			this.materialLabel3.TabIndex = 13;
+			this.materialLabel3.Text = "To install themes you can download the new NXThemesInstaller homebrew (Open beta " +
+    "on qcean discord)";
 			// 
 			// DdsConvPage
 			// 
@@ -387,12 +418,11 @@
 			// 
 			this.NCADumpPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
 			this.NCADumpPage.Controls.Add(this.NCARunBtn);
-			this.NCADumpPage.Controls.Add(this.NCALogTb);
-			this.NCADumpPage.Controls.Add(this.OutputPathTb);
-			this.NCADumpPage.Controls.Add(this.OutputBtn);
+			this.NCADumpPage.Controls.Add(this.SdCardTb);
+			this.NCADumpPage.Controls.Add(this.SdCardBtn);
 			this.NCADumpPage.Controls.Add(this.materialLabel14);
-			this.NCADumpPage.Controls.Add(this.mountPathTb);
-			this.NCADumpPage.Controls.Add(this.MountBtn);
+			this.NCADumpPage.Controls.Add(this.keyFileTb);
+			this.NCADumpPage.Controls.Add(this.KeyFileBtn);
 			this.NCADumpPage.Controls.Add(this.materialLabel13);
 			this.NCADumpPage.Controls.Add(this.linkLabel4);
 			this.NCADumpPage.Controls.Add(this.materialLabel10);
@@ -420,114 +450,97 @@
 			this.NCARunBtn.UseVisualStyleBackColor = true;
 			this.NCARunBtn.Click += new System.EventHandler(this.NCARunBtn_Click);
 			// 
-			// NCALogTb
+			// SdCardTb
 			// 
-			this.NCALogTb.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+			this.SdCardTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.NCALogTb.BackColor = System.Drawing.Color.Black;
-			this.NCALogTb.ForeColor = System.Drawing.Color.White;
-			this.NCALogTb.Location = new System.Drawing.Point(6, 125);
-			this.NCALogTb.Multiline = true;
-			this.NCALogTb.Name = "NCALogTb";
-			this.NCALogTb.ReadOnly = true;
-			this.NCALogTb.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			this.NCALogTb.Size = new System.Drawing.Size(572, 126);
-			this.NCALogTb.TabIndex = 27;
-			this.NCALogTb.Text = "Hactool LOG:";
-			this.NCALogTb.Visible = false;
+			this.SdCardTb.Location = new System.Drawing.Point(146, 134);
+			this.SdCardTb.Name = "SdCardTb";
+			this.SdCardTb.Size = new System.Drawing.Size(445, 20);
+			this.SdCardTb.TabIndex = 24;
 			// 
-			// OutputPathTb
+			// SdCardBtn
 			// 
-			this.OutputPathTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.OutputPathTb.Location = new System.Drawing.Point(99, 89);
-			this.OutputPathTb.Name = "OutputPathTb";
-			this.OutputPathTb.Size = new System.Drawing.Size(492, 20);
-			this.OutputPathTb.TabIndex = 24;
-			// 
-			// OutputBtn
-			// 
-			this.OutputBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.OutputBtn.AutoSize = true;
-			this.OutputBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.OutputBtn.Depth = 0;
-			this.OutputBtn.ForeColor = System.Drawing.Color.White;
-			this.OutputBtn.Icon = null;
-			this.OutputBtn.Location = new System.Drawing.Point(598, 80);
-			this.OutputBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-			this.OutputBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.OutputBtn.Name = "OutputBtn";
-			this.OutputBtn.Primary = false;
-			this.OutputBtn.Size = new System.Drawing.Size(32, 36);
-			this.OutputBtn.TabIndex = 26;
-			this.OutputBtn.Text = "...";
-			this.OutputBtn.UseVisualStyleBackColor = true;
-			this.OutputBtn.Click += new System.EventHandler(this.OutputBtn_Click);
+			this.SdCardBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SdCardBtn.AutoSize = true;
+			this.SdCardBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.SdCardBtn.Depth = 0;
+			this.SdCardBtn.ForeColor = System.Drawing.Color.White;
+			this.SdCardBtn.Icon = null;
+			this.SdCardBtn.Location = new System.Drawing.Point(598, 125);
+			this.SdCardBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+			this.SdCardBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.SdCardBtn.Name = "SdCardBtn";
+			this.SdCardBtn.Primary = false;
+			this.SdCardBtn.Size = new System.Drawing.Size(32, 36);
+			this.SdCardBtn.TabIndex = 26;
+			this.SdCardBtn.Text = "...";
+			this.SdCardBtn.UseVisualStyleBackColor = true;
+			this.SdCardBtn.Click += new System.EventHandler(this.OutputBtn_Click);
 			// 
 			// materialLabel14
 			// 
 			this.materialLabel14.Depth = 0;
 			this.materialLabel14.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel14.Location = new System.Drawing.Point(9, 89);
+			this.materialLabel14.Location = new System.Drawing.Point(9, 134);
 			this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel14.Name = "materialLabel14";
 			this.materialLabel14.Size = new System.Drawing.Size(145, 20);
 			this.materialLabel14.TabIndex = 25;
-			this.materialLabel14.Text = "Output path: ";
+			this.materialLabel14.Text = "systemData folder: ";
 			// 
-			// mountPathTb
+			// keyFileTb
 			// 
-			this.mountPathTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.keyFileTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.mountPathTb.Location = new System.Drawing.Point(145, 45);
-			this.mountPathTb.Name = "mountPathTb";
-			this.mountPathTb.Size = new System.Drawing.Size(446, 20);
-			this.mountPathTb.TabIndex = 21;
+			this.keyFileTb.Location = new System.Drawing.Point(72, 90);
+			this.keyFileTb.Name = "keyFileTb";
+			this.keyFileTb.Size = new System.Drawing.Size(519, 20);
+			this.keyFileTb.TabIndex = 21;
 			// 
-			// MountBtn
+			// KeyFileBtn
 			// 
-			this.MountBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.MountBtn.AutoSize = true;
-			this.MountBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.MountBtn.Depth = 0;
-			this.MountBtn.ForeColor = System.Drawing.Color.White;
-			this.MountBtn.Icon = null;
-			this.MountBtn.Location = new System.Drawing.Point(598, 37);
-			this.MountBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-			this.MountBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.MountBtn.Name = "MountBtn";
-			this.MountBtn.Primary = false;
-			this.MountBtn.Size = new System.Drawing.Size(32, 36);
-			this.MountBtn.TabIndex = 23;
-			this.MountBtn.Text = "...";
-			this.MountBtn.UseVisualStyleBackColor = true;
-			this.MountBtn.Click += new System.EventHandler(this.MountBtn_Click);
+			this.KeyFileBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.KeyFileBtn.AutoSize = true;
+			this.KeyFileBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.KeyFileBtn.Depth = 0;
+			this.KeyFileBtn.ForeColor = System.Drawing.Color.White;
+			this.KeyFileBtn.Icon = null;
+			this.KeyFileBtn.Location = new System.Drawing.Point(598, 82);
+			this.KeyFileBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+			this.KeyFileBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.KeyFileBtn.Name = "KeyFileBtn";
+			this.KeyFileBtn.Primary = false;
+			this.KeyFileBtn.Size = new System.Drawing.Size(32, 36);
+			this.KeyFileBtn.TabIndex = 23;
+			this.KeyFileBtn.Text = "...";
+			this.KeyFileBtn.UseVisualStyleBackColor = true;
+			this.KeyFileBtn.Click += new System.EventHandler(this.MountBtn_Click);
 			// 
 			// materialLabel13
 			// 
 			this.materialLabel13.Depth = 0;
 			this.materialLabel13.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel13.Location = new System.Drawing.Point(9, 45);
+			this.materialLabel13.Location = new System.Drawing.Point(9, 90);
 			this.materialLabel13.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel13.Name = "materialLabel13";
 			this.materialLabel13.Size = new System.Drawing.Size(145, 20);
 			this.materialLabel13.TabIndex = 22;
-			this.materialLabel13.Text = "Switch mount path: ";
+			this.materialLabel13.Text = "Key file: ";
 			// 
 			// linkLabel4
 			// 
 			this.linkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel4.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel4.Location = new System.Drawing.Point(0, 26);
+			this.linkLabel4.Location = new System.Drawing.Point(3, 65);
 			this.linkLabel4.Name = "linkLabel4";
 			this.linkLabel4.Size = new System.Drawing.Size(631, 16);
 			this.linkLabel4.TabIndex = 12;
 			this.linkLabel4.TabStop = true;
-			this.linkLabel4.Text = "Click to open the guide";
+			this.linkLabel4.Text = "LINK NOT UP YET, check pins on NXThemes-Beta on Qcean discord";
 			this.linkLabel4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
 			// 
@@ -541,10 +554,11 @@
 			this.materialLabel10.Location = new System.Drawing.Point(6, 3);
 			this.materialLabel10.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel10.Name = "materialLabel10";
-			this.materialLabel10.Size = new System.Drawing.Size(625, 23);
+			this.materialLabel10.Size = new System.Drawing.Size(625, 62);
 			this.materialLabel10.TabIndex = 8;
-			this.materialLabel10.Text = "Use this page to extract the home menu files from your nand, FOLLOW THE ONLINE GU" +
-    "IDE.";
+			this.materialLabel10.Text = "The old NCA extraction method (the one with hacdiskmount) has been removed, if yo" +
+    "u still need that download an older version of the injector.\r\nThis new method is" +
+    " much easier, follow the online guide.";
 			this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// AdvancedPage
@@ -751,7 +765,7 @@
 			this.materialRaisedButton3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton3.Depth = 0;
 			this.materialRaisedButton3.Icon = null;
-			this.materialRaisedButton3.Location = new System.Drawing.Point(279, 52);
+			this.materialRaisedButton3.Location = new System.Drawing.Point(279, 53);
 			this.materialRaisedButton3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton3.Name = "materialRaisedButton3";
 			this.materialRaisedButton3.Primary = true;
@@ -793,7 +807,7 @@
 			this.lblDetected.Depth = 0;
 			this.lblDetected.Font = new System.Drawing.Font("Roboto", 11F);
 			this.lblDetected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.lblDetected.Location = new System.Drawing.Point(-1, 91);
+			this.lblDetected.Location = new System.Drawing.Point(-1, 92);
 			this.lblDetected.MouseState = MaterialSkin.MouseState.HOVER;
 			this.lblDetected.Name = "lblDetected";
 			this.lblDetected.Size = new System.Drawing.Size(646, 22);
@@ -830,7 +844,7 @@
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(645, 439);
 			this.Name = "Form1";
-			this.Text = "Qcean\'s Switch theme injector";
+			this.Text = "Qcean\'s Switch theme injector - BETA VER";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.materialTabControl1.ResumeLayout(false);
 			this.PatchListPage.ResumeLayout(false);
@@ -854,7 +868,6 @@
 		#endregion
 		private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
 		private System.Windows.Forms.TabPage InjectPage;
-		private MaterialSkin.Controls.MaterialLabel materialLabel3;
 		private MaterialSkin.Controls.MaterialLabel materialLabel2;
 		private System.Windows.Forms.TextBox tbBntxFile;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton2;
@@ -892,16 +905,18 @@
 		private System.Windows.Forms.LinkLabel linkLabel3;
 		private System.Windows.Forms.LinkLabel linkLabel2;
 		private System.Windows.Forms.TabPage NCADumpPage;
-		private System.Windows.Forms.TextBox OutputPathTb;
-		private MaterialSkin.Controls.MaterialFlatButton OutputBtn;
+		private System.Windows.Forms.TextBox SdCardTb;
+		private MaterialSkin.Controls.MaterialFlatButton SdCardBtn;
 		private MaterialSkin.Controls.MaterialLabel materialLabel14;
-		private System.Windows.Forms.TextBox mountPathTb;
-		private MaterialSkin.Controls.MaterialFlatButton MountBtn;
+		private System.Windows.Forms.TextBox keyFileTb;
+		private MaterialSkin.Controls.MaterialFlatButton KeyFileBtn;
 		private MaterialSkin.Controls.MaterialLabel materialLabel13;
 		private System.Windows.Forms.LinkLabel linkLabel4;
 		private MaterialSkin.Controls.MaterialLabel materialLabel10;
 		private MaterialSkin.Controls.MaterialRaisedButton NCARunBtn;
-		private System.Windows.Forms.TextBox NCALogTb;
+		private MaterialSkin.Controls.MaterialLabel materialLabel3;
+		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton8;
+		private System.Windows.Forms.LinkLabel linkLabel5;
 	}
 }
 

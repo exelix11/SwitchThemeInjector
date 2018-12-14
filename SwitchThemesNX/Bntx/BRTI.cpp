@@ -91,8 +91,8 @@ vector<u8> BRTI::Write()
 	bin.Write(ChannelTypes);
 	bin.Write(TextureType);
 	bin.Write(NameAddress);
-	bin.Write(ParentAddress);
-	bin.Write(PtrsAddress);
+	bin.Write((long long int)ParentAddress);
+	bin.Write((long long int)PtrsAddress);
 	bin.Write(ExtraBrtiData);
 	return bin.getBuffer();
 }

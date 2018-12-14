@@ -70,7 +70,7 @@ namespace Bntxx
 	public:
 		//Header
 		s32 BRTILength0;
-		s64 BRTILength1;
+		long long int BRTILength1;
 		u8 Flags;
 		u8 Dimensions;
 		u16 TileMode;
@@ -95,9 +95,9 @@ namespace Bntxx
 		s32 Alignment;
 		s32 ChannelTypes;
 		s32 TextureType;
-		s64 NameAddress;
-		s64 ParentAddress;
-		s64 PtrsAddress;
+		long long int NameAddress;
+		long long int ParentAddress;
+		long long int PtrsAddress;
 
 		std::vector<u8> Data;
 		std::vector<u8> ExtraBrtiData;

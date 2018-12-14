@@ -243,7 +243,9 @@ TextureSection* BflytFile::GetTexSection()
 		if (ptr->name == "txl1")
 			return (TextureSection*)ptr;
 	}
-	return nullptr;
+	TextureSection *ptr = new TextureSection();
+	Panes.insert(Panes.begin() + 2, (Panes::BasePane*)ptr);
+	return ptr;
 }
 
 MaterialsSection* BflytFile::GetMatSection()
@@ -253,7 +255,9 @@ MaterialsSection* BflytFile::GetMatSection()
 		if (ptr->name == "mat1")
 			return (MaterialsSection*)ptr;
 	}
-	return nullptr;
+	MaterialsSection *ptr = new MaterialsSection();
+	Panes.insert(Panes.begin() + 3, (Panes::BasePane*)ptr);
+	return ptr;
 }
 
 vector<u8> BflytFile::SaveFile() 
