@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,16 +21,16 @@ namespace SwitchThemes
 
 		private void MountBtn_Click(object sender, EventArgs e)
 		{
-			FolderBrowserDialog fld = new FolderBrowserDialog();
-			if (fld.ShowDialog() != DialogResult.OK) return;
-			mountPathTb.Text = fld.SelectedPath;
+			OpenFileDialog opn = new OpenFileDialog() { Filter= "prod.keys file|*.keys|all files|*.*" };
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			keyFileTb.Text = opn.FileName;
 		}
 
 		private void OutputBtn_Click(object sender, EventArgs e)
 		{
 			FolderBrowserDialog fld = new FolderBrowserDialog();
 			if (fld.ShowDialog() != DialogResult.OK) return;
-			OutputPathTb.Text = fld.SelectedPath;
+			SdCardTb.Text = fld.SelectedPath;
 		}
 
 		string path(string p, string p1) => Path.Combine(p, p1);
@@ -37,8 +40,7 @@ namespace SwitchThemes
 
 		bool HactoolExtract(string fname, string target)
 		{
-			NCALogTb.AppendText( "Extracting file " + fname + " target " + target + "\r\n");
-			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" --romfsdir=\"{OutputPathTb.Text}\\{target}RomFS\" \"{fname}\"\"";
+			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" --romfsdir=\"{target}\" \"{fname}\"\"";
 			Console.WriteLine(cmdline);
 			var start = new ProcessStartInfo()
 			{
@@ -57,49 +59,16 @@ namespace SwitchThemes
 					p.Kill();
 					MessageBox.Show("The hactool process timed out and has been killed");
 					Console.WriteLine(output);
-					NCALogTb.AppendText( "PROCESS TIMED OUT.\r\n" + output);
 					return false;
 				}
-				NCALogTb.AppendText( output + "\r\n\r\n");
-				if (!Directory.Exists(path(OutputPathTb.Text, target + "RomFS\\lyt")))
+				if (!Directory.Exists(path(target,"lyt")))
 				{
-					MessageBox.Show("Couldn't find lyt dir, check the log");
+					MessageBox.Show("Couldn't find lyt dir");
 					return false;
 				}
 				return true;
 			}
 
-		}
-
-		string HactoolInfo(string fname)
-		{
-			NCALogTb.AppendText( "Checking file " + fname + "\r\n");
-			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" \"{fname}\"\"";
-			Console.WriteLine(cmdline);
-			var start = new ProcessStartInfo()
-			{
-				FileName = "cmd.exe",
-				Arguments = cmdline,
-				CreateNoWindow = true,
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-				
-			};
-			using (var p = Process.Start(start))
-			{
-				string output = p.StandardOutput.ReadToEnd();
-				p.WaitForExit(5000);		
-				if (!p.HasExited)
-				{
-					p.Kill();
-					MessageBox.Show("The hactool process timed out and has been killed");
-					Console.WriteLine(output);
-					NCALogTb.AppendText("PROCESS TIMED OUT.\r\n" + output);
-					return null;
-				}
-				NCALogTb.AppendText( output + "\r\n\r\n");
-				return output;
-			}
 		}
 
 		long fileSize(string name)
@@ -117,62 +86,49 @@ namespace SwitchThemes
 
 		private void NCARunBtn_Click(object sender, EventArgs e)
 		{
-			if (mountPathTb.Text.Trim() == "" || OutputPathTb.Text.Trim() == "")
+			if (keyFileTb.Text.Trim() == "" || SdCardTb.Text.Trim() == "")
 			{
-				MessageBox.Show("Select the mount and output paths first");
+				MessageBox.Show("Select the key and nca paths first");
 				return;
 			}
-			string NcasDir = path(mountPathTb.Text, "Contents\\registered");
-			if (!Directory.Exists(NcasDir))
+			string HomeNcaDir = path(SdCardTb.Text, "home.nca");
+			string UserNcaDir = path(SdCardTb.Text, "user.nca");
+			if (!File.Exists(HomeNcaDir) || !File.Exists(UserNcaDir))
 			{
-				MessageBox.Show("Couldn't find the registered directory, make sure you mounted the NAND correctly");
+				MessageBox.Show("Couldn't find the target NCA files, you have to dump them first from the NXThemes Installer app, if you already did, make sure you selected the correct folder");
 				return;
 			}
-			NCALogTb.Text = "Hactool LOG\r\n";
-			NCALogTb.Visible = true;
-
-			bool homeFound = false;
-			bool myFound = false;
-
-			KeyFile = Path.GetFullPath("hactool\\keys.dat");
+			if (!File.Exists("hactool\\hactool.exe"))
+			{
+				MessageBox.Show("Couldn't find hactool.exe.\r\nYou must extract it in a folder called hactool in the same directory of this program");
+				return;
+			}
+			
+			KeyFile = keyFileTb.Text;
 			HactoolExe = Path.GetFullPath("hactool\\hactool.exe");
+			string OutDir = path(Path.GetTempPath(), "ncaExtraction");
+			if (Directory.Exists(OutDir))
+				Directory.Delete(OutDir, true);
+			Directory.CreateDirectory(OutDir);
 
-			void FindLoop(string f)
-			{
-				string o = HactoolInfo(f);
-				UpdateTb();
-				if (o == null)
-					return;
-				if (!homeFound && o.Contains("0100000000001000") && fileSize(f) > 1000000) //home  > 1MB
-				{
-					Console.WriteLine("extracting home");
-					HactoolExtract(f, "Home");
-					homeFound = true;
-				}
-				else if (!myFound && o.Contains("0100000000001013") && fileSize(f) > 1000000) //my page > 1MB
-				{
-					Console.WriteLine("extracting user");
-					HactoolExtract(f, "UserSet");
-					myFound = true;
-				}
-			}
+			if (!HactoolExtract(path(SdCardTb.Text, "home.nca"), OutDir))
+				return;
+			foreach (var f in Directory.GetFiles(path(OutDir, "lyt")))
+				File.Move(f, path(SdCardTb.Text, Path.GetFileName(f)));
 
-			foreach (string dir in Directory.GetDirectories(NcasDir).Reverse())
-			{
-				FindLoop(path(dir, "00"));
-				if (homeFound && myFound) break;
-			}
-			foreach (string file in Directory.GetFiles(NcasDir))
-			{
-				FindLoop(file);
-				if (homeFound && myFound) break;
-			}
+			Directory.Delete(OutDir, true);
+			Directory.CreateDirectory(OutDir);
 
-			if (!homeFound)
-				MessageBox.Show("Couldn't find home menu :(");
-			if (!myFound)
-				MessageBox.Show("Couldn't find user settings :(");
-			MessageBox.Show("Done");
+			if (!HactoolExtract(path(SdCardTb.Text, "user.nca"), OutDir))
+				return;
+			File.Move(path(OutDir,"lyt/MyPage.szs"), path(SdCardTb.Text, "MyPage.szs"));
+			Directory.Delete(OutDir, true);
+
+			if (MessageBox.Show("Done, delete the original NCA files ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			{
+				File.Delete(HomeNcaDir);
+				File.Delete(UserNcaDir);
+			}
 		}
 	}
 }

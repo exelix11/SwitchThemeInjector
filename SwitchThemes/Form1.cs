@@ -22,7 +22,6 @@ namespace SwitchThemes
 		PatchTemplate targetPatch;
 		SarcData CommonSzs = null;
 		
-		readonly string PatchLabelText = "";
 		readonly string LoadFileText = "";
 
 		bool Advanced = false;
@@ -33,7 +32,6 @@ namespace SwitchThemes
 		public Form1()
 		{
 			InitializeComponent();
-			PatchLabelText = materialLabel3.Text;
 
 			//LayoutPatch.CreateTestTemplates();
 			//PatchTemplate.BuildTemplateFile();
@@ -48,9 +46,6 @@ namespace SwitchThemes
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = "(To dump the following files check the guide at https://git.io/fxdyF )\r\n" + LoadFileText;
-
-			if (!File.Exists("hactool\\hactool.exe") || !File.Exists("hactool\\keys.dat"))
-				materialTabControl1.TabPages.Remove(NCADumpPage);
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -299,12 +294,12 @@ namespace SwitchThemes
 			}
 
 			AdvancedUpdate();
-			materialLabel3.Text = string.Format(PatchLabelText, targetPatch.szsName, targetPatch.TitleId);
 			lblDetected.Text = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
 
 			foreach (var l in Layouts.Values)
 				if (l.IsCompatible(CommonSzs))
 					LayoutPatchList.Items.Add(l);
+			LayoutPatchList.Items.Add("Open from file...");
 			LayoutPatchList.SelectedIndex = 0;
 		}
 
@@ -436,6 +431,45 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
+		private void materialRaisedButton8_Click(object sender, EventArgs e)
+		{
+			if (CommonSzs == null || targetPatch == null)
+			{
+				MessageBox.Show("Open a valid theme first !");
+				return;
+			}
+			if (tbBntxFile.Text.Trim() == "")
+			{
+				MessageBox.Show("Select an image first");
+				return;
+			}
+			if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
+				return;
+			var info = ThemeInputInfo.Ask();
+			if (info == null)
+				return;
+
+			LayoutPatch layout = null;
+			if (LayoutPatchList.SelectedIndex != 0)
+				layout = LayoutPatchList.SelectedItem as LayoutPatch;
+			var res = SwitchThemesCommon.GenerateNXTheme(
+				new ThemeFileManifest()
+				{
+					Version = 1,
+					ThemeName = info.Item1,
+					Author = info.Item2,
+					Target = targetPatch.NXThemeName,
+					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+				},
+				File.ReadAllBytes(tbBntxFile.Text), 
+				layout?.AsJson());
+
+			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+			if (sav.ShowDialog() != DialogResult.OK)
+				return;
+			File.WriteAllBytes(sav.FileName, res);
+		}
+
 		int eggCounter = 0;
 		private void label1_Click(object sender, EventArgs e)
 		{
@@ -459,6 +493,11 @@ namespace SwitchThemes
 			else
 			{
 				string imagePath = Layouts.FirstOrDefault(x => x.Value == patch).Key;
+				if (imagePath == null)
+				{
+					MessageBox.Show("This theme doesn't have a preview");
+					return;
+				}
 				imagePath = imagePath.Substring(0, imagePath.Length - 5) + ".jpg";
 				if (!File.Exists(imagePath))
 					MessageBox.Show("This theme doesn't have a preview");
@@ -489,5 +528,25 @@ namespace SwitchThemes
 			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/");
 		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
 			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/autotheme.html");
+
+		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			MessageBox.Show("Theme packs (.nxtheme files) are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware. To install nxtheme files you need to download NXThemesInstaller on your console");
+		}
+
+		private void LayoutPatchList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if (LayoutPatchList.SelectedIndex == LayoutPatchList.Items.Count - 1)
+			{
+				OpenFileDialog opn = new OpenFileDialog() { Title = "Select a layout", Filter = "Json files|*.json" };
+				if (opn.ShowDialog() != DialogResult.OK)
+				{
+					LayoutPatchList.SelectedIndex = 0;
+					return;
+				}
+				LayoutPatchList.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName)));
+				LayoutPatchList.SelectedIndex = 1;
+			}
+		}
 	}
 }

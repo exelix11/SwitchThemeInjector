@@ -121,13 +121,6 @@
     <value>Warning: when changing layouts you should always use an SZS with the original layout
 (bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
   </data>
-  <data name="materialLabel3.Text" xml:space="preserve">
-    <value>Once you have the final szs you have to place it in your sd card like this:
-SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}
-(Where {0} if the file name)
-*your cfw folder* can be either atmosphere or ReiNx.
-Since the menu is a system title remember to create a "fsmitm.flag".</value>
-  </data>
   <data name="materialLabel8.Text" xml:space="preserve">
     <value>Use this page to convert images to DDS you can use for Auto-Theme or the web injector.
 

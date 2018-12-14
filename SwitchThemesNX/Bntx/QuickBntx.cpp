@@ -74,11 +74,11 @@ vector<u8> QuickBntx::Write()
 	bin.Write((u32)rltPos);
 	bin.Write((u32)bin.Length());
 	bin.Position = TexDataPositions[0] - 8;
-	bin.Write(rltPos - (TexDataPositions[0] - 0x10));
+	bin.Write((long long int)(rltPos - (TexDataPositions[0] - 0x10)));
 	for (u32 i = 0; i < TexPositions.size(); i++)
 	{
 		bin.Position = TexPositions[i] + 0x2A0;
-		bin.Write(TexDataPositions[i]);
+		bin.Write((long long int)TexDataPositions[i]);
 	}
 	bin.Position = rltPos + 4;
 	bin.Write(rltPos);

@@ -1,5 +1,6 @@
 #include "DDS.hpp"
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 

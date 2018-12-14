@@ -154,6 +154,7 @@
     <ClCompile Include="Bntx\QuickBntx.cpp" />
     <ClCompile Include="Layouts\Bflyt.cpp" />
     <ClCompile Include="Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="NXTheme.cpp" />
     <ClCompile Include="SarcLib\Sarc.cpp" />
     <ClCompile Include="SarcLib\Yaz0.cpp" />
     <ClCompile Include="SwitchThemesCommon.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="Layouts\json.hpp" />
     <ClInclude Include="Layouts\Patches.hpp" />
     <ClInclude Include="MyTypes.h" />
+    <ClInclude Include="NXTheme.hpp" />
     <ClInclude Include="SarcLib\Sarc.hpp" />
     <ClInclude Include="SarcLib\Yaz0.hpp" />
     <ClInclude Include="SwitchThemesCommon.hpp" />
