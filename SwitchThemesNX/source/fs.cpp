@@ -132,7 +132,9 @@ void UninstallTheme()
 
 void CreateThemeStructure(const string &tid)
 {
-	string path = CfwFolder + "/titles/" + tid;
+	string path = CfwFolder + "/titles";
+	mkdir(path.c_str(), ACCESSPERMS);
+	path += "/" + tid;
 	mkdir(path.c_str(), ACCESSPERMS);
 	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
 	mkdir((path + "/romfs/lyt").c_str(), ACCESSPERMS);
