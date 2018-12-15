@@ -4,27 +4,39 @@
 
 using namespace std;
 
-ThemesPage::ThemesPage(const std::vector<std::string> &files) : lblPage("",WHITE, -1, font25)
+ThemesPage::ThemesPage(const std::vector<std::string> &files) : lblPage("",WHITE, -1, font25),
+NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25)
 {
 	Name = "Themes";
 	focused = false;
 	ThemeFiles = files;
-	pageCount = ThemeFiles.size() / 5 +1;
-	if (ThemeFiles.size() % 5 == 0) 
-		pageCount--;
 	
-	if (ThemeFiles.size() == 0)
-		NoThemesLbl = new Label("Couldn't find any theme, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25);
-	else
-		NoThemesLbl = nullptr;
-	SetPage(0);	
+	std::sort(ThemeFiles.begin(), ThemeFiles.end());
+	SetDir("/themes");	
 }
 
 ThemesPage::~ThemesPage()
 {
 	SetPage(-1);
-	if (NoThemesLbl)
-		delete NoThemesLbl;
+}
+
+void ThemesPage::SetDir(const string &dir)
+{
+	CurrentDir = dir;
+	if (!StrEndsWith(dir, "/"))
+		CurrentDir += "/";
+	
+	CurrentFiles.clear();
+	for (auto f : ThemeFiles)
+	{
+		if (GetPath(f) == CurrentDir)
+			CurrentFiles.push_back(f);
+	}
+	
+	pageCount = CurrentFiles.size() / 5 +1;
+	if (CurrentFiles.size() % 5 == 0) 
+		pageCount--;
+	SetPage(0);
 }
 
 void ThemesPage::SetPage(int num)
@@ -35,26 +47,28 @@ void ThemesPage::SetPage(int num)
 	DisplayEntries.clear();
 	
 	int baseIndex = num * 5;
-	if (num < 0 || baseIndex >= ThemeFiles.size())  
+	if (num < 0 || baseIndex >= CurrentFiles.size())  
 		return;
 	
 	DisplayLoading("Loading...");
-	int imax = ThemeFiles.size() - baseIndex;
+	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > 5) imax = 5;
 	for (int i = 0; i < imax; i++)
 	{
-		DisplayEntries.push_back(new ThemeEntry(ThemeFiles[baseIndex + i]));
+		DisplayEntries.push_back(new ThemeEntry(CurrentFiles[baseIndex + i]));
 	}
 	pageNum = num;
-	lblPage.SetString((string)"Page " + to_string(num + 1) + "/" + to_string(pageCount));
+	lblPage.SetString(CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount));
 }
 
 const int EntryW = 860;
 void ThemesPage::Render(int X, int Y)
 {
-	if (NoThemesLbl)
+	lblPage.Render(X + EntryW + 16 - lblPage.GetSize().w, Y + 600);
+	
+	if (DisplayEntries.size() == 0)
 	{
-		NoThemesLbl->Render(X + 15, Y + 15);
+		NoThemesLbl.Render(X + 15, Y + 15);
 		return;
 	}
 	
@@ -65,13 +79,12 @@ void ThemesPage::Render(int X, int Y)
 		e->Render(X + 16, RenderY, focused && count == menuIndex);		
 		RenderY += e->GetRect().h + 15;
 		count++;
-	}
-	lblPage.Render(X + EntryW + 16 - lblPage.GetSize().w, Y + 600);
+	}	
 }
 
 int ThemesPage::PageItemsCount()
 {
-	int menuCount = ThemeFiles.size() - pageNum * 5;
+	int menuCount = CurrentFiles.size() - pageNum * 5;
 	if (menuCount > 5)
 		menuCount = 5;
 	return menuCount;
@@ -80,13 +93,18 @@ int ThemesPage::PageItemsCount()
 void ThemesPage::Update()
 {
 	int menuCount = PageItemsCount();	
-	if (menuCount <= 0)
-		return;
 	
-	if (kDown & KEY_B || kDown & KEY_LEFT)
+	if (kDown & KEY_LEFT)
 		Parent->PageLeaveFocus(this);
+	if (kDown & KEY_B)
+	{
+		if (CurrentDir != "/themes/")
+			SetDir(GetParentDir(CurrentDir));
+		else 
+			Parent->PageLeaveFocus(this);
+	}
 	
-	if (NoThemesLbl)
+	if (menuCount <= 0)
 		return;
 	
 	if (kDown & KEY_UP)
@@ -129,7 +147,12 @@ void ThemesPage::Update()
 	else if (kDown & KEY_A)
 	{
 		if (menuIndex >= 0)
-			DisplayEntries[menuIndex]->InstallTheme();
+		{
+			if (DisplayEntries[menuIndex]->IsFolder)
+				SetDir(DisplayEntries[menuIndex]->GetPath());
+			else
+				DisplayEntries[menuIndex]->InstallTheme();
+		}
 	}
 }
 

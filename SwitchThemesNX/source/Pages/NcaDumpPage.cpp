@@ -31,7 +31,7 @@ void NcaDumpPage::Update()
 	{
 		DisplayLoading("Loading...");
 		if (DumpHomeMenuNca())
-			Dialog("Done, the nca was saved in sd:/themes/systemData/home.nca");
+			Dialog("Done, the ncas were saved in sd:/themes/systemData/");
 	}
 	else if (kDown & KEY_B || kDown & KEY_LEFT){
 		dumpNca.selected = false;

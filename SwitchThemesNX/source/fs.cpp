@@ -37,6 +37,7 @@ vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 	{
 		if (p.is_directory() && p.path().filename() != "systemData")
 		{
+			res.push_back(p.path());
 			auto v = GetThemeFilesInDirRecursive(p.path(), level + 1);
 			res.insert(res.end(), v.begin(), v.end());
 		}
@@ -85,6 +86,9 @@ vector<u8> OpenFile(const string &name)
 
 void WriteFile(const string &name,const vector<u8> &data)
 {
+	if (filesystem::exists(name))
+		remove(name.c_str());
+	
 	FILE* f = fopen(name.c_str(),"wb");
 	if (!f)
 	{
@@ -145,6 +149,25 @@ void CheckThemesFolder()
 		mkdir("/themes", ACCESSPERMS);
 	if (!filesystem::exists("/themes/systemData"))
 		mkdir("/themes/systemData", ACCESSPERMS);
+}
+
+string GetFileName(const string &path)
+{
+	return path.substr(path.find_last_of("/\\") + 1);
+}
+
+string GetPath(const string &path)
+{
+	return path.substr(0, path.find_last_of("/\\") + 1);
+}
+
+string GetParentDir(const string &path)
+{
+	string _path = path;
+	if (StrEndsWith(_path,"/"))
+		_path = _path.substr(0,_path.length() - 1);
+	
+	return _path.substr(0, _path.find_last_of("/\\") + 1);
 }
 
 std::string GetNcaPath(u64 tid)

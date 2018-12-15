@@ -33,7 +33,12 @@ ThemeFileManifest ParseNXThemeFile(SARC::SarcData &Archive)
 	if (j.count("ThemeName"))
 		res.ThemeName = j["ThemeName"].get<string>();
 	if (j.count("LayoutInfo"))
-		res.LayoutInfo = j["LayoutInfo"].get<string>();
+		res.LayoutInfo = j["LayoutInfo"].get<string>();	
+	
+	if (j.count("UseCommon5X"))
+		res.UseCommon5X = j["UseCommon5X"].get<bool>();
+	else 
+		res.UseCommon5X = true;
 	
 	return res;
 }

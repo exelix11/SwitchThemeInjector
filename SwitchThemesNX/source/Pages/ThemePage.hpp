@@ -18,15 +18,20 @@ class ThemesPage : public IPage
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
+		void SetDir(const std::string &dir);
 		void SetPage(int num);
 		int PageItemsCount();
 		
 		std::vector<std::string> ThemeFiles;
+		
+		std::string CurrentDir;
+		std::vector<std::string> CurrentFiles;
+		
 		std::vector<ThemeEntry*> DisplayEntries;
 		Label lblPage;
 		int pageNum = -1;
 		int pageCount = -1;
 		int menuIndex = 0;
 		
-		Label *NoThemesLbl;
+		Label NoThemesLbl;
 };

@@ -19,5 +19,9 @@ std::vector<std::string> GetThemeFiles();
 void UninstallTheme();
 void CreateThemeStructure(const std::string &tid);
 
+std::string GetFileName(const std::string &path);
+std::string GetPath(const std::string &path);
+std::string GetParentDir(const std::string &path);
+
 std::string GetHomeNcaPath();
 bool DumpHomeMenuNca();

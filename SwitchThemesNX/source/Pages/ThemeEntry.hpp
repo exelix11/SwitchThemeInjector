@@ -8,8 +8,11 @@ class ThemeEntry
 	public:
 		ThemeEntry(const std::string &fileName);
 		
+		bool IsFolder = false;
 		bool CanInstall = true;
 		void InstallTheme();
+		
+		std::string GetPath() {return FileName;}
 		
 		void Render(int X, int Y, bool selected);
 		SDL_Rect GetRect();
