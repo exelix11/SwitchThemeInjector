@@ -13,6 +13,7 @@ struct ThemeFileManifest
 	std::string ThemeName;
 	std::string LayoutInfo;
 	std::string Target;
+	bool UseCommon5X;
 };
 
 const std::unordered_map<std::string,std::string> ThemeTargetToName

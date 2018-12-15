@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 	NcaDumpPage *dp = new NcaDumpPage();
 	t->AddPage(dp);
 	TextPage *credits = new TextPage("Credits",
-	"NXThemes installer by exelix " + VersionString + " Core Ver." + SwitchThemesCommon::CoreVer +
+	"NXThemes installer by exelix\n" + VersionString + "- Core Ver." + SwitchThemesCommon::CoreVer +
 	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n"
 	"Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib");
 	t->AddPage(credits);

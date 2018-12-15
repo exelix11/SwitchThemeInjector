@@ -7,10 +7,7 @@ using namespace std;
 LoadingOverlay::LoadingOverlay(const string &msg) : text(msg,100) {}
 
 void LoadingOverlay::Render(int X, int Y)
-{	
-	SDL_SetRenderDrawColor(sdl_render,0,0,0,0x7f);
-	SDL_RenderFillRect(sdl_render,&ScreenRect);
-	
+{		
 	auto s = text.GetSize();
 	text.Render(SCR_W / 2 - s.w / 2, SCR_H/2 - s.h/2);
 }
