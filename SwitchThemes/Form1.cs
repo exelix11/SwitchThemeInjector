@@ -29,6 +29,16 @@ namespace SwitchThemes
 		List<PatchTemplate> Templates = new List<PatchTemplate>();
 		Dictionary<string,LayoutPatch> Layouts = new Dictionary<string, LayoutPatch>();
 
+		Dictionary<string, string> HomeMenuParts = new Dictionary<string, string>()
+		{
+			{"Home menu", "home"},
+			{"Lock screen", "lock"},
+			{"User page", "user"},
+			{"All apps menu", "apps"},
+			{"Settings applet", "set"},
+			{"News applet", "news"},
+		};
+
 		public Form1()
 		{
 			InitializeComponent();
@@ -43,6 +53,10 @@ namespace SwitchThemes
 				foreach (var f in Directory.GetFiles("Layouts").Where(x => x.EndsWith(".json")))
 					Layouts.Add(f,LayoutPatch.LoadTemplate(File.ReadAllText(f)));
 			}
+
+			HomeMenuPartBox.Items.AddRange(HomeMenuParts.Keys.ToArray());
+			HomeMenuPartBox.SelectedIndex = 0;
+			HomeMenuPartBox_SelectedIndexChanged(null, null);
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text = "(To dump the following files check the guide at https://git.io/fxdyF )\r\n" + LoadFileText;
@@ -170,6 +184,7 @@ namespace SwitchThemes
 			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			var res = LayoutDiff.Diff(originalSzs, CommonSzs);
 			if (res == null) return;
+			res.TargetName = targetPatch.szsName;
 			SaveFileDialog sav = new SaveFileDialog()
 			{
 				Title = "save the patch file",
@@ -252,7 +267,10 @@ namespace SwitchThemes
 			if (opn.ShowDialog() != DialogResult.OK)
 				return;
 			if (opn.FileName != "")
+			{
 				tbBntxFile.Text = opn.FileName;
+				tbBntxFile2.Text = opn.FileName;
+			}
 		}
 
 		private void OpenSzsButton(object sender, EventArgs e)
@@ -303,6 +321,19 @@ namespace SwitchThemes
 			LayoutPatchList.SelectedIndex = 0;
 		}
 
+		private void HomeMenuPartBox_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			AllLayoutsBox.Items.Clear();
+			AllLayoutsBox.Items.Add("Don't patch");
+			foreach (var l in Layouts.Values)
+			{
+				if (l.TargetName == null || l.TargetName.Contains(SwitchThemesCommon.PartToFileName[HomeMenuParts[HomeMenuPartBox.Text]]))
+					AllLayoutsBox.Items.Add(l);
+			}
+			AllLayoutsBox.Items.Add("Open from file...");
+			AllLayoutsBox.SelectedIndex = 0;
+		}
+
 		bool ImageToDDS(string fileName, string outPath)
 		{
 			if (!File.Exists("texconv.exe"))
@@ -343,7 +374,10 @@ namespace SwitchThemes
 		{
 			var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
 			if (res)
+			{
 				tbBntxFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
+				tbBntxFile2.Text = tbBntxFile.Text;
+			}
 			return res;
 		}
 
@@ -460,6 +494,7 @@ namespace SwitchThemes
 					Author = info.Item2,
 					Target = targetPatch.NXThemeName,
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text), 
 				layout?.AsJson());
@@ -468,6 +503,44 @@ namespace SwitchThemes
 			if (sav.ShowDialog() != DialogResult.OK)
 				return;
 			File.WriteAllBytes(sav.FileName, res);
+			MessageBox.Show("Done");
+		}
+
+		private void NnBuilderBuild_Click(object sender, EventArgs e)
+		{
+			if (tbBntxFile.Text.Trim() == "")
+			{
+				MessageBox.Show("Select an image first");
+				return;
+			}
+			if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
+				return;
+			var info = ThemeInputInfo.Ask();
+			if (info == null)
+				return;
+
+			LayoutPatch layout = null;
+			if (AllLayoutsBox.SelectedIndex != 0)
+				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
+			var res = SwitchThemesCommon.GenerateNXTheme(
+				new ThemeFileManifest()
+				{
+					Version = 1,
+					ThemeName = info.Item1,
+					Author = info.Item2,
+					Target = HomeMenuParts[HomeMenuPartBox.Text],
+					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+					UseCommon5X = info.Item3
+
+				},
+				File.ReadAllBytes(tbBntxFile.Text),
+				layout?.AsJson());
+
+			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+			if (sav.ShowDialog() != DialogResult.OK)
+				return;
+			File.WriteAllBytes(sav.FileName, res);
+			MessageBox.Show("Done");
 		}
 
 		int eggCounter = 0;
@@ -485,9 +558,8 @@ namespace SwitchThemes
 					"Thanks to:\r\nSyroot for BinaryData lib\r\nAboodXD for Bntx editor");
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		void LayoutPreview(LayoutPatch patch)
 		{
-			var patch = LayoutPatchList.SelectedItem as LayoutPatch;
 			if (patch == null)
 				MessageBox.Show("Select a layout first");
 			else
@@ -505,6 +577,9 @@ namespace SwitchThemes
 					System.Diagnostics.Process.Start(imagePath);
 			}
 		}
+
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => LayoutPreview(LayoutPatchList.SelectedItem as LayoutPatch);
+		private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e) => LayoutPreview(AllLayoutsBox.SelectedItem as LayoutPatch);
 
 		private void ImageToDDSBtn_Click(object sender, EventArgs e)
 		{
@@ -531,21 +606,22 @@ namespace SwitchThemes
 
 		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			MessageBox.Show("Theme packs (.nxtheme files) are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware. To install nxtheme files you need to download NXThemesInstaller on your console");
+			MessageBox.Show(".nxtheme files are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware. To install nxtheme files you need to download NXThemes Installer on your console");
 		}
 
 		private void LayoutPatchList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (LayoutPatchList.SelectedIndex == LayoutPatchList.Items.Count - 1)
+			ComboBox comboBox = (ComboBox)sender;
+			if (comboBox.SelectedIndex == comboBox.Items.Count - 1)
 			{
 				OpenFileDialog opn = new OpenFileDialog() { Title = "Select a layout", Filter = "Json files|*.json" };
 				if (opn.ShowDialog() != DialogResult.OK)
 				{
-					LayoutPatchList.SelectedIndex = 0;
+					comboBox.SelectedIndex = 0;
 					return;
 				}
-				LayoutPatchList.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName)));
-				LayoutPatchList.SelectedIndex = 1;
+				comboBox.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName)));
+				comboBox.SelectedIndex = 1;
 			}
 		}
 	}

@@ -41,11 +41,6 @@ namespace SwitchThemesOnline
 					Window.Alert("The selected theme type isn't supported, probably you followed an invalid url");
 					return;
 				}
-				if (Window.LocalStorage.GetItem(type + "Name") == null)
-				{
-					Window.Alert("You didn't setup auto-theme for this theme type. To setup auto-theme go to the home page and click on the Auto-theme tab");
-					return;
-				}
 				string Url = GetUriVar("dds");
 				if (Url == null)
 				{
@@ -116,41 +111,42 @@ namespace SwitchThemesOnline
 		{
 			cardLoad = Document.GetElementById<HTMLDivElement>("CardLoad");
 			Document.GetElementById<HTMLDivElement>("CardTutorial").Hidden = true;
-			string themeTarget = "<br/><br/>This theme is for " + Window.LocalStorage.GetItem(type + "Name") as string + "<br/>To change the target version upload another szs for Auto-Theme on the <a href=\"index.html\">Home page</a>";
+			string themeTarget = "<br/><br/>This theme is an nxtheme, download NXThemes Installer to install it on your switch.";
 			cardLoad.InnerHTML = "Wait while your theme is being generated.... " + themeTarget;
 			cardLoad.Hidden = false;
 			StartLoading();
 
-			DDSEncoder.DDSLoadResult LoadedDDS;
-			SarcData CommonSzs;
-			PatchTemplate targetPatch;
+			byte[] DDS;
 			LayoutPatch targetLayout = null;
 
 			void BuildTheme()
 			{
-				var yaz0 = Theme.Make(CommonSzs, LoadedDDS, targetPatch, targetLayout);
-				if (yaz0 == null)
+				var urlSplit = url.Split(new string[] { "\\/" }, StringSplitOptions.None);
+				var meta = new ThemeFileManifest()
 				{
-					endWithError("Theme.Make() failed :(");
+					Version = 1,
+					Author = "Auto-Theme",
+					LayoutInfo = targetLayout != null ? targetLayout.ToString() : "",
+					ThemeName = urlSplit[urlSplit.Length - 1],
+					Target = type
+				};
+
+				var res = SwitchThemesCommon.GenerateNXTheme(meta, DDS, targetLayout == null ? null : targetLayout.AsJson());
+				if (res == null)
+				{
+					endWithError("GenerateNXTheme() failed :(");
 					return;
 				}
-				Uint8Array dwn = new Uint8Array(yaz0);
-				string DownloadFname = targetPatch.szsName;
+				Uint8Array dwn = new Uint8Array(res);
+				string DownloadFname = urlSplit[urlSplit.Length - 1] + ".nxtheme";
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
 				Document.GetElementById<HTMLDivElement>("CardLoad").InnerHTML = "Your theme has been generated !" + themeTarget;
 				EndLoading();
 			}
 
 			void DDSDownloaded(Uint8Array arr)
-			{				
-				LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
-				arr = null;
-				CommonSzs = SARC.UnpackRamN(
-					ManagedYaz0.Decompress(
-						Convert.FromBase64String(
-							Window.LocalStorage.GetItem(type) as string)));
-
-				targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
+			{
+				DDS = arr.ToArray();				
 
 				if (layout == null)
 					BuildTheme();

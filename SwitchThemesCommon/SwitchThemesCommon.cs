@@ -151,5 +151,14 @@ namespace SwitchThemes.Common
 			return null;
 		}
 
+		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
+			{"home","ResidentMenu.szs"},
+			{"lock","Entrance.szs"},
+			{"user","MyPage.szs"},
+			{"apps","Flaunch.szs"},
+			{"set","Set.szs"},
+			{"news","Notification.szs"},
+		};
+
 	}
 }

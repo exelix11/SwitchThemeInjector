@@ -101,6 +101,16 @@ class QuitPage : public IPage
 		}
 };
 
+void ShowFirstTimeHelp(bool WelcomeScr)
+{	
+//these are shown from the last to the first
+	Dialog("That's all, have fun with custom themes :)");
+	Dialog("Altough .nxtheme files can be INSTALLED on every firmware you still have to uninstall the theme before updating, this is because the nxtheme gets converted to an SZS when it's installed. This means that every time you change your firmware you will have to do again the NCA dump procedure. But after that you will be able to reinstall all your themes in .nxtheme format without any compatibility issue.\n(Please note that some features such as custom Settings page are available only on >= 6.X firmwares)");
+	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files that are just like SZS but they can be freely shared and installed on every firmware, all you have to do is to follow a simple guide, read more in the \"Dump NCA\" tab.\nIf you are familiar with Auto-Theme, the old way of legally sharing custom themes you may know that the old guide was not easy, the procedure has been completely reworked, this time the dumping the necessary data takes just 5 minutes and doesn't involve any complex operation.");
+	Dialog("Custom themes are custom SZS files that replace the home menu, these files are firmware-dependent, this means that if you update your firmware while having a custom theme installed your console may not boot anymore untill you manually remove the custom theme.\nTo remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the 0100000000001000 folder in titles in your cfw folder on the sd.");
+	if (WelcomeScr)
+		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations about the usage, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
+}
 
 int main(int argc, char **argv)
 {			
@@ -111,7 +121,9 @@ int main(int argc, char **argv)
 	TabRenderer *t = new TabRenderer();
 	PushPage(t);
 	
-	CheckThemesFolder();
+	if (!CheckThemesFolder())
+		ShowFirstTimeHelp(true);
+	
 	auto ThemeFiles = GetThemeFiles();
 	
 	ThemesPage *p = new ThemesPage(ThemeFiles);
@@ -120,10 +132,7 @@ int main(int argc, char **argv)
 	t->AddPage(up);
 	NcaDumpPage *dp = new NcaDumpPage();
 	t->AddPage(dp);
-	TextPage *credits = new TextPage("Credits",
-	"NXThemes installer by exelix\n" + VersionString + "- Core Ver." + SwitchThemesCommon::CoreVer +
-	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n"
-	"Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib");
+	CreditsPage *credits = new CreditsPage();
 	t->AddPage(credits);
 	QuitPage *q = new QuitPage();
 	t->AddPage(q);

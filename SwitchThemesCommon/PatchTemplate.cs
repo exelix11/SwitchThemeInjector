@@ -14,6 +14,7 @@ namespace SwitchThemes.Common
 		public string ThemeName;
 		public string LayoutInfo;
 		public string Target;
+		public bool UseCommon5X;
 
 		public string Serialize() { return JsonConvert.SerializeObject(this); }
 		public static ThemeFileManifest Deserialize(string json) { return JsonConvert.DeserializeObject<ThemeFileManifest>(json); }

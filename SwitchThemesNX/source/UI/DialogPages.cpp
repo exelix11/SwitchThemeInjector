@@ -26,7 +26,8 @@ void FatalErrorPage::Render(int X, int Y)
 
 void FatalErrorPage::Update(){}
 
-DialogPage::DialogPage(const string &msg) : text(msg,WHITE, 1000, font30), Btn("Continue", WHITE, -1, font30){}
+DialogPage::DialogPage(const string &msg,const string &buttonMsg) : text(msg,WHITE, 1000, font30), Btn(buttonMsg, WHITE, -1, font30){}
+DialogPage::DialogPage(const string &msg) : DialogPage(msg, "Continue") {}
 
 void DialogPage::Render(int X, int Y)
 {	
