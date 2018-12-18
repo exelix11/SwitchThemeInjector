@@ -1,5 +1,6 @@
 # Dumping Files
-This guide explains how to obtain the files needed to make custom themes from your own switch.
+This guide explains how to obtain the files needed to make custom themes from your own switch.\
+The automated way using the theme injector is windows only, mac and linux users scroll to the end of the page.
 
 ## Tools you'll need
 - [Latest version of switch theme injector and NXThemes Installer](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
@@ -29,3 +30,16 @@ Done, you're ready to go install and make some themes !
 With an ftp client copy the themes and switch folders from the sd card to your pc and follow the guide, when you finish just copy the files that have been extracted in themes/systemData on your pc to your sd.
 #### If you get `lyt dir not found` error
 Make sure to be using the latest version of hactool, if you do make sure to have all the keys for your firmware (aka that lockpick didn't fail). If you still face issues check the hactool.log file that has been generated and ask for help on the qcean discord.
+
+## Dumping the home menu on mac and linux
+Get a hactool build for your os and follow `Getting the switch keys`, then copy these three files from your sd card to your pc:
+
+- `/themes/systemData/home.nca`
+- `/themes/systemData/user.nca`
+- `/switch/prod.keys`
+
+then run: \
+`hactool -k prod.keys --romfsdir=homeromfs home.nca` and \
+`hactool -k prod.keys --romfsdir=userromfs home.nca` \
+Now you should have two folders called homeromfs and userromfs, in both of them there should be a folder called lyt, copy the content of the one in homeromfs and just the mypage.szs file from userromfs to the systemData folder on your sd. \
+Done, you're ready to go install and make some themes !
