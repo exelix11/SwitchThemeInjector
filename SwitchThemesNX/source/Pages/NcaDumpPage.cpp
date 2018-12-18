@@ -6,7 +6,7 @@ using namespace std;
 
 NcaDumpPage::NcaDumpPage() : 
 guideText(
-"To install .nxtheme files you need the base files of your home menu in your sd card,"
+"To install .nxtheme files you need to extract the base files of your home menu in your sd card,"
 "the extraction process now has been made simpler: no more mounting nand or dangerous "
 "operations, you just need to run a few homebrews and a PC.\n"
 "read the new dumping guide at: https://git.io/fxdyF\n\n"

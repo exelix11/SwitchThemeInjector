@@ -40,30 +40,33 @@ namespace SwitchThemes
 
 		bool HactoolExtract(string fname, string target)
 		{
-			string cmdline = $"/C \"\"{HactoolExe}\" -k \"{KeyFile}\" --romfsdir=\"{target}\" \"{fname}\"\"";
+			string cmdline = $"-k \"{KeyFile}\" --romfsdir=\"{target}\" \"{fname}\"";
 			Console.WriteLine(cmdline);
 			var start = new ProcessStartInfo()
 			{
-				FileName = "cmd.exe",
+				FileName = HactoolExe,
 				Arguments = cmdline,
 				CreateNoWindow = true,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
+				RedirectStandardError = true
 			};
 			using (var p = Process.Start(start))
 			{
-				string output = p.StandardOutput.ReadToEnd();
+				string output = "stdout:\r\n" + p.StandardOutput.ReadToEnd() + "\r\nstderr:\r\n" + p.StandardError.ReadToEnd();
 				p.WaitForExit(10000);
 				if (!p.HasExited)
 				{
 					p.Kill();
-					MessageBox.Show("The hactool process timed out and has been killed");
+					System.IO.File.WriteAllText("hactool.log", output);
+					MessageBox.Show("The hactool process timed out and has been killed, the log has been saved as hactool.log");
 					Console.WriteLine(output);
 					return false;
 				}
 				if (!Directory.Exists(path(target,"lyt")))
 				{
-					MessageBox.Show("Couldn't find lyt dir");
+					System.IO.File.WriteAllText("hactool.log", output);
+					MessageBox.Show("Couldn't find lyt dir, the log has been saved as hactool.log");
 					return false;
 				}
 				return true;
@@ -103,10 +106,10 @@ namespace SwitchThemes
 				MessageBox.Show("Couldn't find hactool.exe.\r\nYou must extract it in a folder called hactool in the same directory of this program");
 				return;
 			}
-			
+
 			KeyFile = keyFileTb.Text;
 			HactoolExe = Path.GetFullPath("hactool\\hactool.exe");
-			string OutDir = path(Path.GetTempPath(), "ncaExtraction");
+			string OutDir = Path.GetFullPath(path("hactool\\", "Temp_ncaExtraction"));
 			if (Directory.Exists(OutDir))
 				Directory.Delete(OutDir, true);
 			Directory.CreateDirectory(OutDir);
@@ -114,14 +117,23 @@ namespace SwitchThemes
 			if (!HactoolExtract(path(SdCardTb.Text, "home.nca"), OutDir))
 				return;
 			foreach (var f in Directory.GetFiles(path(OutDir, "lyt")))
-				File.Move(f, path(SdCardTb.Text, Path.GetFileName(f)));
+			{
+				string outFile = path(SdCardTb.Text, Path.GetFileName(f));
+				if (File.Exists(outFile)) File.Delete(outFile);
+				File.Move(f, outFile);
+			}
 
 			Directory.Delete(OutDir, true);
 			Directory.CreateDirectory(OutDir);
 
 			if (!HactoolExtract(path(SdCardTb.Text, "user.nca"), OutDir))
 				return;
-			File.Move(path(OutDir,"lyt/MyPage.szs"), path(SdCardTb.Text, "MyPage.szs"));
+			{
+				string outFile = path(SdCardTb.Text, "MyPage.szs");
+				if (File.Exists(outFile)) File.Delete(outFile);
+				File.Move(path(OutDir, "lyt/MyPage.szs"), outFile);
+			}
+
 			Directory.Delete(OutDir, true);
 
 			if (MessageBox.Show("Done, delete the original NCA files ?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
