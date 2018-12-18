@@ -531,7 +531,6 @@ namespace SwitchThemes
 					Target = HomeMenuParts[HomeMenuPartBox.Text],
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
 					UseCommon5X = info.Item3
-
 				},
 				File.ReadAllBytes(tbBntxFile.Text),
 				layout?.AsJson());
