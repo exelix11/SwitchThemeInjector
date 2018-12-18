@@ -12,7 +12,7 @@ bool StrEndsWith(const std::string &str, const std::string &suffix);
 std::vector<u8> OpenFile(const std::string &name);
 void WriteFile(const std::string &name,const std::vector<u8> &data);
 
-void CheckThemesFolder();
+bool CheckThemesFolder();
 std::vector<std::string> SearchCfwFolders();
 std::vector<std::string> GetThemeFiles();
 

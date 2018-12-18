@@ -154,3 +154,8 @@
             width: 25%;
             width: calc(100% / 4)
         }
+
+h1 {
+    color: white;
+    text-align: center;
+}

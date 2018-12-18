@@ -12,14 +12,14 @@ namespace SwitchThemes
 {
 	public partial class ThemeInputInfo : Form
 	{
-		public Tuple<string, string> result = null;
+		public Tuple<string, string,bool> result = null;
 
 		public ThemeInputInfo()
 		{
 			InitializeComponent();
 		}
 
-		public static Tuple<string, string> Ask()
+		public static Tuple<string, string, bool> Ask()
 		{
 			var f = new ThemeInputInfo();
 			f.ShowDialog();
@@ -33,7 +33,7 @@ namespace SwitchThemes
 				MessageBox.Show("Insert a valid theme name to continue");
 				return;
 			}
-			result = new Tuple<string, string>(tbThemeName.Text, tbAuthorName.Text);
+			result = new Tuple<string, string, bool>(tbThemeName.Text, tbAuthorName.Text,checkBox2.Checked);
 			this.Close();
 		}
 

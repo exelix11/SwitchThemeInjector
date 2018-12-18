@@ -19,3 +19,16 @@ class TextPage : public IPage
 	
 		Label Text;
 };
+
+class CreditsPage : public IPage
+{
+	public:
+		CreditsPage();	
+		
+		void Render(int X, int Y) override;
+		void Update() override;
+	private:
+	
+		Label creditsText;
+		Button showHelp;
+};

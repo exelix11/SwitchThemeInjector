@@ -35,6 +35,7 @@ class DialogPage : public IUIControlObj
 {
 	public:
 		DialogPage(const std::string &msg);	
+		DialogPage(const std::string &msg, const std::string &buttonMsg);	
 
 		void Render(int X, int Y) override;
 		void Update() override;

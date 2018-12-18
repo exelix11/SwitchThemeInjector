@@ -35,12 +35,13 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbAuthorName = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
+			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(233, 104);
+			this.button1.Location = new System.Drawing.Point(233, 126);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 0;
@@ -51,7 +52,7 @@
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(152, 104);
+			this.button2.Location = new System.Drawing.Point(152, 126);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 1;
@@ -100,12 +101,23 @@
 			this.label3.Text = "To continue fill the following form, these informations will be shown when instal" +
     "ling the theme so keep it short";
 			// 
+			// checkBox2
+			// 
+			this.checkBox2.AutoSize = true;
+			this.checkBox2.Location = new System.Drawing.Point(25, 101);
+			this.checkBox2.Name = "checkBox2";
+			this.checkBox2.Size = new System.Drawing.Size(263, 17);
+			this.checkBox2.TabIndex = 19;
+			this.checkBox2.Text = "Do not replace settings on 5.X (not recommended)";
+			this.checkBox2.UseVisualStyleBackColor = true;
+			// 
 			// ThemeInputInfo
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(312, 131);
+			this.ClientSize = new System.Drawing.Size(312, 153);
 			this.ControlBox = false;
+			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.tbAuthorName);
@@ -132,5 +144,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox tbAuthorName;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.CheckBox checkBox2;
 	}
 }

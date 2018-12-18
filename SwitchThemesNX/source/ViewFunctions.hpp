@@ -3,7 +3,7 @@
 #include <string>
 #include "UI/DialogPages.hpp"
 
-const std::string VersionString = "Beta 6";
+const std::string VersionString = "Ver. 1.0";
 
 void PushPage(IUIControlObj* page);
 void PopPage();

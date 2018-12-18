@@ -72,7 +72,6 @@ vector<u8> OpenFile(const string &name)
 	FILE* f = fopen(name.c_str(),"rb");
 	if (!f){
 		ErrorFatal("File open fail");
-		throw "File open failed";
 	}
 	fseek(f,0,SEEK_END);
 	auto len = ftell(f);
@@ -93,7 +92,6 @@ void WriteFile(const string &name,const vector<u8> &data)
 	if (!f)
 	{
 		ErrorFatal("Fail save");
-		throw "Fail save";
 	}
 	fwrite(data.data(),1,data.size(),f);
 	fflush(f);
@@ -145,12 +143,14 @@ void CreateThemeStructure(const string &tid)
 	}		
 }
 
-void CheckThemesFolder()
+bool CheckThemesFolder()
 {
 	if (!filesystem::exists("/themes"))
 		mkdir("/themes", ACCESSPERMS);
-	if (!filesystem::exists("/themes/systemData"))
+	bool Result = filesystem::exists("/themes/systemData");
+	if (!Result)
 		mkdir("/themes/systemData", ACCESSPERMS);
+	return Result;
 }
 
 string GetFileName(const string &path)

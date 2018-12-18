@@ -122,9 +122,7 @@
 (bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
   </data>
   <data name="materialLabel8.Text" xml:space="preserve">
-    <value>Use this page to convert images to DDS you can use for Auto-Theme or the web injector.
-
-If you just want to make themes with this tool you don't need this step as the images you provide in the Inject &amp;&amp; Patch tab will automatically be converted</value>
+    <value>Use this page to manually build nxtheme files. If you don't know what you're doing you should use the "Build nxtheme" button in the Inject and patch page as it automatically checks for layout compatibility. (You don't need to open an SZS for this page)</value>
   </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

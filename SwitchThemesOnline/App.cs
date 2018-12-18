@@ -14,20 +14,24 @@ namespace SwitchThemesOnline
 {
 	public class App
 	{
-		const string AppVersion = "2.1";
+		const string AppVersion = "2.2";
 		static HTMLDivElement topError;
 		static HTMLDivElement loader = null;
 		static HTMLParagraphElement LoaderText = null;
 		static HTMLParagraphElement lblDetected = null;
-		static HTMLParagraphElement lblTutorial = null;
 		static HTMLParagraphElement lblDDSPath = null;
+		static HTMLParagraphElement lblDDSPath_NX = null;
 		static HTMLSelectElement LayoutsComboBox = null;
 		static HTMLDivElement LayoutPrevDiv = null;
 		static HTMLImageElement LayoutPrevImg = null;
-		static string DefaultTutorialText = "";
+
+		static HTMLSelectElement HomePartBox_NX = null;
+		static HTMLSelectElement LayoutsComboBox_NX = null;
+		static HTMLDivElement LayoutPrevDiv_NX = null;
+		static HTMLImageElement LayoutPrevImg_NX = null;
 
 		static SarcData CommonSzs = null;
-		static DDSLoadResult LoadedDDS = null;
+		static byte[] LoadedDDS = null;
 		static PatchTemplate targetPatch = null;
 
 		public readonly static string[] embedLyouts = new string[] { "SuchHm", "SuchLk" , "ZnHm", "GleLk" };
@@ -50,18 +54,20 @@ namespace SwitchThemesOnline
 			loader = Document.GetElementById<HTMLDivElement>("loaderDiv");
 			LoaderText = Document.GetElementById<HTMLParagraphElement>("LoadingText");
 			lblDetected = Document.GetElementById<HTMLParagraphElement>("P_DetectedSZS");
-			lblTutorial = Document.GetElementById<HTMLParagraphElement>("P_Tutorial");
-			DefaultTutorialText = lblTutorial.InnerHTML;
-			lblTutorial.InnerHTML = string.Format(DefaultTutorialText, "*szs name*", "*title id*").Replace("\r\n", "<br />");
 			lblDDSPath = Document.GetElementById<HTMLParagraphElement>("P_DDSPath");
+			lblDDSPath_NX = Document.GetElementById<HTMLParagraphElement>("P_DDSPath2");
 			LayoutsComboBox = Document.GetElementById<HTMLSelectElement>("LayoutsBox");
 			LayoutPrevDiv = Document.GetElementById<HTMLDivElement>("PreviewDiv");
 			LayoutPrevImg = Document.GetElementById<HTMLImageElement>("PreviewImg");
 
+			HomePartBox_NX = Document.GetElementById<HTMLSelectElement>("HomePartBox");
+			LayoutsComboBox_NX = Document.GetElementById<HTMLSelectElement>("LayoutsBox2");
+			LayoutPrevDiv_NX = Document.GetElementById<HTMLDivElement>("PreviewDiv2");
+			LayoutPrevImg_NX = Document.GetElementById<HTMLImageElement>("PreviewImg2");
+
 			Document.GetElementById<HTMLParagraphElement>("P_PatchList").InnerHTML = SwitchThemesCommon.GeneratePatchListString(DefaultTemplates.templates).Replace("\r\n", "<br />");
 
 			LoadCustomLayouts();
-			LoadAutoThemeState();
 		}
 		
 		public static void LoadCustomLayouts()
@@ -116,7 +122,6 @@ namespace SwitchThemesOnline
 					return;
 				}
 				lblDetected.TextContent = "Detected " + targetPatch.TemplateName + " " + targetPatch.FirmName;
-				lblTutorial.InnerHTML = string.Format(DefaultTutorialText, targetPatch.szsName, targetPatch.TitleId).Replace("\r\n", "<br />");
 				for (int i = 0; i < layoutPatches.Length; i++)
 					if (layoutPatches[i] != null && layoutPatches[i].IsCompatible(CommonSzs))
 						LayoutsComboBox.Add(new HTMLOptionElement() { TextContent = layoutPatches[i].ToString(), Value = i.ToString() });
@@ -125,19 +130,42 @@ namespace SwitchThemesOnline
 
 		public static void UploadDDSBtn() //called from button click
 		{
-			if (CommonSzs != null)
-				Document.GetElementById<HTMLInputElement>("DdsUploader").Click();
-			else
-				Window.Alert("Open an szs first !");
+			Document.GetElementById<HTMLInputElement>("DdsUploader").Click();
 		}
 
 		public static void UploadDDS(Uint8Array arr, string fileName) //called from file uploader
 		{
-			DoActionWithloading(() => 
+			DoActionWithloading(() =>
 			{
 				lblDDSPath.TextContent = fileName;
-				LoadedDDS = DDSEncoder.LoadDDS(arr.ToArray());
+				lblDDSPath_NX.TextContent = fileName;
+				LoadedDDS = arr.ToArray();
 			});
+		}
+
+		public static void HomePartBoxOnChange()
+		{
+			if (HomePartBox_NX.SelectedIndex <= 0)
+				return;
+
+			while (LayoutsComboBox_NX.LastChild.TextContent != "Don't patch")
+				LayoutsComboBox_NX.RemoveChild(LayoutsComboBox_NX.LastChild);
+			for (int i = 0; i < layoutPatches.Length; i++)
+				if (layoutPatches[i] != null && (layoutPatches[i].TargetName == null ||
+					layoutPatches[i].TargetName.Contains(SwitchThemesCommon.PartToFileName[HomePartBox_NX.Value])))
+					LayoutsComboBox_NX.Add(new HTMLOptionElement() { TextContent = layoutPatches[i].ToString(), Value = i.ToString() });
+		}
+
+		public static void LayoutBoxNXOnChange()
+		{
+			if (LayoutsComboBox_NX.SelectedIndex <= 0)
+				LayoutPrevDiv_NX.Hidden = true;
+			else
+			{
+				int index = int.Parse(((HTMLOptionElement)LayoutsComboBox_NX.Children[LayoutsComboBox_NX.SelectedIndex]).Value);
+				LayoutPrevImg_NX.Src = "layouts/" + embedLyouts[index] + ".jpg";
+				LayoutPrevImg_NX.Hidden = false;
+			}
 		}
 
 		public static void LayoutBoxOnChange()
@@ -151,7 +179,68 @@ namespace SwitchThemesOnline
 				LayoutPrevDiv.Hidden = false;
 			}
 		}
-		
+
+		static void MakeNxTheme(string partName, string name, string author, LayoutPatch targetLayout)
+		{
+			if (LoadedDDS == null)
+			{
+				Window.Alert("Open a DDS first !");
+				return;
+			}
+			if (!ValidAutoThemeParts.Contains(partName))
+			{
+				Window.Alert("select a valid Home menu part");
+				return;
+			}
+			if (name.Trim() == "")
+			{
+				Window.Alert("Enter a valid name");
+				return;
+			}
+			DoActionWithloading(() =>
+			{			
+
+				var meta = new ThemeFileManifest()
+				{
+					Version = 1,
+					Author = author,
+					LayoutInfo = targetLayout != null ? targetLayout.ToString() : "",
+					ThemeName = name,
+					Target = partName,
+				};
+
+				var res = SwitchThemesCommon.GenerateNXTheme(meta, LoadedDDS, targetLayout == null ? null : targetLayout.AsJson());
+				Uint8Array dwn = new Uint8Array(res);
+				string DownloadFname = name + ".nxtheme";
+				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");
+			});
+		}
+
+		public static void BuildNxThemeNX()
+		{
+			LayoutPatch targetLayout = null;
+			if (LayoutsComboBox_NX.SelectedIndex > 0)
+				targetLayout = layoutPatches[int.Parse(
+					((HTMLOptionElement)LayoutsComboBox_NX.Children[LayoutsComboBox_NX.SelectedIndex]).Value)];
+
+			MakeNxTheme(HomePartBox_NX.Value,
+				Document.GetElementById<HTMLInputElement>("NXname").Value,
+				Document.GetElementById<HTMLInputElement>("NXauthor").Value,
+				targetLayout);
+		}
+
+		public static void BuildNxTheme()
+		{
+			string name = Window.Prompt("Enter a name for the theme");
+
+			LayoutPatch targetLayout = null;
+			if (LayoutsComboBox.SelectedIndex > 0)
+				targetLayout = layoutPatches[int.Parse(
+					((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value)];
+
+			MakeNxTheme(targetPatch.NXThemeName,name,"",targetLayout);
+		}
+
 		public static void PatchAndSave()
 		{
 			if (CommonSzs == null)
@@ -169,9 +258,9 @@ namespace SwitchThemesOnline
 				LayoutPatch targetLayout = null;
 				if (LayoutsComboBox.SelectedIndex > 0)
 					targetLayout = layoutPatches[int.Parse(
-						((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value)];	
+						((HTMLOptionElement)LayoutsComboBox.Children[LayoutsComboBox.SelectedIndex]).Value)];
 				
-				var yaz0 = Theme.Make(CommonSzs,LoadedDDS,targetPatch,targetLayout);
+				var yaz0 = Theme.Make(CommonSzs, DDSEncoder.LoadDDS(LoadedDDS) , targetPatch,targetLayout);
 				if (yaz0 == null) return;
 				Uint8Array dwn = new Uint8Array(yaz0);
 				string DownloadFname = targetPatch.szsName;
@@ -179,65 +268,13 @@ namespace SwitchThemesOnline
 			});
 		}
 
-		static string AutoThemePartName = "";
-		public static void AutoThemeUploadBtn(string PartName)
-		{
-			AutoThemePartName = PartName;
-			Document.GetElementById<HTMLInputElement>("AutoThemeUploader").Click();
-		}
-
-		public readonly static string[] ValidAutoThemeParts = new string[] { "home", "lock", "user", "set" , "apps", "news" };
-		public static void AutoThemeFileUploaded(Uint8Array arr)
-		{
-			if (!ValidAutoThemeParts.ContainsStr(AutoThemePartName))
-			{
-				Window.Alert("An invalid part name has been selected");
-				return;
-			}
-			DoActionWithloading(() =>
-			{
-				byte[] szs = arr.ToArray();
-				byte[] sarc = ManagedYaz0.Decompress(szs);
-				var szsData = SARCExt.SARC.UnpackRamN(sarc);
-				sarc = null;
-				var detected = SwitchThemesCommon.DetectSarc(szsData, DefaultTemplates.templates);
-				if (detected == null)
-				{
-					Window.Alert("This is not a valid theme file, if it's from a newer firmware it's not compatible with this tool yet");
-					return;
-				}
-				if (!detected.TemplateName.Contains(AutoThemePartName))
-				{
-					Window.Alert("This szs is valid but it doesn't look like the right one, you can keep it but it might generate themes that affect the wrong parts of the menu");
-				}
-				Window.LocalStorage.SetItem(AutoThemePartName, Convert.ToBase64String(szs));
-				Window.LocalStorage.SetItem(AutoThemePartName + "Name", detected.TemplateName + " " + detected.FirmName);
-				LoadAutoThemeState();				
-			});
-		}
-
+		public readonly static string[] ValidAutoThemeParts = new string[] { "home", "lock", "user", "set", "apps", "news" };
 		public static void AutoThemeDeleteAll()
 		{
-			if (!Window.Confirm("This will delete all the szs files stored in your browser. Auto-theme won't work anymore. Are you sure ?")) 
-				return;
 			foreach (var p in ValidAutoThemeParts)
 			{
 				Window.LocalStorage.RemoveItem(p);
 				Window.LocalStorage.RemoveItem(p + "Name");
-			}
-			LoadAutoThemeState();
-		}
-
-		public static void LoadAutoThemeState()
-		{
-			foreach (var p in ValidAutoThemeParts)
-			{
-				string name = Window.LocalStorage.GetItem(p + "Name") as string;
-				if (name != null)
-					name = "Detected " + name;
-				else
-					name = "not uploaded yet";
-				Document.GetElementById<HTMLParagraphElement>("P_" + p + "SZS").TextContent = name;
 			}
 		}
 

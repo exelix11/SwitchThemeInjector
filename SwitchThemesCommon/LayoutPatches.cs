@@ -11,6 +11,7 @@ namespace SwitchThemes.Common
     {
 		public string PatchName;
 		public string AuthorName;
+		public string TargetName;
 		public LayoutFilePatch[] Files;
 
 		public override string ToString() => PatchName + " by " + AuthorName;
@@ -28,20 +29,21 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
-#if WIN		
 		public string AsJson()
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
-				Formatting = Formatting.Indented,
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
-				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+#if WIN
+				Formatting = Formatting.Indented,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+#endif
 			};
 			return JsonConvert.SerializeObject(this, settings);
 		}
 
-#if DEBUG
+#if DEBUG && WIN
 		public static void CreateTestTemplates()
 		{
 			var p = new LayoutPatch()
@@ -66,7 +68,6 @@ namespace SwitchThemes.Common
 			};
 			System.IO.File.WriteAllText("ExtraLayouts.json", JsonConvert.SerializeObject(p));
 		}
-#endif
 #endif
 		public static LayoutPatch LoadTemplate(string json) =>
 			JsonConvert.DeserializeObject<LayoutPatch>(json);

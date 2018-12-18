@@ -71,53 +71,52 @@
                     <p><b>Warning</b>: when changing layouts you should always use an SZS with the original layout (bg doesn't matter), if the layout in the SZS you uploaded has already been modified, either manually or with this tool, the new layout may behave incorrectly.</p>
                     <p id="P_Tutorial">
                         Finally press on Patch and save to make your theme. <br />
-                        Once you have the final szs you have to place it in your sd card like this:<br />
-                        SdCard:\*Your cfw folder*\titles\{1}\romfs\lyt\{0}<br />
-                        (Where {0} is the file name)<br />
-                        *your cfw folder* can be either atmosphere or ReiNx.<br />
-                        Since the menu is a system title you'll have to create a "fsmitm.flag" as well:<br />
-                        SdCard:\*Your cfw folder*\titles\{1}\fsmitm.flag<br />
-                        You can do it in notepad: save an empty text file and change the extension to .flag<br />
+                        Once you have the final szs or nxtheme you have to place it in the themes folder on your sd card, then download and run the new <a href="https://github.com/exelix11/SwitchThemeInjector/releases">NXThemes Installer</a> to install it.
                     </p>
+                    <button class="btn--raised btn--green buttonCenter" style="margin-bottom:10px" onclick="SwitchThemesOnline.App.BuildNxTheme();">Build Nxtheme</button>
+                    <a href="javascript:alert('.nxtheme files are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware. To install nxtheme files you need to download NXThemes Installer on your console')" class="buttonCenter" style="text-align:center;margin-bottom:5px;width:40%">What is nxtheme ?</a>
                     <button class="btn--raised btn--red buttonCenter" style="margin-bottom:60px" onclick="SwitchThemesOnline.App.PatchAndSave();">Patch and save</button>
                 </div>
             </div>
 
             <input type="radio" name="tabs" id="tab3">
             <div class="tab-label-content" id="tab3-content">
-                <label for="tab3" class="tabColor">Auto-theme</label>
+                <label for="tab3" class="tabColor">Nxtheme builder</label>
                 <div class="tab-content">
                     <p>
-                        Auto-theme is a feature that allows sharing themes legally.<br />
-                        How does it work ? <br />
-                        To make a theme you need two things : a dds picture (legal to share) and an szs file from the home menu (illegal to share).<br />
-                        A custom theme still contains most of the original szs so it's illegal to share as well. <br />
-                        This feature allows you to store the szs files for your firmware in your browser (so no file leaves your computer) and automatically download a dds from a link to generate a theme. <br />
-                        To setup this feature upload at least one of the following files :
+                        .nxtheme files are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware.<br />To install nxtheme files you need to download <a href="https://github.com/exelix11/SwitchThemeInjector/releases">NXThemes Installer</a> on your console.
+                        and then follow a quick setup <a href="https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md">guide</a> (don't worry, this is much easier than the old dumping guide, it will just take 5 minutes).
                     </p>
-                    <p class="PathLabel">
-                        <b>Warning:</b> only ResidentMenu.szs is supported for home menu custom layouts.<br>
-                        It is recommended to upload <b>unmodified files</b> because custom layouts may behave incorrectly if applied on a theme whose layout has already been changed
-                    </p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('home');">Home menu (ResidentMenu.szs or common.szs)</button>
-                    <p id="P_homeSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('lock');">Lock screen (entrance.szs)</button>
-                    <p id="P_lockSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('user');">User settings (MyPage.szs)</button>
-                    <p id="P_userSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('apps');">All apps menu (Flaunch.szs) 6.x only</button>
-                    <p id="P_appsSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('set');">Console settings (Set.szs) 6.x only</button>
-                    <p id="P_setSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised buttonCenter" onclick="SwitchThemesOnline.App.AutoThemeUploadBtn('news');">News applet (Notification.szs) 6.x only</button>
-                    <p id="P_newsSZS" class="PathLabel">not uploaded yet</p>
-                    <button class="btn--raised btn--red buttonCenter" style="margin-bottom:5px" onclick="SwitchThemesOnline.App.AutoThemeDeleteAll();">Delete all</button>
-                    <p>
-                        Note that these files will be removed when you clear your browser history data and are not saved if you're using incognito.
-                        <br />
-                        To share a theme upload your DDS somewhere it will be always available and create a link on the <a href="autotheme.html">Auto-theme page</a>,
-                        everyone who has Auto-theme setup will be able to make your theme on the fly and save it.
-                    </p>
+                    <p style="margin-top:10px">To create a theme select wich part of the menu you want to edit: </p>
+                    <select class="buttonCenter" style="margin-bottom:10px;width:30%" id="HomePartBox" onchange="SwitchThemesOnline.App.HomePartBoxOnChange();">
+                        <option value="invalid">Select one</option>
+                        <option value="home">Home menu</option>
+                        <option value="lock">Lock screen</option>
+                        <option value="apps">All apps menu</option>
+                        <option value="set">Console settings</option>
+                        <option value="news">News applet</option>
+                        <option value="user">User page</option>
+                    </select>
+                    <p>Then open a <b>720p</b> <a href="https://www.aconvert.com/image/png-to-dds/">DDS image</a> to inject: </p>
+                    <button class="btn--raised btn--green buttonCenter" onclick="SwitchThemesOnline.App.UploadDDSBtn()">Open image</button>
+                    <p id="P_DDSPath2" class="PathLabel">no image opened yet</p>
+                    <p style="margin-bottom:5px">(Optional) Select a custom layout :</p>
+                    <select class="buttonCenter" style="margin-bottom:10px;width:30%" id="LayoutsBox2" onchange="SwitchThemesOnline.App.LayoutBoxNXOnChange();">
+                        <option value="-1">Don't patch</option>
+                    </select>
+                    <div id="PreviewDiv2" hidden>
+                        <p class="PathLabel">Preview (Click to enlarge)</p>
+                        <div style="width:30%;margin:auto;margin-top:4%;">
+                            <input id="lightbox-1" type="checkbox">
+                            <label for="lightbox-1"><img id="PreviewImg2" src=""></label>
+                        </div>
+                    </div>
+                    <p class="buttonCenter">Enter a name for this theme:</p>
+                    <input id="NXname" type="text" class="buttonCenter" style="width:50%;background-color:#fff;margin-bottom:10px;height:1vw" />
+                    <p class="buttonCenter">Enter the author name:</p>
+                    <input id="NXauthor" type="text" class="buttonCenter" style="width:50%;background-color:#fff;margin-bottom:10px;height:1vw" />
+                    <p>Once you have your theme copy it in the themes folder on your sd card.</p>
+                    <button class="btn--raised btn--green buttonCenter" style="margin-bottom:10px" onclick="SwitchThemesOnline.App.BuildNxThemeNX();">Build Nxtheme</button>
                 </div>
             </div>
 
