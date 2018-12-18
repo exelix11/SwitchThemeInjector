@@ -41,7 +41,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="bridge.json" />
+    <None Include="bridge.Debug.json" />
+    <None Include="bridge.Release.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
