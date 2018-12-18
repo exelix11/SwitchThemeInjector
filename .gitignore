@@ -330,3 +330,14 @@ ASALocalRun/
 .mfractor/
 SwitchThemesOnline/html/analytics.txt
 *.szs
+*.d
+*.o
+*.nxtheme
+*.zip
+*.map
+[Bb]uild/
+*.elf
+*.nacp
+*.nro
+*.nso
+*.pfs0
