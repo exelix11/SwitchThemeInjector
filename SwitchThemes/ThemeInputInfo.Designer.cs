@@ -41,7 +41,7 @@
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(233, 126);
+			this.button1.Location = new System.Drawing.Point(233, 148);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 0;
@@ -52,7 +52,7 @@
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(152, 126);
+			this.button2.Location = new System.Drawing.Point(152, 148);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 1;
@@ -103,19 +103,21 @@
 			// 
 			// checkBox2
 			// 
-			this.checkBox2.AutoSize = true;
-			this.checkBox2.Location = new System.Drawing.Point(25, 101);
+			this.checkBox2.Checked = true;
+			this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.checkBox2.Location = new System.Drawing.Point(12, 99);
 			this.checkBox2.Name = "checkBox2";
-			this.checkBox2.Size = new System.Drawing.Size(263, 17);
+			this.checkBox2.Size = new System.Drawing.Size(288, 48);
 			this.checkBox2.TabIndex = 19;
-			this.checkBox2.Text = "Do not replace settings on 5.X (not recommended)";
+			this.checkBox2.Text = "On 5.X apply the home menu image to all apps, settings and news as well (recommen" +
+    "ded, affects only home menu themes)";
 			this.checkBox2.UseVisualStyleBackColor = true;
 			// 
 			// ThemeInputInfo
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(312, 153);
+			this.ClientSize = new System.Drawing.Size(312, 175);
 			this.ControlBox = false;
 			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.label3);
