@@ -121,7 +121,7 @@ namespace SwitchThemesOnline
 
 			void BuildTheme()
 			{
-				var urlSplit = url.Split(new string[] { "\\/" }, StringSplitOptions.None);
+				var urlSplit = url.Split("/");
 				var meta = new ThemeFileManifest()
 				{
 					Version = 1,
