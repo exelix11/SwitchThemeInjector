@@ -198,7 +198,8 @@ namespace SwitchThemesOnline
 				return;
 			}
 			DoActionWithloading(() =>
-			{			
+			{
+				var dds = DDSEncoder.LoadDDS(LoadedDDS); //this will crash if the dds type is wrong
 
 				var meta = new ThemeFileManifest()
 				{
