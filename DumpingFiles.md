@@ -15,6 +15,8 @@ The automated way using the theme injector is windows only, mac and linux users 
 *Make sure to use the latest version of the tools, when a new switch system update drops new keys may be added so some of the tools have to be updated as well* \
 Copy the NXThemes installer and Lockpick NROs in the `switch` directory of your sd card.
 ### Getting the switch keys
+**Warning for SX emunand users :** Some users reported that lockpick can't properly dump the keys when using emunand, if you have this issue the only solution for you is to search them on google, they are like *really* easy to find, if you do search on google make sure you have `master_key_06`, that means that the keys are up to date, then skip to step 5.
+
 1) Boot your switch in RCM mode and launch the hekate payload (**Even if it's not your cfw, we are just using it to get some keys, you DON'T have to use atmosphere**), if you have autoboot enabled press VOL- during boot to enter the menu.
 2) Using the VOL buttons to navigate and power to confirm, open `Console info...` then `Print fuse info` and press Power to save fuse info to SD card. 
 3) Go back and select `Print TSEC keys` then press Power to save TSEC keys to SD card. 
