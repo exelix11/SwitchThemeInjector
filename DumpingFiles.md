@@ -42,6 +42,6 @@ Get a hactool build for your os and follow `Getting the switch keys`, then copy 
 
 then run: \
 `hactool -k prod.keys --romfsdir=homeromfs home.nca` and \
-`hactool -k prod.keys --romfsdir=userromfs home.nca` \
+`hactool -k prod.keys --romfsdir=userromfs user.nca` \
 Now you should have two folders called homeromfs and userromfs, in both of them there should be a folder called lyt, copy the content of the one in homeromfs and just the mypage.szs file from userromfs to the systemData folder on your sd. \
 Done, you're ready to go install and make some themes !
