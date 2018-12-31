@@ -43,7 +43,8 @@ void ThemesPage::SetDir(const string &dir)
 
 void ThemesPage::SetPage(int num)
 {
-	menuIndex = 0;
+	if (pageNum != num)
+		menuIndex = 0;
 	for (auto i : DisplayEntries)
 		delete i;
 	DisplayEntries.clear();
