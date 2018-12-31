@@ -3,12 +3,21 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../ViewFunctions.hpp"
 #include "../fs.hpp"
+#include "../input.hpp"
 #include <filesystem>
 
 using namespace std;
 
 const int EntryW = 860;
 const int EntryH = 96;
+
+ThemeEntry::~ThemeEntry()
+{
+	if (Preview)
+	{
+		delete Preview;
+	}
+}
 
 ThemeEntry::ThemeEntry(const string &fileName) :
 	lblFname("", WHITE, -1,font30),
@@ -25,17 +34,31 @@ ThemeEntry::ThemeEntry(const string &fileName) :
 		CanInstall = false;
 		IsFolder = true;
 	}
-	else ParseTheme();
+	else
+	{
+		file = OpenFile(FileName);
+		ParseTheme();
+	}
+}
+
+ThemeEntry::ThemeEntry(const vector<u8> &RawData):
+	lblFname("", WHITE, -1,font30),
+	lblLine1("", WHITE, -1,font25),
+	lblLine2("", WHITE, -1,font25),
+	Size {0,0, EntryW, EntryH }
+{
+	FileName = "";
+	file = RawData;
+	ParseTheme();
 }
 
 bool ThemeEntry::LegacyTheme()
 {
-	return StrEndsWith(FileName,".szs");
+	return StrEndsWith(FileName,".szs") || !SData.files.count("info.json");
 }
 
 void ThemeEntry::ParseTheme()
-{
-	file = OpenFile(FileName);
+{	
 	DecompressedFile = Yaz0::Decompress(file);	
 	SData = SARC::Unpack(DecompressedFile);
 	if (LegacyTheme())
@@ -52,17 +75,27 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1.SetString("Invalid theme");
 		CanInstall = false;
 	}
-	if (themeInfo.Version > 1)
+	if (themeInfo.Version > 2)
 	{
 		lblLine2.SetString("New version, update the installer !");
 		CanInstall = false;
 	}		
+	if (themeInfo.Version == 2 && SData.files.count("preview.png"))
+	{
+		NXThemeHasPreview = true;
+	}	
 	if (!ThemeTargetToName.count(themeInfo.Target))
 	{
 		lblLine2.SetString("Error: target not found");
 		CanInstall = false;		
 	}
-	lblLine2.SetString(ThemeTargetToName[themeInfo.Target]);
+	else
+	{
+		string targetStr = ThemeTargetToName[themeInfo.Target];
+		if (NXThemeHasPreview)
+			targetStr += " - press L for preview";
+		lblLine2.SetString(targetStr);
+	}
 	
 	lblFname.SetString(themeInfo.ThemeName);
 	string l1 = "";
@@ -82,8 +115,16 @@ void ThemeEntry::ParseNxTheme()
 
 void ThemeEntry::ParseLegacyTheme()
 {
-	lblFname.SetString(GetFileName(FileName));
-	lblLine1.SetString(FileName);
+	if (FileName == "")
+	{
+		lblFname.SetString("Unknown.szs");
+		lblLine1.SetString("Remote install");
+	}
+	else
+	{
+		lblFname.SetString(GetFileName(FileName));
+		lblLine1.SetString(FileName);		
+	}
 	auto patch = SwitchThemesCommon::DetectSarc(SData);
 	if (patch.FirmName == "")
 	{
@@ -91,6 +132,11 @@ void ThemeEntry::ParseLegacyTheme()
 		CanInstall = false;
 	}
 	else lblLine2.SetString(patch.TemplateName + " for " + patch.FirmName);
+}
+
+void ThemeEntry::NXLoadPreview()
+{
+	Preview = new Image(SData.files["preview.png"]);
 }
 		
 void ThemeEntry::Render(int X, int Y, bool selected)
@@ -105,9 +151,23 @@ void ThemeEntry::Render(int X, int Y, bool selected)
 		SDL_SetRenderDrawColor(sdl_render,11,255,209,0xff);
 		SDL_RenderFillRect(sdl_render,&aSize);
 		aSize = Size;
+		
+		if (NXThemeHasPreview && (kHeld & KEY_L))
+		{
+			if (!Preview)
+				NXLoadPreview();
+			if (Preview)
+			{
+				Preview->Render(0,0);
+				return;
+			}
+		}
 	}
 	aSize.x = X; aSize.y = Y;
-	SDL_SetRenderDrawColor(sdl_render,67,67,67,0xff); 
+	if (Highlighted)
+		SDL_SetRenderDrawColor(sdl_render,0x36,0x6e,0x64,0xff); 
+	else 
+		SDL_SetRenderDrawColor(sdl_render,67,67,67,0xff); 
 	SDL_RenderFillRect(sdl_render,&aSize);
 	lblFname.Render(X + 12, Y + 5);
 	lblLine1.Render(X + 12, Y + 55);
@@ -168,83 +228,117 @@ inline vector<u8> SarcPack(SARC::SarcData &data)
 	return Yaz0::Compress(packed.data, 3, packed.align);
 }
 
-void ThemeEntry::InstallTheme() 
+bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride) 
 {
 	if (!CanInstall)
 	{
 		Dialog("Can't install this theme, check that it hasn't been corrupted and that you are using an updated version of this installer");
-		return;
+		return false;
 	}
-	if (LegacyTheme())
-	{
-		DisplayLoading("Installing...");
-		PatchTemplate patch = SwitchThemesCommon::DetectSarc(SData);
-		CreateThemeStructure(patch.TitleId);
-		string szsPath = CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
-		WriteFile(szsPath, file);
-	}
-	else 
-	{
-		auto themeInfo = ParseNXThemeFile(SData);
-		string BaseSzs = "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
-		if (!filesystem::exists(BaseSzs))
+	try {
+		if (LegacyTheme())
 		{
-			MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);
-			return;
-		}
-		DisplayLoading("Installing...");
-		
-		auto ToPatch = SarcOpen(BaseSzs);
-		auto patch = SwitchThemesCommon::DetectSarc(ToPatch);
-		if (patch.FirmName == "")
-		{
-			Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
-			return;
-		}
-		
-		bool Patched5x = false; //If just the bg gets patched don't save the ResidentMenu file later
-		if (themeInfo.Target == "home" && patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)
-		{
-			Patched5x = true;
-			
-			string CommonSzs = "/themes/systemData/common.szs";
-			if (!filesystem::exists(CommonSzs))
-			{
-				MissingFileErrorDialog("common.szs");
-				return;
-			}
-			
-			auto CommonSarc = SarcOpen(CommonSzs);
-			auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
-			
-			if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
-				return;
-			
-			CreateThemeStructure(CommonPatch.TitleId);
-			WriteFile(CfwFolder + "/titles/" + CommonPatch.TitleId + "/romfs/lyt/common.szs", SarcPack(CommonSarc));
+			if (ShowLoading)
+				DisplayLoading("Installing...");
+			PatchTemplate patch = SwitchThemesCommon::DetectSarc(SData);
+			CreateThemeStructure(patch.TitleId);
+			string szsPath;
+			if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
+				szsPath	= homeDirOverride + patch.szsName;
+			else 
+				szsPath	= CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
+			WriteFile(szsPath, file);
 		}
 		else 
-		{		
-			if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
-				return;
-		}
+		{
+			auto themeInfo = ParseNXThemeFile(SData);
+			string BaseSzs = "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
+			if (!filesystem::exists(BaseSzs))
+			{
+				MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);
+				return false;
+			}
+			if (ShowLoading)
+				DisplayLoading("Installing...");
+			
+			auto ToPatch = SarcOpen(BaseSzs);
+			auto patch = SwitchThemesCommon::DetectSarc(ToPatch);
+			if (patch.FirmName == "")
+			{
+				Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
+				return false;
+			}
+			
+			bool Patched5x = false; //If just the bg gets patched don't save the ResidentMenu file later
+			if (themeInfo.Target == "home" && patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)
+			{
+				Patched5x = true;
 				
-		if (SData.files.count("layout.json"))
-		{
-			Patched5x = false;
-			auto JsonBinary = SData.files["layout.json"];
-			string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
-			if (!PatchLayout(ToPatch,JSON,BaseSzs))
-				return;
+				string CommonSzs = "/themes/systemData/common.szs";
+				if (!filesystem::exists(CommonSzs))
+				{
+					MissingFileErrorDialog("common.szs");
+					return false;
+				}
+				
+				auto CommonSarc = SarcOpen(CommonSzs);
+				auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
+				
+				if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
+					return false;
+				
+				if (homeDirOverride != "")
+					WriteFile(homeDirOverride + "common.szs", SarcPack(CommonSarc));
+				else 
+				{
+					CreateThemeStructure(CommonPatch.TitleId);
+					WriteFile(CfwFolder + "/titles/" + CommonPatch.TitleId + "/romfs/lyt/common.szs", SarcPack(CommonSarc));
+				}
+			}
+			else 
+			{		
+				if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
+					return false;
+			}
+					
+			if (SData.files.count("layout.json"))
+			{
+				Patched5x = false;
+				auto JsonBinary = SData.files["layout.json"];
+				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
+				if (!PatchLayout(ToPatch,JSON,BaseSzs))
+					return false;
+			}
+			
+			if (!Patched5x)
+			{
+				if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
+					WriteFile(homeDirOverride + patch.szsName, SarcPack(ToPatch));
+				else {
+					CreateThemeStructure(patch.TitleId);
+					WriteFile(CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName, SarcPack(ToPatch));
+				}
+			}
 		}
-		
-		if (!Patched5x)
-		{
-			CreateThemeStructure(patch.TitleId);
-			WriteFile(CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName, SarcPack(ToPatch));
-		}
+		if (ShowLoading)
+			Dialog("Done, restart the console to see the changes");
 	}
-	Dialog("Done, restart the console to see the changes");
+	catch (const char * err)
+	{
+		Dialog("Error while installing this theme: " + string(err));
+		return false;
+	}
+	catch (const string &err)
+	{
+		Dialog("Error while installing this theme: " + err);	
+		return false;	
+	}
+	catch (...)
+	{
+		Dialog("Exception while installing this theme.");	
+		return false;
+	}
+	return true;
 }
 
 SDL_Rect ThemeEntry::GetRect()

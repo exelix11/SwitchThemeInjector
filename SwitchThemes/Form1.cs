@@ -14,6 +14,8 @@ using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Bntxx;
 using Syroot.BinaryData;
+using Pfim;
+using System.Drawing.Imaging;
 
 namespace SwitchThemes
 {
@@ -65,7 +67,6 @@ namespace SwitchThemes
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
-			materialLabel1.ForeColor = Color.White;
 			lblDetected.ForeColor = Color.White;
 			if (Properties.Settings.Default.Adv)
 			{
@@ -348,7 +349,7 @@ namespace SwitchThemes
 			p.StartInfo = new ProcessStartInfo()
 			{
 				FileName = "texconv",
-				Arguments = $"-y -f DXT1 -ft dds -o \"{pathName}\" \"{fileName}\"",
+				Arguments = $"-y -f DXT1 -ft dds -srgb -o \"{pathName}\" \"{fileName}\"",
 				CreateNoWindow = true,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
@@ -465,6 +466,36 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
+		byte[] GenerateDDSPreview(string path)
+		{
+			var image = Pfim.Pfim.FromFile(path);
+			PixelFormat format;
+			switch (image.Format)
+			{
+				case Pfim.ImageFormat.Rgb24:
+					format = PixelFormat.Format24bppRgb;
+					break;
+
+				case Pfim.ImageFormat.Rgba32:
+					format = PixelFormat.Format32bppArgb;
+					break;
+
+				default:
+					throw new Exception("Format not recognized");
+			}
+
+			unsafe
+			{
+				fixed (byte* p = image.Data)
+				{
+					var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
+					var mem = new MemoryStream();
+					bitmap.Save(mem, System.Drawing.Imaging.ImageFormat.Jpeg);
+					return mem.ToArray();
+				}
+			}
+		}
+
 		private void materialRaisedButton8_Click(object sender, EventArgs e)
 		{
 			if (CommonSzs == null || targetPatch == null)
@@ -477,11 +508,16 @@ namespace SwitchThemes
 				MessageBox.Show("Select an image first");
 				return;
 			}
+			
 			if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
 				return;
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
 				return;
+
+			byte[] preview = null;
+			if (info.Item4)
+				preview = GenerateDDSPreview(tbBntxFile.Text);
 
 			LayoutPatch layout = null;
 			if (LayoutPatchList.SelectedIndex != 0)
@@ -489,7 +525,7 @@ namespace SwitchThemes
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 1,
+					Version = 2,
 					ThemeName = info.Item1,
 					Author = info.Item2,
 					Target = targetPatch.NXThemeName,
@@ -497,7 +533,8 @@ namespace SwitchThemes
 					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text), 
-				layout?.AsJson());
+				layout?.AsJson(),
+				preview);
 
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 			if (sav.ShowDialog() != DialogResult.OK)
@@ -519,13 +556,17 @@ namespace SwitchThemes
 			if (info == null)
 				return;
 
+			byte[] preview = null;
+			if (info.Item4)
+				preview = GenerateDDSPreview(tbBntxFile.Text);
+
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 1,
+					Version = 2,
 					ThemeName = info.Item1,
 					Author = info.Item2,
 					Target = HomeMenuParts[HomeMenuPartBox.Text],
@@ -533,7 +574,8 @@ namespace SwitchThemes
 					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text),
-				layout?.AsJson());
+				layout?.AsJson(),
+				preview);
 
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 			if (sav.ShowDialog() != DialogResult.OK)
@@ -622,6 +664,11 @@ namespace SwitchThemes
 				comboBox.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName)));
 				comboBox.SelectedIndex = 1;
 			}
+		}
+
+		private void materialRaisedButton9_Click(object sender, EventArgs e)
+		{
+			new RemoteInstallForm().ShowDialog();
 		}
 	}
 }

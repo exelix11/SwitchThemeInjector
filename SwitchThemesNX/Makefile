@@ -32,14 +32,15 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon source
+SOURCES		:=	source/hactool source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon source
 DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
 ROMFS	:=	romfs
 
-APP_TITLE	:=	NXThemes
+APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
+APP_VERSION := 1.1
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -55,7 +56,8 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++17 -fpermissive
 ASFLAGS	:=	 $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs
 
-LIBS	:= -lstdc++fs -lSDL2_ttf -lSDL2_image -lSDL2 \
+LIBS	:= -lhactool -lmbedtls -lmbedcrypto -lmbedx509 \
+			-lstdc++fs -lSDL2_ttf -lSDL2_image -lSDL2 \
 			-lpng -lz -ljpeg \
 			 -lEGL -lglapi -ldrm_nouveau \
 			-lnx -lm -lfreetype -lbz2 
@@ -63,7 +65,7 @@ LIBS	:= -lstdc++fs -lSDL2_ttf -lSDL2_image -lSDL2 \
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX)
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Libs
 
 
 #---------------------------------------------------------------------------------

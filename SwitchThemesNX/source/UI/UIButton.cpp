@@ -37,7 +37,10 @@ void Button::Render(int X, int Y)
 		b.w -= 2; b.h -= 2;
 		SDL_RenderDrawRect(sdl_render,&b);
 	}
-	SDL_SetRenderDrawColor(sdl_render, Color.r,Color.g,Color.b, 0xff);
+	if (Highlighted)
+		SDL_SetRenderDrawColor(sdl_render,0x36,0x6e,0x64,0xff);
+	else
+		SDL_SetRenderDrawColor(sdl_render, Color.r,Color.g,Color.b, 0xff);
 	SDL_RenderFillRect(sdl_render,&Border);
 	auto tSize = text->GetSize();
 	text->Render(X + Border.w / 2 - tSize.w / 2, Y + Border.h / 2 - tSize.h / 2);

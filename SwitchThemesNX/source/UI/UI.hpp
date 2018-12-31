@@ -38,7 +38,7 @@ struct LoadedImage
 };
 
 LoadedImage OpenImage(const std::string &Path);
-LoadedImage LoadImage(std::vector<u8> &data);
+LoadedImage LoadImage(const std::vector<u8> &data);
 void FreeImage(LoadedImage &img);
 
 LoadedImage LoadImage(std::string URL);
@@ -80,6 +80,7 @@ class Button
 		Button(const std::string &text, int padding = 15);
 		~Button();
 		bool selected;
+		bool Highlighted = false;
 		
 		void Render(int X, int Y);
 		
@@ -136,7 +137,9 @@ class Image
 	public: 
 		bool Visible = true;
 	
-		Image(LoadedImage &img);
+		Image(const std::vector<u8> &data);
+		~Image();
+		
 		defProp(Rect,SDL_Rect);
 		
 		void ImageSetScale(int MaxW, int MaxH);

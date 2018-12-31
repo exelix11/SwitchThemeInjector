@@ -2,9 +2,14 @@
 
 using namespace std;
 
-Image::Image(LoadedImage &img)
+Image::Image(const vector<u8> &data)
 {
-	_img = img;
+	_img = LoadImage(data);
+}
+
+Image::~Image()
+{
+	FreeImage(_img);
 }
 
 SDL_Rect Image::GetRect() {return _img.Rect;}

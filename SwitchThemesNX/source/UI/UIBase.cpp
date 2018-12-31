@@ -72,9 +72,9 @@ void FreeImage(LoadedImage &img)
 	SDL_DestroyTexture(img.image);	
 }
 
-LoadedImage LoadImage(vector<u8> &data)
+LoadedImage LoadImage(const vector<u8> &data)
 {	
-	auto rwOps = SDL_RWFromConstMem(reinterpret_cast<char*>(data.data()),data.size());
+	auto rwOps = SDL_RWFromConstMem(reinterpret_cast<const char*>(data.data()),data.size());
 	SDL_Surface *surf = IMG_Load_RW(rwOps,1);
 	
 	if(!surf) {
