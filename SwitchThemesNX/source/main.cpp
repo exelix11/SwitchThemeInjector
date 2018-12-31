@@ -14,10 +14,13 @@
 #include "Pages/TextPage.hpp"
 #include "ViewFunctions.hpp"
 #include "SwitchThemesCommon/SwitchThemesCommon.hpp"
+#include "Pages/RemoteInstallPage.hpp"
+#include "Pages/ThemeShufflePage.hpp"
 
 using namespace std;
 
 u64 kDown = 0;
+u64 kHeld = 0;
 stack<IUIControlObj*> views;
 bool doPopPage = false;
 bool AppRunning = true;
@@ -76,6 +79,7 @@ void AppMainLoop()
 	{ 
 		hidScanInput();
 		kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+		kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
 		
 		ViewObj->Update();
 		if (doPopPage)
@@ -111,7 +115,7 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 "That's all, have fun with custom themes :)");
 	Dialog("Altough .nxtheme files can be INSTALLED on every firmware you still have to uninstall the theme before updating, this is because the nxtheme gets converted to an SZS when it's installed. This means that every time you change your firmware you will have to do again the NCA dump procedure. But after that you will be able to reinstall all your themes in .nxtheme format without any compatibility issue.\n"
 "(Please note that some features such as custom Settings page are available only on >= 6.X firmwares)");
-	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files. These work just like SZS but they can be freely shared and most importantly installed on every firmware, all you have to do to use them is to follow a simple guide, read more in the \"Dump NCA\" tab.\n"
+	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files. These work just like SZS but they can be freely shared and most importantly installed on every firmware, all you have to do to use them is to follow a simple guide, read more in the \"Extract home menu\" tab.\n"
 "If you are familiar with Auto-Theme -the old way of legally sharing custom themes- you may know that the old guide was not easy, the procedure has been completely reworked, this time dumping the necessary data takes just 5 minutes and doesn't involve any complex operation.");
 	Dialog("Custom themes are custom SZS files that replace some files in the home menu, these files are firmware-dependent, this means that if you update your firmware while having a custom theme installed your console may not boot anymore until you manually remove the custom theme.\n"
 "To remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the 0100000000001000 folder in sdcard/<your cfw folder>/titles\n"
@@ -120,11 +124,22 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
 }
 
+void MyUnexpected () {
+	DisplayLoading("There was an unexpected exception, close this app with the home button");
+	while (1)
+	{
+		svcSleepThread(10000000000L);
+	}
+}
+
 int main(int argc, char **argv)
 {			
     romfsInit();
 	SdlInit();
 	FontInit();
+	socketInitializeDefault();
+	
+	std::set_unexpected (MyUnexpected);
 	
 	TabRenderer *t = new TabRenderer();
 	PushPage(t);
@@ -140,6 +155,10 @@ int main(int argc, char **argv)
 	t->AddPage(up);
 	NcaDumpPage *dp = new NcaDumpPage();
 	t->AddPage(dp);
+	RemoteInstallPage *rmi = new RemoteInstallPage();
+	t->AddPage(rmi);
+	ShufflePage *sf = new ShufflePage();
+	t->AddPage(sf);
 	CreditsPage *credits = new CreditsPage();
 	t->AddPage(credits);
 	QuitPage *q = new QuitPage();
@@ -162,9 +181,12 @@ int main(int argc, char **argv)
 	delete p;
 	delete up;
 	delete dp;
+	delete rmi;
+	delete sf;
 	delete credits;
 	delete q;
 	
+	socketExit();
 	FontExit();
 	SdlExit();
 	romfsExit();

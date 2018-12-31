@@ -23,5 +23,15 @@ std::string GetFileName(const std::string &path);
 std::string GetPath(const std::string &path);
 std::string GetParentDir(const std::string &path);
 
+void RecursiveDeleteFolder(const std::string &path);
+
+std::string FindKeyFile() noexcept;
+
 std::string GetHomeNcaPath();
 bool DumpHomeMenuNca();
+
+void RemoveSystemDataDir();
+
+int GetShuffleCount();
+std::string MakeThemeShuffleDir();
+void ClearThemeShuffle();

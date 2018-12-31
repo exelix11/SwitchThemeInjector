@@ -1,11 +1,13 @@
 #include "ThemePage.hpp"
 #include "../input.hpp"
 #include "../ViewFunctions.hpp"
+#include <algorithm>
 
 using namespace std;
 
 ThemesPage::ThemesPage(const std::vector<std::string> &files) : lblPage("",WHITE, -1, font25),
-NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25)
+NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25),
+lblCommands("", WHITE, -1, font25)
 {
 	Name = "Themes";
 	focused = false;
@@ -46,6 +48,8 @@ void ThemesPage::SetPage(int num)
 		delete i;
 	DisplayEntries.clear();
 	
+	lblCommands.SetString(SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
+	
 	int baseIndex = num * 5;
 	if (num < 0 || baseIndex >= CurrentFiles.size())  
 		return;
@@ -55,10 +59,16 @@ void ThemesPage::SetPage(int num)
 	if (imax > 5) imax = 5;
 	for (int i = 0; i < imax; i++)
 	{
-		DisplayEntries.push_back(new ThemeEntry(CurrentFiles[baseIndex + i]));
+		auto entry = new ThemeEntry(CurrentFiles[baseIndex + i]);
+		if (IsSelected(CurrentFiles[baseIndex + i]))
+			entry->Highlighted = true;
+		DisplayEntries.push_back(entry);
 	}
 	pageNum = num;
-	lblPage.SetString(CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount));
+	auto LblPStr = CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount);
+	if (SelectedFiles.size() != 0)
+		LblPStr = "("+ to_string(SelectedFiles.size()) + " selected) " + LblPStr;
+	lblPage.SetString(LblPStr);
 }
 
 const int EntryW = 860;
@@ -71,6 +81,8 @@ void ThemesPage::Render(int X, int Y)
 		NoThemesLbl.Render(X + 15, Y + 15);
 		return;
 	}
+	
+	lblCommands.Render(10, Y + 585);
 	
 	int RenderY = Y + 20;
 	int count = 0;
@@ -88,6 +100,27 @@ int ThemesPage::PageItemsCount()
 	if (menuCount > 5)
 		menuCount = 5;
 	return menuCount;
+}
+
+inline bool ThemesPage::IsSelected(const std::string &fname)
+{
+	return (std::find(SelectedFiles.begin(), SelectedFiles.end(), fname) != SelectedFiles.end());
+}
+
+void ThemesPage::SelectCurrent()
+{
+	if (DisplayEntries[menuIndex]->IsFolder) return;
+	auto fname = DisplayEntries[menuIndex]->GetPath();
+	auto position = std::find(SelectedFiles.begin(), SelectedFiles.end(), fname);
+	if (position != SelectedFiles.end())
+	{
+		SelectedFiles.erase(position);
+	}
+	else 
+	{
+		SelectedFiles.push_back(fname);
+	}
+	SetPage(pageNum);
 }
 
 void ThemesPage::Update()
@@ -144,18 +177,51 @@ void ThemesPage::Update()
 		}
 		else menuIndex++;
 	}
-	else if (kDown & KEY_A)
+	else if ((kDown & KEY_A) && menuIndex >= 0)
 	{
-		if (menuIndex >= 0)
+		if (DisplayEntries[menuIndex]->IsFolder)
+			SetDir(DisplayEntries[menuIndex]->GetPath());
+		else
 		{
-			if (DisplayEntries[menuIndex]->IsFolder)
-				SetDir(DisplayEntries[menuIndex]->GetPath());
+			if (SelectedFiles.size() == 0)
+			{
+				if (kHeld & KEY_R)
+				{
+					DisplayLoading("Installing to shuffle...");
+					DisplayEntries[menuIndex]->InstallTheme(false,MakeThemeShuffleDir());
+				}
+				else 
+					DisplayEntries[menuIndex]->InstallTheme();
+			}
 			else
-				DisplayEntries[menuIndex]->InstallTheme();
+				SelectCurrent();
 		}
 	}
+	else if ((kDown & KEY_Y) && menuIndex >= 0)
+	{
+		SelectCurrent();
+	}
+	else if ((kDown & KEY_X))
+	{
+		SelectedFiles.clear();
+		SetPage(pageNum);
+	}
+	else if ((kDown & KEY_PLUS) && SelectedFiles.size() != 0)
+	{
+		string shuffleDir = "";
+		if (kHeld & KEY_R)
+			shuffleDir = MakeThemeShuffleDir();
+		for (string file : SelectedFiles)
+		{
+			DisplayLoading("Installing " + file + "...");
+			ThemeEntry t {file};
+			if (!t.InstallTheme(false,shuffleDir))
+			{
+				Dialog("Installing a theme failed, the process was cancelled");
+				break;
+			}
+		}
+		SelectedFiles.clear();
+		SetPage(pageNum);		
+	}
 }
-
-
-
-

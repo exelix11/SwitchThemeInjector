@@ -35,7 +35,7 @@ vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 	if (level > 5) return res;
 	for (auto p : filesystem::directory_iterator(path))
 	{
-		if (p.is_directory() && p.path().filename() != "systemData")
+		if (p.is_directory() && p.path().filename() != "systemData" && p.path().filename() != "shuffle")
 		{
 			res.push_back(p.path());
 			auto v = GetThemeFilesInDirRecursive(p.path(), level + 1);
@@ -100,6 +100,7 @@ void WriteFile(const string &name,const vector<u8> &data)
 
 void RecursiveDeleteFolder(const string &path)
 {
+	if (!filesystem::exists(path)) return;
 	vector<string> toDelete;
 	for (auto p : filesystem::directory_iterator(path))
 	{
@@ -206,9 +207,68 @@ bool DumpHomeMenuNca()
 	}
 	catch (...)
 	{
+		fsdevUnmountDevice("System");
+		fsFsClose(&sys);
 		return false;
 	}
 	fsdevUnmountDevice("System");
 	fsFsClose(&sys);
 	return true;
 }
+
+std::string FindKeyFile() noexcept
+{
+	#define CheckKey(x) if (filesystem::exists(x)) return x;
+	CheckKey("sdmc:/switch/prod.keys");
+	CheckKey("sdmc:/switch/lockpick/prod.keys");
+	CheckKey("sdmc:/prod.keys");
+	CheckKey("sdmc:/themes/prod.keys");
+	CheckKey("sdmc:/goldleaf/keys.dat");
+	CheckKey("sdmc:/goldleaf/prod.keys");
+	return "";
+	#undef CheckKey
+}
+
+void RemoveSystemDataDir()
+{
+	RecursiveDeleteFolder("sdmc:/themes/systemData/");
+	mkdir("sdmc:/themes/systemData/",ACCESSPERMS);
+}
+
+int GetShuffleCount()
+{
+	if (!filesystem::exists("sdmc:/themes/shuffle"))
+		return 0;
+	int dirCount = 0;
+	for (auto p : filesystem::directory_iterator("sdmc:/themes/shuffle"))
+	{
+		if (p.is_directory())
+			dirCount++;
+	}
+	return dirCount;
+}
+
+string MakeThemeShuffleDir()
+{
+	if (!filesystem::exists("sdmc:/themes/shuffle"))
+		mkdir("sdmc:/themes/shuffle", ACCESSPERMS);
+	int dirCount = GetShuffleCount();
+	string dirName = "sdmc:/themes/shuffle/set" + to_string(dirCount) + "/";
+	while (filesystem::exists(dirName))
+	{
+		dirName = "sdmc:/themes/shuffle/set" + to_string(++dirCount) + "/";
+	}
+	mkdir(dirName.c_str(), ACCESSPERMS);
+	return dirName;
+}
+
+void ClearThemeShuffle()
+{
+	if (!filesystem::exists("sdmc:/themes/shuffle"))
+		return;
+	RecursiveDeleteFolder("sdmc:/themes/shuffle/");
+	rmdir("sdmc:/themes/shuffle/");	
+}
+
+
+
