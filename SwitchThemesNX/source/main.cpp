@@ -134,7 +134,7 @@ void MyUnexpected () {
 }
 
 int main(int argc, char **argv)
-{			
+{
     romfsInit();
 	SdlInit();
 	FontInit();
@@ -145,13 +145,31 @@ int main(int argc, char **argv)
 	if (envHasArgv() && argc > 1)
 	{
 		int i;
+		string key = "installtheme=";
+		string pathss;
 		for (i=1; i< argc; i++)
 		{
 			string argvs(argv[i]);
-			string key = "installtheme=";
-			if (strncmp(argv[i], key.c_str(), key.size()))
+			auto pos = argvs.find(key);
+			if (pos != std::string::npos)
+				pathss = argvs.substr(pos + 13);
+			
+			if (!pathss.empty())
 			{
-				PushPage(new ExternalInstallPage(argvs));
+				size_t index;
+				while (true)
+				{
+					index = argvs.find("(_)");
+     				if (index == std::string::npos) break;
+     				argvs.replace(index, 3, " ");
+				}
+				std::vector<std::string> paths;
+    			string path;
+    			stringstream stream(pathss);
+    			while(getline(stream, path, ',')){
+					paths.push_back(path); 
+				}
+				PushPage(new ExternalInstallPage(paths));
 				auto f = SearchCfwFolders();
 				if (f.size() != 1)
 					PushPage(new CfwSelectPage(f));

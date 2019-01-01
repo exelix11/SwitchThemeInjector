@@ -6,12 +6,16 @@
 
 using namespace std;
 
-ExternalInstallPage::ExternalInstallPage(std::string path) : Title("Install theme from external source",WHITE, 1000, font30), Install("Install (+)"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)")
+ExternalInstallPage::ExternalInstallPage(std::vector <std::string> paths) : Title("Install theme from external source",WHITE, 1000, font30), Install("Install (+)"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)"), tooManyTxt("Too many themes to display all.", GRAY, false)
 {
 	Install.selected = true;
     Reboot.selected = false;
     HBmenu.selected = false;
-    this->ArgEntry = new ThemeEntry(path);
+    this->ArgEntries.reserve(2);
+    for (int i=0; i < (int)paths.size()-1; i++)
+    {
+        this->ArgEntries.push_back(new ThemeEntry(paths[i]));
+    }
 }
 
 void ExternalInstallPage::Render(int X, int Y)
@@ -26,9 +30,25 @@ void ExternalInstallPage::Render(int X, int Y)
     }else
     {
         Install.Render(SCR_W/2 - Install.GetSize().w/2, SCR_H - 50 - Install.GetSize().h);
-        ArgEntry->Render(SCR_W/2 - ArgEntry->GetRect().w/2, SCR_H/2 - ArgEntry->GetRect().h/2, false);
+        int rectStartY = 80;
+        for (int i=0; i < (int)ArgEntries.size()-1; i++)
+        {
+            SDL_Rect EntryRect = ArgEntries[i]->GetRect();
+            int rectY = EntryRect.h * (i+1) + rectStartY;
+            if(rectY + EntryRect.h < Install.GetSize().y)
+            {
+                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, SCR_H/2 - EntryRect.h/2, false);
+            }
+            else{
+                tooManyItems = true;
+            }
+        }
     }
     Title.Render(SCR_W / 2 - Title.GetSize().w / 2,70);
+    if(tooManyItems)
+    {
+        tooManyTxt.Render(SCR_W / 2 - Title.GetSize().w / 2,72+Title.GetSize().h);
+    }
 }
 
 void ExternalInstallPage::Update()
@@ -71,9 +91,14 @@ void ExternalInstallPage::Update()
         if (kDown & KEY_PLUS)
         {
             DisplayLoading("Installing...");
-            if(!ArgEntry->InstallTheme(false))
+            bool installSuccess = true;
+            for (int i=0; i < (int)ArgEntries.size()-1; i++)
             {
-                Title.SetString("Failed to install external theme");
+                if(!ArgEntries[i]->InstallTheme(false)) installSuccess = false;
+            }
+            if(!installSuccess)
+            {
+                Title.SetString("Theme(s) may have failed to install");
                 Title.SetColor({255, 0, 0});
             }else{
                 Title.SetString("Installed theme from external source");
