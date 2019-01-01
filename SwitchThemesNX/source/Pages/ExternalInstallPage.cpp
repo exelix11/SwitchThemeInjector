@@ -11,7 +11,6 @@ ExternalInstallPage::ExternalInstallPage(std::vector <std::string> paths) : Titl
 	Install.selected = true;
     Reboot.selected = false;
     HBmenu.selected = false;
-    this->ArgEntries.reserve(2);
     for (int i=0; i < (int)paths.size()-1; i++)
     {
         this->ArgEntries.push_back(new ThemeEntry(paths[i]));
