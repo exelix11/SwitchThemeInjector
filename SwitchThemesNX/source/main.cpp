@@ -152,6 +152,9 @@ int main(int argc, char **argv)
 			if (strncmp(argv[i], key.c_str(), key.size()))
 			{
 				PushPage(new ExternalInstallPage(argvs));
+				auto f = SearchCfwFolders();
+				if (f.size() != 1)
+					PushPage(new CfwSelectPage(f));
 				AppMainLoop();
 				QuitApp();
 			}

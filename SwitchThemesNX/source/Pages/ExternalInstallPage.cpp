@@ -12,9 +12,6 @@ ExternalInstallPage::ExternalInstallPage(std::string path) : Title("Install them
     Reboot.selected = false;
     HBmenu.selected = false;
     this->ArgEntry = new ThemeEntry(path);
-    auto f = SearchCfwFolders();
-	if (f.size() != 1)
-		PushPage(new CfwSelectPage(f));
 }
 
 void ExternalInstallPage::Render(int X, int Y)
