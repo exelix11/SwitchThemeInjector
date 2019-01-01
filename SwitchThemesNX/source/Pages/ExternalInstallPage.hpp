@@ -13,15 +13,18 @@
 class ExternalInstallPage : public IUIControlObj
 {
 	public:
-		ExternalInstallPage(std::string path);
+		ExternalInstallPage(std::vector <std::string> paths);
 		
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
 		Label Title;
+		Label tooManyTxt;
         Button Install;
         Button Reboot;
         Button HBmenu;
         bool isInstalled = false;
-        ThemeEntry *ArgEntry;
+		bool tooManyItems = false;
+		std::vector <ThemeEntry*> ArgEntries; 
+		const SDL_Color GRAY = {0x80,0x80,0x80};
 };
