@@ -151,18 +151,18 @@ int main(int argc, char **argv)
 		{
 			string argvs(argv[i]);
 			auto pos = argvs.find(key);
+			size_t index;
+			while (true)
+			{
+				index = argvs.find("(_)");
+     			if (index == std::string::npos) break;
+     			argvs.replace(index, 3, " ");
+			}
 			if (pos != std::string::npos)
 				pathss = argvs.substr(pos + 13);
 			
 			if (!pathss.empty())
 			{
-				size_t index;
-				while (true)
-				{
-					index = argvs.find("(_)");
-     				if (index == std::string::npos) break;
-     				argvs.replace(index, 3, " ");
-				}
 				std::vector<std::string> paths;
     			string path;
     			stringstream stream(pathss);
