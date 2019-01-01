@@ -43,7 +43,6 @@ namespace SwitchThemes
 					new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 				var arr = mem.ToArray();
-				sock.SendBufferSize = arr.Length;
 
 				sock.Connect(textBox1.Text, 5000);
 
@@ -52,7 +51,8 @@ namespace SwitchThemes
 					sock.Send(arr, SocketFlags.None);
 
 					byte[] by = new byte[2];
-					sock.Receive(by, SocketFlags.None);
+					if (sock.Receive(by, SocketFlags.None) != 2)
+						MessageBox.Show("Didn't receive confirmation from switch :(");
 
 					sock.Close();
 
