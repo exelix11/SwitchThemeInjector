@@ -122,7 +122,7 @@
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(288, 33);
 			this.checkBox1.TabIndex = 20;
-			this.checkBox1.Text = "generate preview image for the background (doesn\'t include layout)";
+			this.checkBox1.Text = "Generate preview image for the background (doesn\'t include layout)";
 			this.checkBox1.UseVisualStyleBackColor = true;
 			// 
 			// ThemeInputInfo

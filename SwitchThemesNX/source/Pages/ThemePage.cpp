@@ -83,13 +83,15 @@ void ThemesPage::Render(int X, int Y)
 		return;
 	}
 	
-	lblCommands.Render(10, Y + 585);
+	lblCommands.Render(10, Y + 575);
 	
 	int RenderY = Y + 20;
 	int count = 0;
 	for (auto e : DisplayEntries)
 	{
 		e->Render(X + 16, RenderY, focused && count == menuIndex);		
+		if (focused && count == menuIndex && (kHeld & KEY_L))
+			return;
 		RenderY += e->GetRect().h + 15;
 		count++;
 	}	

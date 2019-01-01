@@ -18,6 +18,7 @@ btnClear("Remove all (+)")
 	btnClear.selected = false;
 	btnRandom.selected = false;
 	btnCycle.selected = false;
+	hasFocus = false;
 	LoadShuffleState();
 }
 
@@ -84,25 +85,15 @@ void ShufflePage::Update()
 		return;
 	}
 	
-	if (kDown & KEY_B){
-		btnClear.selected = false;
-		btnRandom.selected = false;
-		btnCycle.selected = false;
-		selectedIndex = 0;
-		Parent->PageLeaveFocus(this);
-		hasFocus = false;
-		return;
-	}
-	
-	if (kDown & KEY_LEFT)
+	if ((kDown & KEY_LEFT) || (kDown & KEY_B))
 	{
-		if (selectedIndex == 0)
+		if ((kDown & KEY_B) || selectedIndex == 0)
 		{			
 			btnClear.selected = false;
 			btnRandom.selected = false;
 			btnCycle.selected = false;
-			Parent->PageLeaveFocus(this);
 			hasFocus = false;
+			Parent->PageLeaveFocus(this);
 			return;			
 		}
 		else
