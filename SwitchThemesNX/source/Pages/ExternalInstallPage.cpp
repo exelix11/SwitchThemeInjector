@@ -11,7 +11,7 @@ ExternalInstallPage::ExternalInstallPage(std::vector <std::string> paths) : Titl
 	Install.selected = true;
     Reboot.selected = false;
     HBmenu.selected = false;
-    for (int i=0; i < (int)paths.size()-1; i++)
+    for (int i=0; i < (int)paths.size(); i++)
     {
         this->ArgEntries.push_back(new ThemeEntry(paths[i]));
     }
@@ -30,13 +30,13 @@ void ExternalInstallPage::Render(int X, int Y)
     {
         Install.Render(SCR_W/2 - Install.GetSize().w/2, SCR_H - 50 - Install.GetSize().h);
         int rectStartY = 80;
-        for (int i=0; i < (int)ArgEntries.size()-1; i++)
+        for (int i=0; i < (int)ArgEntries.size(); i++)
         {
             SDL_Rect EntryRect = ArgEntries[i]->GetRect();
             int rectY = EntryRect.h * (i+1) + rectStartY;
             if(rectY + EntryRect.h < Install.GetSize().y)
             {
-                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, SCR_H/2 - EntryRect.h/2, false);
+                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, rectY, false);
             }
             else{
                 tooManyItems = true;
@@ -91,7 +91,7 @@ void ExternalInstallPage::Update()
         {
             DisplayLoading("Installing...");
             bool installSuccess = true;
-            for (int i=0; i < (int)ArgEntries.size()-1; i++)
+            for (int i=0; i < (int)ArgEntries.size(); i++)
             {
                 if(!ArgEntries[i]->InstallTheme(false)) installSuccess = false;
             }
