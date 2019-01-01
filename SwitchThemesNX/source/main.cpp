@@ -12,6 +12,7 @@
 #include "Pages/UninstallPage.hpp"
 #include "Pages/NcaDumpPage.hpp"
 #include "Pages/TextPage.hpp"
+#include "Pages/ExternalInstallPage.hpp"
 #include "ViewFunctions.hpp"
 #include "SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "Pages/RemoteInstallPage.hpp"
@@ -140,7 +141,23 @@ int main(int argc, char **argv)
 	socketInitializeDefault();
 	
 	std::set_unexpected (MyUnexpected);
-	
+
+	if (envHasArgv() && argc > 1)
+	{
+		int i;
+		for (i=1; i< argc; i++)
+		{
+			string argvs(argv[i]);
+			string key = "installtheme=";
+			if (strncmp(argv[i], key.c_str(), key.size()))
+			{
+				PushPage(new ExternalInstallPage(argvs));
+				AppMainLoop();
+				QuitApp();
+			}
+ 		}
+	}
+
 	TabRenderer *t = new TabRenderer();
 	PushPage(t);
 	
