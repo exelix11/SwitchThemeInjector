@@ -41,19 +41,26 @@ namespace SwitchThemes
 			if (!Form1.HomeMenuParts.Values.Contains(Target))
 				return false;
 
-			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).First();
+			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).FirstOrDefault();
 			if (Image == null || !File.Exists(Image))
 			{
 				Console.WriteLine("No image file !");
 				return false;
 			}
-			string Layout = args.Where(x => x.EndsWith(".json")).First();
+			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
 
 			string GetArg(string start)
 			{
-				var a = args.Where(x => x.StartsWith(start + "=")).First();
+				var a = args.Where(x => x.StartsWith(start + "=")).FirstOrDefault();
 				if (a == null) return null;
 				else return a.Split('=')[1];
+			}
+
+			bool? GetArgBool(string start)
+			{
+				var a = GetArg(start);
+				if (a == null) return null;
+				else return bool.Parse(a);
 			}
 			
 			string Name = GetArg("name");
@@ -61,12 +68,17 @@ namespace SwitchThemes
 			string Output = GetArg("out");
 			if (Output == null || Output == "")
 				return false;
+			
+			bool Common5x = GetArgBool("common5x") ?? true;
+			bool preview = GetArgBool("preview") ?? true;
 
 			if (Name == null || Name.Trim() == "")
 			{
 				var info = ThemeInputInfo.Ask();
 				Name = info.Item1;
 				Author = info.Item2;
+				Common5x = info.Item3;
+				preview = info.Item4;
 			}
 
 			LayoutPatch layout = null;
@@ -88,11 +100,11 @@ namespace SwitchThemes
 					Author = Author,
 					Target = Target,
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					UseCommon5X = true
+					UseCommon5X = Common5x
 				},
 				File.ReadAllBytes(Image),
 				layout?.AsJson(),
-				Form1.GenerateDDSPreview(Image));
+				preview ? Form1.GenerateDDSPreview(Image) : null);
 
 			File.WriteAllBytes(Output, res);
 
