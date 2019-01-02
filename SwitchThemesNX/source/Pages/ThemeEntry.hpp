@@ -15,6 +15,7 @@ class ThemeEntry
 		bool InstallTheme(bool ShowDialogs = true, const std::string &homeDirOverride = "");
 		
 		std::string GetPath() {return FileName;}
+		bool HasPreview() {return NXThemeHasPreview;}
 		
 		bool Highlighted = false;
 		void Render(int X, int Y, bool selected);
