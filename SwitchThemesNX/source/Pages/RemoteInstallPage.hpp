@@ -25,6 +25,9 @@ class RemoteInstallPage : public IPage
 		void StartSocketing();
 		void StopSocketing();
 		void SocketUpdate();
+		
+		void DialogError(const std::string &msg);
+		
 		int sock = -1;
 	
 		

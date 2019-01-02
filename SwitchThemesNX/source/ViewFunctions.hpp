@@ -3,11 +3,12 @@
 #include <string>
 #include "UI/DialogPages.hpp"
 
-const std::string VersionString = "Ver. 1.1";
+const std::string VersionString = "Ver. 1.1.1";
 
 void PushPage(IUIControlObj* page);
 void PopPage();
 void ErrorFatal(const std::string &msg);
 void Dialog(const std::string &msg);
+void DialogBlocking(const std::string &msg);
 void DisplayLoading(const std::string &msg);
 void QuitApp();

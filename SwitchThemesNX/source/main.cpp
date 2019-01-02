@@ -62,6 +62,26 @@ void Dialog(const string &msg)
 	PushPage(new DialogPage(msg));
 }
 
+void DialogBlocking(const string &msg)
+{
+	Dialog(msg);
+	while (AppRunning && appletMainLoop())
+	{ 
+		hidScanInput();
+		kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+		kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
+		
+		ViewObj->Update();
+		if (doPopPage)
+		{			
+			_PopPage();
+			break;
+		}
+		ViewObj->Render(0,0);
+		SDL_RenderPresent(sdl_render);		
+	}
+}
+
 void DisplayLoading(const string &msg)
 {
 	LoadingOverlay o(msg);
