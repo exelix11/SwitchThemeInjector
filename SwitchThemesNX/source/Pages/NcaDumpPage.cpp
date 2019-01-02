@@ -13,7 +13,7 @@ guideText("",WHITE, 880, font30),
 	Name = "Extract home menu";
 	dumpNca.selected = false;
 	guideText.SetString("To install .nxtheme files you need to extract the home menu first.\n"
-		"To do this you just need the switch keys in your sd in a file called keys.prod, "
+		"To do this you just need the switch keys in your sd in a file called prod.keys, "
 		"you can easily get them with lockpick, read the guide at: https://git.io/fxdyF\n"
 		"Note that for SXOS EMUNAND users lockpick doesn't work and you'll have to find them on the internet\n"
 		"Remember that you have to do this EVERY TIME you update (or downgrade) the firmware.\n"
