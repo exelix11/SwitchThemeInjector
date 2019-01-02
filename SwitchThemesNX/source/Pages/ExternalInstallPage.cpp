@@ -6,15 +6,25 @@
 
 using namespace std;
 
-ExternalInstallPage::ExternalInstallPage(std::vector <std::string> paths) : Title("Install theme from external source",WHITE, 1000, font30), Install("Install (+)"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)"), tooManyTxt("Too many themes to display all.", GRAY, false)
+ExternalInstallPage::ExternalInstallPage(const vector<string> &paths) :
+Title("Install theme from external source",WHITE, 1000, font30),
+Install("Press + to install, B to cancel"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)"),
+tooManyTxt("Too many themes to display all.", GRAY, false)
 {
-	Install.selected = true;
+	Install.selected = false;
     Reboot.selected = false;
     HBmenu.selected = false;
     for (int i=0; i < (int)paths.size(); i++)
     {
         this->ArgEntries.push_back(new ThemeEntry(paths[i]));
     }
+}
+
+ExternalInstallPage::~ExternalInstallPage()
+{
+	for (int i=0; i < (int)ArgEntries.size(); i++)
+			delete ArgEntries[i];
+	ArgEntries.clear();
 }
 
 void ExternalInstallPage::Render(int X, int Y)
@@ -29,25 +39,25 @@ void ExternalInstallPage::Render(int X, int Y)
     }else
     {
         Install.Render(SCR_W/2 - Install.GetSize().w/2, SCR_H - 50 - Install.GetSize().h);
-        int rectStartY = 80;
-        for (int i=0; i < (int)ArgEntries.size(); i++)
+        int rectStartY = 70;
+        for (int i=RenderStartIndex; i < (int)ArgEntries.size(); i++)
         {
             SDL_Rect EntryRect = ArgEntries[i]->GetRect();
-            int rectY = EntryRect.h * (i+1) + rectStartY;
+            int rectY = (EntryRect.h + 2) * ((i-RenderStartIndex)+1) + rectStartY;
             if(rectY + EntryRect.h < Install.GetSize().y)
             {
-                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, rectY, false);
+                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, rectY, i == SelectedIndex);
+				if ((kHeld & KEY_L) && ArgEntries[SelectedIndex]->HasPreview()) return; //for preview
             }
-            else{
+            else
+			{
                 tooManyItems = true;
+				break;
             }
+			tooManyItems = false;
         }
     }
     Title.Render(SCR_W / 2 - Title.GetSize().w / 2,70);
-    if(tooManyItems)
-    {
-        tooManyTxt.Render(SCR_W / 2 - Title.GetSize().w / 2,72+Title.GetSize().h);
-    }
 }
 
 void ExternalInstallPage::Update()
@@ -85,8 +95,25 @@ void ExternalInstallPage::Update()
                 bpcRebootSystem();
             }
         }
-    }else
+    }
+	else
     {
+		if (kDown & KEY_DOWN)
+		{
+			if (tooManyItems)
+				RenderStartIndex++;
+			if (SelectedIndex + 1 < ArgEntries.size())
+				SelectedIndex++;
+		}
+		if (kDown & KEY_UP)
+		{
+			if (RenderStartIndex > 0)
+				RenderStartIndex--;
+			if (SelectedIndex > 0)
+				SelectedIndex--;
+		}
+
+		
         if (kDown & KEY_PLUS)
         {
             DisplayLoading("Installing...");
@@ -105,6 +132,10 @@ void ExternalInstallPage::Update()
             isInstalled = true;
             HBmenu.selected = true;
         }
+		else if (kDown & KEY_B)
+		{
+			QuitApp();
+		}
     }
 }
 
