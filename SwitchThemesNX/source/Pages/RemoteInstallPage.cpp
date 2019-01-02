@@ -98,6 +98,11 @@ void RemoteInstallPage::StopSocketing()
 	BtnStart.SetString("Start remote install");
 }
 
+void RemoteInstallPage::DialogError(const std::string &msg)
+{
+	Dialog("There was an error, try again.\n" + msg);
+}
+
 void RemoteInstallPage::SocketUpdate()
 {	
 	if (sock < 0) 
@@ -112,7 +117,7 @@ void RemoteInstallPage::SocketUpdate()
 		int size = -1;
 		if ((size=recv(curSock,buf,sizeof(buf),0)) <0)
 		{
-			Dialog("Couldn't read any data.");
+			DialogError("(Couldn't read any data.)");
 			close(curSock);
 			StopSocketing();
 			return;
@@ -121,7 +126,7 @@ void RemoteInstallPage::SocketUpdate()
 		{			
 			if (strncmp(buf, "theme", 5) != 0)
 			{
-				Dialog("Unexpected data received.");
+				DialogError("(Unexpected data received.)");
 				close(curSock);
 				StopSocketing();
 				return;
@@ -129,7 +134,7 @@ void RemoteInstallPage::SocketUpdate()
 			int *ThemeSize = reinterpret_cast<int*>(buf + 8);
 			if (*ThemeSize < 50 || *ThemeSize > 2000000)
 			{
-				Dialog("Invalid size (" + to_string(*ThemeSize) + ")");
+				DialogError("(Invalid size: " + to_string(*ThemeSize) + ")");
 				close(curSock);
 				StopSocketing();
 				return;				
@@ -137,14 +142,14 @@ void RemoteInstallPage::SocketUpdate()
 			vector<u8> data;
 			DisplayLoading("Loading...");
 			data.reserve(*ThemeSize);
-			u8 tmp[100];
-			while ((size = recv(curSock,tmp,100,0)) > 0)
+			u8 tmp[80];
+			while ((size = recv(curSock,tmp,80,0)) > 0)
 			{
 				for (int i = 0; i < size; i++)
 					data.push_back(tmp[i]);
 			}
 			if (data.size() != *ThemeSize)
-				Dialog("Unexpected data count. (" + to_string(size) + ")");
+				DialogError("(Unexpected data count: " + to_string(size) + ")");
 			else
 			{
 				write(curSock,"ok",2);
