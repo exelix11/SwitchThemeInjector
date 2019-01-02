@@ -1,0 +1,19 @@
+{
+  "PatchName": "All Apps 90% Scale",
+  "AuthorName": "Such Meme, Many Skill",
+  "TargetName": "Flaunch.szs",
+  "Files": [
+    {
+      "FileName": "blyt/FlcBtnIconGame.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Delete",
+          "Scale": {
+            "X": 0.9,
+            "Y": 0.9
+          }
+        },
+      ]
+    }
+  ]
+}

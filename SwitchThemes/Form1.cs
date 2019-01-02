@@ -31,7 +31,7 @@ namespace SwitchThemes
 		List<PatchTemplate> Templates = new List<PatchTemplate>();
 		Dictionary<string,LayoutPatch> Layouts = new Dictionary<string, LayoutPatch>();
 
-		Dictionary<string, string> HomeMenuParts = new Dictionary<string, string>()
+		public static Dictionary<string, string> HomeMenuParts = new Dictionary<string, string>()
 		{
 			{"Home menu", "home"},
 			{"Lock screen", "lock"},
@@ -335,7 +335,7 @@ namespace SwitchThemes
 			AllLayoutsBox.SelectedIndex = 0;
 		}
 
-		bool ImageToDDS(string fileName, string outPath)
+		public static bool ImageToDDS(string fileName, string outPath)
 		{
 			if (!File.Exists("texconv.exe"))
 			{
@@ -370,7 +370,7 @@ namespace SwitchThemes
 			}
 			return true;
 		}
-
+		
 		bool ImageToDDS()
 		{
 			var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
@@ -466,7 +466,7 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
-		byte[] GenerateDDSPreview(string path)
+		public static byte[] GenerateDDSPreview(string path)
 		{
 			var image = Pfim.Pfim.FromFile(path);
 			PixelFormat format;
