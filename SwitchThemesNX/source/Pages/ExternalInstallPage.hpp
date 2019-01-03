@@ -24,7 +24,6 @@ class ExternalInstallPage : public IUIControlObj
 		int SelectedIndex = 0;
 	
 		Label Title;
-		Label tooManyTxt;
         Button Install;
         Button Reboot;
         Button HBmenu;
