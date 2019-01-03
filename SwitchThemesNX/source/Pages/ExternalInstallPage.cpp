@@ -8,8 +8,7 @@ using namespace std;
 
 ExternalInstallPage::ExternalInstallPage(const vector<string> &paths) :
 Title("Install theme from external source",WHITE, 1000, font30),
-Install("Press + to install, B to cancel"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)"),
-tooManyTxt("Too many themes to display all.", GRAY, false)
+Install("Press + to install, B to cancel"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)")
 {
 	Install.selected = false;
     Reboot.selected = false;
