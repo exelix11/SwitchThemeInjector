@@ -19,7 +19,7 @@ guideText("",WHITE, 880, font30),
 		"Remember that you have to do this EVERY TIME you update (or downgrade) the firmware.\n"
 		"Press + to dump the home menu files");
 	if (FindKeyFile() == "")
-		dumpNca.SetString("Keys not found: extract just NCA (+)");
+		dumpNca.SetString("Error: Keys not found on the sd card.");
 }
 
 void NcaDumpPage::Render(int X, int Y)
@@ -36,11 +36,13 @@ void NcaDumpPage::Update()
 		if (FindKeyFile() == "")
 		{
 			DialogBlocking("Couldn't find the keys on the sd card, place them in one of the following paths:\n"			"sdcard:/keys.prod\nsdcard:/themes/keys.prod\nsdcard:/switch/keys.prod");
-			DialogBlocking("Only the NCA of the home menu will be dumped, you'll have to extract the files from the injector following this guide: https://git.io/fxdyF \n"
-			"(Or put the keys on the sd card and repeat this process.)");
-			RemoveSystemDataDir();
-			if (DumpHomeMenuNca())
-				Dialog("Done, the home menu NCA was extracted, now use the injector to complete the setup.");
+			if ((kHeld & KEY_L) && (kHeld & KEY_R))
+			{
+				DisplayLoading("Extracting NCA...");
+				RemoveSystemDataDir();
+				if (DumpHomeMenuNca())
+					Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
+			}
 			return;
 		}
 		DialogBlocking("This process may take up to a few minutes, don't let your console go to sleep mode and don't press the home button.\nPress A to start");

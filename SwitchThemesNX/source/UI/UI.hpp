@@ -142,7 +142,8 @@ class Image
 		
 		defProp(Rect,SDL_Rect);
 		
-		void ImageSetScale(int MaxW, int MaxH);
+		void ImageSetMaxSize(int MaxW, int MaxH);
+		void ImageSetSize(int W, int H);
 		void Render(int X, int Y);
 	private:
 		LoadedImage _img;

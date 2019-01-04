@@ -66,6 +66,7 @@ namespace SwitchThemes
 			string Name = GetArg("name");
 			string Author = GetArg("author");
 			string Output = GetArg("out");
+			string ExtraCommon = GetArg("commonlyt");
 			if (Output == null || Output == "")
 				return false;
 			
@@ -95,7 +96,7 @@ namespace SwitchThemes
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 2,
+					Version = 3,
 					ThemeName = Name,
 					Author = Author,
 					Target = Target,
@@ -103,8 +104,8 @@ namespace SwitchThemes
 					UseCommon5X = Common5x
 				},
 				File.ReadAllBytes(Image),
-				layout?.AsJson(),
-				preview ? Form1.GenerateDDSPreview(Image) : null);
+				layout?.AsByteArray(),
+				new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null));
 
 			File.WriteAllBytes(Output, res);
 

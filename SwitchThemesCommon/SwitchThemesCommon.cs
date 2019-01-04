@@ -16,15 +16,17 @@ namespace SwitchThemes.Common
 			"{0} \r\n" +
 			"Always read the instructions because they are slightly different for each version";
 
-		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, string layout = null, byte[] Preview = null)
+		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] ExtraFiles)
 		{
 			Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>();
 			Files.Add("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
 			Files.Add("image.dds", image);
 			if (layout != null)
-				Files.Add("layout.json", Encoding.UTF8.GetBytes(layout));
-			if (Preview != null)
-				Files.Add("preview.png", Preview);
+				Files.Add("layout.json", layout);
+
+			foreach (var f in ExtraFiles)
+				if (f != null && f.Item1 != null && f.Item2 != null)
+					Files.Add(f.Item1, f.Item2);
 
 			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() {  endianness = ByteOrder.LittleEndian, Files = Files, HashOnly = false} );
 			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);

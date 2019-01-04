@@ -38,6 +38,7 @@ void ThemesPage::SetDir(const string &dir)
 	pageCount = CurrentFiles.size() / 5 +1;
 	if (CurrentFiles.size() % 5 == 0) 
 		pageCount--;
+	menuIndex = 0;
 	SetPage(0);
 }
 
@@ -53,7 +54,10 @@ void ThemesPage::SetPage(int num)
 	
 	int baseIndex = num * 5;
 	if (num < 0 || baseIndex >= CurrentFiles.size())  
+	{
+		lblPage.SetString(CurrentDir + " - Empty");
 		return;
+	}
 	
 	DisplayLoading("Loading...");
 	int imax = CurrentFiles.size() - baseIndex;
@@ -180,7 +184,7 @@ void ThemesPage::Update()
 		}
 		else menuIndex++;
 	}
-	else if ((kDown & KEY_A) && menuIndex >= 0)
+	else if ((kDown & KEY_A) && menuIndex >= 0 && menuIndex < menuCount)
 	{
 		if (DisplayEntries[menuIndex]->IsFolder)
 			SetDir(DisplayEntries[menuIndex]->GetPath());

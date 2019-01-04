@@ -15,7 +15,13 @@ Image::~Image()
 SDL_Rect Image::GetRect() {return _img.Rect;}
 void Image::SetRect(SDL_Rect r) {_img.Rect = r;}
 
-void Image::ImageSetScale(int MaxW, int MaxH)
+void Image::ImageSetSize(int W, int H)
+{
+	_img.Rect.w = W;
+	_img.Rect.h = H;
+}
+
+void Image::ImageSetMaxSize(int MaxW, int MaxH)
 {
 	if (_img.Rect.w > MaxW || _img.Rect.h > MaxH)
 	{

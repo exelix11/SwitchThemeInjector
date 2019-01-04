@@ -29,6 +29,11 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
+		public byte[] AsByteArray()
+		{
+			return Encoding.UTF8.GetBytes(AsJson());
+		}
+
 		public string AsJson()
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()

@@ -75,12 +75,12 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1.SetString("Invalid theme");
 		CanInstall = false;
 	}
-	if (themeInfo.Version > 2)
+	if (themeInfo.Version > 3)
 	{
 		lblLine2.SetString("New version, update the installer !");
 		CanInstall = false;
 	}		
-	if (themeInfo.Version == 2 && SData.files.count("preview.png"))
+	if (SData.files.count("preview.png"))
 	{
 		NXThemeHasPreview = true;
 	}	
@@ -103,9 +103,7 @@ void ThemeEntry::ParseNxTheme()
 		l1 += "by " + themeInfo.Author;
 	if (themeInfo.LayoutInfo != "")
 	{
-		if (l1 != "")
-			l1 += " - ";
-		l1 += "Layout: " + themeInfo.LayoutInfo;
+		l1 += " - " + themeInfo.LayoutInfo;
 	}
 	
 	if (l1 == "") //if meta is missing
@@ -137,6 +135,7 @@ void ThemeEntry::ParseLegacyTheme()
 void ThemeEntry::NXLoadPreview()
 {
 	Preview = new Image(SData.files["preview.png"]);
+	Preview->ImageSetSize(1280,720);
 }
 		
 void ThemeEntry::Render(int X, int Y, bool selected)
@@ -269,10 +268,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				return false;
 			}
 			
-			bool Patched5x = false; //If just the bg gets patched don't save the ResidentMenu file later
-			if (themeInfo.Target == "home" && patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)
+			bool CommonPatchedBg = false; //If just the bg gets patched don't save the ResidentMenu file later
+			if (themeInfo.Target == "home" && (SData.files.count("common.json") || (patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)))
 			{
-				Patched5x = true;
 				
 				string CommonSzs = "/themes/systemData/common.szs";
 				if (!filesystem::exists(CommonSzs))
@@ -282,20 +280,33 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				}
 				
 				auto CommonSarc = SarcOpen(CommonSzs);
-				auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
 				
-				if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
-					return false;
+				if (patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)
+				{
+					CommonPatchedBg = true; //Do not save resident only if the bg has been applied to common
+					auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
+					if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
+						return false;
+				}
+				
+				if (SData.files.count("common.json"))
+				{
+					auto JsonBinary = SData.files["common.json"];
+					string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
+					if (!PatchLayout(CommonSarc,JSON,"common.szs"))
+						return false;
+				}
 				
 				if (homeDirOverride != "")
 					WriteFile(homeDirOverride + "common.szs", SarcPack(CommonSarc));
 				else 
 				{
-					CreateThemeStructure(CommonPatch.TitleId);
-					WriteFile(CfwFolder + "/titles/" + CommonPatch.TitleId + "/romfs/lyt/common.szs", SarcPack(CommonSarc));
+					CreateThemeStructure("0100000000001000");
+					WriteFile(CfwFolder + "/titles/0100000000001000/romfs/lyt/common.szs", SarcPack(CommonSarc));
 				}
 			}
-			else 
+			
+			if (!CommonPatchedBg)
 			{		
 				if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
 					return false;
@@ -303,14 +314,14 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					
 			if (SData.files.count("layout.json"))
 			{
-				Patched5x = false;
+				CommonPatchedBg = false;
 				auto JsonBinary = SData.files["layout.json"];
 				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
 				if (!PatchLayout(ToPatch,JSON,BaseSzs))
 					return false;
 			}
 			
-			if (!Patched5x)
+			if (!CommonPatchedBg)
 			{
 				if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
 					WriteFile(homeDirOverride + patch.szsName, SarcPack(ToPatch));
