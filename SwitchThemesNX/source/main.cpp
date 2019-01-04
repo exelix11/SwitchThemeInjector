@@ -12,6 +12,7 @@
 #include "Pages/UninstallPage.hpp"
 #include "Pages/NcaDumpPage.hpp"
 #include "Pages/TextPage.hpp"
+#include "Pages/ExternalInstallPage.hpp"
 #include "ViewFunctions.hpp"
 #include "SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "Pages/RemoteInstallPage.hpp"
@@ -152,8 +153,47 @@ void MyUnexpected () {
 	}
 }
 
+void CheckCFWDir()
+{
+	auto f = SearchCfwFolders();
+	if (f.size() != 1)
+		PushPage(new CfwSelectPage(f));
+}
+
+vector<string> GetArgsInstallList(int argc, char**argv)
+{
+	int i;
+	string key = "installtheme=";
+	string pathss;
+	std::vector<std::string> paths;
+	for (i=1; i< argc; i++)
+	{
+		string argvs(argv[i]);
+		auto pos = argvs.find(key);
+		size_t index;
+		while (true)
+		{
+			index = argvs.find("(_)");
+    		if (index == std::string::npos) break;
+    		argvs.replace(index, 3, " ");
+		}
+		if (pos != std::string::npos)
+			pathss = argvs.substr(pos + 13);
+		
+		if (!pathss.empty())
+		{
+    		string path;
+    		stringstream stream(pathss);
+    		while(getline(stream, path, ',')){
+				paths.push_back(path); 
+			}
+		}
+ 	}
+	return paths;
+}	
+
 int main(int argc, char **argv)
-{			
+{
     romfsInit();
 	SdlInit();
 	FontInit();
@@ -161,50 +201,66 @@ int main(int argc, char **argv)
 	
 	std::set_unexpected (MyUnexpected);
 	
-	TabRenderer *t = new TabRenderer();
-	PushPage(t);
-	
-	if (!CheckThemesFolder())
-		ShowFirstTimeHelp(true);
-	
-	auto ThemeFiles = GetThemeFiles();
-	
-	ThemesPage *p = new ThemesPage(ThemeFiles);
-	t->AddPage(p);
-	UninstallPage *up = new UninstallPage();
-	t->AddPage(up);
-	NcaDumpPage *dp = new NcaDumpPage();
-	t->AddPage(dp);
-	RemoteInstallPage *rmi = new RemoteInstallPage();
-	t->AddPage(rmi);
-	ShufflePage *sf = new ShufflePage();
-	t->AddPage(sf);
-	CreditsPage *credits = new CreditsPage();
-	t->AddPage(credits);
-	QuitPage *q = new QuitPage();
-	t->AddPage(q);
+	bool ThemesFolderExists = CheckThemesFolder();
+
+	if (envHasArgv() && argc > 1)
+	{
+		auto paths = GetArgsInstallList(argc,argv);
+		if (paths.size() == 0)
+			goto APP_QUIT;
+		
+		PushPage(new ExternalInstallPage(paths));		
+		CheckCFWDir();		
+		AppMainLoop();
+		
+		goto APP_QUIT;
+	}	
+
 	
 	{
-		auto f = SearchCfwFolders();
-		if (f.size() != 1)
-			PushPage(new CfwSelectPage(f));
-	}	
+		TabRenderer *t = new TabRenderer();
+		PushPage(t);
+		
+		if (!ThemesFolderExists)
+			ShowFirstTimeHelp(true);
+		
+		auto ThemeFiles = GetThemeFiles();
+		
+		ThemesPage *p = new ThemesPage(ThemeFiles);
+		t->AddPage(p);
+		UninstallPage *up = new UninstallPage();
+		t->AddPage(up);
+		NcaDumpPage *dp = new NcaDumpPage();
+		t->AddPage(dp);
+		RemoteInstallPage *rmi = new RemoteInstallPage();
+		t->AddPage(rmi);
+		ShufflePage *sf = new ShufflePage();
+		t->AddPage(sf);
+		CreditsPage *credits = new CreditsPage();
+		t->AddPage(credits);
+		QuitPage *q = new QuitPage();
+		t->AddPage(q);
+		
+		CheckCFWDir();
+		
+		AppMainLoop();
+		
+		delete p;
+		delete up;
+		delete dp;
+		delete rmi;
+		delete sf;
+		delete credits;
+		delete q;
+	}
 	
-	AppMainLoop();
-	
+APP_QUIT:
+
 	while (views.size() != 0)
 	{
 		delete views.top();
 		views.pop();
 	}
-	
-	delete p;
-	delete up;
-	delete dp;
-	delete rmi;
-	delete sf;
-	delete credits;
-	delete q;
 	
 	socketExit();
 	FontExit();
