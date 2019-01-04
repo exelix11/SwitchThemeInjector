@@ -192,25 +192,6 @@ vector<string> GetArgsInstallList(int argc, char**argv)
 	return paths;
 }	
 
-#define TEST_EXTERNAL_INSTALL
-
-//TODO: just remove this
-#ifdef TEST_EXTERNAL_INSTALL
-vector<string> TestGetThemes(const string &path)
-{
-	vector<string> res;
-	for (auto p : filesystem::directory_iterator(path))
-	{
-		if (p.is_regular_file())
-		{
-			if (StrEndsWith(p.path(), ".szs") || StrEndsWith(p.path(), ".nxtheme"))
-				res.push_back(p.path());
-		}
-	}
-	return res;
-}
-#endif
-
 int main(int argc, char **argv)
 {
     romfsInit();
@@ -222,14 +203,9 @@ int main(int argc, char **argv)
 	
 	bool ThemesFolderExists = CheckThemesFolder();
 
-#ifdef TEST_EXTERNAL_INSTALL
-	{
-		auto paths = TestGetThemes("/themes");
-#else
 	if (envHasArgv() && argc > 1)
 	{
 		auto paths = GetArgsInstallList(argc,argv);
-#endif
 		if (paths.size() == 0)
 			goto APP_QUIT;
 		
