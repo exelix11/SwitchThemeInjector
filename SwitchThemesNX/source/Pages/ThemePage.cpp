@@ -90,7 +90,7 @@ void ThemesPage::Render(int X, int Y)
 	for (auto e : DisplayEntries)
 	{
 		e->Render(X + 16, RenderY, focused && count == menuIndex);		
-		if (focused && count == menuIndex && (kHeld & KEY_L))
+		if ((kHeld & KEY_L) && focused && count == menuIndex && e->HasPreview())
 			return;
 		RenderY += e->GetRect().h + 15;
 		count++;
