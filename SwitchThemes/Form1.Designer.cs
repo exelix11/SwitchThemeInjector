@@ -34,19 +34,24 @@
 			this.PatchListPage = new System.Windows.Forms.TabPage();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.DdsConvPage = new System.Windows.Forms.TabPage();
+			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
+			this.btnOpenCustomLayout = new System.Windows.Forms.Button();
+			this.lblCustomCommonLyt = new MaterialSkin.Controls.MaterialLabel();
+			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
+			this.AllLayoutsBox = new System.Windows.Forms.ComboBox();
+			this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
+			this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
+			this.materialLabel16 = new MaterialSkin.Controls.MaterialLabel();
+			this.materialRaisedButton9 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.NxBuilderBuild = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
 			this.HomeMenuPartBox = new System.Windows.Forms.ComboBox();
 			this.materialLabel15 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbBntxFile2 = new System.Windows.Forms.TextBox();
-			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-			this.AllLayoutsBox = new System.Windows.Forms.ComboBox();
-			this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
-			this.materialLabel12 = new MaterialSkin.Controls.MaterialLabel();
 			this.InjectPage = new System.Windows.Forms.TabPage();
 			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton8 = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -62,6 +67,7 @@
 			this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
+			this.materialLabel17 = new MaterialSkin.Controls.MaterialLabel();
 			this.NCADumpPage = new System.Windows.Forms.TabPage();
 			this.NCARunBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.SdCardTb = new System.Windows.Forms.TextBox();
@@ -88,10 +94,10 @@
 			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
-			this.materialRaisedButton9 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.DdsConvPage.SuspendLayout();
+			this.grpHomeExtra.SuspendLayout();
 			this.InjectPage.SuspendLayout();
 			this.NCADumpPage.SuspendLayout();
 			this.AdvancedPage.SuspendLayout();
@@ -114,7 +120,7 @@
 			this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabControl1.Name = "materialTabControl1";
 			this.materialTabControl1.SelectedIndex = 0;
-			this.materialTabControl1.Size = new System.Drawing.Size(646, 342);
+			this.materialTabControl1.Size = new System.Drawing.Size(646, 357);
 			this.materialTabControl1.TabIndex = 4;
 			// 
 			// PatchListPage
@@ -123,7 +129,7 @@
 			this.PatchListPage.Controls.Add(this.tbPatches);
 			this.PatchListPage.Location = new System.Drawing.Point(4, 22);
 			this.PatchListPage.Name = "PatchListPage";
-			this.PatchListPage.Size = new System.Drawing.Size(638, 316);
+			this.PatchListPage.Size = new System.Drawing.Size(638, 331);
 			this.PatchListPage.TabIndex = 2;
 			this.PatchListPage.Text = "Patch list";
 			// 
@@ -147,27 +153,158 @@
 			// DdsConvPage
 			// 
 			this.DdsConvPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.DdsConvPage.Controls.Add(this.materialFlatButton2);
+			this.DdsConvPage.Controls.Add(this.grpHomeExtra);
+			this.DdsConvPage.Controls.Add(this.linkLabel2);
+			this.DdsConvPage.Controls.Add(this.AllLayoutsBox);
+			this.DdsConvPage.Controls.Add(this.materialLabel9);
+			this.DdsConvPage.Controls.Add(this.materialLabel12);
+			this.DdsConvPage.Controls.Add(this.materialLabel16);
 			this.DdsConvPage.Controls.Add(this.materialRaisedButton9);
 			this.DdsConvPage.Controls.Add(this.NxBuilderBuild);
 			this.DdsConvPage.Controls.Add(this.linkLabel3);
 			this.DdsConvPage.Controls.Add(this.HomeMenuPartBox);
 			this.DdsConvPage.Controls.Add(this.materialLabel15);
 			this.DdsConvPage.Controls.Add(this.tbBntxFile2);
-			this.DdsConvPage.Controls.Add(this.linkLabel2);
-			this.DdsConvPage.Controls.Add(this.AllLayoutsBox);
-			this.DdsConvPage.Controls.Add(this.materialLabel9);
-			this.DdsConvPage.Controls.Add(this.materialFlatButton2);
 			this.DdsConvPage.Controls.Add(this.materialLabel11);
 			this.DdsConvPage.Controls.Add(this.ImageToDDSBtn);
 			this.DdsConvPage.Controls.Add(this.materialLabel8);
-			this.DdsConvPage.Controls.Add(this.materialLabel12);
 			this.DdsConvPage.ForeColor = System.Drawing.Color.White;
 			this.DdsConvPage.Location = new System.Drawing.Point(4, 22);
 			this.DdsConvPage.Name = "DdsConvPage";
 			this.DdsConvPage.Padding = new System.Windows.Forms.Padding(3);
-			this.DdsConvPage.Size = new System.Drawing.Size(638, 316);
+			this.DdsConvPage.Size = new System.Drawing.Size(638, 331);
 			this.DdsConvPage.TabIndex = 4;
 			this.DdsConvPage.Text = "Nxtheme builder";
+			// 
+			// grpHomeExtra
+			// 
+			this.grpHomeExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.grpHomeExtra.Controls.Add(this.btnOpenCustomLayout);
+			this.grpHomeExtra.Controls.Add(this.lblCustomCommonLyt);
+			this.grpHomeExtra.ForeColor = System.Drawing.Color.White;
+			this.grpHomeExtra.Location = new System.Drawing.Point(5, 209);
+			this.grpHomeExtra.Name = "grpHomeExtra";
+			this.grpHomeExtra.Size = new System.Drawing.Size(630, 70);
+			this.grpHomeExtra.TabIndex = 25;
+			this.grpHomeExtra.TabStop = false;
+			this.grpHomeExtra.Text = "Home menu optional settings";
+			this.grpHomeExtra.Visible = false;
+			// 
+			// btnOpenCustomLayout
+			// 
+			this.btnOpenCustomLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnOpenCustomLayout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnOpenCustomLayout.Location = new System.Drawing.Point(591, 12);
+			this.btnOpenCustomLayout.Name = "btnOpenCustomLayout";
+			this.btnOpenCustomLayout.Size = new System.Drawing.Size(33, 23);
+			this.btnOpenCustomLayout.TabIndex = 14;
+			this.btnOpenCustomLayout.Text = "...";
+			this.btnOpenCustomLayout.UseVisualStyleBackColor = true;
+			this.btnOpenCustomLayout.Click += new System.EventHandler(this.btnOpenCustomLayout_Click);
+			// 
+			// lblCustomCommonLyt
+			// 
+			this.lblCustomCommonLyt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblCustomCommonLyt.Depth = 0;
+			this.lblCustomCommonLyt.Font = new System.Drawing.Font("Roboto", 11F);
+			this.lblCustomCommonLyt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.lblCustomCommonLyt.Location = new System.Drawing.Point(6, 16);
+			this.lblCustomCommonLyt.MouseState = MaterialSkin.MouseState.HOVER;
+			this.lblCustomCommonLyt.Name = "lblCustomCommonLyt";
+			this.lblCustomCommonLyt.Size = new System.Drawing.Size(579, 19);
+			this.lblCustomCommonLyt.TabIndex = 12;
+			this.lblCustomCommonLyt.Text = "Custom common layout: Not set";
+			// 
+			// linkLabel2
+			// 
+			this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel2.LinkColor = System.Drawing.SystemColors.MenuHighlight;
+			this.linkLabel2.Location = new System.Drawing.Point(545, 134);
+			this.linkLabel2.Name = "linkLabel2";
+			this.linkLabel2.Size = new System.Drawing.Size(84, 21);
+			this.linkLabel2.TabIndex = 15;
+			this.linkLabel2.TabStop = true;
+			this.linkLabel2.Text = "Preview layout";
+			this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
+			// 
+			// AllLayoutsBox
+			// 
+			this.AllLayoutsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.AllLayoutsBox.BackColor = System.Drawing.Color.White;
+			this.AllLayoutsBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.AllLayoutsBox.FormattingEnabled = true;
+			this.AllLayoutsBox.Items.AddRange(new object[] {
+            "Don\'t patch"});
+			this.AllLayoutsBox.Location = new System.Drawing.Point(108, 134);
+			this.AllLayoutsBox.Name = "AllLayoutsBox";
+			this.AllLayoutsBox.Size = new System.Drawing.Size(432, 21);
+			this.AllLayoutsBox.TabIndex = 14;
+			this.AllLayoutsBox.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
+			// 
+			// materialLabel9
+			// 
+			this.materialLabel9.Depth = 0;
+			this.materialLabel9.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel9.Location = new System.Drawing.Point(9, 134);
+			this.materialLabel9.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel9.Name = "materialLabel9";
+			this.materialLabel9.Size = new System.Drawing.Size(103, 19);
+			this.materialLabel9.TabIndex = 13;
+			this.materialLabel9.Text = "Layout patch: ";
+			// 
+			// materialLabel12
+			// 
+			this.materialLabel12.Depth = 0;
+			this.materialLabel12.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel12.Location = new System.Drawing.Point(12, 159);
+			this.materialLabel12.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel12.Name = "materialLabel12";
+			this.materialLabel12.Size = new System.Drawing.Size(617, 47);
+			this.materialLabel12.TabIndex = 17;
+			this.materialLabel12.Text = "Warning: layout compatibility is not automatically checked, make sure to select a" +
+    " layout compatible with the home menu part you selected and test your theme befo" +
+    "re sharing it !";
+			this.materialLabel12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// materialLabel16
+			// 
+			this.materialLabel16.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel16.Depth = 0;
+			this.materialLabel16.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel16.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel16.Location = new System.Drawing.Point(13, 112);
+			this.materialLabel16.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel16.Name = "materialLabel16";
+			this.materialLabel16.Size = new System.Drawing.Size(617, 24);
+			this.materialLabel16.TabIndex = 24;
+			this.materialLabel16.Text = "To avoid crashes use 720p images (1280x720 pixels)";
+			this.materialLabel16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// materialRaisedButton9
+			// 
+			this.materialRaisedButton9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialRaisedButton9.AutoSize = true;
+			this.materialRaisedButton9.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialRaisedButton9.Depth = 0;
+			this.materialRaisedButton9.Icon = null;
+			this.materialRaisedButton9.Location = new System.Drawing.Point(356, 288);
+			this.materialRaisedButton9.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialRaisedButton9.Name = "materialRaisedButton9";
+			this.materialRaisedButton9.Primary = true;
+			this.materialRaisedButton9.Size = new System.Drawing.Size(144, 36);
+			this.materialRaisedButton9.TabIndex = 23;
+			this.materialRaisedButton9.Text = "Remote install...";
+			this.materialRaisedButton9.UseVisualStyleBackColor = true;
+			this.materialRaisedButton9.Click += new System.EventHandler(this.materialRaisedButton9_Click);
 			// 
 			// NxBuilderBuild
 			// 
@@ -176,7 +313,7 @@
 			this.NxBuilderBuild.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.NxBuilderBuild.Depth = 0;
 			this.NxBuilderBuild.Icon = null;
-			this.NxBuilderBuild.Location = new System.Drawing.Point(503, 270);
+			this.NxBuilderBuild.Location = new System.Drawing.Point(506, 288);
 			this.NxBuilderBuild.MouseState = MaterialSkin.MouseState.HOVER;
 			this.NxBuilderBuild.Name = "NxBuilderBuild";
 			this.NxBuilderBuild.Primary = true;
@@ -234,46 +371,6 @@
 			this.tbBntxFile2.Size = new System.Drawing.Size(537, 20);
 			this.tbBntxFile2.TabIndex = 10;
 			// 
-			// linkLabel2
-			// 
-			this.linkLabel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabel2.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel2.Location = new System.Drawing.Point(545, 127);
-			this.linkLabel2.Name = "linkLabel2";
-			this.linkLabel2.Size = new System.Drawing.Size(84, 21);
-			this.linkLabel2.TabIndex = 15;
-			this.linkLabel2.TabStop = true;
-			this.linkLabel2.Text = "Preview layout";
-			this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabel2.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel2_LinkClicked_1);
-			// 
-			// AllLayoutsBox
-			// 
-			this.AllLayoutsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.AllLayoutsBox.BackColor = System.Drawing.Color.White;
-			this.AllLayoutsBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.AllLayoutsBox.FormattingEnabled = true;
-			this.AllLayoutsBox.Items.AddRange(new object[] {
-            "Don\'t patch"});
-			this.AllLayoutsBox.Location = new System.Drawing.Point(108, 127);
-			this.AllLayoutsBox.Name = "AllLayoutsBox";
-			this.AllLayoutsBox.Size = new System.Drawing.Size(432, 21);
-			this.AllLayoutsBox.TabIndex = 14;
-			this.AllLayoutsBox.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
-			// 
-			// materialLabel9
-			// 
-			this.materialLabel9.Depth = 0;
-			this.materialLabel9.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel9.Location = new System.Drawing.Point(9, 127);
-			this.materialLabel9.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel9.Name = "materialLabel9";
-			this.materialLabel9.Size = new System.Drawing.Size(103, 19);
-			this.materialLabel9.TabIndex = 13;
-			this.materialLabel9.Text = "Layout patch: ";
-			// 
 			// materialFlatButton2
 			// 
 			this.materialFlatButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -312,7 +409,7 @@
 			this.ImageToDDSBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.ImageToDDSBtn.Depth = 0;
 			this.ImageToDDSBtn.Icon = null;
-			this.ImageToDDSBtn.Location = new System.Drawing.Point(3, 270);
+			this.ImageToDDSBtn.Location = new System.Drawing.Point(3, 285);
 			this.ImageToDDSBtn.MouseState = MaterialSkin.MouseState.HOVER;
 			this.ImageToDDSBtn.Name = "ImageToDDSBtn";
 			this.ImageToDDSBtn.Primary = true;
@@ -338,21 +435,6 @@
 			this.materialLabel8.Text = "Use this page to build nxtheme files. (You don\'t need to open an SZS for this)";
 			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
-			// materialLabel12
-			// 
-			this.materialLabel12.Depth = 0;
-			this.materialLabel12.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel12.Location = new System.Drawing.Point(12, 162);
-			this.materialLabel12.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel12.Name = "materialLabel12";
-			this.materialLabel12.Size = new System.Drawing.Size(617, 58);
-			this.materialLabel12.TabIndex = 17;
-			this.materialLabel12.Text = "Warning: layout compatibility is not automatically checked, make sure to select a" +
-    " layout compatible with the home menu part you selected and test your theme befo" +
-    "re sharing it !";
-			this.materialLabel12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			// 
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
@@ -370,10 +452,11 @@
 			this.InjectPage.Controls.Add(this.materialLabel2);
 			this.InjectPage.Controls.Add(this.materialRaisedButton2);
 			this.InjectPage.Controls.Add(this.materialLabel3);
+			this.InjectPage.Controls.Add(this.materialLabel17);
 			this.InjectPage.Location = new System.Drawing.Point(4, 22);
 			this.InjectPage.Name = "InjectPage";
 			this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
-			this.InjectPage.Size = new System.Drawing.Size(638, 316);
+			this.InjectPage.Size = new System.Drawing.Size(638, 331);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "SZS Patching";
 			// 
@@ -400,7 +483,7 @@
 			this.materialRaisedButton8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton8.Depth = 0;
 			this.materialRaisedButton8.Icon = null;
-			this.materialRaisedButton8.Location = new System.Drawing.Point(363, 273);
+			this.materialRaisedButton8.Location = new System.Drawing.Point(363, 290);
 			this.materialRaisedButton8.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton8.Name = "materialRaisedButton8";
 			this.materialRaisedButton8.Primary = true;
@@ -446,7 +529,7 @@
 			// 
 			this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel5.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel5.Location = new System.Drawing.Point(363, 249);
+			this.linkLabel5.Location = new System.Drawing.Point(363, 266);
 			this.linkLabel5.Name = "linkLabel5";
 			this.linkLabel5.Size = new System.Drawing.Size(126, 21);
 			this.linkLabel5.TabIndex = 12;
@@ -481,7 +564,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel1.Location = new System.Drawing.Point(547, 122);
+			this.linkLabel1.Location = new System.Drawing.Point(547, 124);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(84, 21);
 			this.linkLabel1.TabIndex = 9;
@@ -497,7 +580,7 @@
 			this.LayoutPatchList.BackColor = System.Drawing.Color.White;
 			this.LayoutPatchList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.LayoutPatchList.FormattingEnabled = true;
-			this.LayoutPatchList.Location = new System.Drawing.Point(108, 122);
+			this.LayoutPatchList.Location = new System.Drawing.Point(108, 124);
 			this.LayoutPatchList.Name = "LayoutPatchList";
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 8;
@@ -508,7 +591,7 @@
 			this.materialLabel6.Depth = 0;
 			this.materialLabel6.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel6.Location = new System.Drawing.Point(6, 122);
+			this.materialLabel6.Location = new System.Drawing.Point(6, 124);
 			this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel6.Name = "materialLabel6";
 			this.materialLabel6.Size = new System.Drawing.Size(103, 19);
@@ -553,7 +636,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 274);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 291);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -576,6 +659,21 @@
 			this.materialLabel3.Text = "To install themes copy them in the themes folder on your sd and use the new NXThe" +
     "mes Installer homebrew";
 			// 
+			// materialLabel17
+			// 
+			this.materialLabel17.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel17.Depth = 0;
+			this.materialLabel17.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel17.Location = new System.Drawing.Point(13, 101);
+			this.materialLabel17.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel17.Name = "materialLabel17";
+			this.materialLabel17.Size = new System.Drawing.Size(617, 24);
+			this.materialLabel17.TabIndex = 25;
+			this.materialLabel17.Text = "To avoid crashes use 720p images (1280x720 pixels)";
+			this.materialLabel17.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
 			// NCADumpPage
 			// 
 			this.NCADumpPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
@@ -591,7 +689,7 @@
 			this.NCADumpPage.Location = new System.Drawing.Point(4, 22);
 			this.NCADumpPage.Name = "NCADumpPage";
 			this.NCADumpPage.Padding = new System.Windows.Forms.Padding(3);
-			this.NCADumpPage.Size = new System.Drawing.Size(638, 316);
+			this.NCADumpPage.Size = new System.Drawing.Size(638, 331);
 			this.NCADumpPage.TabIndex = 5;
 			this.NCADumpPage.Text = "Extract NCA";
 			// 
@@ -718,9 +816,7 @@
 			this.materialLabel10.Name = "materialLabel10";
 			this.materialLabel10.Size = new System.Drawing.Size(625, 62);
 			this.materialLabel10.TabIndex = 8;
-			this.materialLabel10.Text = "The old NCA extraction method (the one with hacdiskmount) has been removed, if yo" +
-    "u still need that download an older version of the injector.\r\nThis new method is" +
-    " much easier, follow the online guide.";
+			this.materialLabel10.Text = resources.GetString("materialLabel10.Text");
 			this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// AdvancedPage
@@ -732,7 +828,7 @@
 			this.AdvancedPage.Location = new System.Drawing.Point(4, 22);
 			this.AdvancedPage.Name = "AdvancedPage";
 			this.AdvancedPage.Padding = new System.Windows.Forms.Padding(3);
-			this.AdvancedPage.Size = new System.Drawing.Size(638, 316);
+			this.AdvancedPage.Size = new System.Drawing.Size(638, 331);
 			this.AdvancedPage.TabIndex = 3;
 			this.AdvancedPage.Text = "Advanced";
 			// 
@@ -749,7 +845,7 @@
 			this.AdvPanel.Enabled = false;
 			this.AdvPanel.Location = new System.Drawing.Point(3, 3);
 			this.AdvPanel.Name = "AdvPanel";
-			this.AdvPanel.Size = new System.Drawing.Size(632, 310);
+			this.AdvPanel.Size = new System.Drawing.Size(632, 325);
 			this.AdvPanel.TabIndex = 7;
 			this.AdvPanel.Visible = false;
 			// 
@@ -760,7 +856,7 @@
 			this.materialRaisedButton7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton7.Depth = 0;
 			this.materialRaisedButton7.Icon = null;
-			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 268);
+			this.materialRaisedButton7.Location = new System.Drawing.Point(401, 283);
 			this.materialRaisedButton7.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton7.Name = "materialRaisedButton7";
 			this.materialRaisedButton7.Primary = true;
@@ -777,7 +873,7 @@
 			this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton6.Depth = 0;
 			this.materialRaisedButton6.Icon = null;
-			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 268);
+			this.materialRaisedButton6.Location = new System.Drawing.Point(294, 283);
 			this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton6.Name = "materialRaisedButton6";
 			this.materialRaisedButton6.Primary = true;
@@ -794,7 +890,7 @@
 			this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton4.Depth = 0;
 			this.materialRaisedButton4.Icon = null;
-			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 268);
+			this.materialRaisedButton4.Location = new System.Drawing.Point(181, 283);
 			this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
@@ -830,7 +926,7 @@
 			this.SzsFileList.FormattingEnabled = true;
 			this.SzsFileList.Location = new System.Drawing.Point(3, 26);
 			this.SzsFileList.Name = "SzsFileList";
-			this.SzsFileList.Size = new System.Drawing.Size(626, 221);
+			this.SzsFileList.Size = new System.Drawing.Size(626, 234);
 			this.SzsFileList.Sorted = true;
 			this.SzsFileList.TabIndex = 5;
 			// 
@@ -863,7 +959,7 @@
 			this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton1.Depth = 0;
 			this.materialRaisedButton1.Icon = null;
-			this.materialRaisedButton1.Location = new System.Drawing.Point(497, 268);
+			this.materialRaisedButton1.Location = new System.Drawing.Point(497, 283);
 			this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton1.Name = "materialRaisedButton1";
 			this.materialRaisedButton1.Primary = true;
@@ -880,7 +976,7 @@
 			this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton5.Depth = 0;
 			this.materialRaisedButton5.Icon = null;
-			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 268);
+			this.materialRaisedButton5.Location = new System.Drawing.Point(3, 283);
 			this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton5.Name = "materialRaisedButton5";
 			this.materialRaisedButton5.Primary = true;
@@ -922,7 +1018,7 @@
 			// 
 			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 426);
+			this.label1.Location = new System.Drawing.Point(0, 441);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(113, 13);
 			this.label1.TabIndex = 12;
@@ -942,28 +1038,11 @@
 			this.materialTabSelector1.TabIndex = 5;
 			this.materialTabSelector1.Text = "materialTabSelector1";
 			// 
-			// materialRaisedButton9
-			// 
-			this.materialRaisedButton9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialRaisedButton9.AutoSize = true;
-			this.materialRaisedButton9.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.materialRaisedButton9.Depth = 0;
-			this.materialRaisedButton9.Icon = null;
-			this.materialRaisedButton9.Location = new System.Drawing.Point(353, 270);
-			this.materialRaisedButton9.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialRaisedButton9.Name = "materialRaisedButton9";
-			this.materialRaisedButton9.Primary = true;
-			this.materialRaisedButton9.Size = new System.Drawing.Size(144, 36);
-			this.materialRaisedButton9.TabIndex = 23;
-			this.materialRaisedButton9.Text = "Remote install...";
-			this.materialRaisedButton9.UseVisualStyleBackColor = true;
-			this.materialRaisedButton9.Click += new System.EventHandler(this.materialRaisedButton9_Click);
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(645, 439);
+			this.ClientSize = new System.Drawing.Size(645, 454);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialTabSelector1);
 			this.Controls.Add(this.materialTabControl1);
@@ -978,6 +1057,7 @@
 			this.PatchListPage.PerformLayout();
 			this.DdsConvPage.ResumeLayout(false);
 			this.DdsConvPage.PerformLayout();
+			this.grpHomeExtra.ResumeLayout(false);
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
 			this.NCADumpPage.ResumeLayout(false);
@@ -1052,6 +1132,11 @@
 		private MaterialSkin.Controls.MaterialRaisedButton NxBuilderBuild;
 		private MaterialSkin.Controls.MaterialLabel materialLabel1;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton9;
+		private System.Windows.Forms.GroupBox grpHomeExtra;
+		private System.Windows.Forms.Button btnOpenCustomLayout;
+		private MaterialSkin.Controls.MaterialLabel lblCustomCommonLyt;
+		private MaterialSkin.Controls.MaterialLabel materialLabel16;
+		private MaterialSkin.Controls.MaterialLabel materialLabel17;
 	}
 }
 

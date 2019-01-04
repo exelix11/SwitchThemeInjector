@@ -11,6 +11,8 @@ namespace SwitchThemes
 {
 	public static class LayoutDiff
 	{
+		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1" };
+
 		public static LayoutPatch Diff(SarcData original, SarcData edited)
 		{
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
@@ -31,7 +33,7 @@ namespace SwitchThemes
 				List<PanePatch> curFile = new List<PanePatch>();
 				for (int i = 0; i < edPaneNames.Length; i++)
 				{
-					if (ed[i].data.Length < 0x4C || ed[i].name == "usd1") continue;
+					if (ed[i].data.Length < 0x4C || IgnorePaneList.Contains(ed[i].name)) continue;
 					if (f == skipLayoutName && targetPatch.targetPanels.Contains(edPaneNames[i])) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
@@ -72,7 +74,7 @@ namespace SwitchThemes
 			}
 			return new LayoutPatch()
 			{
-				PatchName = "diffPatch" + targetPatch == null ? "" : "for " + targetPatch.TemplateName,
+				PatchName = "diffPatch" + (targetPatch == null ? "" : "for " + targetPatch.TemplateName),
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray()
 			};

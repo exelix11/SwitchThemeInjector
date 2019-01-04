@@ -157,7 +157,7 @@ bool ExtractHomeMenu()
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/lyt/MyPage.szs"))
 		{
 			UnmountSys
-			Dialog("ResidentMenu not found in lyt dir !");
+			Dialog("MyPage not found in lyt dir !");
 			return false;
 		}
 		CopyFile("sdmc:/themes/systemData/tmp/lyt/MyPage.szs","sdmc:/themes/systemData/MyPage.szs");

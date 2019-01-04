@@ -185,7 +185,7 @@ namespace SwitchThemes
 			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			var res = LayoutDiff.Diff(originalSzs, CommonSzs);
 			if (res == null) return;
-			res.TargetName = targetPatch.szsName;
+			res.TargetName = targetPatch?.szsName;
 			SaveFileDialog sav = new SaveFileDialog()
 			{
 				Title = "save the patch file",
@@ -324,6 +324,8 @@ namespace SwitchThemes
 
 		private void HomeMenuPartBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			grpHomeExtra.Visible = HomeMenuParts[HomeMenuPartBox.Text] == "home";
+
 			AllLayoutsBox.Items.Clear();
 			AllLayoutsBox.Items.Add("Don't patch");
 			foreach (var l in Layouts.Values)
@@ -468,31 +470,39 @@ namespace SwitchThemes
 
 		public static byte[] GenerateDDSPreview(string path)
 		{
-			var image = Pfim.Pfim.FromFile(path);
-			PixelFormat format;
-			switch (image.Format)
+			try
 			{
-				case Pfim.ImageFormat.Rgb24:
-					format = PixelFormat.Format24bppRgb;
-					break;
-
-				case Pfim.ImageFormat.Rgba32:
-					format = PixelFormat.Format32bppArgb;
-					break;
-
-				default:
-					throw new Exception("Format not recognized");
-			}
-
-			unsafe
-			{
-				fixed (byte* p = image.Data)
+				var image = Pfim.Pfim.FromFile(path);
+				PixelFormat format;
+				switch (image.Format)
 				{
-					var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
-					var mem = new MemoryStream();
-					bitmap.Save(mem, System.Drawing.Imaging.ImageFormat.Jpeg);
-					return mem.ToArray();
+					case Pfim.ImageFormat.Rgb24:
+						format = PixelFormat.Format24bppRgb;
+						break;
+
+					case Pfim.ImageFormat.Rgba32:
+						format = PixelFormat.Format32bppArgb;
+						break;
+
+					default:
+						throw new Exception("Format not recognized");
 				}
+
+				unsafe
+				{
+					fixed (byte* p = image.Data)
+					{
+						var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
+						var mem = new MemoryStream();
+						bitmap.Save(mem, System.Drawing.Imaging.ImageFormat.Jpeg);
+						return mem.ToArray();
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Failed to generate preview image for {path}:\n{ex.ToString()}");
+				return null;
 			}
 		}
 
@@ -525,7 +535,7 @@ namespace SwitchThemes
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 2,
+					Version = 3,
 					ThemeName = info.Item1,
 					Author = info.Item2,
 					Target = targetPatch.NXThemeName,
@@ -533,8 +543,8 @@ namespace SwitchThemes
 					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text), 
-				layout?.AsJson(),
-				preview);
+				layout?.AsByteArray(),
+				new Tuple<string, byte[]>("preview.png", preview));
 
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 			if (sav.ShowDialog() != DialogResult.OK)
@@ -543,6 +553,7 @@ namespace SwitchThemes
 			MessageBox.Show("Done");
 		}
 
+		LayoutPatch ExtraCommonLyt = null;
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
@@ -566,7 +577,7 @@ namespace SwitchThemes
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 2,
+					Version = 3,
 					ThemeName = info.Item1,
 					Author = info.Item2,
 					Target = HomeMenuParts[HomeMenuPartBox.Text],
@@ -574,8 +585,9 @@ namespace SwitchThemes
 					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text),
-				layout?.AsJson(),
-				preview);
+				layout?.AsByteArray(),
+				new Tuple<string, byte[]> ("preview.png", preview),
+				HomeMenuParts[HomeMenuPartBox.Text] == "home" ? new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()) : null);
 
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 			if (sav.ShowDialog() != DialogResult.OK)
@@ -669,6 +681,22 @@ namespace SwitchThemes
 		private void materialRaisedButton9_Click(object sender, EventArgs e)
 		{
 			new RemoteInstallForm().ShowDialog();
+		}
+
+		private void btnOpenCustomLayout_Click(object sender, EventArgs e)
+		{
+			if (ExtraCommonLyt != null)
+			{
+				btnOpenCustomLayout.Text = "...";
+				lblCustomCommonLyt.Text = "Custom common layout: Not set";
+				ExtraCommonLyt = null;
+				return;
+			}
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "json layout|*.json" };
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			ExtraCommonLyt = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
+			lblCustomCommonLyt.Text = $"Custom common layout: {ExtraCommonLyt.ToString()}";
+			btnOpenCustomLayout.Text = "X";
 		}
 	}
 }
