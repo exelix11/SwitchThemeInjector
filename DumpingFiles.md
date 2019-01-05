@@ -1,9 +1,8 @@
 # Dumping Files
 This guide explains how to obtain the files needed to make custom themes from your own switch.\
-The automated way using the theme injector is windows only, mac and linux users scroll to the end of the page.
 
 ## Tools you'll need
-- [Latest version of switch theme injector and NXThemes Installer](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
+- [Version 1.1 or newer of NXThemes Installer](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
 - [Lockpick by shchmue](https://github.com/shchmue/Lockpick/releases)
 - [hekate - CTCaer mod](https://github.com/CTCaer/hekate/releases)
 
