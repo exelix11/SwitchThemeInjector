@@ -122,11 +122,11 @@ void RecursiveDeleteFolder(const string &path)
 
 void UninstallTheme()
 {
-	if (filesystem::exists(CfwFolder + "/titles/0100000000001000"))
-		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001000");
+	if (filesystem::exists(CfwFolder + "/titles/0100000000001000/romfs/lyt"))
+		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001000/romfs/lyt");
     
-	if (filesystem::exists(CfwFolder + "/titles/0100000000001013"))
-		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001013");
+	if (filesystem::exists(CfwFolder + "/titles/0100000000001013/romfs/lyt"))
+		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001013/romfs/lyt");
 }
 
 void CreateThemeStructure(const string &tid)
