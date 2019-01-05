@@ -6,7 +6,6 @@ The automated way using the theme injector is windows only, mac and linux users 
 - [Latest version of switch theme injector and NXThemes Installer](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
 - [Lockpick by shchmue](https://github.com/shchmue/Lockpick/releases)
 - [hekate - CTCaer mod](https://github.com/CTCaer/hekate/releases)
-- [HacTool](https://github.com/SciresM/hactool/releases/latest)
 
 **Payloads have full control on your console so aways download them from the authors' official link**
 
