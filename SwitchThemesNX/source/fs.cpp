@@ -137,10 +137,10 @@ void CreateThemeStructure(const string &tid)
 	mkdir(path.c_str(), ACCESSPERMS);
 	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
 	mkdir((path + "/romfs/lyt").c_str(), ACCESSPERMS);
-	if (!filesystem::exists(path + "/fsmitm.flag"))
+	if (!filesystem::exists(path + "/flags/fsmitm.flag"))
 	{
 		vector<u8> t; 
-		WriteFile(path + "/fsmitm.flag", t);
+		WriteFile(path + "/flags/fsmitm.flag", t);
 	}		
 }
 
