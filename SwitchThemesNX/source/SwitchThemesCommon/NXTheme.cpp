@@ -5,6 +5,9 @@
 #include "Layouts/json.hpp"
 #include "SwitchThemesCommon.hpp"
 
+std::unordered_map<std::string,std::string> ThemeTargetToName {};
+std::unordered_map<std::string,std::string> ThemeTargetToFileName {};
+
 using namespace std;
 using json = nlohmann::json;
 

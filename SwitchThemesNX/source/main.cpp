@@ -15,6 +15,7 @@
 #include "Pages/ExternalInstallPage.hpp"
 #include "ViewFunctions.hpp"
 #include "SwitchThemesCommon/SwitchThemesCommon.hpp"
+#include "SwitchThemesCommon/NXTheme.hpp"
 #include "Pages/RemoteInstallPage.hpp"
 #include "Pages/ThemeShufflePage.hpp"
 
@@ -192,6 +193,29 @@ vector<string> GetArgsInstallList(int argc, char**argv)
 	return paths;
 }	
 
+void SetupSysVer()
+{
+	setsysInitialize();
+	SetSysFirmwareVersion firmware;
+	auto res = setsysGetFirmwareVersion(&firmware);
+	if (R_FAILED(res))
+	{
+		ErrorFatal("Could not get sys ver res=" + to_string(res));
+		return;
+	}
+	if (firmware.major <= 5)
+	{
+		ThemeTargetToName = ThemeTargetToName5X;
+		ThemeTargetToFileName = ThemeTargetToFileName5X;
+	}
+	else //6.X
+	{
+		ThemeTargetToName = ThemeTargetToName6X;
+		ThemeTargetToFileName = ThemeTargetToFileName6X;
+	}
+	setsysExit();
+}
+
 int main(int argc, char **argv)
 {
     romfsInit();
@@ -201,6 +225,7 @@ int main(int argc, char **argv)
 	
 	std::set_unexpected (MyUnexpected);
 	
+	SetupSysVer();
 	bool ThemesFolderExists = CheckThemesFolder();
 
 	if (envHasArgv() && argc > 1)

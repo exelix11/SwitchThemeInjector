@@ -36,13 +36,14 @@ void NcaDumpPage::Update()
 		if (FindKeyFile() == "")
 		{
 			DialogBlocking("Couldn't find the keys on the sd card, place them in one of the following paths:\n"			"sdcard:/keys.prod\nsdcard:/themes/keys.prod\nsdcard:/switch/keys.prod");
-			if ((kHeld & KEY_L) && (kHeld & KEY_R))
-			{
-				DisplayLoading("Extracting NCA...");
-				RemoveSystemDataDir();
-				if (DumpHomeMenuNca())
-					Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
-			}
+			return;
+		}
+		if ((kHeld & KEY_L) && (kHeld & KEY_R))
+		{
+			DialogBlocking("Super secret combination entered, only the home menu NCA will be dumped (it won't be extracted)");
+			DisplayLoading("Extracting NCA...");
+			if (DumpHomeMenuNca())
+				Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
 			return;
 		}
 		DialogBlocking("This process may take up to a few minutes, don't let your console go to sleep mode and don't press the home button.\nPress A to start");

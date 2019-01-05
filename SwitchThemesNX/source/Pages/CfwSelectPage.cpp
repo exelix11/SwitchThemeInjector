@@ -8,7 +8,7 @@ CfwSelectPage::CfwSelectPage(vector<string> &folders) : Title("",WHITE, 1000, fo
 {
 	Folders = folders;
 	if (folders.size() == 0)
-		Title.SetString("Couldn't find any cfw folder, if your cfw isn't supported open an issue on Github.\nPress home to quit");
+		Title.SetString("Couldn't find any cfw folder. Make sure you either the atmosphere, reinx or sxos folder in your sd card.\nif your cfw isn't supported open an issue on Github.\nPress home to quit");
 	else 
 		Title.SetString("Multiple cfw folders were detected, which one do you want to use ?");
 	pageCount = folders.size() / 5 +1;
