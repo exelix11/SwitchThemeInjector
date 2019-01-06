@@ -259,19 +259,11 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			}
 			if (ShowLoading)
 				DisplayLoading("Installing...");
-			
-			auto ToPatch = SarcOpen(BaseSzs);
-			auto patch = SwitchThemesCommon::DetectSarc(ToPatch);
-			if (patch.FirmName == "")
-			{
-				Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
-				return false;
-			}
-			
-			bool CommonPatchedBg = false; //If just the bg gets patched don't save the ResidentMenu file later
-			if (themeInfo.Target == "home" && (SData.files.count("common.json") || (patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)))
-			{
-				
+						
+			bool DoPatchCommonBG = FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");			
+			bool SkipSaveActualFile = false; //If just the bg gets patched don't save the ResidentMenu file later
+			if ((themeInfo.Target == "home" && SData.files.count("common.json")) || DoPatchCommonBG)
+			{				
 				string CommonSzs = "/themes/systemData/common.szs";
 				if (!filesystem::exists(CommonSzs))
 				{
@@ -281,9 +273,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				
 				auto CommonSarc = SarcOpen(CommonSzs);
 				
-				if (patch.FirmName == "<= 5.X" && themeInfo.UseCommon5X)
+				if (DoPatchCommonBG)
 				{
-					CommonPatchedBg = true; //Do not save resident only if the bg has been applied to common
+					SkipSaveActualFile = true; //Do not save resident only if the bg has been applied to common
 					auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
 					if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
 						return false;
@@ -306,28 +298,43 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				}
 			}
 			
-			if (!CommonPatchedBg)
+			auto ToPatch = SarcOpen(BaseSzs);
+			string TitleId = "0100000000001000";
+			string SzsName = ThemeTargetToFileName[themeInfo.Target];
+			auto patch = SwitchThemesCommon::DetectSarc(ToPatch);
+			if (patch.FirmName != "")
+			{
+				TitleId = patch.TitleId;
+				SzsName = patch.szsName;
+			}
+
+			if (!SkipSaveActualFile)
 			{		
+				if (patch.FirmName == "")
+				{
+					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
+					return false;
+				}				
 				if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
 					return false;
 			}
 					
 			if (SData.files.count("layout.json"))
 			{
-				CommonPatchedBg = false;
+				SkipSaveActualFile = false;
 				auto JsonBinary = SData.files["layout.json"];
 				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
 				if (!PatchLayout(ToPatch,JSON,BaseSzs))
 					return false;
 			}
 			
-			if (!CommonPatchedBg)
+			if (!SkipSaveActualFile)
 			{
-				if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
-					WriteFile(homeDirOverride + patch.szsName, SarcPack(ToPatch));
+				if (TitleId == "0100000000001000" && homeDirOverride != "")
+					WriteFile(homeDirOverride + SzsName, SarcPack(ToPatch));
 				else {
-					CreateThemeStructure(patch.TitleId);
-					WriteFile(CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName, SarcPack(ToPatch));
+					CreateThemeStructure(TitleId);
+					WriteFile(CfwFolder + "/titles/" + TitleId + "/romfs/lyt/" + SzsName, SarcPack(ToPatch));
 				}
 			}
 		}

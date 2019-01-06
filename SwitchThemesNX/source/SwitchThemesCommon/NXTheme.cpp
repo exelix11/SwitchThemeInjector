@@ -5,6 +5,7 @@
 #include "Layouts/json.hpp"
 #include "SwitchThemesCommon.hpp"
 
+int FirmMajor = -1;
 std::unordered_map<std::string,std::string> ThemeTargetToName {};
 std::unordered_map<std::string,std::string> ThemeTargetToFileName {};
 
@@ -37,11 +38,6 @@ ThemeFileManifest ParseNXThemeFile(SARC::SarcData &Archive)
 		res.ThemeName = j["ThemeName"].get<string>();
 	if (j.count("LayoutInfo"))
 		res.LayoutInfo = j["LayoutInfo"].get<string>();	
-	
-	if (j.count("UseCommon5X"))
-		res.UseCommon5X = j["UseCommon5X"].get<bool>();
-	else 
-		res.UseCommon5X = true;
 	
 	return res;
 }

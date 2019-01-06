@@ -70,7 +70,6 @@ namespace SwitchThemes
 			if (Output == null || Output == "")
 				return false;
 			
-			bool Common5x = GetArgBool("common5x") ?? true;
 			bool preview = GetArgBool("preview") ?? true;
 
 			if (Name == null || Name.Trim() == "")
@@ -78,8 +77,7 @@ namespace SwitchThemes
 				var info = ThemeInputInfo.Ask();
 				Name = info.Item1;
 				Author = info.Item2;
-				Common5x = info.Item3;
-				preview = info.Item4;
+				preview = info.Item3;
 			}
 
 			LayoutPatch layout = null;
@@ -101,7 +99,6 @@ namespace SwitchThemes
 					Author = Author,
 					Target = Target,
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					UseCommon5X = Common5x
 				},
 				File.ReadAllBytes(Image),
 				layout?.AsByteArray(),
