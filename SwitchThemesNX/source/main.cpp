@@ -206,13 +206,14 @@ void SetupSysVer()
 	if (firmware.major <= 5)
 	{
 		ThemeTargetToName = ThemeTargetToName5X;
-		ThemeTargetToFileName = ThemeTargetToFileName5X;
+		ThemeTargetToFileName = ThemeTargetToFileName6X; //The file names are the same
 	}
 	else //6.X
 	{
 		ThemeTargetToName = ThemeTargetToName6X;
 		ThemeTargetToFileName = ThemeTargetToFileName6X;
 	}
+	FirmMajor = firmware.major;
 	setsysExit();
 }
 

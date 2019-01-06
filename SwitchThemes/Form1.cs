@@ -36,9 +36,9 @@ namespace SwitchThemes
 			{"Home menu", "home"},
 			{"Lock screen", "lock"},
 			{"User page", "user"},
-			{"All apps menu", "apps"},
-			{"Settings applet", "set"},
-			{"News applet", "news"},
+			{"All apps menu (All applets on 5.X)", "apps"},
+			{"Settings applet (All applets on 5.X)", "set"},
+			{"News applet (All applets on 5.X)", "news"},
 		};
 
 		public Form1()
@@ -526,7 +526,7 @@ namespace SwitchThemes
 				return;
 
 			byte[] preview = null;
-			if (info.Item4)
+			if (info.Item3)
 				preview = GenerateDDSPreview(tbBntxFile.Text);
 
 			LayoutPatch layout = null;
@@ -540,7 +540,6 @@ namespace SwitchThemes
 					Author = info.Item2,
 					Target = targetPatch.NXThemeName,
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text), 
 				layout?.AsByteArray(),
@@ -568,7 +567,7 @@ namespace SwitchThemes
 				return;
 
 			byte[] preview = null;
-			if (info.Item4)
+			if (info.Item3)
 				preview = GenerateDDSPreview(tbBntxFile.Text);
 
 			LayoutPatch layout = null;
@@ -582,7 +581,6 @@ namespace SwitchThemes
 					Author = info.Item2,
 					Target = HomeMenuParts[HomeMenuPartBox.Text],
 					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					UseCommon5X = info.Item3
 				},
 				File.ReadAllBytes(tbBntxFile.Text),
 				layout?.AsByteArray(),

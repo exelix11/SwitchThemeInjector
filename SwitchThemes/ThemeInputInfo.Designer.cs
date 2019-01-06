@@ -35,14 +35,13 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbAuthorName = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.checkBox2 = new System.Windows.Forms.CheckBox();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(233, 192);
+			this.button1.Location = new System.Drawing.Point(233, 132);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 0;
@@ -53,7 +52,7 @@
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(152, 192);
+			this.button2.Location = new System.Drawing.Point(152, 132);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 1;
@@ -102,23 +101,11 @@
 			this.label3.Text = "To continue fill the following form, these informations will be shown when instal" +
     "ling the theme so keep it short";
 			// 
-			// checkBox2
-			// 
-			this.checkBox2.Checked = true;
-			this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBox2.Location = new System.Drawing.Point(12, 99);
-			this.checkBox2.Name = "checkBox2";
-			this.checkBox2.Size = new System.Drawing.Size(288, 48);
-			this.checkBox2.TabIndex = 19;
-			this.checkBox2.Text = "On 5.X apply the home menu image to all apps, settings and news as well (recommen" +
-    "ded, affects only home menu themes)";
-			this.checkBox2.UseVisualStyleBackColor = true;
-			// 
 			// checkBox1
 			// 
 			this.checkBox1.Checked = true;
 			this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBox1.Location = new System.Drawing.Point(12, 153);
+			this.checkBox1.Location = new System.Drawing.Point(15, 99);
 			this.checkBox1.Name = "checkBox1";
 			this.checkBox1.Size = new System.Drawing.Size(288, 33);
 			this.checkBox1.TabIndex = 20;
@@ -129,10 +116,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(312, 219);
+			this.ClientSize = new System.Drawing.Size(312, 159);
 			this.ControlBox = false;
 			this.Controls.Add(this.checkBox1);
-			this.Controls.Add(this.checkBox2);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.tbAuthorName);
@@ -159,7 +145,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox tbAuthorName;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.CheckBox checkBox2;
 		private System.Windows.Forms.CheckBox checkBox1;
 	}
 }

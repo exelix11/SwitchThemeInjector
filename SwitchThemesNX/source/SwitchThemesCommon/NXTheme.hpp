@@ -13,9 +13,9 @@ struct ThemeFileManifest
 	std::string ThemeName;
 	std::string LayoutInfo;
 	std::string Target;
-	bool UseCommon5X;
 };
 
+extern int FirmMajor;
 extern std::unordered_map<std::string,std::string> ThemeTargetToName;
 extern std::unordered_map<std::string,std::string> ThemeTargetToFileName;
 
@@ -44,19 +44,19 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName5X
 	{"home","Home menu"},
 	{"lock","Lock screen"},
 	{"user","User page"},
-	{"apps","all applets"},
-	{"set","all applets"},
-	{"news","all applets"},
+	{"apps","All applets"},
+	{"set","All applets"},
+	{"news","All applets"},
 };
 
-const std::unordered_map<std::string,std::string> ThemeTargetToFileName5X
-{
-	{"home","ResidentMenu.szs"},
-	{"lock","Entrance.szs"},
-	{"user","MyPage.szs"},
-	{"apps","common.szs"},
-	{"set","common.szs"},
-	{"news","common.szs"},
-};
+// const std::unordered_map<std::string,std::string> ThemeTargetToFileName5X
+// {
+	// {"home","ResidentMenu.szs"},
+	// {"lock","Entrance.szs"},
+	// {"user","MyPage.szs"},
+	// {"apps","common.szs"},
+	// {"set","common.szs"},
+	// {"news","common.szs"},
+// };
 
 ThemeFileManifest ParseNXThemeFile(SARC::SarcData &SData);
