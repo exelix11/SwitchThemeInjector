@@ -221,7 +221,6 @@ std::string FindKeyFile() noexcept
 	#define CheckKey(x) if (filesystem::exists(x)) return x;
 	CheckKey("sdmc:/prod.keys");
 	CheckKey("sdmc:/switch/prod.keys");
-	CheckKey("sdmc:/switch/lockpick/prod.keys");
 	CheckKey("sdmc:/themes/prod.keys");
 	CheckKey("sdmc:/goldleaf/keys.dat");
 	CheckKey("sdmc:/goldleaf/prod.keys");
