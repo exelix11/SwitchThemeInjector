@@ -211,7 +211,7 @@ bool PatchLayout(SARC::SarcData &ToPatch, const string &JSON, const string &SzsN
 void MissingFileErrorDialog(const string &name)
 {
 	Dialog(	"Can't install this theme because the original " + name + " is missing from systemData.\n"
-			"To install theme packs (.nxtheme files) you need to dump the home menu romfs following the guide in the \"NCA extraction\" tab");
+			"To install theme packs (.nxtheme files) you need to dump the home menu romfs following the guide in the \"Extract home menu\" tab");
 }
 
 inline SARC::SarcData SarcOpen(const string &path)

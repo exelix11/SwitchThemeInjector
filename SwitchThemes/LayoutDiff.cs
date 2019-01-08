@@ -34,7 +34,7 @@ namespace SwitchThemes
 				for (int i = 0; i < edPaneNames.Length; i++)
 				{
 					if (ed[i].data.Length < 0x4C || IgnorePaneList.Contains(ed[i].name)) continue;
-					if (f == skipLayoutName && targetPatch.targetPanels.Contains(edPaneNames[i])) continue;
+					if (f == skipLayoutName && (targetPatch?.targetPanels?.Contains(edPaneNames[i]) ?? false)) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
 					if (ed[i].data.SequenceEqual(or[j].data)) continue;

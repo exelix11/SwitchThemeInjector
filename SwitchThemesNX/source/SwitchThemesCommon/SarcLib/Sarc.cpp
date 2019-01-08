@@ -174,7 +174,7 @@ SARC::PackedSarc SARC::Pack(SARC::SarcData &data, s32 _align)
 	bw.Write((u32)0x00000065);
 	vector<u32> offsetToUpdate;
 	offsetToUpdate.reserve(data.names.size());
-	for (auto f : data.names)
+	for (auto f : data.names) //These should be sorted by hash here.
 	{
 		if (data.HashOnly)
 			bw.Write(StringHashToUint(f));

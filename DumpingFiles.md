@@ -23,3 +23,7 @@ Copy the NXThemes installer and Lockpick NROs in the `switch` directory of your 
 
 ### SX emunand users
 The only solution for you is to search the switch keys on google, they are like *really* easy to find, if you do search on google make sure you have `master_key_06`, that means that the keys are up to date, download them and copy them in the root of your sd card in a file called `prod.keys`. Then skip to step 5 of the guide.
+
+## Troubleshooting
+### `... not found in lyt dir !` error
+This happens if you don't have the right keys, follow carefully the steps to dump your keys with CTCaer first and then Lockpick. If you're on 6.2, check that you key file has `master_key_06` or it won't work. If you're on SXOS emunand Lockpick won't work, find the latest keys elsewhere.
