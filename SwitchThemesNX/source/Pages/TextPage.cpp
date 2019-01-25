@@ -24,9 +24,9 @@ void TextPage::Update()
 CreditsPage::CreditsPage() : 
 showHelp("Show first startup info"),
 creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
-	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n"
-	"Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n XorTroll <3 for his hactool on switch port"
-,WHITE, 900, font30)
+	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n",WHITE, 900, font30),
+creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n XorTroll <3 for his hactool on switch port\n Everyone from Atmosphere and libnx"
+,WHITE, 900, font25)
 {
 	Name = "Credits";
 	showHelp.selected = false;
@@ -34,8 +34,12 @@ creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + 
 
 void CreditsPage::Render(int X, int Y)
 {
-	creditsText.Render(X + 20, Y + 20);
-	showHelp.Render(X + 20, Y + creditsText.GetSize().h +70);
+	int YRender = 20;
+	creditsText.Render(X + 20, Y + YRender);
+	YRender += creditsText.GetSize().h + 10;
+	creditsText2.Render(X + 20, Y + YRender);
+	YRender += creditsText2.GetSize().h + 50;
+	showHelp.Render(X + 20, Y + YRender);
 }
 
 extern void ShowFirstTimeHelp(bool WelcomeScr); //from main.cpp

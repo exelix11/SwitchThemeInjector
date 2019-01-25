@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source/hactool source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon source
+SOURCES		:=	source/SwitchTools source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon source
 DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_src
@@ -40,7 +40,7 @@ ROMFS	:=	romfs
 
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
-APP_VERSION := 1.2
+APP_VERSION := 1.3
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------

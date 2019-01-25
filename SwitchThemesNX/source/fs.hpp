@@ -16,7 +16,7 @@ bool CheckThemesFolder();
 std::vector<std::string> SearchCfwFolders();
 std::vector<std::string> GetThemeFiles();
 
-void UninstallTheme();
+void UninstallTheme(bool full = false);
 void CreateThemeStructure(const std::string &tid);
 
 std::string GetFileName(const std::string &path);

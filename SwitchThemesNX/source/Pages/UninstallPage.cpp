@@ -4,7 +4,8 @@
 
 using namespace std;
 
-UninstallPage::UninstallPage() : lblText("Press + to uninstall the currently installed themes",WHITE, -1, font30), btn("Uninstall (+)")
+UninstallPage::UninstallPage() : 
+lblText("Press + to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory by pressing L+R as well.",WHITE, -1, font30), btn("Uninstall (+)")
 {
 	Name = "Uninstall theme";
 	btn.selected = false;
@@ -14,7 +15,7 @@ UninstallPage::UninstallPage() : lblText("Press + to uninstall the currently ins
 void UninstallPage::Render(int X, int Y)
 {
 	lblText.Render(X + 20, Y + 20);
-	btn.Render(X + 20, Y + 70);
+	btn.Render(X + 20, Y + 30 + lblText.GetSize().h);
 }
 
 void UninstallPage::Update()
@@ -22,9 +23,18 @@ void UninstallPage::Update()
 	btn.selected = true;
 	if (kDown & KEY_PLUS)
 	{
-		DisplayLoading("Loading...");
-		UninstallTheme();
-		Dialog("Done, restart your console to see the changes");
+		if ((kHeld & KEY_L) && (kHeld & KEY_R))
+		{			
+			DisplayLoading("Clearing LayeredFS dir...");
+			UninstallTheme(true);
+			Dialog("Done, the layeredFS dir of the home menu was removed, restart your console to see the changes");
+		}
+		else
+		{
+			DisplayLoading("Loading...");
+			UninstallTheme(false);
+			Dialog("Done, all the installed themes have been removed, restart your console to see the changes");
+		}
 	}
 	else if (kDown & KEY_B || kDown & KEY_LEFT){
 		btn.selected = false;

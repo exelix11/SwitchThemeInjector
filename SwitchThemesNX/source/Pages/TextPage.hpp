@@ -30,5 +30,6 @@ class CreditsPage : public IPage
 	private:
 	
 		Label creditsText;
+		Label creditsText2;
 		Button showHelp;
 };
