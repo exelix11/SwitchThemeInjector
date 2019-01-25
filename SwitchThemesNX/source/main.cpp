@@ -18,6 +18,7 @@
 #include "SwitchThemesCommon/NXTheme.hpp"
 #include "Pages/RemoteInstallPage.hpp"
 #include "Pages/ThemeShufflePage.hpp"
+#include "Pages/RebootPage.cpp"
 
 using namespace std;
 
@@ -95,6 +96,7 @@ void QuitApp()
 	AppRunning = false;
 }
 
+
 void AppMainLoop()
 {
 	while (AppRunning && appletMainLoop())
@@ -106,6 +108,7 @@ void AppMainLoop()
 		ViewObj->Update();
 		if (doPopPage)
 			_PopPage();
+		
 		ViewObj->Render(0,0);
 		SDL_RenderPresent(sdl_render);		
 	}
@@ -264,6 +267,8 @@ int main(int argc, char **argv)
 		t->AddPage(sf);
 		CreditsPage *credits = new CreditsPage();
 		t->AddPage(credits);
+		RebootPage *reboot = new RebootPage();
+		t->AddPage(reboot);
 		QuitPage *q = new QuitPage();
 		t->AddPage(q);
 		

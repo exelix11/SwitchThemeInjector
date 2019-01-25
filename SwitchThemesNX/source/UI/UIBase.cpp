@@ -12,8 +12,8 @@ void SdlInit()
 {
 	SDL_Init(SDL_INIT_VIDEO);
 	
-	sdl_win = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, 0);
-	sdl_render = SDL_CreateRenderer(sdl_win, -1, SDL_RENDERER_SOFTWARE);
+	sdl_win = SDL_CreateWindow("sdl2_gles2", 0, 0, 1280, 720, 0);
+	sdl_render = SDL_CreateRenderer(sdl_win, 0, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_SetRenderTarget(sdl_render, NULL);
 	
 	IMG_Init( IMG_INIT_PNG | IMG_INIT_JPG);

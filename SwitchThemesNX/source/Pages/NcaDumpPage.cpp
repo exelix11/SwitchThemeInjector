@@ -2,21 +2,21 @@
 #include "../input.hpp"
 #include "../ViewFunctions.hpp"
 #include "../fs.hpp"
-#include "../hactool/hactool.hpp"
+#include "../SwitchTools/hactool.hpp"
 
 using namespace std;
 
 NcaDumpPage::NcaDumpPage() : 
-guideText("",WHITE, 880, font30),
+guideText("",WHITE, 870, font25),
  dumpNca("Extract home menu (+)")
 {
 	Name = "Extract home menu";
 	dumpNca.selected = false;
 	guideText.SetString("To install .nxtheme files you need to extract the home menu first.\n"
-		"To do this you just need the switch keys in your sd in a file called prod.keys, "
-		"you can easily get them with lockpick, read the guide at: https://git.io/fxdyF\n"
-		"Note that for SXOS EMUNAND users lockpick doesn't work and you'll have to find them on the internet\n"
-		"Remember that you have to do this EVERY TIME you update (or downgrade) the firmware.\n"
+		"To do this you need the switch keys in your sd in a file called prod.keys, "
+		"you can get them with lockpick, read the guide at: https://git.io/fxdyF\n\n"
+		"Note that for SXOS EMUNAND lockpick doesn't work and you'll have to find them on the internet\n\n"
+		"You have to do this EVERY TIME you update (or downgrade) the firmware.\n"
 		"Press + to dump the home menu files");
 	if (FindKeyFile() == "")
 		dumpNca.SetString("Error: Keys not found on the sd card.");

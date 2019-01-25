@@ -120,13 +120,23 @@ void RecursiveDeleteFolder(const string &path)
 	}
 }
 
-void UninstallTheme()
+void UninstallTheme(bool full = false)
 {
-	if (filesystem::exists(CfwFolder + "/titles/0100000000001000/romfs/lyt"))
-		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001000/romfs/lyt");
-    
-	if (filesystem::exists(CfwFolder + "/titles/0100000000001013/romfs/lyt"))
-		RecursiveDeleteFolder(CfwFolder + "/titles/0100000000001013/romfs/lyt");
+	#define DelDirFromCfw(x) if (filesystem::exists(CfwFolder + x)) \
+		RecursiveDeleteFolder(CfwFolder + x);
+	
+	if (full)
+	{
+		DelDirFromCfw("/titles/0100000000001000")
+		DelDirFromCfw("/titles/0100000000001013")
+	}
+	else 
+	{
+		DelDirFromCfw("/titles/0100000000001000/romfs/lyt")
+		DelDirFromCfw("/titles/0100000000001013/romfs/lyt")
+	}
+	
+	#undef DelDirFromCfw
 }
 
 void CreateThemeStructure(const string &tid)
