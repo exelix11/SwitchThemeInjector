@@ -7,28 +7,47 @@ using System.Threading.Tasks;
 namespace SwitchThemes.Common.Bntxx
 {
 	//mostly based on https://github.com/aboood40091/BNTX-Editor
-	public static class DDSEncoder  //Hardcoded valuses for DXT1 1280x720
+	public static class DDSEncoder
 	{
 		public class DDSLoadResult
 		{
 			public int width;
 			public int height;
-			public int format_;
-			public string fourcc;
+			public string Format;
 			public int size;
-			public int[] compSel;
 			public int numMips;
 			public byte[] data;
 		}
 
-		public static byte[] EncodeTex(DDSLoadResult img)
+		public struct EncoderInfo
+		{
+			public int blkHeight;
+			public int blkWidth;
+			public int bpp;
+			public int formatCode;
+		}
+
+		static readonly Dictionary<string, EncoderInfo> EncoderTable = new Dictionary<string, EncoderInfo>() {
+			{ "DXT1", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 8 , formatCode = 0x1a06 } },
+			{ "DXT3", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1b06 } },
+			{ "DXT5", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c06 } },
+		};
+
+		public class DDSEncoderResult
+		{
+			public byte[] Data;
+			public EncoderInfo format;
+			public int blockHeightLog2;
+		}
+
+		public static DDSEncoderResult EncodeTex(DDSLoadResult img)
 		{
 			var numMips = 1;
 			var alignment = 512;
-			var blkWidth = 4;
-			var blkHeight = 4;
-			var bpp = 8;
-			var blockHeight = Utils.getBlockHeight(Utils.DIV_ROUND_UP(img.height, blkHeight));
+
+			var fmt = EncoderTable[img.Format];
+
+			var blockHeight = Utils.getBlockHeight(Utils.DIV_ROUND_UP(img.height, fmt.blkHeight));
 			var blockHeightLog2 = Utils.Log2(blockHeight);
 			var linesPerBlockHeight = blockHeight * 8;
 
@@ -40,27 +59,27 @@ namespace SwitchThemes.Common.Bntxx
 
 			for (int mipLevel = 0; mipLevel < numMips; mipLevel++)
 			{
-				var offSize = getCurrentMipOffset_Size(img.width, img.height, blkWidth, blkHeight, bpp, mipLevel);
+				var offSize = getCurrentMipOffset_Size(img.width, img.height, fmt.blkWidth, fmt.blkHeight, fmt.bpp, mipLevel);
 				byte[] data = new byte[offSize.Item2];
 				Array.Copy(img.data, offSize.Item1, data, 0, offSize.Item2);
 				var width_ = Math.Max(1, img.width >> mipLevel);
 				var height_ = Math.Max(1, img.height >> mipLevel);
-				var width__ = Utils.DIV_ROUND_UP(width_, blkWidth);
-				var height__ = Utils.DIV_ROUND_UP(height_, blkHeight);
+				var width__ = Utils.DIV_ROUND_UP(width_, fmt.blkWidth);
+				var height__ = Utils.DIV_ROUND_UP(height_, fmt.blkHeight);
 				int dataAlignBytes = Utils.round_up(surfSize, alignment) - surfSize;
 				surfSize += dataAlignBytes;
 				mipOfsets.Add(surfSize);
 				if (Utils.pow2_round_up(height__) < linesPerBlockHeight)
 					blockHeightShift += 1;
-				var pitch = Utils.round_up(width__ * bpp, 64);
+				var pitch = Utils.round_up(width__ * fmt.bpp, 64);
 				surfSize += pitch * Utils.round_up(height__, Math.Max(1, blockHeight >> blockHeightShift) * 8);
 
 				if (dataAlignBytes != 0)
 					res.AddRange(new byte[dataAlignBytes]);
-				res.AddRange(Swizzle.swizzle(width_, height_, blkWidth, blkHeight, true, bpp, 0, Math.Max(0, blockHeightLog2 - blockHeightShift), data, true));
+				res.AddRange(Swizzle.swizzle(width_, height_, fmt.blkWidth, fmt.blkHeight, true, fmt.bpp, 0, Math.Max(0, blockHeightLog2 - blockHeightShift), data, true));
 			}
 
-			return res.ToArray();
+			return new DDSEncoderResult { Data = res.ToArray(), blockHeightLog2 = blockHeightLog2, format = fmt };
 		}
 
 		static Tuple<int, int> getCurrentMipOffset_Size(int width, int height, int blkWidth, int blkHeight, int bpp, int currLevel)
@@ -85,11 +104,13 @@ namespace SwitchThemes.Common.Bntxx
 
 		public static DDSLoadResult LoadDDS(byte[] inb)
 		{
-			if (!(inb[0x54] == 'D' && inb[0x55] == 'X' && inb[0x56] == 'T' && inb[0x57] == '1'))
-				throw new Exception("Unsupported format : only DXT1 encoding is supported for DDS");
+			string FormatMagic = "" + (char)inb[0x54] + (char)inb[0x55] + (char)inb[0x56] + (char)inb[0x57];				
 
-			var format_ = 0x1a06;
-			var bpp = 8;
+			if (!EncoderTable.ContainsKey(FormatMagic))
+				throw new Exception("Unsupported format : only DXT1 and DXT5 encodings are supported for DDS");
+
+			int bpp = EncoderTable[FormatMagic].bpp;
+
 			var width = BitConverter.ToInt32(inb,0x10);
 			var height = BitConverter.ToInt32(inb, 0xC);
 			var size = ((width + 3) >> 2) * ((height + 3) >> 2) * bpp;
@@ -101,10 +122,8 @@ namespace SwitchThemes.Common.Bntxx
 			{
 				width = width,
 				height = height,
-				format_ = format_,
-				fourcc = "DXT1",
+				Format = FormatMagic,
 				size = size,
-				compSel = new int[] { 2, 3, 4, 5 },
 				numMips = numMips,
 				data = res
 			};

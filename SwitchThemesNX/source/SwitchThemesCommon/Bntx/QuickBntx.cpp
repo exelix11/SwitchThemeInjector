@@ -95,11 +95,12 @@ Bntxx::BRTI* QuickBntx::FindTex(const string &name)
 void QuickBntx::ReplaceTex(const string &name, const DDSEncoder::DDSLoadResult &tex) 
 {
 	auto target = FindTex(name);
-	if (target == nullptr)
+	if (!target)
 		throw "Couldn't find texture";
-	target->Data = DDSEncoder::EncodeTex(tex);
+	auto encoded = DDSEncoder::EncodeTex(tex);
+	target->Data = encoded.Data;
 	target->TextureType = (s32)Bntxx::TextureType::Image2D;
-	target->Format = 0x00001a01;
+	target->Format = (u32)encoded.format.formatCode;
 	target->ChannelTypes = 0x05040302;
 	target->Width = tex.width;
 	target->Height = tex.height;
@@ -115,7 +116,7 @@ void QuickBntx::ReplaceTex(const string &name, const DDSEncoder::DDSLoadResult &
 	target->MipmapCount = 1;
 	target->Flags = 0x01;
 	target->Depth = 1;
-	target->BlockHeightLog2 = 4;
+	target->BlockHeightLog2 = encoded.blockHeightLog2;
 	target->Alignment = 0x200;
 	target->AccessFlags = 0x20;
 }
