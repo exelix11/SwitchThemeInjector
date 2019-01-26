@@ -73,6 +73,9 @@ namespace SwitchThemes
 				Advanced = true;
 				EnableAdvanced();
 			}
+#if DEBUG
+			lblDebug.Visible = true;
+#endif
 		}
 
 		#region AdvancedTools
@@ -463,7 +466,7 @@ namespace SwitchThemes
 					return;
 				}
 
-				if (AlbumIcon != null)
+				if (targetPatch.NXThemeName == "home" && AlbumIcon != null)
 				{
 					if (!AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
 						return;
@@ -744,6 +747,11 @@ namespace SwitchThemes
 			AlbumIcon = opn.FileName;
 			lblAlbumIco.Text = $"Custom album icon: {AlbumIcon}";
 			btnAlbumIco.Text = "X";
+		}
+
+		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("This image will replace the album icon in the home menu. Use a small image (recommended 64x56), colors are not allowed, it should be white on a transparent background");
 		}
 	}
 }
