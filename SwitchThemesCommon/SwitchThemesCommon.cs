@@ -97,6 +97,21 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
+		public static BflytFile.PatchResult PatchBntxTexture(SARCExt.SarcData sarc, byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
+		{
+			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			if (q.Rlt.Length != 0x80)
+			{
+				return BflytFile.PatchResult.Fail;
+			}
+			q.ReplaceTex(texName, DDS);
+			if (TexFlag != 0xFFFFFFFF)
+				q.Textures.Where(x => x.Name == texName).First().ChannelTypes = (int)TexFlag;
+			sarc.Files[@"timg/__Combined.bntx"] = null;
+			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
+			return BflytFile.PatchResult.OK;
+		}
+
 		public static BflytFile.PatchResult PatchBntx(SARCExt.SarcData sarc, DDSEncoder.DDSLoadResult DDS, PatchTemplate targetPatch)
 		{
 			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));

@@ -67,6 +67,8 @@ namespace SwitchThemes
 			string Author = GetArg("author");
 			string Output = GetArg("out");
 			string ExtraCommon = GetArg("commonlyt");
+			string album = GetArg("album");
+
 			if (Output == null || Output == "")
 				return false;
 			
@@ -91,10 +93,17 @@ namespace SwitchThemes
 				else return false;
 			}
 
+			if (album != null && !album.EndsWith(".dds"))
+			{
+				if (Form1.ImageToDDS(album, Path.GetTempPath()))
+					album = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(album) + ".dds");
+				else return false;
+			}
+
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 3,
+					Version = 4,
 					ThemeName = Name,
 					Author = Author,
 					Target = Target,
@@ -102,7 +111,8 @@ namespace SwitchThemes
 				},
 				File.ReadAllBytes(Image),
 				layout?.AsByteArray(),
-				new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null));
+				new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
+				new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));
 
 			File.WriteAllBytes(Output, res);
 

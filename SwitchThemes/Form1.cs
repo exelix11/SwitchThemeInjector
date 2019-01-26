@@ -337,7 +337,7 @@ namespace SwitchThemes
 			AllLayoutsBox.SelectedIndex = 0;
 		}
 
-		public static bool ImageToDDS(string fileName, string outPath)
+		public static bool ImageToDDS(string fileName, string outPath, string format = "DXT1", bool useAlpha = false)
 		{
 			if (!File.Exists("texconv.exe"))
 			{
@@ -351,7 +351,7 @@ namespace SwitchThemes
 			p.StartInfo = new ProcessStartInfo()
 			{
 				FileName = "texconv",
-				Arguments = $"-y -f DXT1 -ft dds -srgb -o \"{pathName}\" \"{fileName}\"",
+				Arguments = $"-y -f {format} -ft dds -srgb {(useAlpha ? "-pmalpha" : "")} -o \"{pathName}\" \"{fileName}\"",
 				CreateNoWindow = true,
 				UseShellExecute = false,
 				RedirectStandardOutput = true,
@@ -373,13 +373,33 @@ namespace SwitchThemes
 			return true;
 		}
 		
-		bool ImageToDDS()
+		bool BgImageCheck()
 		{
-			var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
+			if (!tbBntxFile.Text.EndsWith(".dds"))
+			{
+				var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
+				if (res)
+				{
+					tbBntxFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
+					tbBntxFile2.Text = tbBntxFile.Text;
+				}
+				else return false;
+			}
+
+			var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbBntxFile.Text));
+			if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+			if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+
+			return true;
+		}
+
+		bool AlbumIcontoDDS()
+		{
+			var res = ImageToDDS(AlbumIcon, Path.GetTempPath(), "DXT5",true); //Somehow it outputs a DXT4 image (?)
 			if (res)
 			{
-				tbBntxFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
-				tbBntxFile2.Text = tbBntxFile.Text;
+				AlbumIcon = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(AlbumIcon) + ".dds");
+				lblAlbumIco.Text = "Custom album icon: " + AlbumIcon;
 			}
 			return res;
 		}
@@ -432,8 +452,8 @@ namespace SwitchThemes
 			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
-				if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
-					return;
+				if (!BgImageCheck()) return;
+
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show(
@@ -441,6 +461,13 @@ namespace SwitchThemes
 							"without this information it is not possible to rebuild the bntx." +
 							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;
+				}
+
+				if (AlbumIcon != null)
+				{
+					if (!AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
+						return;
+					SwitchThemesCommon.PatchBntxTexture(CommonSzs, File.ReadAllBytes(AlbumIcon), "RdtIcoPvr_00^s", 0x02000000);
 				}
 
 				res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
@@ -518,9 +545,9 @@ namespace SwitchThemes
 				MessageBox.Show("Select an image first");
 				return;
 			}
-			
-			if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
-				return;
+
+			if (!BgImageCheck()) return;
+
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
 				return;
@@ -553,6 +580,7 @@ namespace SwitchThemes
 		}
 
 		LayoutPatch ExtraCommonLyt = null;
+		string AlbumIcon = null;
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
@@ -560,8 +588,9 @@ namespace SwitchThemes
 				MessageBox.Show("Select an image first");
 				return;
 			}
-			if (!tbBntxFile.Text.EndsWith(".dds") && !ImageToDDS())
-				return;
+
+			if (!BgImageCheck()) return;
+
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
 				return;
@@ -570,13 +599,16 @@ namespace SwitchThemes
 			if (info.Item3)
 				preview = GenerateDDSPreview(tbBntxFile.Text);
 
+			if (AlbumIcon != null && !AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
+				return;
+
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
 			var res = SwitchThemesCommon.GenerateNXTheme(
 				new ThemeFileManifest()
 				{
-					Version = 3,
+					Version = 4,
 					ThemeName = info.Item1,
 					Author = info.Item2,
 					Target = HomeMenuParts[HomeMenuPartBox.Text],
@@ -585,7 +617,8 @@ namespace SwitchThemes
 				File.ReadAllBytes(tbBntxFile.Text),
 				layout?.AsByteArray(),
 				new Tuple<string, byte[]> ("preview.png", preview),
-				HomeMenuParts[HomeMenuPartBox.Text] == "home" ? new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()) : null);
+				new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()),
+				new Tuple<string,byte[]>("album.dds", AlbumIcon != null ? File.ReadAllBytes(AlbumIcon) : null));
 
 			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 			if (sav.ShowDialog() != DialogResult.OK)
@@ -695,6 +728,22 @@ namespace SwitchThemes
 			ExtraCommonLyt = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
 			lblCustomCommonLyt.Text = $"Custom common layout: {ExtraCommonLyt.ToString()}";
 			btnOpenCustomLayout.Text = "X";
+		}
+
+		private void btnAlbumIco_Click(object sender, EventArgs e)
+		{
+			if (AlbumIcon != null)
+			{
+				btnAlbumIco.Text = "...";
+				lblAlbumIco.Text = "Custom album icon: Not set";
+				AlbumIcon = null;
+				return;
+			}
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			AlbumIcon = opn.FileName;
+			lblAlbumIco.Text = $"Custom album icon: {AlbumIcon}";
+			btnAlbumIco.Text = "X";
 		}
 	}
 }

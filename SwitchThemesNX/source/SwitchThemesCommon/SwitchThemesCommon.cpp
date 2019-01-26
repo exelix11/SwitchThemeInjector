@@ -64,6 +64,29 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntx(SARC::SarcData &sarc, const
 	return BflytFile::PatchResult::OK;
 }
 
+BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc, const vector<u8> &DDS, const string &texName, u32 ChannelData)
+{
+	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
+	QuickBntx q(Reader);
+	if (q.Rlt.size() != 0x80)
+	{
+		return BflytFile::PatchResult::Fail;
+	}
+	try
+	{
+		auto dds = DDSEncoder::LoadDDS(DDS);
+		q.ReplaceTex(texName, dds);
+		if (ChannelData != 0xFFFFFFFF)
+			q.FindTex(texName)->ChannelTypes = ChannelData;
+		sarc.files["timg/__Combined.bntx"] = q.Write();
+	}
+	catch (...)
+	{
+		return BflytFile::PatchResult::Fail;
+	}
+	return BflytFile::PatchResult::OK;
+}
+
 PatchTemplate SwitchThemesCommon::DetectSarc(const SARC::SarcData &sarc)
 {
 #define SzsHasKey(_str) (sarc.files.count(_str))
