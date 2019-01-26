@@ -35,9 +35,10 @@ namespace DDSEncoder
 
 	const std::unordered_map<std::string, EncoderInfo> EncoderTable =
 	{
-		{ "DXT1",{ 4,4,8 ,0x1a06 } },
-		{ "DXT3",{ 4,4,16,0x1b06 } },
-		{ "DXT5",{ 4,4,16,0x1c06 } },
+		{ "DXT1",{ 4,4,8 ,0x1a01 } },
+		{ "DXT3",{ 4,4,16,0x1b01 } },
+		{ "DXT4",{ 4,4,16,0x1c01 } },
+		{ "DXT5",{ 4,4,16,0x1c01 } },
 	};
 
 	DDSEncoderResult EncodeTex(const DDSLoadResult &img);

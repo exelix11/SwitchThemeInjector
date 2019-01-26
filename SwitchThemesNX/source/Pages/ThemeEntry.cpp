@@ -75,7 +75,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1.SetString("Invalid theme");
 		CanInstall = false;
 	}
-	if (themeInfo.Version > 3)
+	if (themeInfo.Version > 4)
 	{
 		lblLine2.SetString("New version, update the installer !");
 		CanInstall = false;
@@ -326,6 +326,16 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
 				if (!PatchLayout(ToPatch,JSON,BaseSzs))
 					return false;
+			}
+			
+			if (SData.files.count("album.dds"))
+			{
+				SkipSaveActualFile = false;
+				auto pResult = SwitchThemesCommon::PatchBntxTexture(ToPatch, SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000 );
+				if (pResult != BflytFile::PatchResult::OK)
+				{
+					Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+				}
 			}
 			
 			if (!SkipSaveActualFile)

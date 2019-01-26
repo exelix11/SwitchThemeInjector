@@ -17,7 +17,7 @@ public:
 
 	std::vector<u8> Write();
 	void ReplaceTex(const string &name, const DDSEncoder::DDSLoadResult &tex);
+	Bntxx::BRTI* FindTex(const string &name);
 private:
 	std::vector<u8> Head;
-	Bntxx::BRTI* FindTex(const string &name);
 };

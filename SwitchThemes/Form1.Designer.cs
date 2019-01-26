@@ -34,6 +34,7 @@
 			this.PatchListPage = new System.Windows.Forms.TabPage();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.DdsConvPage = new System.Windows.Forms.TabPage();
+			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
 			this.btnOpenCustomLayout = new System.Windows.Forms.Button();
 			this.lblCustomCommonLyt = new MaterialSkin.Controls.MaterialLabel();
@@ -48,7 +49,6 @@
 			this.HomeMenuPartBox = new System.Windows.Forms.ComboBox();
 			this.materialLabel15 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbBntxFile2 = new System.Windows.Forms.TextBox();
-			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
@@ -94,6 +94,9 @@
 			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
+			this.btnAlbumIco = new System.Windows.Forms.Button();
+			this.lblAlbumIco = new MaterialSkin.Controls.MaterialLabel();
+			this.btnAlbumIcoHelp = new System.Windows.Forms.Button();
 			this.materialTabControl1.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.DdsConvPage.SuspendLayout();
@@ -177,11 +180,33 @@
 			this.DdsConvPage.TabIndex = 4;
 			this.DdsConvPage.Text = "Nxtheme builder";
 			// 
+			// materialFlatButton2
+			// 
+			this.materialFlatButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialFlatButton2.AutoSize = true;
+			this.materialFlatButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.materialFlatButton2.Depth = 0;
+			this.materialFlatButton2.ForeColor = System.Drawing.Color.White;
+			this.materialFlatButton2.Icon = null;
+			this.materialFlatButton2.Location = new System.Drawing.Point(602, 84);
+			this.materialFlatButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
+			this.materialFlatButton2.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialFlatButton2.Name = "materialFlatButton2";
+			this.materialFlatButton2.Primary = false;
+			this.materialFlatButton2.Size = new System.Drawing.Size(32, 36);
+			this.materialFlatButton2.TabIndex = 12;
+			this.materialFlatButton2.Text = "...";
+			this.materialFlatButton2.UseVisualStyleBackColor = true;
+			this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton1_Click);
+			// 
 			// grpHomeExtra
 			// 
 			this.grpHomeExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.grpHomeExtra.Controls.Add(this.btnAlbumIcoHelp);
+			this.grpHomeExtra.Controls.Add(this.btnAlbumIco);
+			this.grpHomeExtra.Controls.Add(this.lblAlbumIco);
 			this.grpHomeExtra.Controls.Add(this.btnOpenCustomLayout);
 			this.grpHomeExtra.Controls.Add(this.lblCustomCommonLyt);
 			this.grpHomeExtra.ForeColor = System.Drawing.Color.White;
@@ -371,25 +396,6 @@
 			this.tbBntxFile2.Size = new System.Drawing.Size(537, 20);
 			this.tbBntxFile2.TabIndex = 10;
 			// 
-			// materialFlatButton2
-			// 
-			this.materialFlatButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialFlatButton2.AutoSize = true;
-			this.materialFlatButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.materialFlatButton2.Depth = 0;
-			this.materialFlatButton2.ForeColor = System.Drawing.Color.White;
-			this.materialFlatButton2.Icon = null;
-			this.materialFlatButton2.Location = new System.Drawing.Point(602, 84);
-			this.materialFlatButton2.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-			this.materialFlatButton2.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialFlatButton2.Name = "materialFlatButton2";
-			this.materialFlatButton2.Primary = false;
-			this.materialFlatButton2.Size = new System.Drawing.Size(32, 36);
-			this.materialFlatButton2.TabIndex = 12;
-			this.materialFlatButton2.Text = "...";
-			this.materialFlatButton2.UseVisualStyleBackColor = true;
-			this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton1_Click);
-			// 
 			// materialLabel11
 			// 
 			this.materialLabel11.Depth = 0;
@@ -553,7 +559,7 @@
 			this.materialLabel7.Depth = 0;
 			this.materialLabel7.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel7.Location = new System.Drawing.Point(6, 156);
+			this.materialLabel7.Location = new System.Drawing.Point(6, 162);
 			this.materialLabel7.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel7.Name = "materialLabel7";
 			this.materialLabel7.Size = new System.Drawing.Size(620, 64);
@@ -564,7 +570,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel1.Location = new System.Drawing.Point(547, 124);
+			this.linkLabel1.Location = new System.Drawing.Point(547, 130);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(84, 21);
 			this.linkLabel1.TabIndex = 9;
@@ -580,7 +586,7 @@
 			this.LayoutPatchList.BackColor = System.Drawing.Color.White;
 			this.LayoutPatchList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.LayoutPatchList.FormattingEnabled = true;
-			this.LayoutPatchList.Location = new System.Drawing.Point(108, 124);
+			this.LayoutPatchList.Location = new System.Drawing.Point(108, 130);
 			this.LayoutPatchList.Name = "LayoutPatchList";
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 8;
@@ -591,7 +597,7 @@
 			this.materialLabel6.Depth = 0;
 			this.materialLabel6.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel6.Location = new System.Drawing.Point(6, 124);
+			this.materialLabel6.Location = new System.Drawing.Point(6, 130);
 			this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel6.Name = "materialLabel6";
 			this.materialLabel6.Size = new System.Drawing.Size(103, 19);
@@ -651,7 +657,7 @@
 			this.materialLabel3.Depth = 0;
 			this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel3.Location = new System.Drawing.Point(6, 220);
+			this.materialLabel3.Location = new System.Drawing.Point(6, 226);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
 			this.materialLabel3.Size = new System.Drawing.Size(475, 57);
@@ -666,7 +672,7 @@
 			this.materialLabel17.Depth = 0;
 			this.materialLabel17.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel17.Location = new System.Drawing.Point(13, 101);
+			this.materialLabel17.Location = new System.Drawing.Point(13, 105);
 			this.materialLabel17.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel17.Name = "materialLabel17";
 			this.materialLabel17.Size = new System.Drawing.Size(617, 24);
@@ -1038,6 +1044,43 @@
 			this.materialTabSelector1.TabIndex = 5;
 			this.materialTabSelector1.Text = "materialTabSelector1";
 			// 
+			// btnAlbumIco
+			// 
+			this.btnAlbumIco.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnAlbumIco.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnAlbumIco.Location = new System.Drawing.Point(591, 41);
+			this.btnAlbumIco.Name = "btnAlbumIco";
+			this.btnAlbumIco.Size = new System.Drawing.Size(33, 23);
+			this.btnAlbumIco.TabIndex = 16;
+			this.btnAlbumIco.Text = "...";
+			this.btnAlbumIco.UseVisualStyleBackColor = true;
+			this.btnAlbumIco.Click += new System.EventHandler(this.btnAlbumIco_Click);
+			// 
+			// lblAlbumIco
+			// 
+			this.lblAlbumIco.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblAlbumIco.Depth = 0;
+			this.lblAlbumIco.Font = new System.Drawing.Font("Roboto", 11F);
+			this.lblAlbumIco.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.lblAlbumIco.Location = new System.Drawing.Point(6, 43);
+			this.lblAlbumIco.MouseState = MaterialSkin.MouseState.HOVER;
+			this.lblAlbumIco.Name = "lblAlbumIco";
+			this.lblAlbumIco.Size = new System.Drawing.Size(554, 19);
+			this.lblAlbumIco.TabIndex = 15;
+			this.lblAlbumIco.Text = "Custom album icon: Not set";
+			// 
+			// btnAlbumIcoHelp
+			// 
+			this.btnAlbumIcoHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnAlbumIcoHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnAlbumIcoHelp.Location = new System.Drawing.Point(566, 41);
+			this.btnAlbumIcoHelp.Name = "btnAlbumIcoHelp";
+			this.btnAlbumIcoHelp.Size = new System.Drawing.Size(19, 23);
+			this.btnAlbumIcoHelp.TabIndex = 17;
+			this.btnAlbumIcoHelp.Text = "?";
+			this.btnAlbumIcoHelp.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1137,6 +1180,9 @@
 		private MaterialSkin.Controls.MaterialLabel lblCustomCommonLyt;
 		private MaterialSkin.Controls.MaterialLabel materialLabel16;
 		private MaterialSkin.Controls.MaterialLabel materialLabel17;
+		private System.Windows.Forms.Button btnAlbumIcoHelp;
+		private System.Windows.Forms.Button btnAlbumIco;
+		private MaterialSkin.Controls.MaterialLabel lblAlbumIco;
 	}
 }
 
