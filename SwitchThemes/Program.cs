@@ -1,4 +1,5 @@
 ﻿using SwitchThemes.Common;
+using SwitchThemes.Common.Bntxx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -92,6 +93,10 @@ namespace SwitchThemes
 					Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
 				else return false;
 			}
+
+			var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(Image));
+			if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+			if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 
 			if (album != null && !album.EndsWith(".dds"))
 			{
