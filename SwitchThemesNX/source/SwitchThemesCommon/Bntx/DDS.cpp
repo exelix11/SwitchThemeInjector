@@ -134,11 +134,15 @@ s32 ToInt32(const u8* ptr)
 
 DDSEncoder::DDSLoadResult DDSEncoder::LoadDDS(const vector<u8> &inb) 
 {
-	if (!(inb[0x54] == 'D' && inb[0x55] == 'X' && inb[0x56] == 'T' && inb[0x57] == '1'))
-		throw "Unsupported format : only DXT1 encoding is supported for DDS";
+	string Format = "ZZZZ";
+	for (int i = 0; i < 4; i++)
+		Format[i] = inb[i + 0x54];
 
-	auto format_ = 0x1a06;
-	auto bpp = 8;
+	if (!EncoderTable.count(Format))
+		throw "Unsupported format : only DXT1 and DXT5 encodings are supported for DDS";
+
+	s32 bpp = EncoderTable.at(Format).bpp;
+
 	auto width = ToInt32(inb.data() + 0x10);
 	auto height = ToInt32(inb.data() + 0xC);
 	auto size = ((width + 3) >> 2) * ((height + 3) >> 2) * bpp;
@@ -147,20 +151,18 @@ DDSEncoder::DDSLoadResult DDSEncoder::LoadDDS(const vector<u8> &inb)
 	vector<u8> res(size + mipSize);
 	memcpy(res.data(), inb.data() + 0x80, size + mipSize);
 	return DDSLoadResult{
-		width,	height,	format_,
-		"DXT1",	size,	{ 2, 3, 4, 5 },
-		numMips,	res
+		width, height, Format, size, numMips, res
 	};
 }
 
-vector<u8> DDSEncoder::EncodeTex(const DDSEncoder::DDSLoadResult &img)
+DDSEncoder::DDSEncoderResult DDSEncoder::EncodeTex(const DDSEncoder::DDSLoadResult &img)
 {
 	auto numMips = 1;
 	auto alignment = 512;
-	auto blkWidth = 4;
-	auto blkHeight = 4;
-	auto bpp = 8;
-	auto blockHeight = getBlockHeight(DIV_ROUND_UP(img.height, blkHeight));
+	
+	auto fmt = EncoderTable.at(img.Format);
+
+	auto blockHeight = getBlockHeight(DIV_ROUND_UP(img.height, fmt.blkHeight));
 	auto blockHeightLog2 = Log2(blockHeight);
 	auto linesPerBlockHeight = blockHeight * 8;
 	
@@ -172,19 +174,19 @@ vector<u8> DDSEncoder::EncodeTex(const DDSEncoder::DDSLoadResult &img)
 
 	for (s32 mipLevel = 0; mipLevel < numMips; mipLevel++)
 	{
-		auto offSize = getCurrentMipOffset_Size(img.width, img.height, blkWidth, blkHeight, bpp, mipLevel);
+		auto offSize = getCurrentMipOffset_Size(img.width, img.height, fmt.blkWidth, fmt.blkHeight, fmt.bpp, mipLevel);
 		vector<u8> data(get<1>(offSize));
 		memcpy(data.data(), img.data.data() + get<0>(offSize), get<1>(offSize));
 		auto width_ = max(1, img.width >> mipLevel);
 		auto height_ = max(1, img.height >> mipLevel);
-		auto width__ = DIV_ROUND_UP(width_, blkWidth);
-		auto height__ = DIV_ROUND_UP(height_, blkHeight);
+		auto width__ = DIV_ROUND_UP(width_, fmt.blkWidth);
+		auto height__ = DIV_ROUND_UP(height_, fmt.blkHeight);
 		int dataAlignBytes = round_up(surfSize, alignment) - surfSize;
 		surfSize += dataAlignBytes;
 		mipOfsets.push_back(surfSize);
 		if (pow2_round_up(height__) < linesPerBlockHeight)
 			blockHeightShift += 1;
-		auto pitch = round_up(width__ * bpp, 64);
+		auto pitch = round_up(width__ * fmt.bpp, 64);
 		surfSize += pitch * round_up(height__, max(1, blockHeight >> blockHeightShift) * 8);
 
 		if (dataAlignBytes != 0) 
@@ -192,9 +194,9 @@ vector<u8> DDSEncoder::EncodeTex(const DDSEncoder::DDSLoadResult &img)
 			for (int i = 0; i < dataAlignBytes; i++)
 				res.push_back(0);
 		}
-		auto tmpVec = swizzle(width_, height_, blkWidth, blkHeight, true, bpp, 0, max(0, blockHeightLog2 - blockHeightShift), data, true);
+		auto tmpVec = swizzle(width_, height_, fmt.blkWidth, fmt.blkHeight, true, fmt.bpp, 0, max(0, blockHeightLog2 - blockHeightShift), data, true);
 		res.insert(res.end(), tmpVec.begin(), tmpVec.end());
 	}
 
-	return res;
+	return DDSEncoderResult{ res, fmt, blockHeightLog2 };
 }

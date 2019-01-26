@@ -61,9 +61,10 @@ namespace SwitchThemes.Common.Bntxx
 		public void ReplaceTex(string texName, DDSEncoder.DDSLoadResult dds)
 		{
 			var target = Textures.Where(x => x.Name == texName).First();
-			target.Data = DDSEncoder.EncodeTex(dds);
+			var encoded = DDSEncoder.EncodeTex(dds);
+			target.Data = encoded.Data;
 			target.TextureType = (int)TextureType.Image2D;
-			target.Format = 0x00001a01;
+			target.Format = (uint)encoded.format.formatCode;
 			target.ChannelTypes = 0x05040302;
 			target.Width = dds.width;
 			target.Height = dds.height;
@@ -79,7 +80,7 @@ namespace SwitchThemes.Common.Bntxx
 			target.MipmapCount = 1;
 			target.Flags = 0x01;
 			target.Depth = 1;
-			target.BlockHeightLog2 = 4;
+			target.BlockHeightLog2 = encoded.blockHeightLog2;
 			target.Alignment = 0x200;
 			target.AccessFlags = 0x20;
 		}
