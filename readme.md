@@ -14,7 +14,7 @@ To install nxthemes files on your console download the NxThemes installer homebr
 
 ## Command line args.
 You can automate theme creation using command line args. Here's an example to build a theme:
-`SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "out=<OutputPath>.nxtheme"` this will build a theme for the home menu, instad of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. 
+`SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "out=<OutputPath>.nxtheme"` this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. 
 
 # Useful resources
 To dump common.szs and the other files you need to make themes read [DumpingFiles.md](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md). \
