@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -11,23 +12,53 @@ namespace SwitchThemes
 {
 	static class Program
 	{
+	
 		/// <summary>
 		/// Punto di ingresso principale dell'applicazione.
 		/// </summary>
 		[STAThread]
 		static void Main(string[] args)
 		{
+			bool IsMono = Type.GetType("Mono.Runtime") != null;
+
+			if (IsMono)
+				AppDomain.CurrentDomain.AssemblyResolve += (sender, Assemblyargs) => {
+					String resourceName = "AssemblyLoadingAndReflection." +
+					   new AssemblyName(Assemblyargs.Name).Name + ".dll";
+					using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+					{
+						Byte[] assemblyData = new Byte[stream.Length];
+						stream.Read(assemblyData, 0, assemblyData.Length);
+						return Assembly.Load(assemblyData);
+					}
+				};
+
 			bool ArgsHandled = false;
 			if (args != null && args.Length != 0)
 			{
 				if (args[0].ToLower() == "buildnx")
 					ArgsHandled = NXThemeFromArgs(args);
-				else
-					ArgsHandled = false;
+				else if (args[0].ToLower() == "help")
+				{
+					ArgsHandled = true;
+					Console.WriteLine(
+						"Switch themes Injector V " + SwitchThemesCommon.CoreVer +" by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
+						"Usage: SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.nxtheme\"\r\n" +
+						"instad of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n"+
+						"Only the image and out file are needed.\r\n");
+					if (IsMono)
+						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
+				}
 			}
 
 			if (ArgsHandled)
 				return;
+
+			if (IsMono)
+			{
+				MessageBox.Show("The ui is not supported with mono, use the command line args.\r\nRun \"mono SwitchThemes.exe help\"");
+				return;
+			}
 
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
