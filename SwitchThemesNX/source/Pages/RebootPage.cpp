@@ -1,4 +1,3 @@
-#pragma once
 #include <switch.h>
 #include <iostream>
 #include <vector>

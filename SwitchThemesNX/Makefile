@@ -34,7 +34,7 @@ TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
 SOURCES		:=	source/SwitchTools source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon source
 DATA		:=	data
-INCLUDES	:=	include
+INCLUDES	:=	include $(CURDIR)/Libs/hactool/include  $(CURDIR)/Libs/mbedtls/include
 EXEFS_SRC	:=	exefs_src
 ROMFS	:=	romfs
 
@@ -56,7 +56,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++17 -fpermissive
 ASFLAGS	:=	 $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs
 
-LIBS	:= -lhactool -lmbedtls -lmbedcrypto -lmbedx509 \
+LIBS	:= -lhactool -lmbedtls \
 			-lstdc++fs -lSDL2_ttf -lSDL2_image -lSDL2 \
 			-lpng -lz -ljpeg \
 			 -lEGL -lglapi -ldrm_nouveau \
@@ -65,7 +65,7 @@ LIBS	:= -lhactool -lmbedtls -lmbedcrypto -lmbedx509 \
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Libs
+LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(CURDIR)/Libs/hactool  $(CURDIR)/Libs/mbedtls
 
 
 #---------------------------------------------------------------------------------

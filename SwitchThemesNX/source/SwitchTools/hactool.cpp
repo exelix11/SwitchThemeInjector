@@ -1,18 +1,6 @@
 #include "hactool.hpp"
 #include "../ViewFunctions.hpp"
-extern "C"
-{
-#include "../../Libs/include/hactool/types.h"
-#include "../../Libs/include/hactool/utils.h"
-#include "../../Libs/include/hactool/settings.h"
-#include "../../Libs/include/hactool/pki.h"
-#include "../../Libs/include/hactool/nca.h"
-#include "../../Libs/include/hactool/xci.h"
-#include "../../Libs/include/hactool/nax0.h"
-#include "../../Libs/include/hactool/extkeys.h"
-#include "../../Libs/include/hactool/packages.h"
-#include "../../Libs/include/hactool/nso.h"
-}
+#include <hactool.h>
 #include <unistd.h>
 #include <sys/stat.h>
 
@@ -55,23 +43,6 @@ bool ExtractNca(const std::string &NcaFile, const std::string &OutDir, const std
     nca_ctx.tool_ctx->settings.romfs_dir_path.enabled = 1;
     filepath_set(&nca_ctx.tool_ctx->settings.romfs_dir_path.path, OutDir.c_str());		
  
-    filepath_set(&keypath, KeyFile.c_str());
-    FILE *keyfile = NULL;
-    if(keypath.valid == VALIDITY_VALID) keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
-
-    if(keyfile != NULL)
-    {
-        extkeys_initialize_keyset(&tool_ctx.settings.keyset, keyfile);
-        if (tool_ctx.settings.has_sdseed) {
-            for (unsigned int key = 0; key < 2; key++) {
-                for (unsigned int i = 0; i < 0x20; i++) {
-                    tool_ctx.settings.keyset.sd_card_key_sources[key][i] ^= tool_ctx.settings.sdseed[i & 0xF];
-                }
-            }
-        }
-        pki_derive_keys(&tool_ctx.settings.keyset);
-        fclose(keyfile);
-    }
 
     if ((tool_ctx.file = fopen(NcaFile.c_str(), "rb")) == NULL && tool_ctx.file_type != FILETYPE_BOOT0) {
         Dialog("Couldn't open " + NcaFile);
