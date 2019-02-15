@@ -1,0 +1,8 @@
+/config.mk
+/hactool
+/hactool.exe
+/*.o
+/*.dll
+/bin
+/test
+/test/*
