@@ -3,6 +3,7 @@
 #include "../ViewFunctions.hpp"
 #include "../fs.hpp"
 #include "../SwitchTools/hactool.hpp"
+#include <filesystem>
 
 using namespace std;
 
@@ -13,13 +14,9 @@ guideText("",WHITE, 870, font25),
 	Name = "Extract home menu";
 	dumpNca.selected = false;
 	guideText.SetString("To install .nxtheme files you need to extract the home menu first.\n"
-		"To do this you need the switch keys in your sd in a file called prod.keys, "
-		"you can get them with lockpick, read the guide at: https://git.io/fxdyF\n\n"
-		"Note that for SXOS EMUNAND lockpick doesn't work and you'll have to find them on the internet\n\n"
+		"This is done automatically, if you have issues you can try doing it manually here.\n"
 		"You have to do this EVERY TIME you update (or downgrade) the firmware.\n"
 		"Press + to dump the home menu files");
-	if (FindKeyFile() == "")
-		dumpNca.SetString("Error: Keys not found on the sd card.");
 }
 
 void NcaDumpPage::Render(int X, int Y)
@@ -32,12 +29,7 @@ void NcaDumpPage::Update()
 {	
 	dumpNca.selected = true;
 	if (kDown & KEY_PLUS)
-	{
-		if (FindKeyFile() == "")
-		{
-			DialogBlocking("Couldn't find the keys on the sd card, place them in one of the following paths:\n"			"sdcard:/keys.prod\nsdcard:/themes/keys.prod\nsdcard:/switch/keys.prod");
-			return;
-		}
+	{		
 		if ((kHeld & KEY_L) && (kHeld & KEY_R))
 		{
 			DialogBlocking("Super secret combination entered, only the home menu NCA will be dumped (it won't be extracted)");
@@ -57,6 +49,35 @@ void NcaDumpPage::Update()
 	}
 }
 
+extern int NXTheme_FirmMajor;
+static void NcaDumpPage::CheckHomeMenuVer()
+{
+	if (!filesystem::exists("/themes/systemData/ResidentMenu.szs")) goto DUMP_HOMEMENU;
+	
+	if (filesystem::exists("/themes/systemData/ver.cfg"))
+	{
+		FILE *ver = fopen("/themes/systemData/ver.cfg", "r");
+		if (ver)
+		{
+			char str[50];
+			fgets(str,50,ver);
+			fclose(ver);
+			string ver(str);
+			if (ver != SystemVer) goto ASK_DUMP;
+			else return;
+		}
+		else goto ASK_DUMP;
+	}
+	else if (NXTheme_FirmMajor >= 7) goto ASK_DUMP;
+	return;
+	
+ASK_DUMP:
+	if (!YesNoPage::Ask("The current firmware version is different than the one of the extracted home menu, do you want to dump the home menu again ?\nIf the extracted home menu doesn't match with the installed one themes will crash."))
+		return;
+	
+DUMP_HOMEMENU:
+	ExtractHomeMenu();
+}
 
 
 

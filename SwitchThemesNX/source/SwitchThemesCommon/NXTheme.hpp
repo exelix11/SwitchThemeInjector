@@ -15,7 +15,7 @@ struct ThemeFileManifest
 	std::string Target;
 };
 
-extern int FirmMajor;
+extern int NXTheme_FirmMajor;
 extern std::unordered_map<std::string,std::string> ThemeTargetToName;
 extern std::unordered_map<std::string,std::string> ThemeTargetToFileName;
 
