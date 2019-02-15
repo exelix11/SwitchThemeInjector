@@ -260,7 +260,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			if (ShowLoading)
 				DisplayLoading("Installing...");
 						
-			bool DoPatchCommonBG = FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");			
+			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");			
 			bool SkipSaveActualFile = false; //If just the bg gets patched don't save the ResidentMenu file later
 			if ((themeInfo.Target == "home" && SData.files.count("common.json")) || DoPatchCommonBG)
 			{				

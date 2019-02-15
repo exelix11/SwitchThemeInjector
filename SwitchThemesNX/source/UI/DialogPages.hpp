@@ -43,3 +43,20 @@ class DialogPage : public IUIControlObj
 		Label text;
 		Label Btn;
 };
+
+class YesNoPage : public IUIControlObj
+{
+	public:
+		static bool Ask(const std::string &msg);
+	
+		YesNoPage(const std::string &msg, bool *outRes);	
+
+		void Render(int X, int Y) override;
+		void Update() override;
+		
+	private:
+		bool *result;	
+		Label text;
+		Button btnYes;
+		Button btnNo;
+};

@@ -25,8 +25,6 @@ std::string GetParentDir(const std::string &path);
 
 void RecursiveDeleteFolder(const std::string &path);
 
-std::string FindKeyFile() noexcept;
-
 std::string GetHomeNcaPath();
 bool DumpHomeMenuNca();
 

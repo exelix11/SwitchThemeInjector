@@ -5,7 +5,7 @@
 #include "Layouts/json.hpp"
 #include "SwitchThemesCommon.hpp"
 
-int FirmMajor = -1;
+int NXTheme_FirmMajor = -1;
 std::unordered_map<std::string,std::string> ThemeTargetToName {};
 std::unordered_map<std::string,std::string> ThemeTargetToFileName {};
 

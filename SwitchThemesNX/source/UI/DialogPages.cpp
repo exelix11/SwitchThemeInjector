@@ -57,3 +57,55 @@ void DialogPage::Update()
 		PopPage();
 }
 
+YesNoPage::YesNoPage(const string &msg, bool *outRes): text(msg, WHITE, 1000, font30), btnYes("Yes"), btnNo("No") 
+{
+	result = outRes;
+	btnYes.selected = true;
+	btnNo.selected = false;
+}
+
+void YesNoPage::Render(int X, int Y)
+{
+	SDL_SetRenderDrawColor(sdl_render,45,45,45,0xff);
+	SDL_RenderFillRect(sdl_render,&ScreenRect);
+	
+	auto TextSize = text.GetSize();
+
+	text.Render(SCR_W / 2 - TextSize.w / 2,70);
+	
+	auto YesSize = btnYes.GetSize();
+	auto NoSize = btnNo.GetSize();
+	
+	int btnX =  SCR_W/2 - (YesSize.w + 30 + NoSize.w)/2;
+	
+	btnYes.Render(btnX, TextSize.h + 90);
+	btnNo.Render(btnX + YesSize.w + 30, TextSize.h + 90);
+}
+
+void YesNoPage::Update()
+{
+	if (kDown & KEY_A)
+	{
+		*result = btnYes.selected;
+		PopPage();
+		return;
+	}
+	else if (kDown & KEY_RIGHT)
+	{
+		btnYes.selected = false;
+		btnNo.selected = true;
+	}
+	else if (kDown & KEY_LEFT)
+	{
+		btnYes.selected = true;
+		btnNo.selected = false;
+	}
+}
+
+bool YesNoPage::Ask(const std::string &msg)
+{
+	bool result = false;
+	PushPageBlocking(new YesNoPage(msg, &result));
+	return result;
+}
+
