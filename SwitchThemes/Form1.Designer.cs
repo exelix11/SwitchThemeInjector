@@ -753,6 +753,7 @@
 			this.NCARunBtn.TabIndex = 28;
 			this.NCARunBtn.Text = "RUN";
 			this.NCARunBtn.UseVisualStyleBackColor = true;
+			this.NCARunBtn.Visible = false;
 			this.NCARunBtn.Click += new System.EventHandler(this.NCARunBtn_Click);
 			// 
 			// SdCardTb
@@ -763,6 +764,7 @@
 			this.SdCardTb.Name = "SdCardTb";
 			this.SdCardTb.Size = new System.Drawing.Size(445, 20);
 			this.SdCardTb.TabIndex = 24;
+			this.SdCardTb.Visible = false;
 			// 
 			// SdCardBtn
 			// 
@@ -781,6 +783,7 @@
 			this.SdCardBtn.TabIndex = 26;
 			this.SdCardBtn.Text = "...";
 			this.SdCardBtn.UseVisualStyleBackColor = true;
+			this.SdCardBtn.Visible = false;
 			this.SdCardBtn.Click += new System.EventHandler(this.OutputBtn_Click);
 			// 
 			// materialLabel14
@@ -794,6 +797,7 @@
 			this.materialLabel14.Size = new System.Drawing.Size(145, 20);
 			this.materialLabel14.TabIndex = 25;
 			this.materialLabel14.Text = "systemData folder: ";
+			this.materialLabel14.Visible = false;
 			// 
 			// keyFileTb
 			// 
@@ -803,6 +807,7 @@
 			this.keyFileTb.Name = "keyFileTb";
 			this.keyFileTb.Size = new System.Drawing.Size(519, 20);
 			this.keyFileTb.TabIndex = 21;
+			this.keyFileTb.Visible = false;
 			// 
 			// KeyFileBtn
 			// 
@@ -821,6 +826,7 @@
 			this.KeyFileBtn.TabIndex = 23;
 			this.KeyFileBtn.Text = "...";
 			this.KeyFileBtn.UseVisualStyleBackColor = true;
+			this.KeyFileBtn.Visible = false;
 			this.KeyFileBtn.Click += new System.EventHandler(this.MountBtn_Click);
 			// 
 			// materialLabel13
@@ -834,6 +840,7 @@
 			this.materialLabel13.Size = new System.Drawing.Size(145, 20);
 			this.materialLabel13.TabIndex = 22;
 			this.materialLabel13.Text = "Key file: ";
+			this.materialLabel13.Visible = false;
 			// 
 			// linkLabel4
 			// 
@@ -847,6 +854,7 @@
 			this.linkLabel4.TabStop = true;
 			this.linkLabel4.Text = "Open the new guide";
 			this.linkLabel4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.linkLabel4.Visible = false;
 			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
 			// 
 			// materialLabel10
