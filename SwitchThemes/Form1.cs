@@ -376,7 +376,7 @@ namespace SwitchThemes
 			return true;
 		}
 		
-		bool BgImageCheck()
+		bool BgImageCheck(bool IsLegacyTarget)
 		{
 			if (!tbBntxFile.Text.EndsWith(".dds"))
 			{
@@ -389,9 +389,12 @@ namespace SwitchThemes
 				else return false;
 			}
 
-			var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbBntxFile.Text));
-			if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-			if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+			if (IsLegacyTarget) //This is checked at a later stage for nxtheme
+			{
+				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbBntxFile.Text));
+				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+			}
 
 			return true;
 		}
@@ -455,7 +458,7 @@ namespace SwitchThemes
 			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
-				if (!BgImageCheck()) return;
+				if (!BgImageCheck(true)) return;
 
 				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
 				{
@@ -549,7 +552,7 @@ namespace SwitchThemes
 				return;
 			}
 
-			if (!BgImageCheck()) return;
+			if (!BgImageCheck(false)) return;
 
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
@@ -562,24 +565,31 @@ namespace SwitchThemes
 			LayoutPatch layout = null;
 			if (LayoutPatchList.SelectedIndex != 0)
 				layout = LayoutPatchList.SelectedItem as LayoutPatch;
-			var res = SwitchThemesCommon.GenerateNXTheme(
-				new ThemeFileManifest()
-				{
-					Version = 3,
-					ThemeName = info.Item1,
-					Author = info.Item2,
-					Target = targetPatch.NXThemeName,
-					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-				},
-				File.ReadAllBytes(tbBntxFile.Text), 
-				layout?.AsByteArray(),
-				new Tuple<string, byte[]>("preview.png", preview));
+			try
+			{
+				var res = SwitchThemesCommon.GenerateNXTheme(
+					new ThemeFileManifest()
+					{
+						Version = 3,
+						ThemeName = info.Item1,
+						Author = info.Item2,
+						Target = targetPatch.NXThemeName,
+						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+					},
+					File.ReadAllBytes(tbBntxFile.Text),
+					layout?.AsByteArray(),
+					new Tuple<string, byte[]>("preview.png", preview));
 
-			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
-			if (sav.ShowDialog() != DialogResult.OK)
-				return;
-			File.WriteAllBytes(sav.FileName, res);
-			MessageBox.Show("Done");
+				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+				if (sav.ShowDialog() != DialogResult.OK)
+					return;
+				File.WriteAllBytes(sav.FileName, res);
+				MessageBox.Show("Done");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("ERROR: " + ex.Message);
+			}
 		}
 
 		LayoutPatch ExtraCommonLyt = null;
@@ -592,7 +602,7 @@ namespace SwitchThemes
 				return;
 			}
 
-			if (!BgImageCheck()) return;
+			if (!BgImageCheck(false)) return;
 
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
@@ -608,26 +618,33 @@ namespace SwitchThemes
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
-			var res = SwitchThemesCommon.GenerateNXTheme(
-				new ThemeFileManifest()
-				{
-					Version = 4,
-					ThemeName = info.Item1,
-					Author = info.Item2,
-					Target = HomeMenuParts[HomeMenuPartBox.Text],
-					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-				},
-				File.ReadAllBytes(tbBntxFile.Text),
-				layout?.AsByteArray(),
-				new Tuple<string, byte[]> ("preview.png", preview),
-				new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()),
-				new Tuple<string,byte[]>("album.dds", AlbumIcon != null ? File.ReadAllBytes(AlbumIcon) : null));
+			try
+			{
+				var res = SwitchThemesCommon.GenerateNXTheme(
+					new ThemeFileManifest()
+					{
+						Version = 4,
+						ThemeName = info.Item1,
+						Author = info.Item2,
+						Target = HomeMenuParts[HomeMenuPartBox.Text],
+						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+					},
+					File.ReadAllBytes(tbBntxFile.Text),
+					layout?.AsByteArray(),
+					new Tuple<string, byte[]>("preview.png", preview),
+					new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()),
+					new Tuple<string, byte[]>("album.dds", AlbumIcon != null ? File.ReadAllBytes(AlbumIcon) : null));
 
-			SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
-			if (sav.ShowDialog() != DialogResult.OK)
-				return;
-			File.WriteAllBytes(sav.FileName, res);
-			MessageBox.Show("Done");
+				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+				if (sav.ShowDialog() != DialogResult.OK)
+					return;
+				File.WriteAllBytes(sav.FileName, res);
+				MessageBox.Show("Done");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show("ERROR: " + ex.Message);
+			}
 		}
 
 		int eggCounter = 0;
@@ -751,7 +768,7 @@ namespace SwitchThemes
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("This image will replace the album icon in the home menu. Use a small image (recommended 64x56), colors are not allowed, it should be white on a transparent background");
+			MessageBox.Show("This image will replace the album icon in the home menu. Use a 64x56 image, colors are not allowed: it should be white on a transparent background");
 		}
 	}
 }
