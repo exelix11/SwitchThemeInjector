@@ -18,6 +18,22 @@ namespace SwitchThemes.Common
 
 		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] ExtraFiles)
 		{
+			{
+				var img = DDSEncoder.LoadDDS(image);
+				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
+					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded ");
+			}
+
+			{
+				var album_img = ExtraFiles.Where(x => x.Item1 == "album.dds").FirstOrDefault();
+				if (album_img != null && album_img.Item2 != null)
+				{
+					var img = DDSEncoder.LoadDDS(album_img.Item2);
+					if (img.width != 64 || img.height != 56)
+						throw new Exception("The custom album image must be 64x56");
+				}
+			}
+
 			Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>();
 			Files.Add("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
 			Files.Add("image.dds", image);

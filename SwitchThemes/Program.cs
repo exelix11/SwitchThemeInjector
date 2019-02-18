@@ -125,10 +125,6 @@ namespace SwitchThemes
 				else return false;
 			}
 
-			var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(Image));
-			if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-			if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
-
 			if (album != null && !album.EndsWith(".dds"))
 			{
 				if (Form1.ImageToDDS(album, Path.GetTempPath()))
@@ -136,21 +132,28 @@ namespace SwitchThemes
 				else return false;
 			}
 
-			var res = SwitchThemesCommon.GenerateNXTheme(
-				new ThemeFileManifest()
-				{
-					Version = 4,
-					ThemeName = Name,
-					Author = Author,
-					Target = Target,
-					LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-				},
-				File.ReadAllBytes(Image),
-				layout?.AsByteArray(),
-				new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
-				new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));
+			try
+			{
+				var res = SwitchThemesCommon.GenerateNXTheme(
+					new ThemeFileManifest()
+					{
+						Version = 4,
+						ThemeName = Name,
+						Author = Author,
+						Target = Target,
+						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
+					},
+					File.ReadAllBytes(Image),
+					layout?.AsByteArray(),
+					new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
+					new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));
 
-			File.WriteAllBytes(Output, res);
+				File.WriteAllBytes(Output, res);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("ERROR: " + ex.Message);
+			}
 
 			return true;
 		}
