@@ -33,3 +33,5 @@ void RemoveSystemDataDir();
 int GetShuffleCount();
 std::string MakeThemeShuffleDir();
 void ClearThemeShuffle();
+
+bool WriteHomeDumpVer();
