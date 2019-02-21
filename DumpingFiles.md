@@ -1,5 +1,7 @@
 # Dumping Files
 This guide explains how to obtain the files needed to make custom themes from your own switch.\
+\
+**The guide is being reworked for 7.0, if you use that firmware please wait for the next update**
 
 ## Tools you'll need
 - [Version 1.1 or newer of NXThemes Installer](https://github.com/exelix11/SwitchThemeInjector/releases/latest)
