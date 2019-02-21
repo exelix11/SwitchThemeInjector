@@ -62,13 +62,14 @@ static void NcaDumpPage::CheckHomeMenuVer()
 			char str[50];
 			fgets(str,50,ver);
 			fclose(ver);
-			string ver(str);
-			if (ver != SystemVer) goto ASK_DUMP;
+			string version(str);
+			if (version != SystemVer) goto ASK_DUMP;
 			else return;
 		}
 		else goto ASK_DUMP;
 	}
 	else if (NXTheme_FirmMajor >= 7) goto ASK_DUMP;
+	else WriteHomeDumpVer();
 	return;
 	
 ASK_DUMP:
@@ -76,6 +77,7 @@ ASK_DUMP:
 		return;
 	
 DUMP_HOMEMENU:
+	RemoveSystemDataDir();
 	ExtractHomeMenu();
 }
 

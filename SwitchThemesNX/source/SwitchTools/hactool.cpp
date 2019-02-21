@@ -212,5 +212,7 @@ bool ExtractHomeMenu()
 		Dialog("Couldn't extract user.nca");
 		return false;
 	}
+	if (!WriteHomeDumpVer())
+		Dialog("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
 	return true;
 }

@@ -267,5 +267,13 @@ void ClearThemeShuffle()
 	rmdir("sdmc:/themes/shuffle/");	
 }
 
-
+bool WriteHomeDumpVer()
+{
+	FILE *ver = fopen("/themes/systemData/ver.cfg", "w");
+	if (!ver)
+		return false;
+	fprintf(ver,"%s",SystemVer.c_str());
+	fclose(ver);
+	return true;
+}
 
