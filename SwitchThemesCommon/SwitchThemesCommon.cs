@@ -12,9 +12,8 @@ namespace SwitchThemes.Common
     {
 		public const string CoreVer = "3.7";
 		const string LoadFileText =
-			"To create a theme open an szs first, these are the patches available in this version:" +
-			"{0} \r\n" +
-			"Always read the instructions because they are slightly different for each version";
+			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
+			"{0} \r\n";
 
 		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] ExtraFiles)
 		{

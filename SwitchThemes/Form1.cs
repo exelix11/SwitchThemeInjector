@@ -43,6 +43,7 @@ namespace SwitchThemes
 
 		public Form1()
 		{
+			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
 			InitializeComponent();
 
 			//LayoutPatch.CreateTestTemplates();
@@ -61,13 +62,13 @@ namespace SwitchThemes
 			HomeMenuPartBox_SelectedIndexChanged(null, null);
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
-			tbPatches.Text = "(To dump the following files check the guide at https://git.io/fxdyF )\r\n" + LoadFileText;
+			tbPatches.Text += LoadFileText;
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
-			lblDetected.ForeColor = Color.White;
+			Text += " Ver. " + SwitchThemesCommon.CoreVer;
+						
 			if (Properties.Settings.Default.Adv)
 			{
 				Advanced = true;
@@ -658,7 +659,7 @@ namespace SwitchThemes
 					"by exelix\r\n\r\n" +
 					"Team Qcean:\r\n" +
 					"Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\n" +
-					"Discord invite code : p27kEST\r\n\r\n" +
+					"Discord invite: https://discord.gg/CUnHJgb\r\n\r\n" +
 					"Thanks to:\r\nSyroot for BinaryData lib\r\nAboodXD for Bntx editor");
 		}
 
@@ -769,6 +770,11 @@ namespace SwitchThemes
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show("This image will replace the album icon in the home menu. Use a 64x56 image, colors are not allowed: it should be white on a transparent background");
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("This is a custom layout that is applied to the common.szs file, if unsure leave it empty. This is not the main layout");
 		}
 	}
 }

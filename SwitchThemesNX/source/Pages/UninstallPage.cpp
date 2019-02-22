@@ -5,7 +5,7 @@
 using namespace std;
 
 UninstallPage::UninstallPage() : 
-lblText("Press + to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory by pressing L+R as well.",WHITE, -1, font30), btn("Uninstall (+)")
+lblText("Press + to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory by pressing L+R as well.",WHITE, 870, font30), btn("Uninstall (+)")
 {
 	Name = "Uninstall theme";
 	btn.selected = false;

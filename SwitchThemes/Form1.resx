@@ -117,6 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="tbPatches.Text" xml:space="preserve">
+    <value>Here are some frequently asked questions and useful informations, if you have other questions or need support you can join our discord server:  https://discord.gg/CUnHJgb
+
+Q: How to install themes ?
+A: You need the NXThemes installer homebrew, you can get it from github: https://github.com/exelix11/SwitchThemeInjector/releases (it's the NRO file) it can install both nxtheme and szs files. 
+
+Q: Where can i download more themes or publish mine ?
+A: There is the r/NXThemes subreddit where you can share themes, there are also specific channels in the qcean discord server
+Remember that szs files are illegal to share, YOU CAN ONLY UPLOAD NXTHEME FILES
+
+Q: How to make custom layouts ?
+A: Check out Switch layout editor: https://github.com/FuryBaguette/SwitchLayoutEditor/wiki.
+
+Q: I installed a bad theme and now the console won't boot anymore, how to fix it ?
+A: delete the 0100000000001000 folder in SdCard:/&lt;your cfw&gt;/titles
+
+
+</value>
+  </data>
   <data name="materialLabel7.Text" xml:space="preserve">
     <value>Warning: when changing layouts you should always use an SZS with the original layout
 (bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
