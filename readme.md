@@ -10,13 +10,13 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 
 # Usage
 Open the injector and go to the NXThemes builder tab, open any 720p image (1280x720 pixels) and fill the form, then click on build nxtheme.\
-To install nxthemes files on your console download the NxThemes installer homebrew on your switch and do the [first time setup](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md) then just select any nxtheme file from your sd. Note that you have to do the first time setup every time you update (or downgrade) your firmware or else themes may not work.
+To install nxthemes files on your console download the NxThemes installer homebrew from the releases then just select any nxtheme file from your sd.\
+This app works on windows, you can use the CLI through mono on linux.
 
 ## Command line args.
 You can automate theme creation using command line args. Here's an example to build a theme:
-`SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "out=<OutputPath>.nxtheme"` this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. 
+`SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "commonlyt=<custom common.szs layout>" "album=<custom album icon.png/dds>" "out=<OutputPath>.nxtheme"` this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed.
 
 # Useful resources
-To dump common.szs and the other files you need to make themes read [DumpingFiles.md](https://github.com/exelix11/SwitchThemeInjector/blob/master/DumpingFiles.md). \
 You can make your own custom layouts using [Switch Layout Editor](https://github.com/FuryBaguette/SwitchLayoutEditor/) \
-To learn how to convert your layouts to json or make your own patch templates read [Templates.md](https://github.com/exelix11/SwitchThemeInjector/blob/master/templates.md) \
+To learn how to convert your layouts to json or make your own patch templates read [Templates.md](https://github.com/exelix11/SwitchThemeInjector/blob/master/templates.md)
