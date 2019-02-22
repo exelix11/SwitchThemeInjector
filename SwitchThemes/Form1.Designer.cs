@@ -31,11 +31,10 @@
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
-			this.PatchListPage = new System.Windows.Forms.TabPage();
-			this.tbPatches = new System.Windows.Forms.TextBox();
-			this.DdsConvPage = new System.Windows.Forms.TabPage();
+			this.NXThemePage = new System.Windows.Forms.TabPage();
 			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
+			this.button1 = new System.Windows.Forms.Button();
 			this.btnAlbumIcoHelp = new System.Windows.Forms.Button();
 			this.btnAlbumIco = new System.Windows.Forms.Button();
 			this.lblAlbumIco = new MaterialSkin.Controls.MaterialLabel();
@@ -55,6 +54,8 @@
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
+			this.PatchListPage = new System.Windows.Forms.TabPage();
+			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
 			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton8 = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -99,9 +100,9 @@
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDebug = new System.Windows.Forms.Label();
 			this.materialTabControl1.SuspendLayout();
-			this.PatchListPage.SuspendLayout();
-			this.DdsConvPage.SuspendLayout();
+			this.NXThemePage.SuspendLayout();
 			this.grpHomeExtra.SuspendLayout();
+			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
 			this.NCADumpPage.SuspendLayout();
 			this.AdvancedPage.SuspendLayout();
@@ -114,8 +115,8 @@
 			this.materialTabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialTabControl1.Controls.Add(this.NXThemePage);
 			this.materialTabControl1.Controls.Add(this.PatchListPage);
-			this.materialTabControl1.Controls.Add(this.DdsConvPage);
 			this.materialTabControl1.Controls.Add(this.InjectPage);
 			this.materialTabControl1.Controls.Add(this.NCADumpPage);
 			this.materialTabControl1.Controls.Add(this.AdvancedPage);
@@ -127,59 +128,32 @@
 			this.materialTabControl1.Size = new System.Drawing.Size(646, 357);
 			this.materialTabControl1.TabIndex = 4;
 			// 
-			// PatchListPage
+			// NXThemePage
 			// 
-			this.PatchListPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.PatchListPage.Controls.Add(this.tbPatches);
-			this.PatchListPage.Location = new System.Drawing.Point(4, 22);
-			this.PatchListPage.Name = "PatchListPage";
-			this.PatchListPage.Size = new System.Drawing.Size(638, 331);
-			this.PatchListPage.TabIndex = 2;
-			this.PatchListPage.Text = "Patch list";
-			// 
-			// tbPatches
-			// 
-			this.tbPatches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbPatches.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.tbPatches.BorderStyle = System.Windows.Forms.BorderStyle.None;
-			this.tbPatches.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tbPatches.ForeColor = System.Drawing.Color.White;
-			this.tbPatches.Location = new System.Drawing.Point(3, 3);
-			this.tbPatches.Multiline = true;
-			this.tbPatches.Name = "tbPatches";
-			this.tbPatches.ReadOnly = true;
-			this.tbPatches.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbPatches.Size = new System.Drawing.Size(635, 313);
-			this.tbPatches.TabIndex = 12;
-			// 
-			// DdsConvPage
-			// 
-			this.DdsConvPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.DdsConvPage.Controls.Add(this.materialFlatButton2);
-			this.DdsConvPage.Controls.Add(this.grpHomeExtra);
-			this.DdsConvPage.Controls.Add(this.linkLabel2);
-			this.DdsConvPage.Controls.Add(this.AllLayoutsBox);
-			this.DdsConvPage.Controls.Add(this.materialLabel9);
-			this.DdsConvPage.Controls.Add(this.materialLabel12);
-			this.DdsConvPage.Controls.Add(this.materialLabel16);
-			this.DdsConvPage.Controls.Add(this.materialRaisedButton9);
-			this.DdsConvPage.Controls.Add(this.NxBuilderBuild);
-			this.DdsConvPage.Controls.Add(this.linkLabel3);
-			this.DdsConvPage.Controls.Add(this.HomeMenuPartBox);
-			this.DdsConvPage.Controls.Add(this.materialLabel15);
-			this.DdsConvPage.Controls.Add(this.tbBntxFile2);
-			this.DdsConvPage.Controls.Add(this.materialLabel11);
-			this.DdsConvPage.Controls.Add(this.ImageToDDSBtn);
-			this.DdsConvPage.Controls.Add(this.materialLabel8);
-			this.DdsConvPage.ForeColor = System.Drawing.Color.White;
-			this.DdsConvPage.Location = new System.Drawing.Point(4, 22);
-			this.DdsConvPage.Name = "DdsConvPage";
-			this.DdsConvPage.Padding = new System.Windows.Forms.Padding(3);
-			this.DdsConvPage.Size = new System.Drawing.Size(638, 331);
-			this.DdsConvPage.TabIndex = 4;
-			this.DdsConvPage.Text = "Nxtheme builder";
+			this.NXThemePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.NXThemePage.Controls.Add(this.materialFlatButton2);
+			this.NXThemePage.Controls.Add(this.grpHomeExtra);
+			this.NXThemePage.Controls.Add(this.linkLabel2);
+			this.NXThemePage.Controls.Add(this.AllLayoutsBox);
+			this.NXThemePage.Controls.Add(this.materialLabel9);
+			this.NXThemePage.Controls.Add(this.materialLabel12);
+			this.NXThemePage.Controls.Add(this.materialLabel16);
+			this.NXThemePage.Controls.Add(this.materialRaisedButton9);
+			this.NXThemePage.Controls.Add(this.NxBuilderBuild);
+			this.NXThemePage.Controls.Add(this.linkLabel3);
+			this.NXThemePage.Controls.Add(this.HomeMenuPartBox);
+			this.NXThemePage.Controls.Add(this.materialLabel15);
+			this.NXThemePage.Controls.Add(this.tbBntxFile2);
+			this.NXThemePage.Controls.Add(this.materialLabel11);
+			this.NXThemePage.Controls.Add(this.ImageToDDSBtn);
+			this.NXThemePage.Controls.Add(this.materialLabel8);
+			this.NXThemePage.ForeColor = System.Drawing.Color.White;
+			this.NXThemePage.Location = new System.Drawing.Point(4, 22);
+			this.NXThemePage.Name = "NXThemePage";
+			this.NXThemePage.Padding = new System.Windows.Forms.Padding(3);
+			this.NXThemePage.Size = new System.Drawing.Size(638, 331);
+			this.NXThemePage.TabIndex = 4;
+			this.NXThemePage.Text = "Nxtheme builder";
 			// 
 			// materialFlatButton2
 			// 
@@ -205,6 +179,7 @@
 			this.grpHomeExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.grpHomeExtra.Controls.Add(this.button1);
 			this.grpHomeExtra.Controls.Add(this.btnAlbumIcoHelp);
 			this.grpHomeExtra.Controls.Add(this.btnAlbumIco);
 			this.grpHomeExtra.Controls.Add(this.lblAlbumIco);
@@ -218,6 +193,18 @@
 			this.grpHomeExtra.TabStop = false;
 			this.grpHomeExtra.Text = "Home menu optional settings";
 			this.grpHomeExtra.Visible = false;
+			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button1.Location = new System.Drawing.Point(566, 12);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(19, 23);
+			this.button1.TabIndex = 18;
+			this.button1.Text = "?";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
 			// btnAlbumIcoHelp
 			// 
@@ -279,7 +266,7 @@
 			this.lblCustomCommonLyt.Location = new System.Drawing.Point(6, 16);
 			this.lblCustomCommonLyt.MouseState = MaterialSkin.MouseState.HOVER;
 			this.lblCustomCommonLyt.Name = "lblCustomCommonLyt";
-			this.lblCustomCommonLyt.Size = new System.Drawing.Size(579, 19);
+			this.lblCustomCommonLyt.Size = new System.Drawing.Size(554, 19);
 			this.lblCustomCommonLyt.TabIndex = 12;
 			this.lblCustomCommonLyt.Text = "Custom common layout: Not set";
 			// 
@@ -350,7 +337,7 @@
 			this.materialLabel16.Name = "materialLabel16";
 			this.materialLabel16.Size = new System.Drawing.Size(617, 24);
 			this.materialLabel16.TabIndex = 24;
-			this.materialLabel16.Text = "To avoid crashes use 720p images (1280x720 pixels)";
+			this.materialLabel16.Text = "For nxthemes you must use a 720p image (1280x720 pixels)";
 			this.materialLabel16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// materialRaisedButton9
@@ -391,7 +378,7 @@
 			// 
 			this.linkLabel3.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.linkLabel3.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel3.Location = new System.Drawing.Point(2, 28);
+			this.linkLabel3.Location = new System.Drawing.Point(2, 26);
 			this.linkLabel3.Name = "linkLabel3";
 			this.linkLabel3.Size = new System.Drawing.Size(632, 21);
 			this.linkLabel3.TabIndex = 21;
@@ -479,6 +466,34 @@
 			this.materialLabel8.TabIndex = 7;
 			this.materialLabel8.Text = "Use this page to build nxtheme files. (You don\'t need to open an SZS for this)";
 			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// PatchListPage
+			// 
+			this.PatchListPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.PatchListPage.Controls.Add(this.tbPatches);
+			this.PatchListPage.Location = new System.Drawing.Point(4, 22);
+			this.PatchListPage.Name = "PatchListPage";
+			this.PatchListPage.Size = new System.Drawing.Size(638, 331);
+			this.PatchListPage.TabIndex = 2;
+			this.PatchListPage.Text = "Help&Info";
+			// 
+			// tbPatches
+			// 
+			this.tbPatches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.tbPatches.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.tbPatches.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.tbPatches.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbPatches.ForeColor = System.Drawing.Color.White;
+			this.tbPatches.Location = new System.Drawing.Point(3, 3);
+			this.tbPatches.Multiline = true;
+			this.tbPatches.Name = "tbPatches";
+			this.tbPatches.ReadOnly = true;
+			this.tbPatches.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.tbPatches.Size = new System.Drawing.Size(635, 313);
+			this.tbPatches.TabIndex = 12;
+			this.tbPatches.Text = resources.GetString("tbPatches.Text");
 			// 
 			// InjectPage
 			// 
@@ -1116,14 +1131,14 @@
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(645, 439);
 			this.Name = "Form1";
-			this.Text = "Qcean\'s Switch theme injector";
+			this.Text = "Switch theme injector";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.materialTabControl1.ResumeLayout(false);
+			this.NXThemePage.ResumeLayout(false);
+			this.NXThemePage.PerformLayout();
+			this.grpHomeExtra.ResumeLayout(false);
 			this.PatchListPage.ResumeLayout(false);
 			this.PatchListPage.PerformLayout();
-			this.DdsConvPage.ResumeLayout(false);
-			this.DdsConvPage.PerformLayout();
-			this.grpHomeExtra.ResumeLayout(false);
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
 			this.NCADumpPage.ResumeLayout(false);
@@ -1169,7 +1184,7 @@
 		private MaterialSkin.Controls.MaterialFlatButton materialFlatButton1;
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private MaterialSkin.Controls.MaterialLabel materialLabel7;
-		private System.Windows.Forms.TabPage DdsConvPage;
+		private System.Windows.Forms.TabPage NXThemePage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel8;
 		private MaterialSkin.Controls.MaterialRaisedButton ImageToDDSBtn;
 		private System.Windows.Forms.TabPage NCADumpPage;
@@ -1207,6 +1222,7 @@
 		private System.Windows.Forms.Button btnAlbumIco;
 		private MaterialSkin.Controls.MaterialLabel lblAlbumIco;
 		private System.Windows.Forms.Label lblDebug;
+		private System.Windows.Forms.Button button1;
 	}
 }
 

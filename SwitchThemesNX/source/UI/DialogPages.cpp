@@ -57,7 +57,7 @@ void DialogPage::Update()
 		PopPage();
 }
 
-YesNoPage::YesNoPage(const string &msg, bool *outRes): text(msg, WHITE, 1000, font30), btnYes("Yes"), btnNo("No") 
+YesNoPage::YesNoPage(const string &msg, bool *outRes): text(msg, WHITE, 1000, font30), btnYes("   Yes   "), btnNo("   No   ") 
 {
 	result = outRes;
 	btnYes.selected = true;
