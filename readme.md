@@ -14,13 +14,14 @@ To install nxthemes files on your console download the NxThemes installer homebr
 This app works on windows, you can use the CLI through mono on linux.
 
 ## Command line args.
-You can automate theme creation using command line args.\
+You can automate theme creation using command line args.
+\
 Here's an example to build an nxtheme:\
 `SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "commonlyt=<custom common.szs layout>" "album=<custom album icon.png/dds>" "out=<OutputPath>.nxtheme"`\
 This will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed.
-\
+  
 It is also possible to patch SZS files directly with an image:  
-`SwitchThemes.exe szs "<input SZS file>" "<your image.png/jpg/dds>" "<json layout file, optional>" "album=<custom album icon.png/dds>" "out=<OutputPath>"`\
+`SwitchThemes.exe szs "<input SZS file>" "<your image.png/jpg/dds>" "<json layout file, optional>" "album=<custom album icon.png/dds>" "out=<OutputPath>"`
 
 # Useful resources
 You can make your own custom layouts using [Switch Layout Editor](https://github.com/FuryBaguette/SwitchLayoutEditor/) \
