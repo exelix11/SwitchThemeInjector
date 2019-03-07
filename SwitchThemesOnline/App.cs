@@ -210,7 +210,7 @@ namespace SwitchThemesOnline
 					Target = partName,
 				};
 
-				var res = SwitchThemesCommon.GenerateNXTheme(meta, LoadedDDS, targetLayout == null ? null : targetLayout.AsJson());
+				var res = SwitchThemesCommon.GenerateNXTheme(meta, LoadedDDS, targetLayout == null ? null : System.Text.Encoding.UTF8.GetBytes(targetLayout.AsJson()));
 				Uint8Array dwn = new Uint8Array(res);
 				string DownloadFname = name + ".nxtheme";
 				Script.Write("downloadBlob(dwn,DownloadFname,'application/octet-stream');");

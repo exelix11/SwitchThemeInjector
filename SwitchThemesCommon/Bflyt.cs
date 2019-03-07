@@ -288,59 +288,24 @@ namespace SwitchThemes.Common
 			OK
 		}
 
-		public void PatchTextureName(string original, string _new)
+		public bool PatchTextureName(string original, string _new)
 		{
+			bool patchedSomething = false;
 			var texSection = GetTex;
 			for (int i = 0; i < texSection.Textures.Count; i++)
 			{
 				if (texSection.Textures[i] == original)
 				{
+					patchedSomething = true;
 					texSection.Textures[i] = _new;
 				}
 			}
+			return patchedSomething;
 		}
 
-		PatchResult AddBgPanel(int index, string TexName, string Pic1Name)
+		int AddBgMat(string TexName)
 		{
-			#region add picture
-			if (Pic1Name.Length > 0x18)
-				throw new Exception("Pic1Name should not be longer than 24 chars");
-			var BgPanel = new BasePanel("pic1", 0x8);
-			Panels.Insert(index, BgPanel);
 			var MatSect = GetMat;
-			var strm = new MemoryStream();
-			using (BinaryDataWriter bin = new BinaryDataWriter(strm))
-			{
-				bin.ByteOrder = ByteOrder.LittleEndian;
-				bin.Write((byte)0x01);
-				bin.Write((byte)0x00);
-				bin.Write((byte)0xFF);
-				bin.Write((byte)0x04);
-				bin.Write(Pic1Name, BinaryStringFormat.NoPrefixOrTermination);
-				int zerCount = Pic1Name.Length;
-				while (zerCount++ < 0x38)
-					bin.Write((byte)0x00);
-				bin.Write(1f);
-				bin.Write(1f);
-				bin.Write(1280f);
-				bin.Write(720f);
-				bin.Write((UInt32)0xFFFFFFFF);
-				bin.Write((UInt32)0xFFFFFFFF);
-				bin.Write((UInt32)0xFFFFFFFF);
-				bin.Write((UInt32)0xFFFFFFFF);
-				bin.Write((UInt16)MatSect.Materials.Count);
-				bin.Write((UInt16)1);
-				bin.Write((UInt32)0);
-				bin.Write((UInt32)0);
-				bin.Write(1f);
-				bin.Write((UInt32)0);
-				bin.Write((UInt32)0);
-				bin.Write(1f);
-				bin.Write(1f);
-				bin.Write(1f);
-				BgPanel.data = strm.ToArray();
-			}
-			#endregion
 			#region AddTextures
 			var texSection = GetTex;
 			if (!texSection.Textures.Contains(TexName))
@@ -369,6 +334,50 @@ namespace SwitchThemes.Common
 				}
 			}
 			#endregion
+			return MatSect.Materials.Count - 1;
+		}
+
+		PatchResult AddBgPanel(int index, string TexName, string Pic1Name)
+		{
+			#region add picture
+			if (Pic1Name.Length > 0x18)
+				throw new Exception("Pic1Name should not be longer than 24 chars");
+			var BgPanel = new BasePanel("pic1", 0x8);
+			Panels.Insert(index, BgPanel);
+			var strm = new MemoryStream();
+			using (BinaryDataWriter bin = new BinaryDataWriter(strm))
+			{
+				bin.ByteOrder = ByteOrder.LittleEndian;
+				bin.Write((byte)0x01);
+				bin.Write((byte)0x00);
+				bin.Write((byte)0xFF);
+				bin.Write((byte)0x04);
+				bin.Write(Pic1Name, BinaryStringFormat.NoPrefixOrTermination);
+				int zerCount = Pic1Name.Length;
+				while (zerCount++ < 0x38)
+					bin.Write((byte)0x00);
+				bin.Write(1f);
+				bin.Write(1f);
+				bin.Write(1280f);
+				bin.Write(720f);
+				bin.Write((UInt32)0xFFFFFFFF);
+				bin.Write((UInt32)0xFFFFFFFF);
+				bin.Write((UInt32)0xFFFFFFFF);
+				bin.Write((UInt32)0xFFFFFFFF);
+				bin.Write((UInt16)AddBgMat(TexName));
+				bin.Write((UInt16)1);
+				bin.Write((UInt32)0);
+				bin.Write((UInt32)0);
+				bin.Write(1f);
+				bin.Write((UInt32)0);
+				bin.Write((UInt32)0);
+				bin.Write(1f);
+				bin.Write(1f);
+				bin.Write(1f);
+				BgPanel.data = strm.ToArray();
+			}
+			#endregion
+			
 			return PatchResult.OK;
 		}
 
@@ -458,7 +467,18 @@ namespace SwitchThemes.Common
 				if (name != null && patch.targetPanels.Contains(name))
 				{
 					if (i < target) target = i;
-					if (!patch.NoRemovePanel)
+					if (patch.DirectPatchPane)
+					{
+						int m = AddBgMat(patch.MaintextureName);
+						using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[i].data)))
+						{
+							bin.ByteOrder = ByteOrder.LittleEndian;
+							bin.BaseStream.Position = 0x64 - 8;
+							bin.Write((UInt16)m);
+							Panels[i].data = ((MemoryStream)bin.BaseStream).ToArray();
+						}
+					}
+					else if (!patch.NoRemovePanel)
 					{
 						using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(Panels[i].data)))
 						{
@@ -473,7 +493,9 @@ namespace SwitchThemes.Common
 			}
 			if (target == int.MaxValue) return PatchResult.Fail;
 			#endregion
-			return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
+			if (!patch.DirectPatchPane)
+				return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
+			else return PatchResult.OK;
 		}
 
 		public TextureSection GetTex
