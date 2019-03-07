@@ -131,7 +131,7 @@ namespace SwitchThemesOnline
 					Target = type
 				};
 
-				var res = SwitchThemesCommon.GenerateNXTheme(meta, DDS, targetLayout == null ? null : targetLayout.AsJson());
+				var res = SwitchThemesCommon.GenerateNXTheme(meta, DDS, targetLayout == null ? null : System.Text.Encoding.UTF8.GetBytes(targetLayout.AsJson()));
 				if (res == null)
 				{
 					endWithError("GenerateNXTheme() failed :(");

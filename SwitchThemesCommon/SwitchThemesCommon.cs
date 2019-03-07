@@ -83,18 +83,16 @@ namespace SwitchThemes.Common
 		public static BflytFile.PatchResult PatchBgLayouts(SARCExt.SarcData sarc, PatchTemplate template)
 		{
 			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
+			var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
+			foreach (var f in layouts)
+			{
+				BflytFile curTarget = BflytFromSzs(f);
+				if (curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace))
+					sarc.Files[f] = curTarget.SaveFile();
+			}
 			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
 			var res = MainFile.PatchBgLayout(template);
-			if (res == BflytFile.PatchResult.OK)
-			{
-				sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
-				foreach (var f in template.SecondaryLayouts)
-				{
-					BflytFile curTarget = BflytFromSzs(f);
-					curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace);
-					sarc.Files[f] = curTarget.SaveFile();
-				}
-			}
+			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
 			return res;
 		}
 
@@ -153,15 +151,6 @@ namespace SwitchThemes.Common
 				if (!SzsHasKey(p.MainLayoutName))
 					continue;
 				bool isTarget = true;
-				foreach (string s in p.SecondaryLayouts)
-				{
-					if (!SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
 				foreach (string s in p.FnameIdentifier)
 				{
 					if (!SzsHasKey(s))
