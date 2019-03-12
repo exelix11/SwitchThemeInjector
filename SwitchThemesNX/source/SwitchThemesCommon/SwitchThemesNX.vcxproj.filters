@@ -28,6 +28,9 @@
     </ClCompile>
     <ClCompile Include="NXTheme.cpp" />
     <ClCompile Include="WindowsOnly\SwitchThemesNX.cpp" />
+    <ClCompile Include="Fonts\TTF.cpp">
+      <Filter>Fonts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryReadWrite\Buffer.hpp">
@@ -60,6 +63,9 @@
       <Filter>Bntx</Filter>
     </ClInclude>
     <ClInclude Include="NXTheme.hpp" />
+    <ClInclude Include="Fonts\TTF.hpp">
+      <Filter>Fonts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="SarcLib">
@@ -73,6 +79,9 @@
     </Filter>
     <Filter Include="BinaryReadWrite">
       <UniqueIdentifier>{764fe7f2-bbf2-46e5-9703-fd268906781a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fonts">
+      <UniqueIdentifier>{e854fa7c-ad6c-410d-bec2-277b5def1547}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

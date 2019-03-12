@@ -91,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +153,7 @@
     <ClCompile Include="Bntx\BRTI.cpp" />
     <ClCompile Include="Bntx\DDS.cpp" />
     <ClCompile Include="Bntx\QuickBntx.cpp" />
+    <ClCompile Include="Fonts\TTF.cpp" />
     <ClCompile Include="Layouts\Bflyt.cpp" />
     <ClCompile Include="Layouts\DefaultTemplates.cpp" />
     <ClCompile Include="NXTheme.cpp" />
@@ -165,6 +167,7 @@
     <ClInclude Include="Bntx\BRTI.hpp" />
     <ClInclude Include="Bntx\DDS.hpp" />
     <ClInclude Include="Bntx\QuickBntx.hpp" />
+    <ClInclude Include="Fonts\TTF.hpp" />
     <ClInclude Include="Layouts\Bflyt.hpp" />
     <ClInclude Include="Layouts\json.hpp" />
     <ClInclude Include="Layouts\Patches.hpp" />

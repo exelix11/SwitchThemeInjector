@@ -4,6 +4,7 @@
 #include "../ViewFunctions.hpp"
 #include "../fs.hpp"
 #include "../input.hpp"
+#include "../SwitchTools/hactool.hpp"
 #include <filesystem>
 
 using namespace std;
@@ -57,14 +58,33 @@ bool ThemeEntry::LegacyTheme()
 	return StrEndsWith(FileName,".szs") || !SData.files.count("info.json");
 }
 
+bool ThemeEntry::IsFont()
+{
+	return StrEndsWith(FileName,".ttf");
+}
+
 void ThemeEntry::ParseTheme()
 {	
+	if (IsFont())
+	{
+		ParseFont();
+		return;
+	}
 	DecompressedFile = Yaz0::Decompress(file);	
 	SData = SARC::Unpack(DecompressedFile);
 	if (LegacyTheme())
 		ParseLegacyTheme();
-	else 
+	else
 		ParseNxTheme();
+}
+
+void ThemeEntry::ParseFont()
+{
+	lblLine2.SetString("Custom font");
+	auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
+	CanInstall = fontName != "";
+	lblFname.SetString(CanInstall ? fontName : "Invalid font :(");
+	lblLine1.SetString(GetFileName(FileName));
 }
 
 void ThemeEntry::ParseNxTheme()
@@ -235,7 +255,23 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 		return false;
 	}
 	try {
-		if (LegacyTheme())
+		if (IsFont())
+		{
+			if (homeDirOverride != "")
+			{
+				DialogBlocking("Can't install a font to theme shuffle.");
+				return false;
+			}
+			
+			if (ShowLoading)
+				DisplayLoading("Installing font...");
+			
+			CreateFsMitmStructure("0100000000000811");
+			CreateRomfsDir("0100000000000811");
+			WriteFile(CfwFolder + "/titles/0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
+			CreateFsMitmStructure("0100000000000039");
+		}
+		else if (LegacyTheme())
 		{
 			if (ShowLoading)
 				DisplayLoading("Installing...");
@@ -254,9 +290,16 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			string BaseSzs = "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
 			if (!filesystem::exists(BaseSzs))
 			{
+				if (themeInfo.Target == "user" && ExtractUserPage())
+					goto CONTINUE_INSTALL;
+				if (themeInfo.Target == "psl" && ExtractPlayerSelectMenu())
+					goto CONTINUE_INSTALL;
+				
 				MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);
 				return false;
 			}
+		CONTINUE_INSTALL:
+			
 			if (ShowLoading)
 				DisplayLoading("Installing...");
 						

@@ -32,7 +32,7 @@ bool StrEndsWith(const std::string &str, const std::string &suffix)
 vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 {
 	vector<string> res;
-	if (level > 5) return res;
+	if (level > 7) return res;
 	for (auto p : filesystem::directory_iterator(path))
 	{
 		if (p.is_directory() && p.path().filename() != "systemData" && p.path().filename() != "shuffle")
@@ -43,7 +43,7 @@ vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 		}
 		else if (p.is_regular_file())
 		{
-			if (StrEndsWith(p.path(), ".szs") || StrEndsWith(p.path(), ".nxtheme"))
+			if (StrEndsWith(p.path(), ".szs") || StrEndsWith(p.path(), ".nxtheme")  || StrEndsWith(p.path(), ".ttf"))
 				res.push_back(p.path());
 		}
 	}
@@ -135,23 +135,37 @@ void UninstallTheme(bool full = false)
 		DelDirFromCfw("/titles/0100000000001000/romfs/lyt")
 		DelDirFromCfw("/titles/0100000000001013/romfs/lyt")
 	}
+	DelDirFromCfw("/titles/0100000000001007") //Player select
+	DelDirFromCfw("/titles/0100000000000811") //Custom font
+	DelDirFromCfw("/titles/0100000000000039") //needed to enable custom font
 	
 	#undef DelDirFromCfw
 }
 
-void CreateThemeStructure(const string &tid)
+void CreateFsMitmStructure(const string &tid)
 {
 	string path = CfwFolder + "/titles";
 	mkdir(path.c_str(), ACCESSPERMS);
 	path += "/" + tid;
 	mkdir(path.c_str(), ACCESSPERMS);
-	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
-	mkdir((path + "/romfs/lyt").c_str(), ACCESSPERMS);
 	if (!filesystem::exists(path + "/fsmitm.flag"))
 	{
 		vector<u8> t; 
 		WriteFile(path + "/fsmitm.flag", t);
 	}		
+}
+
+void CreateRomfsDir(const std::string &tid)
+{
+	string path = CfwFolder + "/titles/" + tid;
+	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
+}
+
+void CreateThemeStructure(const string &tid)
+{	
+	CreateFsMitmStructure(tid);
+	CreateRomfsDir(tid);
+	mkdir((CfwFolder + "/titles/" + tid + "/romfs/lyt").c_str(), ACCESSPERMS);
 }
 
 bool CheckThemesFolder()

@@ -22,10 +22,12 @@ class ThemeEntry
 		SDL_Rect GetRect();
 	private:
 		bool LegacyTheme();
+		bool IsFont();
 	
 		void ParseTheme();
 		void ParseLegacyTheme();
 		void ParseNxTheme();
+		void ParseFont();		
 		void NXLoadPreview();
 		
 		std::vector<u8> DecompressedFile;

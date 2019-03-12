@@ -3,6 +3,10 @@
 #include "../ViewFunctions.hpp"
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <fcntl.h>
 
 using namespace std;
 

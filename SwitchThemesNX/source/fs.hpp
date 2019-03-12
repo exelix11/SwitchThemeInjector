@@ -17,6 +17,8 @@ std::vector<std::string> SearchCfwFolders();
 std::vector<std::string> GetThemeFiles();
 
 void UninstallTheme(bool full = false);
+void CreateFsMitmStructure(const std::string &tid);
+void CreateRomfsDir(const std::string &tid);
 void CreateThemeStructure(const std::string &tid);
 
 std::string GetFileName(const std::string &path);
