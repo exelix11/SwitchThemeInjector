@@ -25,7 +25,7 @@ CreditsPage::CreditsPage() :
 showHelp("Show first startup info"),
 creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
 	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n",WHITE, 900, font30),
-creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n shchmue for Lockpick\n ScriesM for hactool\n Everyone from Atmosphere and libnx\nswitch-stuff on github for the font converter"
+creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n shchmue for Lockpick\n ScriesM for hactool\n Everyone from Atmosphere and libnx\n switch-stuff on github for the font converter"
 ,WHITE, 900, font25)
 {
 	Name = "Credits";
@@ -36,9 +36,9 @@ void CreditsPage::Render(int X, int Y)
 {
 	int YRender = 20;
 	creditsText.Render(X + 20, Y + YRender);
-	YRender += creditsText.GetSize().h + 10;
+	YRender += creditsText.GetSize().h + 5;
 	creditsText2.Render(X + 20, Y + YRender);
-	YRender += creditsText2.GetSize().h + 50;
+	YRender += creditsText2.GetSize().h + 30;
 	showHelp.Render(X + 20, Y + YRender);
 }
 

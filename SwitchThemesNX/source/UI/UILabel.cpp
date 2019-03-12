@@ -1,4 +1,5 @@
 #include "UI.hpp"
+#include <algorithm> 
 using namespace std;
 
 Label::Label(const std::string &str, SDL_Color _color, int _wrap,TTF_Font* fnt):string(str), color(_color), wrap(_wrap), font(fnt)
@@ -14,20 +15,25 @@ Label::~Label()
 }
 
 void Label::RenderString()
-{
-	if (string == "")
+{	
+	if (string == "" || string == " ")
 		string = ".";
 	
-	if (tex != NULL)
+	if (tex)
+	{
 		SDL_DestroyTexture(tex);
-	SDL_Surface* surf ;
+		tex = nullptr;
+	}
+	
+	SDL_Surface* surf = nullptr;
 	if (wrap == -1)
 		surf = TTF_RenderText_Blended(font, string.c_str(),color);
 	else 
-		surf =TTF_RenderText_Blended_Wrapped(font, string.c_str(),color,wrap);
-	if (!surf || surf == 0)
-	{
-		printf("%s\n",TTF_GetError());
+		surf = TTF_RenderText_Blended_Wrapped(font, string.c_str(),color,wrap);
+	if (!surf)
+	{		
+		SetString("<font draw error:" + std::string(TTF_GetError()) + ">");
+		return;
 	}	
 	tex = SDL_CreateTextureFromSurface(sdl_render, surf);
 	SDL_Rect textLocation;
