@@ -24,7 +24,6 @@ void CopyLytDir()
 	}
 }
 
-
 bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, const Key &HeaderKey, const Key &KakAppSource)
 {    
     hactool_ctx_t tool_ctx;
@@ -120,14 +119,15 @@ struct NcaDecryptionkeys
 	Key header_key, key_area_key_application_source;
 };
 
-NcaDecryptionkeys GetKeys() 
+bool GetKeys(NcaDecryptionkeys *out) 
 {
 	if (!(envIsSyscallHinted(0x60) &&     // svcDebugActiveProcess
           envIsSyscallHinted(0x63) &&     // svcGetDebugEvent
           envIsSyscallHinted(0x65) &&     // svcGetProcessList
           envIsSyscallHinted(0x69) &&     // svcQueryDebugProcessMemory
           envIsSyscallHinted(0x6a))) {    // svcReadDebugProcessMemory
-            throw (string)"Lockpick Error: Please run with debug svc permissions";
+            DialogBlocking("Lockpick Error: Please run with debug svc permissions");
+			return false;
         }
 		
 	KeyCollection Keys;
@@ -143,42 +143,96 @@ NcaDecryptionkeys GetKeys()
     }
 	else 
 	{
-		throw (string)"Needed keys not found !";
+		DialogBlocking("Needed keys not found !");
+		return false;
 	}
-	return {header_key,Keys.key_area_key_application_source};
+	*out = {header_key,Keys.key_area_key_application_source};
+	return true;
 }
 
-bool ExtractHomeMenu()
+//Don't use this multiple times from the same archive
+bool NcaExtractSingleFile(const string &file, u64 titleid, const NcaDecryptionkeys &Keys, const string &targetName)
 {
-	DisplayLoading("Extracting home menu...");
-	
+	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
+	if (HactoolExtractNCA(GetNcaPath(titleid),"sdmc:/themes/systemData/tmp",Keys.header_key, Keys.key_area_key_application_source))
+	{
+		if (!filesystem::exists("sdmc:/themes/systemData/tmp/" + file))
+		{			
+			Dialog(file + " not found in the target nca !");
+			return false;
+		}
+		CopyFile("sdmc:/themes/systemData/tmp/" + file,"sdmc:/themes/systemData/" + targetName);
+		RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
+		return true;
+	}
+	else return false;
+}
+
+FsFileSystem InitExtractionCode()
+{
 	pmdmntInitialize();
     splCryptoInitialize();
     splInitialize();
     FsFileSystem sys;
 	fsOpenBisFileSystem(&sys, 31, "");
 	fsdevMountDevice("System", sys);
-	
-	SCOPE_EXIT({
-		pmdmntExit();
-		splCryptoExit();
-		splExit();
-		fsdevUnmountDevice("System");
-		fsFsClose(&sys);
-		Dialog("Everything closed !");
-	});
+	return sys;
+}
+
+void ExitExtractionCode(FsFileSystem *sys)
+{
+	fsFsClose(sys);
+	pmdmntExit();
+	splCryptoExit();
+	splExit();
+	fsdevUnmountDevice("System");
+}
+
+#define EXTRACTION_INIT auto sys = InitExtractionCode(); SCOPE_EXIT({ExitExtractionCode(&sys);});
+
+bool ExtractPlayerSelectMenu()
+{
+	EXTRACTION_INIT
 	
 	NcaDecryptionkeys Keys;
-	try 
-	{
-		Keys = GetKeys();
-	}
-	catch (const string ex)
-	{
-		Dialog(ex);
+	if (!GetKeys(&Keys))
 		return false;
-	}	
 	
+	DisplayLoading("Extracting user page...");
+	if (!NcaExtractSingleFile("lyt/Psl.szs",0x0100000000001007,Keys,"Psl.szs"))
+	{
+		DialogBlocking("Couldn't extract player select menu");
+		return false;
+	}
+	return true;
+}
+
+bool ExtractUserPage()
+{
+	EXTRACTION_INIT
+	
+	NcaDecryptionkeys Keys;
+	if (!GetKeys(&Keys))
+		return false;
+	
+	DisplayLoading("Extracting user page...");
+	if (!NcaExtractSingleFile("lyt/MyPage.szs",0x0100000000001013,Keys,"MyPage.szs"))
+	{
+		DialogBlocking("Couldn't extract user.nca");
+		return false;
+	}
+	return true;
+}
+
+bool ExtractHomeMenu()
+{
+	EXTRACTION_INIT
+	
+	NcaDecryptionkeys Keys;
+	if (!GetKeys(&Keys))
+		return false;
+	
+	DisplayLoading("Extracting home menu...");
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
 	if (HactoolExtractNCA(GetNcaPath(0x0100000000001000),"sdmc:/themes/systemData/tmp",Keys.header_key, Keys.key_area_key_application_source))
 	{
@@ -194,24 +248,8 @@ bool ExtractHomeMenu()
 	{
 		Dialog("Couldn't extract home.nca");
 		return false;
-	}
-	DisplayLoading("Extracting user page...");
-	if (HactoolExtractNCA(GetNcaPath(0x0100000000001013),"sdmc:/themes/systemData/tmp",Keys.header_key, Keys.key_area_key_application_source))
-	{
-		if (!filesystem::exists("sdmc:/themes/systemData/tmp/lyt/MyPage.szs"))
-		{
-			Dialog("MyPage not found in lyt dir !");
-			return false;
-		}
-		CopyFile("sdmc:/themes/systemData/tmp/lyt/MyPage.szs","sdmc:/themes/systemData/MyPage.szs");
-		RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
-		rmdir("sdmc:/themes/systemData/tmp");
-	}
-	else
-	{
-		Dialog("Couldn't extract user.nca");
-		return false;
-	}
+	}	
+	
 	if (!WriteHomeDumpVer())
 		Dialog("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
 	return true;

@@ -25,7 +25,7 @@ CreditsPage::CreditsPage() :
 showHelp("Show first startup info"),
 creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
 	"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n",WHITE, 900, font30),
-creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n shchmue for Lockpick\n ScriesM for hactool\n Everyone from Atmosphere and libnx"
+creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n shchmue for Lockpick\n ScriesM for hactool\n Everyone from Atmosphere and libnx\nswitch-stuff on github for the font converter"
 ,WHITE, 900, font25)
 {
 	Name = "Credits";

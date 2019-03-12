@@ -6,6 +6,7 @@
 #include "SarcLib/Yaz0.hpp"
 #include "Layouts/Bflyt.hpp"
 #include "Layouts/Patches.hpp"
+#include "Fonts/TTF.hpp"
 
 namespace SwitchThemesCommon {
 	extern const std::string CoreVer;
