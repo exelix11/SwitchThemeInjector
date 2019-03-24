@@ -58,7 +58,7 @@ namespace SwitchThemes.Common
 			System.IO.File.WriteAllText("DefaultTemplates.json", json);
 		}
 #endif
-		public static PatchTemplate[] LoadTemplates()=>
+		public static PatchTemplate[] LoadTemplates() =>
 			JsonConvert.DeserializeObject<PatchTemplate[]>(System.IO.File.ReadAllText("ExtraTemplates.json"));
 #endif
 	}
@@ -67,17 +67,6 @@ namespace SwitchThemes.Common
 	{
 		public static readonly PatchTemplate[] templates =
 		{
-			// new PatchTemplate() { TemplateName = "options menu" , szsName = "Option.szs", TitleId = "0100000000001000", FirmName = "all fw",
-				// FnameIdentifier = new string[] { "blyt/OptMain.bflyt" },
-				// FnameNotIdentifier = new string[] { } ,
-				// MainLayoutName = @"blyt/BgPlate.bflyt",
-				// MaintextureName = "White1x1A0^t",
-				// PatchIdentifier = "exelixOP",
-				// targetPanels = new string[] { "L_MaskL" },
-				// SecondaryTexReplace = "White1x1^r",
-				// NXThemeName = "opt",
-				// NoRemovePanel = true
-			// },
 			new PatchTemplate() { TemplateName = "home and applets" , szsName = "common.szs", TitleId = "0100000000001000", FirmName = "<= 5.X",
 				FnameIdentifier = new string[] { @"blyt/SystemAppletFader.bflyt"},
 				FnameNotIdentifier = new string[] { @"blyt/DHdrSoft.bflyt" } ,
@@ -137,7 +126,7 @@ namespace SwitchThemes.Common
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1A64^t",
 				NXThemeName = "apps"
-			},			
+			},
 			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = "6.X",
 				FnameIdentifier = new string[] { @"blyt/BgNav_Root.bflyt", @"blyt/SetCntDataMngPhoto.bflyt" , @"blyt/SetSideStory.bflyt"}, //blyt/SetSideStory.bflyt for 6.0 detection
 				FnameNotIdentifier = new string[] { } ,
@@ -157,6 +146,26 @@ namespace SwitchThemes.Common
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1^r",
 				NXThemeName = "news"
+			},
+			//new PatchTemplate() { TemplateName = "options menu" , szsName = "Option.szs", TitleId = "0100000000001000", FirmName = "all firmwares",
+			//	FnameIdentifier = new string[] { "blyt/OptMain.bflyt" },
+			//	FnameNotIdentifier = new string[] { } ,
+			//	MainLayoutName = @"blyt/BgPlate.bflyt",
+			//	MaintextureName = "NavBg_03^d",
+			//	PatchIdentifier = "exelixOP",
+			//	targetPanels = new string[] { "P_PlateBg" },
+			//	SecondaryTexReplace = "White1x1^r",
+			//	NXThemeName = "opt",
+			//},
+			new PatchTemplate() { TemplateName = "player selection" , szsName = "Psl.szs", TitleId = "0100000000001007", FirmName = "all firmwares",
+				FnameIdentifier = new string[] { @"blyt/IconGame.bflyt", @"blyt/BgNavNoHeader.bflyt" },
+				FnameNotIdentifier = new string[] { } ,
+				MainLayoutName = @"blyt/PslSelectSinglePlayer.bflyt",
+				MaintextureName = "PselTopUserIcon_Bg^s",
+				PatchIdentifier = "exelixPSL",
+				targetPanels = new string[] { "P_Bg" },
+				SecondaryTexReplace = "White1x1^r",
+				NXThemeName = "psl",
 			},
 		};
 	}

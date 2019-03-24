@@ -39,6 +39,8 @@ namespace SwitchThemes
 			{"All apps menu (All applets on 5.X)", "apps"},
 			{"Settings applet (All applets on 5.X)", "set"},
 			{"News applet (All applets on 5.X)", "news"},
+			//{"Options menu (Pressing + on a game)", "opt"},
+			{"Player select", "psl"},
 		};
 
 		public Form1()

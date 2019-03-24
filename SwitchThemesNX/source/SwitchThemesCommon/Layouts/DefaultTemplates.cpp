@@ -8,7 +8,7 @@ bool LayoutPatch::IsCompatible(const SARC::SarcData &sarc)
 	for (int i = 0; i < Files.size(); i++)
 	{
 		if (!sarc.files.count(Files[i].FileName)) return false;
-		// For now this should be enough.
+		//For now this should be enough.
 		/*string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
 		for (int j = 0; j < Files[i].Patches.Length; j++)
 			if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
@@ -133,7 +133,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "P_BgL", "P_BgR" },
         "White1x1^r" },
     PatchTemplate{ "user page", "MyPage.szs", "0100000000001013", "all firmwares",
-        { "blyt/MypUserIconMini.bflyt", "blyt / BgNav_Root.bflyt" },
+        { "blyt/MypUserIconMini.bflyt", "blyt/BgNav_Root.bflyt" },
         {},
         "blyt/BaseTop.bflyt",
         "NavBg_03^d",
@@ -141,7 +141,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "L_AreaNav", "L_AreaMain" },
         "White1x1A0^t" },
     PatchTemplate{ "home menu only", "ResidentMenu.szs", "0100000000001000", "<= 5.X",
-        { "anim/RdtBtnShop_LimitB.bflan", "blyt / IconError.bflyt" },
+        { "anim/RdtBtnShop_LimitB.bflan", "blyt/IconError.bflyt" },
         {},
         "blyt/RdtBase.bflyt",
         "White1x1A128^s",
@@ -149,7 +149,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "L_BgNml" },
         "White1x1A64^t" },
     PatchTemplate{ "all apps menu", "Flaunch.szs", "0100000000001000", "6.X",
-        { "blyt/FlcBtnIconGame.bflyt", "anim / BaseBg_Loading.bflan", "blyt / BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
+        { "blyt/FlcBtnIconGame.bflyt", "anim/BaseBg_Loading.bflan", "blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
         {},
         "blyt/BgNml.bflyt",
         "NavBg_03^d",
@@ -157,7 +157,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "P_Bg_00" },
         "White1x1A64^t" },
     PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", "6.X",
-        { "blyt/BgNav_Root.bflyt", "blyt / SetCntDataMngPhoto.bflyt", "blyt / SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection
+        { "blyt/BgNav_Root.bflyt", "blyt/SetCntDataMngPhoto.bflyt", "blyt/SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection
         {},
         "blyt/BgNml.bflyt",
         "NavBg_03^d",
@@ -165,11 +165,27 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "P_Bg_00" },
         "White1x1A0^t" },
     PatchTemplate{ "news applet", "Notification.szs", "0100000000001000", "6.X",
-        { "blyt/BgNavNoHeader.bflyt", "blyt / BgNav_Root.bflyt", "blyt / NtfBase.bflyt", "blyt / NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
+        { "blyt/BgNavNoHeader.bflyt", "blyt/BgNav_Root.bflyt", "blyt/NtfBase.bflyt", "blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
         {},
         "blyt/BgNml.bflyt",
         "NavBg_03^d",
         "exelixNEW",
         { "P_Bg_00" },
-        "White1x1^r" }
+        "White1x1^r" },
+    //PatchTemplate{ "options menu", "Option.szs", "0100000000001000", "all firmwares",
+    //    { "blyt/OptMain.bflyt" },
+    //    {},
+    //    "blyt/BgPlate.bflyt",
+    //    "NavBg_03^d",
+    //    "exelixOP",
+    //    { "P_PlateBg" },
+    //    "White1x1^r" },
+    PatchTemplate{ "player selection", "Psl.szs", "0100000000001007", "all firmwares",
+        { "blyt/IconGame.bflyt", "blyt/BgNavNoHeader.bflyt" },
+        {},
+        "blyt/PslSelectSinglePlayer.bflyt",
+        "PselTopUserIcon_Bg^s",
+        "exelixPSL",
+        { "P_Bg" },
+        "White1x1^r" },
 };

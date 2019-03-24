@@ -198,7 +198,7 @@ bool ExtractPlayerSelectMenu()
 	if (!GetKeys(&Keys))
 		return false;
 	
-	DisplayLoading("Extracting user page...");
+	DisplayLoading("Extracting player select menu...");
 	if (!NcaExtractSingleFile("lyt/Psl.szs",0x0100000000001007,Keys,"Psl.szs"))
 	{
 		DialogBlocking("Couldn't extract player select menu");

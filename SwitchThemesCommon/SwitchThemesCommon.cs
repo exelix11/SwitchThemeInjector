@@ -181,6 +181,8 @@ namespace SwitchThemes.Common
 			{"apps","Flaunch.szs"},
 			{"set","Set.szs"},
 			{"news","Notification.szs"},
+			//{ "opt","Option.szs" },
+			{ "psl","Psl.szs" },
 		};
 
 	}
