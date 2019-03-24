@@ -132,7 +132,7 @@ public:
 	Panes::MaterialsSection* GetMatSection();
 
 	std::vector<u8> SaveFile();
-	void PatchTextureName(const std::string &original, const std::string &_new);
+	bool PatchTextureName(const std::string &original, const std::string &_new);
 	std::vector<std::string> GetPaneNames();
 	PatchResult ApplyLayoutPatch(const std::vector<PanePatch>& Patches);
 	PatchResult PatchBgLayout(const PatchTemplate& patch);
@@ -140,4 +140,5 @@ private:
 	Panes::BasePane*& operator[] (int index);
 	std::vector<Panes::BasePane*> Panes;
 	PatchResult AddBgPanel(int index, const std::string &TexName, const std::string &Pic1Name);
+	int AddBgMat(const std::string &texName);
 };

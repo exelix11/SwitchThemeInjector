@@ -95,7 +95,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1.SetString("Invalid theme");
 		CanInstall = false;
 	}
-	if (themeInfo.Version > 4)
+	if (themeInfo.Version > 5)
 	{
 		lblLine2.SetString("New version, update the installer !");
 		CanInstall = false;
