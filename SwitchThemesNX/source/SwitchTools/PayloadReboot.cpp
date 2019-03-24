@@ -66,25 +66,4 @@ bool PayloadReboot::Init()
 	fread(g_reboot_payload, 1, sizeof(g_reboot_payload), f);
 	fclose(f);
 	return true;
-} 
-
-//From WerWolv#1337 on Reswitched discord
-bool PayloadReboot::IsRunningSX()
-{
-	return false;
-	Handle txHandle;
-	if (R_FAILED(smRegisterService(&txHandle, "tx", false, 1))) {
-		if(R_SUCCEEDED(smRegisterService(&txHandle, "rnx", false, 1))) {
-			//SX OS is running
-			smUnregisterService("rnx");
-			return true;
-		}
-		else return false; //Atmos / ReiNX is running
-	}
-	else {
-	//Atmos / ReiNX is running
-		smUnregisterService("tx");
-		return false;
-	}
-	return false;
 }
