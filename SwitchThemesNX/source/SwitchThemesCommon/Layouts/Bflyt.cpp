@@ -283,16 +283,63 @@ vector<u8> BflytFile::SaveFile()
 	return bin.getBuffer();
 }
 
-void BflytFile::PatchTextureName(const string &original, const string &_new) 
+bool BflytFile::PatchTextureName(const string &original, const string &_new) 
 {
+	bool patchedSomething = false;
 	auto texSection = GetTexSection();
 	if (texSection == nullptr)
 		throw "this layout doesn't have any texture section (?)";
 	for (int i = 0; i < texSection->Textures.size(); i++)
 	{
 		if (texSection->Textures[i] == original)
+		{
+			patchedSomething = true;
 			texSection->Textures[i] = _new;
+		}
 	}
+	return patchedSomething;
+}
+
+inline int indexOf(const vector<string>& v, const string& s)
+{
+	for (int i = 0; i < v.size(); i++)
+		if (v[i] == s) return i;
+	return -1;
+}
+
+int BflytFile::AddBgMat(const std::string &texName) 
+{
+	auto MatSect = GetMatSection();
+	//Add texture
+	auto texSection = GetTexSection();
+	int texIndex = indexOf(texSection->Textures, texName);
+	if (texIndex == -1)
+	{
+		texIndex = texSection->Textures.size();
+		texSection->Textures.push_back(texName);
+	}
+	//Add material
+	{
+		Buffer bin;
+		bin.ByteOrder = Endianness::LittleEndian;
+		bin.Write("P_Custm", Buffer::BinaryString::NullTerminated);
+		for (int i = 0; i < 0x14; i++)
+			bin.Write((u8)0);
+		bin.Write((s32)0x15);
+		bin.Write((s32)0x8040200);
+		bin.Write((s32)0);
+		bin.Write((u32)0xFFFFFFFF);
+		bin.Write((u16)texIndex);
+		bin.Write((u16)0x0);
+		for (int i = 0; i < 0xC; i++)
+			bin.Write((u8)0);
+		bin.Write((float)1);
+		bin.Write((float)1);
+		for (int i = 0; i < 0x10; i++)
+			bin.Write((u8)0);
+		MatSect->Materials.push_back(bin.getBuffer());
+	}
+	return MatSect->Materials.size() - 1;
 }
 
 vector<string> BflytFile::GetPaneNames() 
@@ -301,13 +348,6 @@ vector<string> BflytFile::GetPaneNames()
 	for (int i = 0; i < Panes.size(); i++)
 		names.push_back(TryGetPanelName(Panes[i]));
 	return names;
-}
-
-inline int indexOf(const vector<string>& v, const string& s)
-{
-	for (int i = 0; i < v.size(); i++)
-		if (v[i] == s) return i;
-	return -1;
 }
 
 BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patches) 
@@ -403,7 +443,16 @@ BflytFile::PatchResult BflytFile::PatchBgLayout(const PatchTemplate& patch)
 		if (name != "" && indexOf(patch.targetPanels, name) != -1)
 		{
 			if (i < target) target = i;
-			if (!patch.NoRemovePanel)
+			if (patch.DirectPatchPane)
+			{
+				int m = AddBgMat(patch.MaintextureName);
+				Buffer bin(Panes[i]->data);
+				bin.ByteOrder = Endianness::LittleEndian;
+				bin.Position = 0x64 - 8;
+				bin.Write((u16)m);
+				Panes[i]->data = move(bin.getBuffer());
+			}
+			else if (!patch.NoRemovePanel)
 			{
 				Buffer bin(Panes[i]->data);
 				bin.ByteOrder = Endianness::LittleEndian;
@@ -416,7 +465,10 @@ BflytFile::PatchResult BflytFile::PatchBgLayout(const PatchTemplate& patch)
 	}
 	if (target == INT32_MAX)
 		return PatchResult::Fail;
-	return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
+
+	if (!patch.DirectPatchPane)
+		return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
+	else return PatchResult::OK;
 }
 
 BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, const string &Pic1Name)
@@ -426,7 +478,7 @@ BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, c
 		throw "Pic1Name should not be longer than 24 chars";
 	auto BgPanel = new BasePane("pic1", 0x8);
 	Panes.insert(Panes.begin() + index, BgPanel);
-	auto MatSect = GetMatSection();
+	int TexIndex = AddBgMat(TexName);
 	{
 		Buffer bin;
 		bin.ByteOrder = Endianness::LittleEndian;
@@ -446,7 +498,7 @@ BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, c
 		bin.Write((u32)0xFFFFFFFF);
 		bin.Write((u32)0xFFFFFFFF);
 		bin.Write((u32)0xFFFFFFFF);
-		bin.Write((u16)MatSect->Materials.size());
+		bin.Write((u16)TexIndex);
 		bin.Write((u16)1);
 		bin.Write((u32)0);
 		bin.Write((u32)0);
@@ -457,35 +509,6 @@ BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, c
 		bin.Write((float)1);
 		bin.Write((float)1);
 		BgPanel->data = bin.getBuffer();
-	}
-	//Add texture
-	auto texSection = GetTexSection();
-	int texIndex = indexOf(texSection->Textures, TexName);
-	if (texIndex == -1)
-	{
-		texIndex = texSection->Textures.size();
-		texSection->Textures.push_back(TexName);
-	}
-	//Add material
-	{
-		Buffer bin;
-		bin.ByteOrder = Endianness::LittleEndian;
-		bin.Write("P_Custm", Buffer::BinaryString::NullTerminated);
-		for (int i = 0; i < 0x14; i++)
-			bin.Write((u8)0);
-		bin.Write((s32)0x15);
-		bin.Write((s32)0x8040200);
-		bin.Write((s32)0);
-		bin.Write((u32)0xFFFFFFFF);
-		bin.Write((u16)texIndex);
-		bin.Write((u16)0x0);
-		for (int i = 0; i < 0xC; i++)
-			bin.Write((u8)0);
-		bin.Write((float)1);
-		bin.Write((float)1);
-		for (int i = 0; i < 0x10; i++)
-			bin.Write((u8)0);
-		MatSect->Materials.push_back(bin.getBuffer());
 	}
 	return PatchResult::OK;
 }
@@ -602,5 +625,5 @@ void Usd1Pane::WritePane(Buffer &writer)
 
 void Usd1Pane::AddProperty(const std::string &name, const std::vector<std::string> &values, ValueType type)
 {
-	AddedProperties.push_back({ name, 0, values.size(), type, values });
+	AddedProperties.push_back({ name, 0, (u16)values.size(), type, values });
 }

@@ -74,9 +74,9 @@ struct PatchTemplate
 	std::string MaintextureName;
 	std::string PatchIdentifier;
 	std::vector<std::string> targetPanels;
-	std::vector<std::string> SecondaryLayouts;
 	std::string SecondaryTexReplace;
 
+	bool DirectPatchPane = false;
 	bool NoRemovePanel = false;
 };
 

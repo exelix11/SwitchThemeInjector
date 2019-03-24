@@ -92,7 +92,7 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 							usdPatch["PropName"].get<string>(),
 							usdPatch["PropValues"].get<vector<string>>(),
 							usdPatch["type"].get<int>(),
-						});
+							});
 					}
 
 				if (pp.UsdPatches.size() > 0)
@@ -107,170 +107,69 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 }
 
 //this is so ugly but c#-like aggregate initialization comes with c++20
-vector < PatchTemplate > Patches::DefaultTemplates
-{
-	PatchTemplate{
-	"home and applets",
-	"common.szs",
-	"0100000000001000",
-	"<= 5.X",
-{},
-	{
-		"blyt/DHdrSoft.bflyt"
-	},
-	"blyt/BgNml.bflyt",
-	"White1x1_180^r",
-	"exelixBG",
-{
-	"P_Bg_00"
-},
-	{
-		"blyt/SystemAppletFader.bflyt"
-	},
-	"White1x1^r"
-},
-PatchTemplate{
-	"home menu",
-	"ResidentMenu.szs",
-	"0100000000001000",
-	"6.X",
-{},
-	{
-		"anim/RdtBtnShop_LimitB.bflan"
-	},
-	"blyt/BgNml.bflyt",
-	"White1x1A128^s",
-	"exelixBG",
-{
-	"P_Bg_00"
-},
-	{
-		"blyt/IconError.bflyt"
-	},
-	"White1x1A64^t"
-},
-PatchTemplate{
-	"lock screen",
-	"Entrance.szs",
-	"0100000000001000",
-	"all firmwares",
-{},
-{},
-"blyt/EntMain.bflyt",
-"White1x1^s",
-"exelixLK",
-{
-	"P_BgL",
-	"P_BgR"
-},
-	{
-		"blyt/EntBtnResumeSystemApplet.bflyt"
-	},
-	"White1x1^r"
-},
-PatchTemplate{
-	"user page",
-	"MyPage.szs",
-	"0100000000001013",
-	"all firmwares",
-{
-	"blyt/MypUserIconMini.bflyt"
-},
-{},
-"blyt/BaseTop.bflyt",
-"NavBg_03^d",
-"exelixMY",
-{
-	"L_AreaNav",
-	"L_AreaMain"
-},
-	{
-		"blyt/BgNav_Root.bflyt"
-	},
-	"White1x1A0^t"
-},
-PatchTemplate{
-	"home menu only",
-	"ResidentMenu.szs",
-	"0100000000001000",
-	"<= 5.X",
-{
-	"anim/RdtBtnShop_LimitB.bflan"
-},
-{},
-"blyt/RdtBase.bflyt",
-"White1x1A128^s",
-"exelixResBG",
-{
-	"L_BgNml"
-},
-	{
-		"blyt/IconError.bflyt"
-	},
-	"White1x1A64^t"
-},
-PatchTemplate{
-	"all apps menu",
-	"Flaunch.szs",
-	"0100000000001000",
-	"6.X",
-{
-	"blyt/FlcBtnIconGame.bflyt",
-	"anim/BaseBg_Loading.bflan"
-}, //anim/BaseBg_Loading.bflan for 6.0
-{},
-"blyt/BgNml.bflyt",
-"NavBg_03^d",
-"exelixFBG",
-{
-	"P_Bg_00"
-},
-	{
-		"blyt/BgNav_Root.bflyt"
-	},
-	"White1x1A64^t"
-},
-PatchTemplate{
-	"settings applet",
-	"Set.szs",
-	"0100000000001000",
-	"6.X",
-{
-	"blyt/SetCntDataMngPhoto.bflyt",
-	"blyt/SetSideStory.bflyt"
-}, //blyt/SetSideStory.bflyt for 6.0 detection
-{},
-"blyt/BgNml.bflyt",
-"NavBg_03^d",
-"exelixSET",
-{
-	"P_Bg_00"
-},
-	{
-		"blyt/BgNav_Root.bflyt"
-	},
-	"White1x1A0^t"
-},
-PatchTemplate{
-	"news applet",
-	"Notification.szs",
-	"0100000000001000",
-	"6.X",
-{
-	"blyt/NtfBase.bflyt",
-	"blyt/NtfImage.bflyt"
-}, //blyt/NtfImage.bflyt for 6.0
-{},
-"blyt/BgNml.bflyt",
-"NavBg_03^d",
-"exelixNEW",
-{
-	"P_Bg_00"
-},
-	{
-		"blyt/BgNavNoHeader.bflyt",
-		"blyt/BgNav_Root.bflyt"
-	},
-	"White1x1^r"
-}
+vector<PatchTemplate> Patches::DefaultTemplates{
+    PatchTemplate{ "home and applets", "common.szs", "0100000000001000", "<= 5.X",
+        { "blyt/SystemAppletFader.bflyt" },
+        { "blyt/DHdrSoft.bflyt" },
+        "blyt/BgNml.bflyt",
+        "White1x1_180^r",
+        "exelixBG",
+        { "P_Bg_00" },
+        "White1x1^r" },
+    PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", "6.X",
+        { "blyt/IconError.bflyt" },
+        { "anim/RdtBtnShop_LimitB.bflan" },
+        "blyt/BgNml.bflyt",
+        "White1x1A128^s",
+        "exelixBG",
+        { "P_Bg_00" },
+        "White1x1A64^t" },
+    PatchTemplate{ "lock screen", "Entrance.szs", "0100000000001000", "all firmwares",
+        { "blyt/EntBtnResumeSystemApplet.bflyt" },
+        {},
+        "blyt/EntMain.bflyt",
+        "White1x1^s",
+        "exelixLK",
+        { "P_BgL", "P_BgR" },
+        "White1x1^r" },
+    PatchTemplate{ "user page", "MyPage.szs", "0100000000001013", "all firmwares",
+        { "blyt/MypUserIconMini.bflyt", "blyt / BgNav_Root.bflyt" },
+        {},
+        "blyt/BaseTop.bflyt",
+        "NavBg_03^d",
+        "exelixMY",
+        { "L_AreaNav", "L_AreaMain" },
+        "White1x1A0^t" },
+    PatchTemplate{ "home menu only", "ResidentMenu.szs", "0100000000001000", "<= 5.X",
+        { "anim/RdtBtnShop_LimitB.bflan", "blyt / IconError.bflyt" },
+        {},
+        "blyt/RdtBase.bflyt",
+        "White1x1A128^s",
+        "exelixResBG",
+        { "L_BgNml" },
+        "White1x1A64^t" },
+    PatchTemplate{ "all apps menu", "Flaunch.szs", "0100000000001000", "6.X",
+        { "blyt/FlcBtnIconGame.bflyt", "anim / BaseBg_Loading.bflan", "blyt / BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
+        {},
+        "blyt/BgNml.bflyt",
+        "NavBg_03^d",
+        "exelixFBG",
+        { "P_Bg_00" },
+        "White1x1A64^t" },
+    PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", "6.X",
+        { "blyt/BgNav_Root.bflyt", "blyt / SetCntDataMngPhoto.bflyt", "blyt / SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection
+        {},
+        "blyt/BgNml.bflyt",
+        "NavBg_03^d",
+        "exelixSET",
+        { "P_Bg_00" },
+        "White1x1A0^t" },
+    PatchTemplate{ "news applet", "Notification.szs", "0100000000001000", "6.X",
+        { "blyt/BgNavNoHeader.bflyt", "blyt / BgNav_Root.bflyt", "blyt / NtfBase.bflyt", "blyt / NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
+        {},
+        "blyt/BgNml.bflyt",
+        "NavBg_03^d",
+        "exelixNEW",
+        { "P_Bg_00" },
+        "White1x1^r" }
 };

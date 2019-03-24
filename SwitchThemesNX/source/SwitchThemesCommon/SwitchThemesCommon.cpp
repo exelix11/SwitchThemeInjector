@@ -33,6 +33,17 @@ BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, co
 	return BflytFile::PatchResult::OK;
 }
 
+static bool StrEndsWith(const std::string &str, const std::string &suffix)
+{
+	return str.size() >= suffix.size() &&
+		str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+static bool StrStartsWith(const std::string &str, const std::string &prefix)
+{
+	return str.find(prefix, 0) == 0;
+}
+
 BflytFile::PatchResult SwitchThemesCommon::PatchBgLayouts(SARC::SarcData &sarc, const PatchTemplate& templ) 
 {
 	BflytFile MainFile(sarc.files[templ.MainLayoutName]);
@@ -40,11 +51,12 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBgLayouts(SARC::SarcData &sarc, 
 	if (res == BflytFile::PatchResult::OK)
 	{
 		sarc.files[templ.MainLayoutName] = MainFile.SaveFile();
-		for (auto f : templ.SecondaryLayouts)
+		for (const auto &f : sarc.names)
 		{
+			if (!StrEndsWith(f, ".bflyt") || !StrStartsWith(f, "blyt/") || f == templ.MainLayoutName) continue;
 			BflytFile curTarget(sarc.files[f]);
-			curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace);
-			sarc.files[f] = curTarget.SaveFile();
+			if (curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace))
+				sarc.files[f] = curTarget.SaveFile();
 		}
 	}
 	return res;
@@ -99,15 +111,6 @@ PatchTemplate SwitchThemesCommon::DetectSarc(const SARC::SarcData &sarc)
 		if (!SzsHasKey(p.MainLayoutName))
 			continue;
 		bool isTarget = true;
-		for (string s : p.SecondaryLayouts)
-		{
-			if (!SzsHasKey(s))
-			{
-				isTarget = false;
-				break;
-			}
-		}
-		if (!isTarget) continue;
 		for(string s : p.FnameIdentifier)
 		{
 			if (!SzsHasKey(s))
