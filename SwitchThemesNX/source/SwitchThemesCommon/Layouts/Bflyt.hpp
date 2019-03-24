@@ -74,6 +74,40 @@ namespace Panes
 	private:
 		std::string _PaneName;
 	};
+
+	class Usd1Pane : public BasePane
+	{
+	public:
+		enum class ValueType : u8
+		{
+			data = 0,
+			int32 = 1,
+			single = 2,
+			other = 3
+		};
+
+		struct EditableProperty
+		{
+			std::string Name;
+			u64 ValueOffset;
+			u16 ValueCount;
+			ValueType type;
+
+			std::vector<std::string> value;
+		};
+
+		std::vector<EditableProperty> Properties;
+		//Discard the pointer if the Properties vector is changed
+		EditableProperty *FindName(const std::string &name);	
+		void AddProperty(const std::string &name, const std::vector<std::string> &values, ValueType type);
+
+		Usd1Pane(Buffer &reader);
+		void WritePane(Buffer &writer) override;
+	private:
+		std::vector<EditableProperty> AddedProperties;
+		void LoadProperties();
+		void ApplyChanges();
+	};
 }
 
 class BflytFile 

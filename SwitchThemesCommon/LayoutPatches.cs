@@ -97,6 +97,15 @@ namespace SwitchThemes.Common
 		public string ColorTR = null;
 		public string ColorBL = null;
 		public string ColorBR = null;
+
+		public List<UsdPatch> UsdPatches = null;
+	}
+
+	public class UsdPatch
+	{
+		public string PropName;
+		public string[] PropValues;
+		public int type;
 	}
 
 	public struct NullableVector3 { public float? X, Y, Z; public NullableVector3(float x, float y, float z) { X = x;Y = y;Z = z; } }

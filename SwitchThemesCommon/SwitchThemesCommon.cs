@@ -10,7 +10,7 @@ namespace SwitchThemes.Common
 {
     static class SwitchThemesCommon
     {
-		public const string CoreVer = "3.7";
+		public const string CoreVer = "3.8";
 		const string LoadFileText =
 			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
 			"{0} \r\n";

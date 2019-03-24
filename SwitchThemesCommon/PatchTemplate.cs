@@ -89,7 +89,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "home",
 			},
 			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = "6.X",
-				FnameIdentifier = new string[] {@"blyt/SystemAppletFader.bflyt" },
+				FnameIdentifier = new string[] { @"blyt/IconError.bflyt" },
 				FnameNotIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
 				MaintextureName = "White1x1A128^s",

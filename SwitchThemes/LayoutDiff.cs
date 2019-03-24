@@ -11,6 +11,7 @@ namespace SwitchThemes
 {
 	public static class LayoutDiff
 	{
+		//Note: usd1 is ignored here as it's usually linked to the pane directly above it
 		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1" };
 
 		public static LayoutPatch Diff(SarcData original, SarcData edited)
@@ -37,8 +38,17 @@ namespace SwitchThemes
 					if (f == skipLayoutName && (targetPatch?.targetPanels?.Contains(edPaneNames[i]) ?? false)) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
-					if (ed[i].data.SequenceEqual(or[j].data)) continue;
+
 					PanePatch curPatch = new PanePatch() { PaneName = edPaneNames[i] };
+
+					curPatch.UsdPatches = MakeUsdPatch(or, i, ed, j);
+					if (ed[i].data.SequenceEqual(or[j].data))
+					{
+						if (curPatch.UsdPatches == null) continue;
+						curFile.Add(curPatch);
+						continue;
+					}
+
 					var orPan = new BflytFile.PropertyEditablePanel(or[j]);
 					var edPan = new BflytFile.PropertyEditablePanel(ed[i]);
 					if (!VecEqual(edPan.Position, orPan.Position))
@@ -78,6 +88,40 @@ namespace SwitchThemes
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray()
 			};
+		}
+
+		static List<UsdPatch> MakeUsdPatch(BflytFile original, int oindex, BflytFile edited, int eindex)
+		{
+			if (original.Panels.Count <= oindex + 1) return null;
+			if (edited.Panels.Count <= eindex + 1) return null;
+			if (original.Panels[oindex + 1].name != "usd1" || edited.Panels[eindex + 1].name != "usd1") return null;
+
+			Usd1Pane or = (Usd1Pane)original.Panels[oindex + 1];
+			Usd1Pane ed = (Usd1Pane)edited.Panels[eindex + 1];
+			if (or.data.SequenceEqual(ed.data)) return null;
+
+			List<UsdPatch> res = new List<UsdPatch>();
+			foreach (var edP in ed.Properties)
+			{
+				var orP = or.FindName(edP.Name);
+				if (orP != null)
+				{
+					if (orP.ValueCount != edP.ValueCount) continue;
+					if (orP.type != edP.type) continue;
+					if (orP.type != Usd1Pane.EditableProperty.ValueType.int32 && orP.type != Usd1Pane.EditableProperty.ValueType.single) continue;
+					
+					if (orP.value.SequenceEqual(edP.value)) continue;
+				}
+				res.Add(new UsdPatch()
+				{
+					PropName = edP.Name,
+					PropValues = edP.value,
+					type = (int)edP.type
+				});
+			}
+
+			if (res.Count == 0) return null;
+			return res;
 		}
 
 		static bool VecEqual(Vector3 v, Vector3 v1) => v.X == v1.X && v.Y == v1.Y && v.Z == v1.Z;
