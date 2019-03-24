@@ -26,7 +26,9 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName6X
 	{"user","User page"},
 	{"apps","All apps menu"},
 	{"set","Settings applet"},
-	{"news","News applet"},
+	{"news","News applet" },
+	{"opt","Options menu" },
+	{"psl","Player selection" },
 };
 
 const std::unordered_map<std::string,std::string> ThemeTargetToFileName6X
@@ -37,6 +39,8 @@ const std::unordered_map<std::string,std::string> ThemeTargetToFileName6X
 	{"apps","Flaunch.szs"},
 	{"set","Set.szs"},
 	{"news","Notification.szs"},
+	//{"opt","Option.szs" },
+	{"psl","Psl.szs" },
 };
 
 const std::unordered_map<std::string,std::string> ThemeTargetToName5X
@@ -47,16 +51,8 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName5X
 	{"apps","All applets"},
 	{"set","All applets"},
 	{"news","All applets"},
+	//{"opt","Options menu" },
+	{"psl","Player selection" },
 };
-
-// const std::unordered_map<std::string,std::string> ThemeTargetToFileName5X
-// {
-	// {"home","ResidentMenu.szs"},
-	// {"lock","Entrance.szs"},
-	// {"user","MyPage.szs"},
-	// {"apps","common.szs"},
-	// {"set","common.szs"},
-	// {"news","common.szs"},
-// };
 
 ThemeFileManifest ParseNXThemeFile(SARC::SarcData &SData);
