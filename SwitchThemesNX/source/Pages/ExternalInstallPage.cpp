@@ -3,6 +3,7 @@
 #include "../input.hpp"
 #include "ThemeEntry.hpp"
 #include "CfwSelectPage.hpp"
+#include "../SwitchTools/PayloadReboot.hpp"
 
 using namespace std;
 
@@ -90,9 +91,16 @@ void ExternalInstallPage::Update()
             }
             else if(Reboot.selected)
             {
-                bpcInitialize();
-                bpcRebootSystem();
-            }
+				if (PayloadReboot::Init())
+				{
+					PayloadReboot::Reboot();
+				}
+				else
+				{
+					bpcInitialize();
+					bpcRebootSystem();
+				}
+			}
         }
     }
 	else
