@@ -48,6 +48,7 @@ public:
 	void Write(float);
 	void Write(double);
 	void Write(const std::vector<unsigned char>&);
+	void Write(const std::vector<unsigned char>& vec, int start, int lenght);
 
 	void WriteU32Array(const std::vector<unsigned int>& arr);
 

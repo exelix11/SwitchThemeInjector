@@ -6,10 +6,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValueType = SwitchThemes.Common.Usd1Pane.EditableProperty.ValueType;
 
 namespace SwitchThemes.Common
 {
-	class BflytFile
+	public class BflytFile
 	{
 		public BasePanel this[int index]
 		{
@@ -439,6 +440,20 @@ namespace SwitchThemes.Common
 						e.ColorData[3] = Convert.ToUInt32(p.ColorBR, 16);
 				}
 				#endregion
+				#region usdPane
+				if (p.UsdPatches != null && Panels.Count > index + 1 && Panels[index + 1].name == "usd1")
+				{
+					Usd1Pane usd = (Usd1Pane)Panels[index + 1];
+					foreach (var patch in p.UsdPatches)
+					{
+						var v = usd.FindName(patch.PropName);
+						if (v == null)
+							usd.AddNewProperty(patch.PropName, patch.PropValues, (ValueType)patch.type);
+						if (v != null && v.ValueCount == patch.PropValues.Length && (int)v.type == patch.type)
+							v.value = patch.PropValues;
+					}
+				}
+				#endregion
 			}
 			return PatchResult.OK;
 		}
@@ -552,6 +567,9 @@ namespace SwitchThemes.Common
 						break;
 					case "pic1":
 						Panels.Add(new PicturePanel(bin));
+						break;
+					case "usd1":
+						Panels.Add(new Usd1Pane(bin));
 						break;
 					default:
 						Panels.Add(new BasePanel(name, bin));

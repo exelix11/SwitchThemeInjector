@@ -7,6 +7,13 @@
 struct Vector3 { float X, Y, Z; };
 struct Vector2 { float X, Y; };
 
+struct UsdPatch 
+{
+	std::string PropName;
+	std::vector<std::string> PropValues;
+	int type;
+};
+
 struct PanePatch
 {
 	std::string PaneName;
@@ -31,8 +38,11 @@ struct PanePatch
 		ColorTL = 1 << 5,
 		ColorTR = 1 << 6,
 		ColorBL = 1 << 7,
-		ColorBR = 1 << 8
+		ColorBR = 1 << 8,
+		Usd1 = 1 << 9
 	};
+
+	std::vector<UsdPatch> UsdPatches;
 };
 
 struct LayoutFilePatch 

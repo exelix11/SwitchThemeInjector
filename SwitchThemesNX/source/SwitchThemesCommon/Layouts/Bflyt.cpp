@@ -212,6 +212,8 @@ BflytFile::BflytFile(const vector<u8>& file)
 			Panes.push_back((BasePane*) new MaterialsSection(bin));
 		else if (name == "pic1")
 			Panes.push_back((BasePane*) new PicturePane(bin));
+		else if (name == "usd1")
+			Panes.push_back((BasePane*) new Usd1Pane(bin));
 		else 
 			Panes.push_back(new BasePane(name,bin));
 
@@ -358,6 +360,21 @@ BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patc
 				e->ColorData[3] = (u32)std::stoul(p.ColorBR, 0, 16);
 		}
 
+		if ((p.ApplyFlags & (u32)PanePatch::Flags::Usd1) && 
+			(Panes.size() > index + 1) && Panes[index + 1]->name == "usd1")
+		{
+			Usd1Pane* usd = (Usd1Pane*)Panes[index + 1];
+			for (const auto &patch : p.UsdPatches)
+			{
+				auto v = usd->FindName(patch.PropName);
+				if (v == nullptr)
+					usd->AddProperty(patch.PropName, patch.PropValues, (Panes::Usd1Pane::ValueType)patch.type);
+				else if (v && v->ValueCount == patch.PropValues.size() && (int)v->type && patch.type)
+				{
+					v->value = patch.PropValues;
+				}
+			}
+		}
 	}
 	return PatchResult::OK;
 }
@@ -471,4 +488,119 @@ BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, c
 		MatSect->Materials.push_back(bin.getBuffer());
 	}
 	return PatchResult::OK;
+}
+
+//Discard the pointer if the Properties vector is changed
+Usd1Pane::EditableProperty* Usd1Pane::FindName(const string &name) 
+{
+	for (auto &p : Properties)
+		if (p.Name == name)
+			return &p;
+	return nullptr;
+}
+
+Usd1Pane::Usd1Pane(Buffer &reader) : BasePane("usd1", reader)
+{
+	LoadProperties();
+}
+
+void Usd1Pane::LoadProperties() 
+{
+	Buffer dataReader(data);
+	dataReader.ByteOrder = Endianness::LittleEndian;
+	dataReader.Position = 0;
+	u16 Count = dataReader.readUInt16();
+	u16 Unk1 = dataReader.readUInt16();
+	for (int i = 0; i < Count; i++)
+	{
+		auto EntryOffset = dataReader.Position;
+		u32 NameOffset = dataReader.readUInt32();
+		u32 DataOffset = dataReader.readUInt32();
+		u16 ValueLen = dataReader.readUInt16();
+		u8 dataType = dataReader.readUInt8();
+		dataReader.readUInt8(); //padding ?
+
+		if (!(dataType == 1 || dataType == 2))
+			continue;
+
+		auto pos = dataReader.Position;
+		dataReader.Position = EntryOffset + NameOffset;
+		string propName = dataReader.readStr_NullTerm();
+		auto type = (ValueType)dataType;
+
+		dataReader.Position = EntryOffset + DataOffset;
+		vector<string> values;
+
+		for (int j = 0; j < ValueLen; j++)
+		{
+			if (type == ValueType::int32)
+				values.push_back(to_string(dataReader.readInt32()));
+			else 
+				values.push_back(to_string(dataReader.readFloat()));
+		}
+
+		Properties.push_back(EditableProperty
+			{
+				propName,
+				EntryOffset + DataOffset,
+				ValueLen,
+				type,
+				std::move(values)
+			});
+
+		dataReader.Position = pos;
+	}
+}
+
+void Usd1Pane::ApplyChanges()
+{
+	Buffer bin;
+	bin.Write((u16)(Properties.size() + AddedProperties.size()));
+	bin.Write((u16)0);
+	for (int i = 0; i < 3 * AddedProperties.size(); i++) bin.Write((u32)0);
+	bin.Write(data, 4, data.size() - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
+	for(const auto &m : Properties)
+	{
+		if (m.type != ValueType::int32 && m.type != ValueType::single) continue;
+		bin.Position = m.ValueOffset + 0xC * AddedProperties.size();
+		for (int i = 0; i < m.ValueCount; i++)
+		{
+			if (m.type == ValueType::int32)
+				bin.Write(stoi(m.value[i]));
+			else
+				bin.Write(stof(m.value[i]));
+		}
+	}
+	for (int i = 0; i < AddedProperties.size(); i++)
+	{
+		bin.Position = bin.Length();
+		u32 DataOffset = (u32)bin.Position;
+		for (int j = 0; j < AddedProperties[i].ValueCount; j++)
+			if (AddedProperties[i].type == ValueType::int32)
+				bin.Write(stoi(AddedProperties[i].value[j]));
+			else
+				bin.Write(stof(AddedProperties[i].value[j]));
+		u32 NameOffest = (u32)bin.Position;
+		bin.Write(AddedProperties[i].Name, Buffer::BinaryString::NullTerminated);
+		while (bin.Position % 4) bin.Write((u8)0);
+		u32 entryStart = (u32)(4 + i * 0xC);
+		bin.Position = entryStart;
+		bin.Write(NameOffest - entryStart);
+		bin.Write(DataOffset - entryStart);
+		bin.Write(AddedProperties[i].ValueCount);
+		bin.Write((u8)AddedProperties[i].type);
+		bin.Write((u8)0);
+	}
+	data = std::move(bin.getBuffer());
+}
+
+void Usd1Pane::WritePane(Buffer &writer)
+{
+	ApplyChanges();
+	BasePane::WritePane(writer);
+}
+
+void Usd1Pane::AddProperty(const std::string &name, const std::vector<std::string> &values, ValueType type)
+{
+	AddedProperties.push_back({ name, 0, values.size(), type, values });
 }

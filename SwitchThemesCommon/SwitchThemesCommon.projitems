@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\Usd1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Bntx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />

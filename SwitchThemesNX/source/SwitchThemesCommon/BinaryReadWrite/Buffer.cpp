@@ -186,6 +186,12 @@ void Buffer::Write(const std::vector<unsigned char>& vec)
 		Write(vec[i]);
 }
 
+void Buffer::Write(const std::vector<unsigned char>& vec, int start, int lenght)
+{
+	for (int i = start; i < start + lenght; i++)
+		Write(vec[i]);
+}
+
 /************************* READING *************************/
 
 template <class T> inline T Buffer::readBytes(bool LE) {

@@ -85,6 +85,19 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 					pp.ColorBR = panePatch["ColorBR"].get<string>();
 				}
 
+				if (panePatch.count("UsdPatches") && panePatch["UsdPatches"].is_array())
+					for (auto &usdPatch : panePatch["UsdPatches"])
+					{
+						pp.UsdPatches.push_back({
+							usdPatch["PropName"].get<string>(),
+							usdPatch["PropValues"].get<vector<string>>(),
+							usdPatch["type"].get<int>(),
+						});
+					}
+
+				if (pp.UsdPatches.size() > 0)
+					pp.ApplyFlags |= (u32)PanePatch::Flags::Usd1;
+
 				p.Patches.push_back(pp);
 			}
 			res.Files.push_back(p);
