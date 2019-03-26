@@ -303,8 +303,8 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			if (ShowLoading)
 				DisplayLoading("Installing...");
 						
-			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");			
-			bool SkipSaveActualFile = false; //If just the bg gets patched don't save the ResidentMenu file later
+			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set"); //On 5.x these files must patch the bg in common
+			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
 			if ((themeInfo.Target == "home" && SData.files.count("common.json")) || DoPatchCommonBG)
 			{				
 				string CommonSzs = "/themes/systemData/common.szs";
@@ -318,10 +318,13 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				
 				if (DoPatchCommonBG)
 				{
-					SkipSaveActualFile = true; //Do not save resident only if the bg has been applied to common
-					auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
-					if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
-						return false;
+					SkipSaveActualFile = true; //Do not save resident if the bg has been applied to common
+					if (SData.files.count("image.dds"))
+					{
+						auto CommonPatch = SwitchThemesCommon::DetectSarc(CommonSarc);
+						if (!PatchBG(CommonSarc, CommonPatch, SData.files["image.dds"],CommonSzs))
+							return false;
+					}
 				}
 				
 				if (SData.files.count("common.json"))
@@ -358,8 +361,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 					return false;
 				}				
-				if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
-					return false;
+				if (SData.files.count("image.dds"))
+					if (!PatchBG(ToPatch, patch, SData.files["image.dds"],BaseSzs))
+						return false;
 			}
 					
 			if (SData.files.count("layout.json"))

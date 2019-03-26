@@ -14,7 +14,7 @@ using json = nlohmann::json;
 
 ThemeFileManifest ParseNXThemeFile(SARC::SarcData &Archive)
 {
-	if (!Archive.files.count("info.json") || !Archive.files.count("image.dds"))
+	if (!Archive.files.count("info.json"))
 	{
 		return {-1,"","",""};
 	}

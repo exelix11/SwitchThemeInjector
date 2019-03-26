@@ -17,6 +17,10 @@ namespace SwitchThemes.Common
 
 		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] ExtraFiles)
 		{
+			if (image == null && layout == null)
+				throw new Exception("You need at least an image or a layout to make a theme");
+
+			if (image != null)
 			{
 				var img = DDSEncoder.LoadDDS(image);
 				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
@@ -35,7 +39,8 @@ namespace SwitchThemes.Common
 
 			Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>();
 			Files.Add("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
-			Files.Add("image.dds", image);
+			if (image != null)
+				Files.Add("image.dds", image);
 			if (layout != null)
 				Files.Add("layout.json", layout);
 

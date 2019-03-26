@@ -49,7 +49,7 @@ namespace SwitchThemes
 						"Usage: SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						"instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n"+
 						"Only the image and out file are needed.\r\n" +
-						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.nxtheme\"\r\n");
+						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.szs\"\r\n");
 					if (IsMono)
 						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
 				}
@@ -195,12 +195,18 @@ namespace SwitchThemes
 				return false;
 
 			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).FirstOrDefault();
-			if (Image == null || !File.Exists(Image))
+			if (Image != null && !File.Exists(Image))
 			{
 				Console.WriteLine("No image file !");
 				return false;
 			}
+
 			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
+			if (Image == null && Layout == null)
+			{
+				Console.WriteLine("You need at least an image or a layout to make a theme");
+				return false;
+			}
 
 			string GetArg(string start)
 			{
@@ -239,7 +245,7 @@ namespace SwitchThemes
 			if (Layout != null && File.Exists(Layout))
 				layout = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
 
-			if (!Image.EndsWith(".dds"))
+			if (Image != null && !Image.EndsWith(".dds"))
 			{
 				if (Form1.ImageToDDS(Image, Path.GetTempPath()))
 					Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
@@ -264,7 +270,7 @@ namespace SwitchThemes
 						Target = Target,
 						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
 					},
-					File.ReadAllBytes(Image),
+					Image != null ? File.ReadAllBytes(Image) : null,
 					layout?.AsByteArray(),
 					new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
 					new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));

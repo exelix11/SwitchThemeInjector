@@ -381,6 +381,7 @@ namespace SwitchThemes
 		
 		bool BgImageCheck(bool IsLegacyTarget)
 		{
+			if (tbBntxFile.Text.Trim() == "") return true;
 			if (!tbBntxFile.Text.EndsWith(".dds"))
 			{
 				var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
@@ -601,8 +602,14 @@ namespace SwitchThemes
 		{
 			if (tbBntxFile.Text.Trim() == "")
 			{
-				MessageBox.Show("Select an image first");
-				return;
+				if (AllLayoutsBox.SelectedIndex == 0)
+				{
+					MessageBox.Show("You need at least a custom image or layout to make a theme.");
+					return;
+				}
+
+				if (MessageBox.Show("This will create a theme without any background image, the console default one will be used. Do you want to continue ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+					return;
 			}
 
 			if (!BgImageCheck(false)) return;
@@ -612,7 +619,7 @@ namespace SwitchThemes
 				return;
 
 			byte[] preview = null;
-			if (info.Item3)
+			if (info.Item3 && tbBntxFile.Text.Trim() != "")
 				preview = GenerateDDSPreview(tbBntxFile.Text);
 
 			if (AlbumIcon != null && !AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
@@ -632,7 +639,7 @@ namespace SwitchThemes
 						Target = HomeMenuParts[HomeMenuPartBox.Text],
 						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
 					},
-					File.ReadAllBytes(tbBntxFile.Text),
+					tbBntxFile.Text != "" ? File.ReadAllBytes(tbBntxFile.Text) : null,
 					layout?.AsByteArray(),
 					new Tuple<string, byte[]>("preview.png", preview),
 					new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()),
