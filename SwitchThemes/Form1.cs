@@ -272,8 +272,11 @@ namespace SwitchThemes
 				Filter = "Supported files (dds,jpg,png)|*.dds;*.jpg;*.jpeg;*.png|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
-				return;
-			if (opn.FileName != "")
+			{
+				tbBntxFile.Text = "";
+				tbBntxFile2.Text = "";
+			}
+			else
 			{
 				tbBntxFile.Text = opn.FileName;
 				tbBntxFile2.Text = opn.FileName;
