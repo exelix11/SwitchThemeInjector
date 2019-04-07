@@ -24,7 +24,7 @@ namespace ExtensionMethods
 		public static void Write(this BinaryDataWriter bin, Vector2 vec)
 		{
 			bin.Write((float)vec.X);
-			bin.Write((float)vec.Y);
+		    bin.Write((float)vec.Y);
 		}
 
 		public static bool Matches(this byte[] arr, string magic) =>
