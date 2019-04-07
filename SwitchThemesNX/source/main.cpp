@@ -161,6 +161,7 @@ void MyUnexpected () {
 	}
 }
 
+// Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
 void CheckCFWDir()
 {
 	auto f = SearchCfwFolders();
@@ -245,7 +246,7 @@ int main(int argc, char **argv)
 		if (paths.size() == 0)
 			goto APP_QUIT;
 		
-		PushPage(new ExternalInstallPage(paths));		
+		PushPage(new ExternalInstallPage(paths));	
 		CheckCFWDir();		
 		AppMainLoop();
 		

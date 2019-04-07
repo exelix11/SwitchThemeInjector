@@ -270,6 +270,8 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			CreateRomfsDir("0100000000000811");
 			WriteFile(CfwFolder + "/titles/0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
 			CreateFsMitmStructure("0100000000000039");
+			CreateRomfsDir("0100000000000039");
+			WriteFile(CfwFolder + "/titles/0100000000000039/romfs/dummy.bin", {0x70,0x61,0x70,0x65,0x20,0x53,0x61,0x74,0x61,0x6E,0x20,0x41,0x6C,0x65,0x70,0x70,0x65,0x21});
 		}
 		else if (LegacyTheme())
 		{
