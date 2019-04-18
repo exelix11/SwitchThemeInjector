@@ -389,6 +389,8 @@ namespace SwitchThemes.Common
 				paneNames[i] = TryGetPanelName(Panels[i]);
 			return paneNames;
 		}
+		
+		public string[] GetGroupNames() => Panels.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane) x).GroupName).ToArray();
 
 		public PatchResult ApplyLayoutPatch(PanePatch[] Patches)
 		{
@@ -455,6 +457,25 @@ namespace SwitchThemes.Common
 				}
 				#endregion
 			}
+			return PatchResult.OK;
+		}
+
+		public PatchResult AddGroupNames(ExtraGroup[] Groups)
+		{
+			if (Groups == null) return PatchResult.OK;
+			var PaneNames = GetPaneNames();
+			var GroupNames = GetGroupNames();
+
+			int rootGroupIndex = Panels.FindLastIndex(x => x.name == "gre1"); //find last group child list and append our groups there (aka at the end of RootGroup)
+			if (rootGroupIndex == -1) return PatchResult.CorruptedFile;
+
+			foreach (var g in Groups)
+			{
+				if (GroupNames.ContainsStr(g.GroupName)) continue;
+				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s)) return PatchResult.Fail;
+				Panels.Insert(rootGroupIndex, new Grp1Pane(version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
+			}
+
 			return PatchResult.OK;
 		}
 
@@ -570,6 +591,9 @@ namespace SwitchThemes.Common
 						break;
 					case "usd1":
 						Panels.Add(new Usd1Pane(bin));
+						break;
+					case "grp1":
+						Panels.Add(new Grp1Pane(bin, version));
 						break;
 					default:
 						Panels.Add(new BasePanel(name, bin));
