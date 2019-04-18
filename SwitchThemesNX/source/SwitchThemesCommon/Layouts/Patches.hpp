@@ -45,10 +45,23 @@ struct PanePatch
 	std::vector<UsdPatch> UsdPatches;
 };
 
+struct ExtraGroup
+{
+	std::string GroupName;
+	std::vector<std::string> Panes;
+};
+
 struct LayoutFilePatch 
 {
 	std::string FileName;
 	std::vector<PanePatch> Patches;
+	std::vector<ExtraGroup> AddGroups;
+};
+
+struct AnimFilePatch
+{
+	std::string FileName;
+	std::string AnimJson;
 };
 
 struct LayoutPatch 
@@ -56,6 +69,7 @@ struct LayoutPatch
 	std::string PatchName;
 	std::string AuthorName;
 	std::vector<LayoutFilePatch> Files;
+	std::vector<AnimFilePatch> Anims;
 
 	bool IsCompatible(const SARC::SarcData &sarc);
 };

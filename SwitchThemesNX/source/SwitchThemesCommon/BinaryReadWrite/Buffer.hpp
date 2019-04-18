@@ -36,6 +36,7 @@ public:
 
 	void WriteAlign(int val);
 
+	void WriteFixedLengthString(const std::string&, unsigned int);
 	void Write(const std::string&, BinaryString s = BinaryString::NoPrefixOrTermination);
 	void Write(char);
 	void Write(unsigned char);
@@ -77,7 +78,8 @@ public:
     template <class T> inline T readBytes(bool LE = true);
 
     bool               readBool() ;
-    std::string        readStr(unsigned long long len) ;
+	std::string		   readStr_Fixed(unsigned long long len);
+    std::string        readStr(unsigned long long len);
     std::string        readStr_NullTerm(int maxLen = INT32_MAX);
 	std::string        readStr_U16Prefix();
 

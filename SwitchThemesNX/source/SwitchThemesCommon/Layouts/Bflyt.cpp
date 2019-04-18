@@ -1,5 +1,6 @@
 #include "Bflyt.hpp"
 #include <stdexcept>
+#include <algorithm>
 
 using namespace std;
 using namespace Panes;
@@ -22,6 +23,52 @@ void BasePane::WritePane(Buffer &writer)
 	length = data.size() + 8;
 	writer.Write(length);
 	writer.Write(data);
+}
+
+Grp1Pane::Grp1Pane(u32 version) : Version{version}, BasePane("grp1", 8) {}
+Grp1Pane::Grp1Pane(Buffer& buf, u32 version) : Version { version }, BasePane("grp1", buf)
+{
+	LoadProperties();
+}
+
+void Grp1Pane::WritePane(Buffer& writer)
+{
+	ApplyChanges();
+	BasePane::WritePane(writer);
+}
+
+void Grp1Pane::LoadProperties() 
+{
+	Buffer bin{ data };
+	bin.ByteOrder = Endianness::LittleEndian;
+	if (Version > 0x05020000)
+		GroupName = bin.readStr_Fixed(34);
+	else
+		GroupName = bin.readStr_Fixed(24);
+	auto NodeCount = bin.readUInt16();
+	if (Version <= 0x05020000)
+		bin.readUInt16();
+	auto pos = bin.Position;
+	for (u64 i = 0; i < NodeCount; i++)
+	{
+		bin.Position = pos + i * 24;
+		Panes.push_back(bin.readStr_Fixed(24));
+	}
+}
+
+void Grp1Pane::ApplyChanges() 
+{
+	Buffer bin;
+	if (Version > 0x05020000)
+		bin.WriteFixedLengthString(GroupName, 34);
+	else
+		bin.WriteFixedLengthString(GroupName, 24);
+	bin.Write((u16)Panes.size());
+	if (Version <= 0x05020000)
+		bin.Write((u16)0);
+	for(const auto &s : Panes)
+		bin.WriteFixedLengthString(s, 24);
+	data = bin.getBuffer();
 }
 
 string PropertyEditablePane::ToString() { return "Pane " + name + " " + PaneName; }
@@ -214,6 +261,8 @@ BflytFile::BflytFile(const vector<u8>& file)
 			Panes.push_back((BasePane*) new PicturePane(bin));
 		else if (name == "usd1")
 			Panes.push_back((BasePane*) new Usd1Pane(bin));
+		else if (name == "grp1")
+			Panes.push_back((BasePane*) new Grp1Pane(bin, Version));
 		else 
 			Panes.push_back(new BasePane(name,bin));
 
@@ -342,12 +391,44 @@ int BflytFile::AddBgMat(const std::string &texName)
 	return MatSect->Materials.size() - 1;
 }
 
-vector<string> BflytFile::GetPaneNames() 
+vector<string> BflytFile::GetPaneNames()
 {
 	vector<string> names;
 	for (int i = 0; i < Panes.size(); i++)
 		names.push_back(TryGetPanelName(Panes[i]));
 	return names;
+}
+
+vector<string> BflytFile::GetGroupNames()
+{
+	vector<string> names;
+	for (int i = 0; i < Panes.size(); i++)
+		if (Panes[i]->name == "grp1")
+			names.push_back(((Grp1Pane*)Panes[i])->GroupName);
+	return names;
+}
+
+BflytFile::PatchResult BflytFile::AddGroupNames(const std::vector<ExtraGroup>& Groups)
+{
+	auto PaneNames = GetPaneNames();
+	auto GroupNames = GetGroupNames();
+
+	auto rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(),	[](BasePane* i) { return i->name == "gre1"; });
+	if (rootGroupIndex == Panes.rend()) return PatchResult::CorruptedFile;
+
+	for (const auto &g : Groups)
+	{
+		if (find(GroupNames.begin(), GroupNames.end(), g.GroupName) == GroupNames.end()) continue;
+		for (const auto &s : g.Panes)
+			if (find(PaneNames.begin(), PaneNames.end(), s) == PaneNames.end()) return PatchResult::Fail;
+		
+		auto grp = new Grp1Pane(Version);
+		grp->GroupName = g.GroupName;
+		grp->Panes = g.Panes;
+		Panes.insert(rootGroupIndex.base(), (BasePane*)grp);
+	}
+
+	return PatchResult::OK;
 }
 
 BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patches) 

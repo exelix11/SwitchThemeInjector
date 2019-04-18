@@ -243,8 +243,8 @@ namespace SwitchThemes.Common.Serializers
 
 	public struct KeyFrameSerializer
 	{
-		public float Frame ;
-		public float Value ;
+		public float Frame;
+		public float Value;
 		public float Blend;
 	}
 }

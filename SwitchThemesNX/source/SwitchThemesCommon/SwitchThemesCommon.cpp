@@ -2,10 +2,11 @@
 #include "Bntx/QuickBntx.hpp"
 #include "Bntx/DDS.hpp"
 #include "Bntx/BRTI.hpp"
+#include "Layouts/Bflan.hpp"
 
 using namespace std;
 
-const string SwitchThemesCommon::CoreVer = "3.8 (C++)";
+const string SwitchThemesCommon::CoreVer = "3.9 (C++)";
 
 string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate >& templates) 
 {
@@ -18,7 +19,18 @@ string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate 
 	return FileList;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const vector<LayoutFilePatch>& layouts)
+BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc, const std::vector<AnimFilePatch>& files)
+{
+	for(const auto &p : files)
+	{
+		if (!sarc.files.count(p.FileName))
+			continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+		sarc.files[p.FileName] = BflanDeserializer::FromJson(p.AnimJson).WriteFile();
+	}
+	return BflytFile::PatchResult::OK;
+}
+
+BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const vector<LayoutFilePatch>& layouts, bool AddAnimations)
 {
 	for (auto p : layouts)
 	{
@@ -28,6 +40,12 @@ BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, co
 		auto res = target.ApplyLayoutPatch(p.Patches);
 		if (res != BflytFile::PatchResult::OK)
 			return res;
+		if (AddAnimations)
+		{
+			res = target.AddGroupNames(p.AddGroups);
+			if (res != BflytFile::PatchResult::OK)
+				return res;
+		}
 		sarc.files[p.FileName] = target.SaveFile();
 	}
 	return BflytFile::PatchResult::OK;
