@@ -449,7 +449,7 @@ namespace SwitchThemes
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files);
+				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files, !UseAnim.Checked);
 				if (layoutres == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
@@ -458,6 +458,12 @@ namespace SwitchThemes
 				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
 				{
 					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
+					return;
+				}
+				layoutres = SwitchThemesCommon.PatchAnimations(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Anims);
+				if (layoutres != BflytFile.PatchResult.OK)
+				{
+					MessageBox.Show("Error while patching the animations !");
 					return;
 				}
 			}

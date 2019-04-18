@@ -99,6 +99,7 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDebug = new System.Windows.Forms.Label();
+			this.UseAnim = new System.Windows.Forms.CheckBox();
 			this.materialTabControl1.SuspendLayout();
 			this.NXThemePage.SuspendLayout();
 			this.grpHomeExtra.SuspendLayout();
@@ -498,6 +499,7 @@
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.InjectPage.Controls.Add(this.UseAnim);
 			this.InjectPage.Controls.Add(this.materialLabel1);
 			this.InjectPage.Controls.Add(this.materialRaisedButton8);
 			this.InjectPage.Controls.Add(this.lblDetected);
@@ -1118,6 +1120,18 @@
 			this.lblDebug.Text = "Debug build: Generated NXThemes may not install with the public installer";
 			this.lblDebug.Visible = false;
 			// 
+			// UseAnim
+			// 
+			this.UseAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.UseAnim.AutoSize = true;
+			this.UseAnim.ForeColor = System.Drawing.Color.White;
+			this.UseAnim.Location = new System.Drawing.Point(3, 301);
+			this.UseAnim.Name = "UseAnim";
+			this.UseAnim.Size = new System.Drawing.Size(338, 17);
+			this.UseAnim.TabIndex = 26;
+			this.UseAnim.Text = "Do NOT add animations (Use if you have crashes with animations)";
+			this.UseAnim.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1223,6 +1237,7 @@
 		private MaterialSkin.Controls.MaterialLabel lblAlbumIco;
 		private System.Windows.Forms.Label lblDebug;
 		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.CheckBox UseAnim;
 	}
 }
 

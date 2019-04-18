@@ -13,6 +13,7 @@ namespace SwitchThemes.Common
 		public string AuthorName;
 		public string TargetName;
 		public LayoutFilePatch[] Files;
+		public AnimFilePatch[] Anims;
 
 		public override string ToString() => PatchName + " by " + AuthorName;
 
@@ -78,10 +79,23 @@ namespace SwitchThemes.Common
 			JsonConvert.DeserializeObject<LayoutPatch>(json);
 	}
 
+	public class AnimFilePatch
+	{
+		public string FileName;
+		public string AnimJson;
+	}
+
 	public class LayoutFilePatch
 	{
 		public string FileName;
 		public PanePatch[] Patches;
+		public ExtraGroup[] AddGroups = null;
+	}
+
+	public class ExtraGroup
+	{
+		public string GroupName;
+		public string[] Panes;
 	}
 
 	public class PanePatch

@@ -1,4 +1,5 @@
 ﻿using SwitchThemes.Common.Bntxx;
+using SwitchThemes.Common.Serializers;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace SwitchThemes.Common
 {
     static class SwitchThemesCommon
     {
-		public const string CoreVer = "3.8";
+		public const string CoreVer = "3.9";
 		const string LoadFileText =
 			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
 			"{0} \r\n";
@@ -70,7 +71,19 @@ namespace SwitchThemes.Common
 			return string.Format(LoadFileText, FileList);
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files)
+		public static BflytFile.PatchResult PatchAnimations(SARCExt.SarcData sarc, AnimFilePatch[] files)
+		{
+			if (files == null) return BflytFile.PatchResult.OK;
+			foreach (var p in files)
+			{
+				if (!sarc.Files.ContainsKey(p.FileName))
+					continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+				sarc.Files[p.FileName] = BflanSerializer.FromJson(p.AnimJson).WriteFile();
+			}
+			return BflytFile.PatchResult.OK;
+		}
+
+		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files, bool AddAnimations = false)
 		{
 			foreach (var p in Files)
 			{
@@ -80,6 +93,12 @@ namespace SwitchThemes.Common
 				var res = target.ApplyLayoutPatch(p.Patches);
 				if (res != BflytFile.PatchResult.OK)
 					return res;
+				if (AddAnimations)
+				{
+					res = target.AddGroupNames(p.AddGroups);
+					if (res != BflytFile.PatchResult.OK)
+						return res;
+				}
 				sarc.Files[p.FileName] = target.SaveFile();
 			}
 			return BflytFile.PatchResult.OK;
