@@ -30,9 +30,19 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 		res.PatchName = j["PatchName"].get<string>();
 	if (j.count("AuthorName"))
 		res.AuthorName = j["AuthorName"].get<string>();
+	if (j.count("Anims") && j["Anims"].is_array())
+	{
+		for (auto& a : j["Anims"]) 
+		{
+			AnimFilePatch p;
+			p.FileName = a["FileName"];
+			p.AnimJson = a["AnimJson"];
+			res.Anims.push_back(p);
+		}
+	}
 	if (j.count("Files") && j["Files"].is_array())
 	{
-		for (auto filePatch : j["Files"])
+		for (auto &filePatch : j["Files"])
 		{
 			if (!filePatch.count("FileName") || !filePatch.count("Patches"))
 				continue;
@@ -100,6 +110,14 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 
 				p.Patches.push_back(pp);
 			}
+			if (filePatch.count("AddGroups") && filePatch["AddGroups"].is_array())
+				for (auto& g : filePatch["AddGroups"])
+				{
+					ExtraGroup grp;
+					grp.GroupName = g["GroupName"];
+					grp.Panes = g["Panes"].get<vector<string>>();
+					p.AddGroups.push_back(grp);
+				}
 			res.Files.push_back(p);
 		}
 	}

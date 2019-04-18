@@ -62,6 +62,15 @@ template <class T> inline void Buffer::writeBytes(const T &val, bool LE) {
     }
 }
 
+void Buffer::WriteFixedLengthString(const std::string& str, unsigned int maxLen) 
+{
+	if (str.size() > maxLen)
+		throw "The input string is longer than the max allowed lenght";
+	Write(str, BinaryString::NoPrefixOrTermination);
+	for (int i = str.size(); i < maxLen; i++)
+		Write((unsigned char)0);
+}
+
 void Buffer::Write(char val)  {
 	putByte(*(unsigned char*)&val);
 }
@@ -233,6 +242,15 @@ std::vector<int> Buffer::ReadS32Array(int count)
 
 bool Buffer::readBool()  {
     return readBytes<bool>();
+}
+
+std::string Buffer::readStr_Fixed(unsigned long long len) 
+{
+	std::string res = "";
+	char c; int i = 0;
+	while (c = readInt8() && i < len++)
+		res += c;
+	return res;
 }
 
 std::string Buffer::readStr_U16Prefix() 

@@ -23,6 +23,21 @@ namespace Panes
 		virtual void WritePane(Buffer &writer);
 	};
 
+	class Grp1Pane : public BasePane 
+	{
+	public:
+		u32 Version;
+		std::string GroupName;
+		std::vector<std::string> Panes;
+
+		Grp1Pane(Buffer& buf, u32 version);
+		Grp1Pane(u32 version);
+		void WritePane(Buffer& writer) override;
+	private:
+		void LoadProperties();
+		void ApplyChanges();
+	};
+
 	class PropertyEditablePane : public BasePane 
 	{
 	public :
@@ -134,8 +149,10 @@ public:
 	std::vector<u8> SaveFile();
 	bool PatchTextureName(const std::string &original, const std::string &_new);
 	std::vector<std::string> GetPaneNames();
+	std::vector<std::string> GetGroupNames();
 	PatchResult ApplyLayoutPatch(const std::vector<PanePatch>& Patches);
 	PatchResult PatchBgLayout(const PatchTemplate& patch);
+	PatchResult AddGroupNames(const std::vector<ExtraGroup>& Groups);
 private:
 	Panes::BasePane*& operator[] (int index);
 	std::vector<Panes::BasePane*> Panes;

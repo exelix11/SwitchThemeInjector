@@ -13,7 +13,9 @@ namespace SwitchThemesCommon {
 	
 	std::string GeneratePatchListString(const std::vector < PatchTemplate >& templates);
 
-	BflytFile::PatchResult PatchLayouts(SARC::SarcData &sarc, const std::vector<LayoutFilePatch>& layout);
+	BflytFile::PatchResult PatchAnimations(SARC::SarcData& sarc, const std::vector<AnimFilePatch> &files);
+
+	BflytFile::PatchResult PatchLayouts(SARC::SarcData &sarc, const std::vector<LayoutFilePatch>& layout, bool AddAnimations);
 
 	BflytFile::PatchResult PatchBgLayouts(SARC::SarcData &sarc, const PatchTemplate& layout);
 
