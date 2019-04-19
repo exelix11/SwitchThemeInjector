@@ -370,9 +370,9 @@ void Bflan::ParseFile(Buffer& bin)
 		auto sectionData = bin.readBytes(sectionSize - 8);
 		
 		if (sectionName == "pat1")
-			Sections.push_back(new Pat1Section(sectionData, bin.ByteOrder));
+			Sections.push_back((BflanSection*) new Pat1Section(sectionData, bin.ByteOrder));
 		else if (sectionName == "pai1")
-			Sections.push_back(new Pai1Section(sectionData, bin.ByteOrder));
+			Sections.push_back((BflanSection*) new Pai1Section(sectionData, bin.ByteOrder));
 		else
 			throw "unexpected section";
 	}
@@ -381,13 +381,13 @@ void Bflan::ParseFile(Buffer& bin)
 #include "Base64.hpp"
 #include "json.hpp"
 
-Bflan BflanDeserializer::FromJson(std::string jsn) 
+Bflan *BflanDeserializer::FromJson(std::string jsn) 
 {
-	Bflan res;
+	Bflan *res = new Bflan;
 	auto j = nlohmann::json::parse(jsn);
 
-	res.byteOrder = j["LittleEndian"].get<bool>() ? Endianness::LittleEndian : Endianness::BigEndian;
-	res.Version = j["Version"].get<u32>();
+	res->byteOrder = j["LittleEndian"].get<bool>() ? Endianness::LittleEndian : Endianness::BigEndian;
+	res->Version = j["Version"].get<u32>();
 
 	{
 		auto pat1 = j["pat1"];
@@ -402,7 +402,7 @@ Bflan BflanDeserializer::FromJson(std::string jsn)
 		SetVal(Groups).get<vector<string>>();
 		p->Unk_EndOfHeader = Base64::Decode(pat1["Unk_EndOfHeader"]);
 #undef SetVal
-		res.Sections.push_back(p);
+		res->Sections.push_back((BflanSection*)p);
 	}
 
 	{
@@ -452,7 +452,7 @@ Bflan BflanDeserializer::FromJson(std::string jsn)
 			p->Entries.push_back(e);
 		}
 
-		res.Sections.push_back(p);
+		res->Sections.push_back((BflanSection*)p);
 	}
 
 	return res;

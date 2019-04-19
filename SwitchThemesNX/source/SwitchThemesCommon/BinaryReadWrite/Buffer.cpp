@@ -246,11 +246,10 @@ bool Buffer::readBool()  {
 
 std::string Buffer::readStr_Fixed(unsigned long long len) 
 {
-	std::string res = "";
-	char c; int i = 0;
-	while (c = readInt8() && i < len++)
-		res += c;
-	return res;
+	auto data = readBytes(len);
+	int i = 0;
+	for (; i < len && data[i]; i++);
+	return std::string(data.begin(), data.begin() + i);
 }
 
 std::string Buffer::readStr_U16Prefix() 

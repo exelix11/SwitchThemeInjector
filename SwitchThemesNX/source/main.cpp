@@ -17,7 +17,7 @@
 #include "SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "SwitchThemesCommon/NXTheme.hpp"
 #include "Pages/RemoteInstallPage.hpp"
-#include "Pages/ThemeShufflePage.hpp"
+#include "Pages/SettingsPage.hpp"
 #include "Pages/RebootPage.cpp"
 
 using namespace std;

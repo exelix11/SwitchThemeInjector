@@ -19,8 +19,6 @@ namespace SwitchThemes.Common.Serializers
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
-				DefaultValueHandling = DefaultValueHandling.Ignore,
-				NullValueHandling = NullValueHandling.Ignore,
 #if WIN
 				Formatting = Formatting.None,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore

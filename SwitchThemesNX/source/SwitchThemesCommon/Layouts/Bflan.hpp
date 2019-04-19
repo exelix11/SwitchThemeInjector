@@ -140,5 +140,5 @@ private:
 class BflanDeserializer 
 {
 public:
-	static Bflan FromJson(std::string json);
+	static Bflan *FromJson(std::string json);
 };

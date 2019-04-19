@@ -1,16 +1,16 @@
-#include "ThemeShufflePage.hpp"
+#include "SettingsPage.hpp"
 #include "../input.hpp"
 #include "../ViewFunctions.hpp"
 
 using namespace std;
 
 SettingsPage::SettingsPage() : 
-lblAnimSupport("",WHITE, -1, font25),
+lblAnimSupport("",WHITE, -1, font30),
 btnAnimEnable(""),
 lblShuffleSettings("Theme shuffle settings (BETA) : ",WHITE, -1, font25),
 lblGuide(
 "Theme shuffle is implemented as a custom sysmodule, get it from: https://git.io/fhtY8 \n"
-"To install a theme in the shuffle list press R while pressing A or + in the theme install page",WHITE, 880, font30),
+"To install a theme in the shuffle list press R while pressing A or + in the theme install page",WHITE, 880, font25),
 lblSortMode("Theme shuffle mode:",WHITE, 880, font30),
 btnRandom("Random"),btnCycle("Cycle"),
 lblInstalled("Currently installed themes number: 0",WHITE, 880, font30),
@@ -40,20 +40,20 @@ void SettingsPage::Render(int X, int Y)
 	int BaseY = Y + 30;
 	lblAnimSupport.Render(X + 20, BaseY);
 	auto sz = lblAnimSupport.GetSize();
-	btnAnimEnable.Render(X + 30 + sz.x, BaseY);
-	BaseY += sz.y + 20;
+	btnAnimEnable.Render(X + 35 + sz.w, BaseY - 5);
+	BaseY += sz.h + 20;
 	lblShuffleSettings.Render(X + 20, BaseY);
-	BaseY += lblShuffleSettings.GetSize().h + 20;	
+	BaseY += lblShuffleSettings.GetSize().h + 5;	
 	lblGuide.Render(X + 20, BaseY);
-	BaseY += lblGuide.GetSize().h + 20;
+	BaseY += lblGuide.GetSize().h + 15;
 	lblSortMode.Render(X + 20, BaseY);
-	BaseY += lblSortMode.GetSize().h + 20;
+	BaseY += lblSortMode.GetSize().h + 15;
 	btnRandom.Render(X + 20, BaseY);
 	auto BtnSz = btnRandom.GetSize();
 	btnCycle.Render(X + 40 + BtnSz.w , BaseY);
-	BaseY += BtnSz.h + 20;
+	BaseY += BtnSz.h + 15;
 	lblInstalled.Render(X + 20, BaseY);
-	BaseY += lblInstalled.GetSize().h + 20;
+	BaseY += lblInstalled.GetSize().h + 15;
 	btnClear.Render(X + 20, BaseY);
 }
 
@@ -124,14 +124,14 @@ void SettingsPage::Update()
 	
 	if ((kDown & KEY_LEFT) || (kDown & KEY_B))
 	{
-		if ((kDown & KEY_B) || selectedIndex == 0)
+		if ((kDown & KEY_B) || selectedIndex != 2)
 		{
 			ClearBtnState();
 			hasFocus = false;
 			Parent->PageLeaveFocus(this);
 			return;			
 		}
-		else if (selectedIndex == 2)
+		else
 		{
 			ClearBtnState();
 			btnRandom.selected = true;
@@ -154,7 +154,7 @@ void SettingsPage::Update()
 		if (selectedIndex == 1 || selectedIndex == 2) 
 		{			
 			btnAnimEnable.selected = true;
-			selectedIndex == 0;
+			selectedIndex = 0;
 		}
 		else if (selectedIndex == 3)
 		{
@@ -170,7 +170,7 @@ void SettingsPage::Update()
 		if (selectedIndex == 0) 
 		{			
 			btnRandom.selected = true;
-			selectedIndex == 1;
+			selectedIndex = 1;
 		}
 		else if (selectedIndex == 1 || selectedIndex == 2)
 		{

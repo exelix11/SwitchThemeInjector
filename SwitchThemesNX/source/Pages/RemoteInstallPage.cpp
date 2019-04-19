@@ -146,8 +146,8 @@ void RemoteInstallPage::SocketUpdate()
 			vector<u8> data;
 			DisplayLoading("Loading...");
 			data.reserve(*ThemeSize);
-			u8 tmp[80];
-			while ((size = recv(curSock,tmp,80,0)) > 0)
+			u8 tmp[10];
+			while ((size = recv(curSock,tmp,10,0)) > 0)
 			{
 				for (int i = 0; i < size; i++)
 					data.push_back(tmp[i]);
