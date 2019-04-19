@@ -25,7 +25,9 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 	{
 		if (!sarc.files.count(p.FileName))
 			continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-		sarc.files[p.FileName] = BflanDeserializer::FromJson(p.AnimJson).WriteFile();
+		auto bflan = BflanDeserializer::FromJson(p.AnimJson);
+		sarc.files[p.FileName] = bflan->WriteFile();
+		delete bflan;
 	}
 	return BflytFile::PatchResult::OK;
 }

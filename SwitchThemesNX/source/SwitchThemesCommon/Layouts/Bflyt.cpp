@@ -319,7 +319,7 @@ vector<u8> BflytFile::SaveFile()
 	bin.Write((u8)0xFF);
 	bin.Write((u8)0xFE); //Little endian
 	bin.Write((u16)0x14); //Header size
-	bin.Write(Version);
+	bin.Write((u32)Version);
 	bin.Write((s32)0);
 	bin.Write((u16)Panes.size());
 	bin.Write((u16)0); //padding
