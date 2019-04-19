@@ -17,6 +17,8 @@ public:
 	
 	virtual void BuildData(Endianness byteOrder);
 	virtual void Write(Buffer& buf);
+
+	virtual ~BflanSection() {};
 };
 
 class Pat1Section : public BflanSection 
@@ -35,6 +37,8 @@ public:
 
 	Pat1Section();
 	Pat1Section(const std::vector<u8> &data, Endianness bo);
+
+	~Pat1Section() {}
 
 	void ParseData(Endianness bo);
 	void BuildData(Endianness byteOrder) override;
@@ -110,6 +114,8 @@ public:
 	Pai1Section();
 	Pai1Section(const std::vector<u8>& data, Endianness bo);
 
+	~Pai1Section() {}
+
 	void ParseData(Endianness bo);
 
 	void BuildData(Endianness bo) override;
@@ -131,7 +137,7 @@ private:
 	void ParseFile(Buffer& buf);
 };
 
-static class BflanDeserializer 
+class BflanDeserializer 
 {
 public:
 	static Bflan FromJson(std::string json);

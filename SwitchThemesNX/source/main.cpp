@@ -22,6 +22,8 @@
 
 using namespace std;
 
+bool UseAnimations = true;
+
 u64 kDown = 0;
 u64 kHeld = 0;
 stack<IUIControlObj*> views;
@@ -100,7 +102,6 @@ void QuitApp()
 {
 	AppRunning = false;
 }
-
 
 void AppMainLoop()
 {
@@ -271,7 +272,7 @@ int main(int argc, char **argv)
 		t->AddPage(dp);
 		RemoteInstallPage *rmi = new RemoteInstallPage();
 		t->AddPage(rmi);
-		ShufflePage *sf = new ShufflePage();
+		SettingsPage *sf = new SettingsPage();
 		t->AddPage(sf);
 		CreditsPage *credits = new CreditsPage();
 		t->AddPage(credits);

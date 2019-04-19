@@ -31,6 +31,9 @@
     <ClCompile Include="Fonts\TTF.cpp">
       <Filter>Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="Layouts\Bflan.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryReadWrite\Buffer.hpp">
@@ -65,6 +68,12 @@
     <ClInclude Include="NXTheme.hpp" />
     <ClInclude Include="Fonts\TTF.hpp">
       <Filter>Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\Bflan.hpp">
+      <Filter>Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="Layouts\Base64.hpp">
+      <Filter>Layouts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

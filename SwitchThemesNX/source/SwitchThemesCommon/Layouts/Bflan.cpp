@@ -343,7 +343,7 @@ vector<u8> Bflan::WriteFile()
 		Sections[i]->Write(bin);
 
 	bin.Position = 0xC;
-	bin.Write((u32)bin.Length);
+	bin.Write((u32)bin.Length());
 	return bin.getBuffer();
 }
 
