@@ -418,14 +418,17 @@ BflytFile::PatchResult BflytFile::AddGroupNames(const std::vector<ExtraGroup>& G
 
 	for (const auto &g : Groups)
 	{
-		if (find(GroupNames.begin(), GroupNames.end(), g.GroupName) == GroupNames.end()) continue;
-		for (const auto &s : g.Panes)
-			if (find(PaneNames.begin(), PaneNames.end(), s) == PaneNames.end()) return PatchResult::Fail;
-		
+		if (find(GroupNames.begin(), GroupNames.end(), g.GroupName) != GroupNames.end()) continue;
+		for (const auto& s : g.Panes)
+		{
+			if (find(PaneNames.begin(), PaneNames.end(), s) == PaneNames.end()) 
+				return PatchResult::Fail;
+		}
+
 		auto grp = new Grp1Pane(Version);
 		grp->GroupName = g.GroupName;
 		grp->Panes = g.Panes;
-		Panes.insert(rootGroupIndex.base(), (BasePane*)grp);
+		Panes.insert(rootGroupIndex.base() - 1, (BasePane*)grp);
 	}
 
 	return PatchResult::OK;
