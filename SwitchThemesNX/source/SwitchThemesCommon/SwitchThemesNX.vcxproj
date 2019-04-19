@@ -154,6 +154,7 @@
     <ClCompile Include="Bntx\DDS.cpp" />
     <ClCompile Include="Bntx\QuickBntx.cpp" />
     <ClCompile Include="Fonts\TTF.cpp" />
+    <ClCompile Include="Layouts\Bflan.cpp" />
     <ClCompile Include="Layouts\Bflyt.cpp" />
     <ClCompile Include="Layouts\DefaultTemplates.cpp" />
     <ClCompile Include="NXTheme.cpp" />
@@ -168,6 +169,8 @@
     <ClInclude Include="Bntx\DDS.hpp" />
     <ClInclude Include="Bntx\QuickBntx.hpp" />
     <ClInclude Include="Fonts\TTF.hpp" />
+    <ClInclude Include="Layouts\Base64.hpp" />
+    <ClInclude Include="Layouts\Bflan.hpp" />
     <ClInclude Include="Layouts\Bflyt.hpp" />
     <ClInclude Include="Layouts\json.hpp" />
     <ClInclude Include="Layouts\Patches.hpp" />

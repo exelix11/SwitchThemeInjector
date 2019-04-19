@@ -8,18 +8,24 @@
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
 
-class ShufflePage : public IPage
+class SettingsPage : public IPage
 {
 	public:
-		ShufflePage();	
+		SettingsPage();	
 		
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:	
 		void LoadShuffleState();
-		
+		void UpdateAnimState();
 		void WriteShuffleFlag(int i);
+		
+		void ClearBtnState();	
 	
+		Label lblAnimSupport;
+		Button btnAnimEnable;
+	
+		Label lblShuffleSettings;
 		Label lblGuide;
 		Label lblSortMode;
 		Button btnRandom;

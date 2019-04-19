@@ -5,7 +5,8 @@
 
 using namespace std;
 
-ThemesPage::ThemesPage(const std::vector<std::string> &files) : lblPage("",WHITE, -1, font25),
+ThemesPage::ThemesPage(const std::vector<std::string> &files) : 
+lblPage("",WHITE, -1, font25),
 NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25),
 lblCommands("", WHITE, -1, font25)
 {
