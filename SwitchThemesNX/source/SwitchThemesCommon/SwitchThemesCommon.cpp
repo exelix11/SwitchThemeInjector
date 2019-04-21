@@ -21,11 +21,22 @@ string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate 
 
 BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc, const std::vector<AnimFilePatch>& files)
 {
+	u32 TargetVersion = 0;
 	for(const auto &p : files)
 	{
 		if (!sarc.files.count(p.FileName))
 			continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+		
+		if (TargetVersion == 0)
+		{
+			auto bflan = new Bflan(sarc.files[p.FileName]);
+			TargetVersion = bflan->Version;
+			delete bflan;
+		}
+		
 		auto bflan = BflanDeserializer::FromJson(p.AnimJson);
+		bflan->Version = TargetVersion;
+		bflan->byteOrder = Endianness::LittleEndian;
 		sarc.files[p.FileName] = bflan->WriteFile();
 		delete bflan;
 	}
