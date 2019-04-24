@@ -77,7 +77,7 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1^r",
 				NXThemeName = "home",
 			},
-			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = "6.X",
+			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.X",
 				FnameIdentifier = new string[] { @"blyt/IconError.bflyt" },
 				FnameNotIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -117,7 +117,7 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1A64^t",
 				NXThemeName = "home"
 			},
-			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = "6.X",
+			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = ">= 6.X",
 				FnameIdentifier = new string[] { @"blyt/FlcBtnIconGame.bflyt", @"anim/BaseBg_Loading.bflan", @"blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -127,7 +127,7 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1A64^t",
 				NXThemeName = "apps"
 			},
-			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = "6.X",
+			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = ">= 6.X",
 				FnameIdentifier = new string[] { @"blyt/BgNav_Root.bflyt", @"blyt/SetCntDataMngPhoto.bflyt" , @"blyt/SetSideStory.bflyt"}, //blyt/SetSideStory.bflyt for 6.0 detection
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -137,7 +137,7 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1A0^t",
 				NXThemeName = "set"
 			},
-			new PatchTemplate() { TemplateName = "news applet" , szsName = "Notification.szs", TitleId = "0100000000001000", FirmName = "6.X",
+			new PatchTemplate() { TemplateName = "news applet" , szsName = "Notification.szs", TitleId = "0100000000001000", FirmName = ">= 6.X",
 				FnameIdentifier = new string[] { @"blyt/BgNavNoHeader.bflyt", @"blyt/BgNav_Root.bflyt", @"blyt/NtfBase.bflyt", @"blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",

@@ -7,7 +7,7 @@ using namespace Panes;
 
 string BasePane::ToString() { return "Pane " + name + " " + to_string(length); }
 
-BasePane::BasePane(const string &_name, u32 len)  : name(_name), length(len), data(len) {}
+BasePane::BasePane(const string &_name, u32 len)  : name(_name), length(len), data(len - 8) {}
 
 BasePane::BasePane(const BasePane &ref) : name(ref.name), length(ref.length), data(ref.data) {}
 
@@ -410,14 +410,25 @@ vector<string> BflytFile::GetGroupNames()
 
 BflytFile::PatchResult BflytFile::AddGroupNames(const std::vector<ExtraGroup>& Groups)
 {
+	if (Groups.size() == 0) return PatchResult::OK;
 	auto PaneNames = GetPaneNames();
 	auto GroupNames = GetGroupNames();
 
 	auto rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(),	[](BasePane* i) { return i->name == "gre1"; });
-	if (rootGroupIndex == Panes.rend()) return PatchResult::CorruptedFile;
+	if (rootGroupIndex == Panes.rend())
+	{
+		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](BasePane * i) { return i->name == "grp1"; });
+		if (rootGroupIndex == Panes.rend())
+			return PatchResult::CorruptedFile;
+		Panes.insert(rootGroupIndex.base(), new BasePane("gre1", 8));
+		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](BasePane * i) { return i->name == "grp1"; });
+		Panes.insert(rootGroupIndex.base(), new BasePane("grs1", 8));
+	}
 
 	for (const auto &g : Groups)
 	{
+		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](BasePane * i) { return i->name == "gre1"; }); //Not sure if after inserting the iterator is still valid
+
 		if (find(GroupNames.begin(), GroupNames.end(), g.GroupName) != GroupNames.end()) continue;
 		for (const auto& s : g.Panes)
 		{

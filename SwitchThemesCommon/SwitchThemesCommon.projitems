@@ -20,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PatchTemplate.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\SARC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\Yaz0.cs" />

@@ -179,12 +179,14 @@ void RemoteInstallPage::Update()
 			entry->InstallTheme(true,overrideStr);
 			delete entry;
 			entry = 0;
+			StopSocketing();
 			return;
 		}
 		else if (kDown & KEY_B)
 		{
 			delete entry;
 			entry = 0;			
+			StopSocketing();
 			return;			
 		}
 	}

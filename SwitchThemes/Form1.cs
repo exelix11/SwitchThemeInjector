@@ -447,27 +447,6 @@ namespace SwitchThemes
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
-			if (LayoutPatchList.SelectedIndex != 0)
-			{
-				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Files, !UseAnim.Checked);
-				if (layoutres == BflytFile.PatchResult.Fail)
-				{
-					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-					return;
-				}
-				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
-				{
-					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
-					return;
-				}
-				layoutres = SwitchThemesCommon.PatchAnimations(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Anims);
-				if (layoutres != BflytFile.PatchResult.OK)
-				{
-					MessageBox.Show("Error while patching the animations !");
-					return;
-				}
-			}
-
 			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
@@ -501,7 +480,28 @@ namespace SwitchThemes
 					MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 					return;
 				}
-			}						
+			}
+
+			if (LayoutPatchList.SelectedIndex != 0)
+			{
+				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, !UseAnim.Checked);
+				if (layoutres == BflytFile.PatchResult.Fail)
+				{
+					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+					return;
+				}
+				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
+				{
+					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
+					return;
+				}
+				layoutres = SwitchThemesCommon.PatchAnimations(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Anims);
+				if (layoutres != BflytFile.PatchResult.OK)
+				{
+					MessageBox.Show("Error while patching the animations !");
+					return;
+				}
+			}
 
 			var sarc = SARC.PackN(CommonSzs);
 			
