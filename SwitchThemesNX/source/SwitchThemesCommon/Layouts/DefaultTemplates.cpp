@@ -134,7 +134,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         "exelixBG",
         { "P_Bg_00" },
         "White1x1^r" },
-    PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", "6.X",
+    PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", ">= 6.X",
         { "blyt/IconError.bflyt" },
         { "anim/RdtBtnShop_LimitB.bflan" },
         "blyt/BgNml.bflyt",
@@ -166,7 +166,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         "exelixResBG",
         { "L_BgNml" },
         "White1x1A64^t" },
-    PatchTemplate{ "all apps menu", "Flaunch.szs", "0100000000001000", "6.X",
+    PatchTemplate{ "all apps menu", "Flaunch.szs", "0100000000001000", ">= 6.X",
         { "blyt/FlcBtnIconGame.bflyt", "anim/BaseBg_Loading.bflan", "blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
         {},
         "blyt/BgNml.bflyt",
@@ -174,7 +174,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         "exelixFBG",
         { "P_Bg_00" },
         "White1x1A64^t" },
-    PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", "6.X",
+    PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", ">= 6.X",
         { "blyt/BgNav_Root.bflyt", "blyt/SetCntDataMngPhoto.bflyt", "blyt/SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection
         {},
         "blyt/BgNml.bflyt",
@@ -182,7 +182,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         "exelixSET",
         { "P_Bg_00" },
         "White1x1A0^t" },
-    PatchTemplate{ "news applet", "Notification.szs", "0100000000001000", "6.X",
+    PatchTemplate{ "news applet", "Notification.szs", "0100000000001000", ">= 6.X",
         { "blyt/BgNavNoHeader.bflyt", "blyt/BgNav_Root.bflyt", "blyt/NtfBase.bflyt", "blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
         {},
         "blyt/BgNml.bflyt",

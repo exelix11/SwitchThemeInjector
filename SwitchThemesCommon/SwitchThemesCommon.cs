@@ -94,8 +94,17 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutFilePatch[] Files, bool AddAnimations = false)
+		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, bool AddAnimations = false)
 		{
+			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
+			Files.AddRange(Patch.Files);
+			if (!Patch.Ready8X)
+			{
+				var extra = NewFirmFixes.GetFix(Patch.PatchName);
+				if (extra != null)
+					Files.AddRange(extra);
+			}
+
 			foreach (var p in Files)
 			{
 				if (!sarc.Files.ContainsKey(p.FileName))

@@ -462,12 +462,20 @@ namespace SwitchThemes.Common
 
 		public PatchResult AddGroupNames(ExtraGroup[] Groups)
 		{
-			if (Groups == null) return PatchResult.OK;
+			if (Groups == null || Groups.Length == 0) return PatchResult.OK;
 			var PaneNames = GetPaneNames();
 			var GroupNames = GetGroupNames();
 
 			int rootGroupIndex = Panels.FindLastIndex(x => x.name == "gre1"); //find last group child list and append our groups there (aka at the end of RootGroup)
-			if (rootGroupIndex == -1) return PatchResult.CorruptedFile;
+			if (rootGroupIndex == -1)
+			{
+				rootGroupIndex = Panels.FindIndex(x => x.name == "grp1");
+				if (rootGroupIndex == -1)
+					return PatchResult.CorruptedFile;
+				Panels.Insert(rootGroupIndex + 1, new BasePanel("gre1", 8));
+				Panels.Insert(rootGroupIndex + 1, new BasePanel("grs1", 8));
+				rootGroupIndex += 2;
+			}
 
 			foreach (var g in Groups)
 			{
