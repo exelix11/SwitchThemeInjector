@@ -12,9 +12,9 @@ namespace SwitchThemes.Common
 		public string PatchName;
 		public string AuthorName;
 		public string TargetName;
+		public bool Ready8X = false;
 		public LayoutFilePatch[] Files;
 		public AnimFilePatch[] Anims;
-		public bool Ready8X = false;
 
 		public override string ToString() => PatchName + " by " + AuthorName;
 

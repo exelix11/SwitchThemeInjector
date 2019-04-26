@@ -3,10 +3,11 @@
 #include "Bntx/DDS.hpp"
 #include "Bntx/BRTI.hpp"
 #include "Layouts/Bflan.hpp"
+#include "NXTheme.hpp"
 
 using namespace std;
 
-const string SwitchThemesCommon::CoreVer = "3.9 (C++)";
+const string SwitchThemesCommon::CoreVer = "4.0 (C++)";
 
 string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate >& templates) 
 {
@@ -43,9 +44,19 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const vector<LayoutFilePatch>& layouts, bool AddAnimations)
+BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, bool AddAnimations)
 {
-	for (auto p : layouts)
+	vector<LayoutFilePatch> Files;
+	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
+
+	if (NXTheme_FirmMajor >= 8 && !patch.Ready8X)
+	{
+		auto extra = NewFirmFixes::GetFix(patch.PatchName);
+		if (extra.size() != 0)
+			Files.insert(Files.end(), extra.begin(), extra.end());
+	}
+
+	for (auto p : Files)
 	{
 		if (!sarc.files.count(p.FileName))
 			return BflytFile::PatchResult::Fail;

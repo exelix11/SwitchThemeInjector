@@ -30,6 +30,10 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 		res.PatchName = j["PatchName"].get<string>();
 	if (j.count("AuthorName"))
 		res.AuthorName = j["AuthorName"].get<string>();
+	if (j.count("Ready8X"))
+		res.Ready8X = j["Ready8X"].get<bool>();
+	else res.Ready8X = false;
+
 	if (j.count("Anims") && j["Anims"].is_array())
 	{
 		for (auto& a : j["Anims"]) 

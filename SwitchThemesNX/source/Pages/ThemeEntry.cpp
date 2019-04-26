@@ -219,7 +219,7 @@ bool PatchLayout(SARC::SarcData &ToPatch, const string &JSON, const string &SzsN
 		Dialog("The provided layout is not compatible with " + SzsName + "\nThe theme was not installed");
 		return false;
 	}
-	auto res = SwitchThemesCommon::PatchLayouts(ToPatch, patch.Files, UseAnimations);
+	auto res = SwitchThemesCommon::PatchLayouts(ToPatch, patch, UseAnimations);
 	if (res != BflytFile::PatchResult::OK)
 	{
 		Dialog("PatchLayouts failed for " + SzsName + "\nThe theme was not installed");
