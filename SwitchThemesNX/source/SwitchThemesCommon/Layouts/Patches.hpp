@@ -70,6 +70,7 @@ struct LayoutPatch
 	std::string AuthorName;
 	std::vector<LayoutFilePatch> Files;
 	std::vector<AnimFilePatch> Anims;
+	bool Ready8X = false;
 
 	bool IsCompatible(const SARC::SarcData &sarc);
 };
@@ -97,4 +98,9 @@ struct PatchTemplate
 namespace Patches {
 	extern std::vector<PatchTemplate> DefaultTemplates;
 	LayoutPatch LoadLayout(const std::string &json);
+}
+
+namespace NewFirmFixes 
+{
+	extern std::vector<LayoutFilePatch> GetFix(const std::string& LayoutName);
 }

@@ -69,7 +69,7 @@ namespace SwitchThemes
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Text += " Ver. " + SwitchThemesCommon.CoreVer + " BETA";
+			Text += " Ver. " + SwitchThemesCommon.CoreVer + " Hopefully final";
 						
 			if (Properties.Settings.Default.Adv)
 			{

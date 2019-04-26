@@ -113,7 +113,8 @@ namespace SwitchThemes
 				PatchName = "diffPatch" + (targetPatch == null ? "" : "for " + targetPatch.TemplateName),
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
-				Anims = AnimPatches?.ToArray()
+				Anims = AnimPatches?.ToArray(),
+				Ready8X = true //Aka tell the patcher to not fix this layout
 			};
 		}
 
