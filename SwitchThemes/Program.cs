@@ -229,8 +229,11 @@ namespace SwitchThemes
 			string album = GetArg("album");
 
 			if (Output == null || Output == "")
+			{
+				Console.WriteLine("Missing out= arg");
 				return false;
-			
+			}
+
 			bool preview = GetArgBool("preview") ?? true;
 
 			if (Name == null || Name.Trim() == "")
@@ -273,6 +276,7 @@ namespace SwitchThemes
 					Image != null ? File.ReadAllBytes(Image) : null,
 					layout?.AsByteArray(),
 					new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
+					new Tuple<string, byte[]>("common.json", ExtraCommon != null ? File.ReadAllBytes(ExtraCommon) : null),
 					new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));
 
 				File.WriteAllBytes(Output, res);
