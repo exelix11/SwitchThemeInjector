@@ -1,4 +1,6 @@
 # Templates
+[Note that this is slightly outdated and not 100% accurate, still describes pretty much the szs patching process]
+
 To keep the code simple this tool uses templates and patches to edit layouts.
 A template tells the program how to apply a background image to an SZS, while a layout patch can change to position of the UI elements. Both are Json files. \
 All the default templates are hardcoded but as of V 3.0 you can place a file called 
@@ -18,7 +20,7 @@ can't add a new image yet, for now we need to replace an image that's already in
 2) Patch the layout that renders the background : this process adds an entry in the
 texture list for the texture we replaced, adds a new material and a new image pane for the background.
 3) Patch all the layouts that use the image we replaced to use another similar image 
-4) If the user selected a layout patch apply it.
+4) If the user selected a custom layout patch apply it.
 
 So our patch format must store all the information needed for this process.
 # The templates (also referred as patch templates)
@@ -34,34 +36,3 @@ and NONE of the files in `FnameNotIdentifier`. `FnameIdentifier` implicitly incl
 `targetPanels` is an array of strings of all the panes that should be removed from the main layout (so panes that already render the background), you need at least one because it's also used to detect where to place the new background pane. \
 `SecondaryLayouts` contains the names of the layouts that use the texture that was replaced, you can find them from the advanced tab of the program.
 `SecondaryTexReplace` is the name of the texture that will replace `MaintextureName`
-# The Layout patches
-Layout patches are slightly more complex and have nested properties but you can create them automatically :\
-## Generating a layout patch with "LayoutDiff"
-You need 2 SZS files : the one you patched and the original one, they must be for the same firmware version, the background image doesn't matter.
-1) Open the Switch theme injector **Windows app** and open the PATCHED SZS
-2) Go to the advanced tab and click on the "Layout Diff" button, it will show a dialog to open another SZS, open the ORIGINAL one.
-3) If everything went ok you should be able to save your json patch.
-4) Open the json you just saved with a text editor and change the name and the author
-5) Look for panes you didn't actually change and remove them. (they're usually usd1 sections mistaken for panes, they have a weird name or no properties)
-6) Save and share your layout
-## The layout patch structure
-A Layout patch starts with the `PatchName` and `AuthorName` which are self-explainatory, then there is a `Files` array which is an array of the following structure:
-### LayoutFilePatch
-This structure has 2 properties :
-- `FileName` is the name of the target file in the SZS, path included. 
-- `Patches` is an array of the changes that need to be applied, one per pane, it follows this structure : 
-### PanePatch
-This structure has only one compulsory property that is `PaneName`, the name of the pane to edit.
-Then these are the properties that can be changed: (include only the ones you need to change) 
-- `Position` : has 3 values X,Y and Z
-- `Rotation` : has 3 values X,Y and Z
-- `Scale` : has 2 values X and Y
-- `Size` : has 2 values X and Y
-- `Visible` : true or false
-
-Only for picture panes (pic1) :
-- `ColorTL` : Top left vertex color 
-- `ColorTR` : Top right vertex color 
-- `ColorBL` : Bottom left vertex color 
-- `ColorBR` : Bottom right vertex color 
-these values must be an hexadecimal color string, for example "FFFFFF" is white

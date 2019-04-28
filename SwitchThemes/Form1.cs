@@ -376,7 +376,9 @@ namespace SwitchThemes
 			if (!File.Exists(target))
 			{
 				string pOut = p.StandardOutput.ReadToEnd();
-				MessageBox.Show("Couldn't convert the image to DDS, output of the converter : \r\n\r\n" + pOut);
+				MessageBox.Show(
+					"Couldn't convert the image to DDS. This happens if texconv.exe can't be executed, make sure you're running a 64 bits version of windows, you installed microsoft's Visual C++ 15 libs and that the path of the injector doesn't contain special characters not allowed by DOS. Running texconv.exe by double clicking it may explicitly show what's the error." +
+					"\r\nThis is the output of the converter : \r\n\r\n" + pOut);
 				return false;
 			}
 			return true;

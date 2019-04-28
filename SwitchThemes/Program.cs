@@ -284,6 +284,7 @@ namespace SwitchThemes
 			catch (Exception ex)
 			{
 				Console.WriteLine("ERROR: " + ex.Message);
+				return false;
 			}
 
 			return true;
