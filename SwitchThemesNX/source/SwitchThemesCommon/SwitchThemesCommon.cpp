@@ -44,12 +44,12 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, bool AddAnimations)
+BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, bool Fix8x, bool AddAnimations)
 {
 	vector<LayoutFilePatch> Files;
 	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
 
-	if (NXTheme_FirmMajor >= 8 && !patch.Ready8X)
+	if (Fix8x && !patch.Ready8X)
 	{
 		auto extra = NewFirmFixes::GetFix(patch.PatchName);
 		if (extra.size() != 0)
