@@ -126,7 +126,7 @@ bool GetKeys(NcaDecryptionkeys *out)
           envIsSyscallHinted(0x65) &&     // svcGetProcessList
           envIsSyscallHinted(0x69) &&     // svcQueryDebugProcessMemory
           envIsSyscallHinted(0x6a))) {    // svcReadDebugProcessMemory
-            DialogBlocking("Lockpick Error: Please run with debug svc permissions");
+            DialogBlocking("Lockpick Error: Please run with debug svc permissions.\nMake sure you're using latest version of your cfw and try launching this app from the album applet");
 			return false;
         }
 		

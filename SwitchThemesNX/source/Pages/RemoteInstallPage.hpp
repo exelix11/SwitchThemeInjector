@@ -30,6 +30,10 @@ class RemoteInstallPage : public IPage
 		
 		int sock = -1;
 	
+		//For SocketUpdate:
+		int curSock = -1;
+		int ThemeSize = 0;
+		std::vector<u8> data;
 		
 		Label lblInfo;
 		Label lblConfirm;

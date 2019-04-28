@@ -58,6 +58,8 @@ void RemoteInstallPage::StartSocketing()
 	temp.sin_port=htons(5000);
 	
 	err=fcntl(sock,F_SETFL,O_NONBLOCK);
+	const int optVal = 1;
+	setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (void*) &optVal, sizeof(optVal));
 	if (err)
 	{
 		Dialog("Couldn't start socketing (fcntl error)");
@@ -95,9 +97,12 @@ void RemoteInstallPage::StartSocketing()
 
 void RemoteInstallPage::StopSocketing()
 {
-	if (sock == -1) 
-		return;
-	close(sock);
+	if (curSock != -1)
+		close(curSock);
+	curSock = -1;
+	ThemeSize = 0;
+	if (sock != -1)
+		close(sock);
 	sock = -1;
 	BtnStart.SetString("Start remote install");
 }
@@ -114,15 +119,14 @@ void RemoteInstallPage::SocketUpdate()
 		return;
 	}	
 	
-	u8 buf[12]; 
-	int curSock = -1;
-	if ((curSock=accept(sock,0,0))!=-1)
+	int size = -1;
+	if (curSock == -1 && (curSock=accept(sock,0,0))!=-1)
 	{
-		int size = -1;
-		if ((size=recv(curSock,buf,sizeof(buf),0)) <0)
+		u8 buf[12]; 
+		memset(buf,0,sizeof(buf));
+		if ((size=recv(curSock,buf,sizeof(buf),0)) < 0)
 		{
 			DialogError("(Couldn't read any data.)");
-			close(curSock);
 			StopSocketing();
 			return;
 		}
@@ -131,39 +135,40 @@ void RemoteInstallPage::SocketUpdate()
 			if (strncmp(buf, "theme", 5) != 0)
 			{
 				DialogError("(Unexpected data received.)");
-				close(curSock);
 				StopSocketing();
 				return;
 			}
-			int *ThemeSize = reinterpret_cast<int*>(buf + 8);
-			if (*ThemeSize < 50 || *ThemeSize > 2000000)
+			ThemeSize = *reinterpret_cast<int*>(buf + 8);
+			if (ThemeSize < 50 || ThemeSize > 2000000)
 			{
-				DialogError("(Invalid size: " + to_string(*ThemeSize) + ")");
-				close(curSock);
+				DialogError("(Invalid size: " + to_string(ThemeSize) + ")");
 				StopSocketing();
 				return;				
 			}
-			vector<u8> data;
-			DisplayLoading("Loading...");
-			data.reserve(*ThemeSize);
-			u8 tmp[10];
-			while ((size = recv(curSock,tmp,10,0)) > 0)
-			{
-				for (int i = 0; i < size; i++)
-					data.push_back(tmp[i]);
-			}
-			if (data.size() != *ThemeSize)
+			data.clear();
+			data.reserve(ThemeSize);
+		}		
+	}
+	if (ThemeSize && curSock != -1)
+	{
+		DisplayLoading("Loading...");
+		u8 tmp[10];
+		while ((size = recv(curSock,tmp,10,0)) > 0)
+		{
+			for (int i = 0; i < size; i++)
+				data.push_back(tmp[i]);
+		}
+		if (data.size() == ThemeSize || size == 0 || (size == -1 && errno != EWOULDBLOCK)){
+			if (data.size() != ThemeSize)
 				DialogError("(Unexpected data count: " + to_string(size) + ")");
 			else
 			{
 				write(curSock,"ok",2);
 				entry = new ThemeEntry(data);
+				StopSocketing();
 			}
-			close(curSock);
-			StopSocketing();
-			return;
 		}
-		close(curSock);
+		return;
 	}
 }
 
@@ -199,6 +204,7 @@ void RemoteInstallPage::Update()
 	
 	BtnStart.selected = true;
 	
+	if (entry) return;
 	if (sock >= 0)
 	{
 		SocketUpdate();
