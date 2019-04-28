@@ -94,11 +94,11 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, bool AddAnimations = false)
+		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, bool FixFor8, bool AddAnimations = false)
 		{
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
-			if (!Patch.Ready8X)
+			if (FixFor8 && !Patch.Ready8X)
 			{
 				var extra = NewFirmFixes.GetFix(Patch.PatchName);
 				if (extra != null)

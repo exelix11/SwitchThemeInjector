@@ -120,22 +120,7 @@ namespace SwitchThemes
 			}
 
 			try
-			{
-				if (Layout != null)
-				{
-					var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatch.LoadTemplate(File.ReadAllText(Layout)));
-					if (layoutres == BflytFile.PatchResult.Fail)
-					{
-						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-						return false;
-					}
-					else if (layoutres == BflytFile.PatchResult.CorruptedFile)
-					{
-						Console.WriteLine("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
-						return false;
-					}
-				}
-
+			{				
 				var res = BflytFile.PatchResult.OK;
 
 				if (Image != null)
@@ -166,6 +151,21 @@ namespace SwitchThemes
 				{
 					Console.WriteLine("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 					return false;
+				}
+
+				if (Layout != null)
+				{
+					var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatch.LoadTemplate(File.ReadAllText(Layout)), targetPatch.NXThemeName == "home", true);
+					if (layoutres == BflytFile.PatchResult.Fail)
+					{
+						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+						return false;
+					}
+					else if (layoutres == BflytFile.PatchResult.CorruptedFile)
+					{
+						Console.WriteLine("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
+						return false;
+					}
 				}
 
 				var sarc = SARC.PackN(CommonSzs);

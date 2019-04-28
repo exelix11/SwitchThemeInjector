@@ -69,7 +69,7 @@ namespace SwitchThemes
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Text += " Ver. " + SwitchThemesCommon.CoreVer + " Hopefully final";
+			Text += " Ver. " + SwitchThemesCommon.CoreVer;
 						
 			if (Properties.Settings.Default.Adv)
 			{
@@ -486,7 +486,7 @@ namespace SwitchThemes
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, !UseAnim.Checked);
+				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName == "home", !UseAnim.Checked);
 				if (layoutres == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
