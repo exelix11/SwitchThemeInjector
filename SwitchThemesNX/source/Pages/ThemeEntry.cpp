@@ -338,7 +338,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					}
 				}
 				
-				if (SData.files.count("common.json"))
+				if (SData.files.count("common.json") && themeInfo.Target == "home")
 				{
 					auto JsonBinary = SData.files["common.json"];
 					string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
@@ -386,7 +386,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 			}
 			
-			if (SData.files.count("album.dds"))
+			if (themeInfo.Target == "home" && SData.files.count("album.dds"))
 			{
 				SkipSaveActualFile = false;
 				auto pResult = SwitchThemesCommon::PatchBntxTexture(ToPatch, SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000 );
