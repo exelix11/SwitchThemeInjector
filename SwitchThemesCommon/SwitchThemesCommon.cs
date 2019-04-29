@@ -11,13 +11,18 @@ namespace SwitchThemes.Common
 {
     static class SwitchThemesCommon
     {
-		public const string CoreVer = "4.0";
+		public const string CoreVer = "4.0.1";
 		const string LoadFileText =
 			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
 			"{0} \r\n";
 
-		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] ExtraFiles)
+		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] _ExtraFiles)
 		{
+			Dictionary<string, byte[]> ExtFiles = new Dictionary<string, byte[]>();
+			foreach (var f in _ExtraFiles)
+				if (f != null && f.Item1 != null && f.Item2 != null)
+					ExtFiles.Add(f.Item1, f.Item2);
+
 			if (image == null && layout == null)
 				throw new Exception("You need at least an image or a layout to make a theme");
 
@@ -28,11 +33,20 @@ namespace SwitchThemes.Common
 					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded ");
 			}
 
+			if (info.Target != "home")
 			{
-				var album_img = ExtraFiles.Where(x => x.Item1 == "album.dds").FirstOrDefault();
-				if (album_img != null && album_img.Item2 != null)
+				if (ExtFiles.ContainsKey("album.dds"))
+					ExtFiles.Remove("album.dds");
+				if (ExtFiles.ContainsKey("common.json"))
+					ExtFiles.Remove("common.json");
+			}
+
+			{
+				byte[] album_img = null;
+				ExtFiles.TryGetValue("album.dds", out album_img);
+				if (album_img != null)
 				{
-					var img = DDSEncoder.LoadDDS(album_img.Item2);
+					var img = DDSEncoder.LoadDDS(album_img);
 					if (img.width != 64 || img.height != 56)
 						throw new Exception("The custom album image must be 64x56");
 				}
@@ -45,9 +59,8 @@ namespace SwitchThemes.Common
 			if (layout != null)
 				Files.Add("layout.json", layout);
 
-			foreach (var f in ExtraFiles)
-				if (f != null && f.Item1 != null && f.Item2 != null)
-					Files.Add(f.Item1, f.Item2);
+			foreach (var f in ExtFiles)
+				Files.Add(f.Key, f.Value);
 
 			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() {  endianness = ByteOrder.LittleEndian, Files = Files, HashOnly = false} );
 			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
