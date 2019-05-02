@@ -36,7 +36,7 @@ void ThemesPage::SetDir(const string &dir)
 			CurrentFiles.push_back(f);
 	}
 	
-	pageCount = CurrentFiles.size() / 5 +1;
+	pageCount = CurrentFiles.size() / 5 + 1;
 	if (CurrentFiles.size() % 5 == 0) 
 		pageCount--;
 	menuIndex = 0;
@@ -57,6 +57,7 @@ void ThemesPage::SetPage(int num)
 	if (num < 0 || baseIndex >= CurrentFiles.size())  
 	{
 		lblPage.SetString(CurrentDir + " - Empty");
+		pageNum = num;
 		return;
 	}
 	
