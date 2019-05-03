@@ -1,5 +1,8 @@
 # Switch theme injector
-The Switch theme injector project is composed of three parts:
+
+![ThemeScreenshot](ThemeScreenshot.jpg)
+
+The Switch theme injector project is split into three parts:
 - Switch theme injector (Windows app): An app to create and edit custom themes
 - NXThemes installer: An homebrew app that runs on the switch itself and can be used to install and manage themes.
 - [Switch theme injector online](http://exelix11.github.io/SwitchThemeInjector) (also called WebInjector): A port of the windows injector as a web app, it lacks some features like image to DDS conversion.
@@ -11,12 +14,23 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 # Usage
 Open the injector and go to the NXThemes builder tab, open any 720p image (1280x720 pixels) and fill the form, then click on build nxtheme.\
 To install nxthemes files on your console download the NxThemes installer homebrew from the releases then just select any nxtheme file from your sd.\
-This app works on windows, you can use the CLI through mono on linux.
+This app works on windows, you can use the CLI through mono on linux. Note that on linux you must use DDS files as the built-in image converter works only on windows.
 
-## Command line args.
-You can automate theme creation using command line args. Here's an example to build a theme:
-`SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "commonlyt=<custom common.szs layout>" "album=<custom album icon.png/dds>" "out=<OutputPath>.nxtheme"` this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed.
+## Command line args
+You can automate theme creation using command line args.
+### Building nxthemes
+The syntax is:
+```
+SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>" "commonlyt=<custom common.szs layout>" "album=<custom album icon.png/dds>" "out=<OutputPath>.nxtheme"
+```
+this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed. \
+`commonlyt` and `album` will only be used if building a theme for the home menu
+### Patching SZS files
+```
+SwitchThemes.exe szs "<input file>" "<your image.png/jpg/dds>" "<json layout file, optional>" "album=<custom album icon.png/dds>" "out=<OutputPath>.szs"
+```
+`album` will only be used if patching a residentMenu szs.
 
 # Useful resources
-You can make your own custom layouts using [Switch Layout Editor](https://github.com/FuryBaguette/SwitchLayoutEditor/) \
-To learn how to convert your layouts to json or make your own patch templates read [Templates.md](https://github.com/exelix11/SwitchThemeInjector/blob/master/templates.md)
+Check out how to make your own layouts and animations [here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) \
+You can also find more info about the szs patching process [here](https://github.com/exelix11/SwitchThemeInjector/blob/master/SzsPatching.md)
