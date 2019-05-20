@@ -452,7 +452,10 @@ BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patc
 	{
 		int index = indexOf(names, Patches[i].PaneName);
 		if (index == -1)
-			return PatchResult::CorruptedFile;
+			//return PatchResult::CorruptedFile;
+			continue;
+			//The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares
+			
 		auto p = Patches[i];
 		auto e = new PropertyEditablePane(*Panes[index]);
 		delete Panes[index];
