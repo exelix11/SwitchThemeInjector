@@ -399,7 +399,10 @@ namespace SwitchThemes.Common
 			{
 				int index = Array.IndexOf(paneNames, Patches[i].PaneName);
 				if (index == -1)
-					return PatchResult.CorruptedFile;
+					//return PatchResult.CorruptedFile;
+					continue;
+					//The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares
+
 				var p = Patches[i];
 				var e = new PropertyEditablePanel(Panels[index]);
 				Panels[index] = e;

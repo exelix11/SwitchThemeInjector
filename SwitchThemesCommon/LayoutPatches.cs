@@ -23,10 +23,10 @@ namespace SwitchThemes.Common
 			for (int i = 0; i < Files.Length; i++)
 			{
 				if (!szs.Files.ContainsKey(Files[i].FileName)) return false;
-				string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
-				for (int j = 0; j < Files[i].Patches.Length; j++)
-					if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
-						return false;
+				//string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
+				//for (int j = 0; j < Files[i].Patches.Length; j++)
+				//	if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
+				//		return false;
 			}
 			return true;
 		}
