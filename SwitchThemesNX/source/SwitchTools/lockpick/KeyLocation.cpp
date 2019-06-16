@@ -64,6 +64,8 @@ void KeyLocation::get_from_memory(u64 tid, u8 seg_mask) {
     u32 page_info;
     u64 addr = 0;
 	
+    u64 last_text_addr = 0;
+	
 	// locate "real" .text segment as Atmosphere emuNAND has two
     for (;;) {
         svcQueryDebugProcessMemory(&mem_info, &page_info, debug_handle, addr);
