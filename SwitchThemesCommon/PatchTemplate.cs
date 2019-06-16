@@ -100,10 +100,10 @@ namespace SwitchThemes.Common
 			new PatchTemplate() { TemplateName = "user page" , szsName = "MyPage.szs", TitleId = "0100000000001013",  FirmName = "all firmwares",
 				FnameIdentifier = new string[] { @"blyt/MypUserIconMini.bflyt",@"blyt/BgNav_Root.bflyt" },
 				FnameNotIdentifier = new string[] { } ,
-				MainLayoutName = @"blyt/BaseTop.bflyt",
+				MainLayoutName = @"blyt/BgNml.bflyt",
 				MaintextureName = "NavBg_03^d",
 				PatchIdentifier = "exelixMY",
-				targetPanels = new string[] { "L_AreaNav", "L_AreaMain" },
+				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1A0^t",
 				NXThemeName = "user"
 			},
