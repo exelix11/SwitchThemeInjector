@@ -143,7 +143,7 @@ bool GetKeys(NcaDecryptionkeys *out)
     }
 	else 
 	{
-		DialogBlocking("Needed keys not found !");
+		DialogBlocking("Key extraction from FS failed !");
 		return false;
 	}
 	*out = {header_key,Keys.key_area_key_application_source};

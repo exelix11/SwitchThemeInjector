@@ -60,7 +60,7 @@ namespace SwitchThemes
 
 			if (IsMono)
 			{
-				MessageBox.Show("The ui is not supported with mono, use the command line args.\r\nRun \"mono SwitchThemes.exe help\"");
+				Console.WriteLine("The ui is not supported with mono, use the command line args.\r\nRun \"mono SwitchThemes.exe help\"");
 				return;
 			}
 
