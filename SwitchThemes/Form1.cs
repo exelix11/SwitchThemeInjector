@@ -193,7 +193,10 @@ namespace SwitchThemes
 			if (res == null) return;
 			res.TargetName = targetPatch?.szsName;
 
-			if (MessageBox.Show("Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			if (targetPatch == null || targetPatch.NXThemeName == "home")
+			if (MessageBox.Show(
+				"Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.\r\n" +
+				"This feature is only for the home menu.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				res.PatchAppletColorAttrib = true;
 
 			SaveFileDialog sav = new SaveFileDialog()
@@ -490,7 +493,7 @@ namespace SwitchThemes
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName == "home", !UseAnim.Checked);
+				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home", !UseAnim.Checked);
 				if (layoutres == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");

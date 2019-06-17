@@ -155,7 +155,7 @@ namespace SwitchThemes
 
 				if (Layout != null)
 				{
-					var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatch.LoadTemplate(File.ReadAllText(Layout)), targetPatch.NXThemeName == "home", true);
+					var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatch.LoadTemplate(File.ReadAllText(Layout)), targetPatch.NXThemeName, targetPatch.NXThemeName == "home", true);
 					if (layoutres == BflytFile.PatchResult.Fail)
 					{
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");

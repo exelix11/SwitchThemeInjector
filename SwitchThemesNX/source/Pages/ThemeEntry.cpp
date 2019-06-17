@@ -211,18 +211,18 @@ bool PatchBG(SARC::SarcData &ToPatch, const PatchTemplate &patch, const vector<u
 	return true;
 }
 
-bool PatchLayout(SARC::SarcData &ToPatch, const string &JSON, const string &SzsName)
+bool PatchLayout(SARC::SarcData &ToPatch, const string &JSON, const string &PartName)
 {
 	auto patch = Patches::LoadLayout(JSON);
 	if (!patch.IsCompatible(ToPatch))
 	{
-		Dialog("The provided layout is not compatible with " + SzsName + "\nThe theme was not installed");
+		Dialog("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
 		return false;
 	}
-	auto res = SwitchThemesCommon::PatchLayouts(ToPatch, patch, NXTheme_FirmMajor >= 8 && SzsName == "/themes/systemData/ResidentMenu.szs" , UseAnimations);
+	auto res = SwitchThemesCommon::PatchLayouts(ToPatch, patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home" , UseAnimations);
 	if (res != BflytFile::PatchResult::OK)
 	{
-		Dialog("PatchLayouts failed for " + SzsName + "\nThe theme was not installed");
+		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
 	}
 	if (UseAnimations)
@@ -230,7 +230,7 @@ bool PatchLayout(SARC::SarcData &ToPatch, const string &JSON, const string &SzsN
 		res = SwitchThemesCommon::PatchAnimations(ToPatch, patch.Anims);
 		if (res != BflytFile::PatchResult::OK)
 		{
-			Dialog("PatchAnimations failed for " + SzsName + "\nThe theme was not installed");
+			Dialog("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
 			return false;				
 		}
 	}
@@ -384,7 +384,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				SkipSaveActualFile = false;
 				auto JsonBinary = SData.files["layout.json"];
 				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
-				if (!PatchLayout(ToPatch,JSON,BaseSzs))
+				if (!PatchLayout(ToPatch, JSON, themeInfo.Target))
 					return false;
 			}
 			
