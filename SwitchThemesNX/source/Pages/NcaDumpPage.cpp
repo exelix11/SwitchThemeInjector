@@ -38,7 +38,7 @@ void NcaDumpPage::Update()
 				Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
 			return;
 		}
-		DialogBlocking("This process may take up to a few minutes, don't let your console go to sleep mode and don't press the home button.\nPress A to start");
+		DialogBlocking("To install custom themes you need to extract the home menu first, this process may take several minutes, don't let your console go to sleep mode and don't press the home button.\nPress A to start");
 		RemoveSystemDataDir();
 		if (ExtractHomeMenu())
 			Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
@@ -52,7 +52,11 @@ void NcaDumpPage::Update()
 extern int NXTheme_FirmMajor;
 static void NcaDumpPage::CheckHomeMenuVer()
 {
-	if (!filesystem::exists("/themes/systemData/ResidentMenu.szs")) goto DUMP_HOMEMENU;
+	if (!filesystem::exists("/themes/systemData/ResidentMenu.szs"))
+	{
+		DialogBlocking("To install custom themes you need to extract the home menu first, this process may take several minutes, don't let your console go to sleep mode and don't press the home button.\nPress A to start");
+		goto DUMP_HOMEMENU;
+	}
 	
 	if (filesystem::exists("/themes/systemData/ver.cfg"))
 	{

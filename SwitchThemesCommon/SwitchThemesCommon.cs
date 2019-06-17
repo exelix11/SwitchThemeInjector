@@ -214,7 +214,10 @@ namespace SwitchThemes.Common
 			try
 			{
 				foreach (var patch in patches)
-					q.FindTex(patch.Item1).ChannelTypes = (int)patch.Item2;
+				{
+					var target = q.FindTex(patch.Item1);
+					if (target != null) target.ChannelTypes = (int)patch.Item2;
+				}
 				sarc.Files["timg/__Combined.bntx"] = q.Write();
 			}
 			catch (Exception ex)
