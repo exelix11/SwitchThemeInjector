@@ -132,9 +132,8 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc
 	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
 	QuickBntx q(Reader);
 	if (q.Rlt.size() != 0x80)
-	{
 		return BflytFile::PatchResult::CorruptedFile;
-	}
+
 	try
 	{
 		auto dds = DDSEncoder::LoadDDS(DDS);
@@ -155,13 +154,15 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTextureAttribs(SARC::SarcDat
 	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
 	QuickBntx q(Reader);
 	if (q.Rlt.size() != 0x80)
-	{
 		return BflytFile::PatchResult::CorruptedFile;
-	}
+
 	try
 	{
-		for (const auto &patch : patches)		
-			q.FindTex(patch.TargetTexutre)->ChannelTypes = patch.ChannelData;
+		for (const auto& patch : patches) 
+		{
+			auto tex = q.FindTex(patch.TargetTexutre);
+			if (tex) tex->ChannelTypes = patch.ChannelData;
+		}
 		sarc.files["timg/__Combined.bntx"] = q.Write();
 	}
 	catch (...)
