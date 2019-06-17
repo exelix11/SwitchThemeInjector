@@ -134,8 +134,8 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 					if (!m.count("MaterialName")) continue;
 					MaterialPatch mat;
 					mat.MaterialName = m["MaterialName"];
-					mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"].get<string>() : "";
-					mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"].get<string>() : "";
+					mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"] : "";
+					mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"] : "";
 					p.Materials.push_back(mat);
 				}
 

@@ -44,9 +44,9 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, bool Fix8x, bool AddAnimations)
+BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, const string &partName, bool Fix8x, bool AddAnimations)
 {
-	if (patch.PatchAppletColorAttrib)
+	if (partName == "home" && patch.PatchAppletColorAttrib)
 		SwitchThemesCommon::PatchBntxTextureAttribs(sarc, {
 			{"RdtIcoPvr_00^s", 0x02000000}, {"RdtIcoNews_00^s", 0x02000000},
 			{"RdtIcoNews_01^s", 0x02000000}, {"RdtIcoSet^s", 0x02000000},

@@ -107,19 +107,14 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, bool FixFor8, bool AddAnimations = false)
+		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, string PartName, bool FixFor8, bool AddAnimations = false)
 		{
-			if (Patch.PatchAppletColorAttrib)
-			{
-				var res = PatchBntxTextureAttribs(sarc, 
-					new Tuple<string, uint>( "RdtIcoPvr_00^s", 0x02000000), new Tuple<string, uint>( "RdtIcoNews_00^s", 0x02000000),
-					new Tuple<string, uint> ( "RdtIcoNews_01^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoSet^s", 0x02000000),
-					new Tuple<string, uint> ( "RdtIcoShop^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_00^s", 0x02000000),
-					new Tuple<string, uint> ( "RdtIcoCtrl_01^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_02^s", 0x02000000),
-					new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
-				if (res != BflytFile.PatchResult.OK)
-					return res;
-			}
+			if (PartName == "home" && Patch.PatchAppletColorAttrib)
+				 PatchBntxTextureAttribs(sarc, 	new Tuple<string, uint>( "RdtIcoPvr_00^s", 0x02000000),
+					new Tuple<string, uint>( "RdtIcoNews_00^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoNews_01^s", 0x02000000),
+					new Tuple<string, uint> ( "RdtIcoSet^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoShop^s", 0x02000000),
+					new Tuple<string, uint> ( "RdtIcoCtrl_00^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_01^s", 0x02000000), 
+					new Tuple<string, uint> ( "RdtIcoCtrl_02^s", 0x02000000), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
 
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
