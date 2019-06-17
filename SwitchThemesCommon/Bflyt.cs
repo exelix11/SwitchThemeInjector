@@ -187,9 +187,12 @@ namespace SwitchThemes.Common
 
 		public class MaterialsSection : BasePanel
 		{
-			public List<byte[]> Materials = new List<byte[]>();
-			public MaterialsSection(BinaryDataReader bin) : base("mat1", bin)
+			public uint Version;
+
+			public List<BflytPanes.BflytMaterial> Materials = new List<BflytPanes.BflytMaterial>();
+			public MaterialsSection(BinaryDataReader bin, uint ver) : base("mat1", bin)
 			{
+				Version = ver;
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = bin.ByteOrder;
 				int matCount = dataReader.ReadInt32();
@@ -197,7 +200,7 @@ namespace SwitchThemes.Common
 				for (int i = 0; i < matCount; i++)
 				{
 					int matLen = (i == matCount - 1 ? (int)dataReader.BaseStream.Length : Offsets[i + 1]) - (int)dataReader.Position;
-					Materials.Add(dataReader.ReadBytes(matLen));
+					Materials.Add(new BflytPanes.BflytMaterial(dataReader.ReadBytes(matLen), dataReader.ByteOrder, ver));
 				}
 			}
 
@@ -213,7 +216,7 @@ namespace SwitchThemes.Common
 				for (int i = 0; i < Materials.Count; i++)
 				{
 					uint off = (uint)dataWriter.Position;
-					dataWriter.Write(Materials[i]);
+					dataWriter.Write(Materials[i].Write(Version, dataWriter.ByteOrder));
 					uint endPos = (uint)dataWriter.Position;
 					dataWriter.Position = 4 + i * 4;
 					dataWriter.Write(off + 8);
@@ -331,7 +334,7 @@ namespace SwitchThemes.Common
 					bin.Write(1f);
 					bin.Write(1f);
 					bin.Write(new byte[0x10]);
-					MatSect.Materials.Add(mem.ToArray());
+					MatSect.Materials.Add(new BflytPanes.BflytMaterial(mem.ToArray(), bin.ByteOrder, version));
 				}
 			}
 			#endregion
@@ -459,6 +462,23 @@ namespace SwitchThemes.Common
 					}
 				}
 				#endregion
+			}
+			return PatchResult.OK;
+		}
+
+		public PatchResult ApplyMaterialsPatch(MaterialPatch[] Patches)
+		{
+			if (Patches == null) return PatchResult.OK;
+			var mats = GetMat;
+			if (mats == null) return PatchResult.Fail;
+			foreach (var p in Patches)
+			{
+				var target = mats.Materials.Where(x => x.Name == p.MaterialName).FirstOrDefault();
+				if (target == null) continue; //Less strict patching
+				if (p.ForegroundColor != null)
+					target.ForegroundColor = Convert.ToUInt32(p.ForegroundColor, 16);
+				if (p.BackgroundColor != null)
+					target.BackgroundColor = Convert.ToUInt32(p.BackgroundColor, 16);
 			}
 			return PatchResult.OK;
 		}
@@ -595,7 +615,7 @@ namespace SwitchThemes.Common
 						Panels.Add(new TextureSection(bin));
 						break;
 					case "mat1":
-						Panels.Add(new MaterialsSection(bin));
+						Panels.Add(new MaterialsSection(bin, version));
 						break;
 					case "pic1":
 						Panels.Add(new PicturePanel(bin));

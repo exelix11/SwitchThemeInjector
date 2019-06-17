@@ -34,6 +34,10 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 		res.Ready8X = j["Ready8X"].get<bool>();
 	else res.Ready8X = false;
 
+	if (j.count("PatchAppletColorAttrib"))
+		res.PatchAppletColorAttrib = j["PatchAppletColorAttrib"].get<bool>();
+	else res.PatchAppletColorAttrib = false;
+
 	if (j.count("Anims") && j["Anims"].is_array())
 	{
 		for (auto& a : j["Anims"]) 
@@ -117,11 +121,24 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 			if (filePatch.count("AddGroups") && filePatch["AddGroups"].is_array())
 				for (auto& g : filePatch["AddGroups"])
 				{
+					if (!g.count("GroupName") || !g.count("Panes"))
+						continue;
 					ExtraGroup grp;
 					grp.GroupName = g["GroupName"];
 					grp.Panes = g["Panes"].get<vector<string>>();
 					p.AddGroups.push_back(grp);
 				}
+			if (filePatch.count("Materials") && filePatch["Materials"].is_array())
+				for (auto& m : filePatch["Materials"])
+				{
+					if (!m.count("MaterialName")) continue;
+					MaterialPatch mat;
+					mat.MaterialName = m["MaterialName"];
+					mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"].get<string>() : "";
+					mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"].get<string>() : "";
+					p.Materials.push_back(mat);
+				}
+
 			res.Files.push_back(p);
 		}
 	}

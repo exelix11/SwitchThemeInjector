@@ -67,13 +67,13 @@ namespace SwitchThemes
 					if (edPan.name == "pic1")
 					{
 						if (edPan.ColorData[0] != orPan.ColorData[0])
-							curPatch.ColorTL = edPan.ColorData[0].ToString("X");
+							curPatch.ColorTL = edPan.ColorData[0].ToString("X8");
 						if (edPan.ColorData[1] != orPan.ColorData[1])
-							curPatch.ColorTR = edPan.ColorData[1].ToString("X");
+							curPatch.ColorTR = edPan.ColorData[1].ToString("X8");
 						if (edPan.ColorData[2] != orPan.ColorData[2])
-							curPatch.ColorBL = edPan.ColorData[2].ToString("X");
+							curPatch.ColorBL = edPan.ColorData[2].ToString("X8");
 						if (edPan.ColorData[3] != orPan.ColorData[3])
-							curPatch.ColorBR = edPan.ColorData[3].ToString("X");
+							curPatch.ColorBR = edPan.ColorData[3].ToString("X8");
 					}
 					curFile.Add(curPatch);
 				}
@@ -89,8 +89,27 @@ namespace SwitchThemes
 				}
 				if (extraGroups.Count == 0) extraGroups = null;
 
-				if (curFile.Count > 0 || extraGroups?.Count > 0)
-					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), AddGroups = extraGroups?.ToArray() });
+				List<MaterialPatch> materials = new List<MaterialPatch>();
+				if (ed.GetMat != null && or.GetMat != null)
+				{
+					var edMat = ed.GetMat;
+					foreach (var orM in or.GetMat.Materials)
+					{
+						var edM = edMat.Materials.Where(x => x.Name == orM.Name).FirstOrDefault();
+						if (edM == null) continue;
+						if (edM.ForegroundColor == orM.ForegroundColor && edM.BackgroundColor == orM.BackgroundColor) continue;
+						MaterialPatch m = new MaterialPatch() { MaterialName = orM.Name };
+						if (edM.ForegroundColor != orM.ForegroundColor)
+							m.ForegroundColor = edM.ForegroundColor.ToString("X8");
+						if (edM.BackgroundColor != orM.BackgroundColor)
+							m.BackgroundColor = edM.BackgroundColor.ToString("X8");
+						materials.Add(m);
+					}
+				}
+				if (materials.Count == 0) materials = null;
+
+				if (curFile.Count > 0 || extraGroups?.Count > 0 || materials?.Count > 0)
+					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), Materials = materials?.ToArray(), AddGroups = extraGroups?.ToArray() });
 			}
 			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{

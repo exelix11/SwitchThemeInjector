@@ -51,11 +51,19 @@ struct ExtraGroup
 	std::vector<std::string> Panes;
 };
 
+struct MaterialPatch
+{
+	std::string MaterialName;
+	std::string ForegroundColor;
+	std::string BackgroundColor;
+};
+
 struct LayoutFilePatch 
 {
 	std::string FileName;
 	std::vector<PanePatch> Patches;
 	std::vector<ExtraGroup> AddGroups;
+	std::vector<MaterialPatch> Materials;
 };
 
 struct AnimFilePatch
@@ -70,6 +78,7 @@ struct LayoutPatch
 	std::string AuthorName;
 	std::vector<LayoutFilePatch> Files;
 	std::vector<AnimFilePatch> Anims;
+	bool PatchAppletColorAttrib = false;
 	bool Ready8X = false;
 
 	bool IsCompatible(const SARC::SarcData &sarc);

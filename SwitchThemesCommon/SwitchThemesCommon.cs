@@ -109,6 +109,18 @@ namespace SwitchThemes.Common
 
 		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, bool FixFor8, bool AddAnimations = false)
 		{
+			if (Patch.PatchAppletColorAttrib)
+			{
+				var res = PatchBntxTextureAttribs(sarc, 
+					new Tuple<string, uint>( "RdtIcoPvr_00^s", 0x02000000), new Tuple<string, uint>( "RdtIcoNews_00^s", 0x02000000),
+					new Tuple<string, uint> ( "RdtIcoNews_01^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoSet^s", 0x02000000),
+					new Tuple<string, uint> ( "RdtIcoShop^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_00^s", 0x02000000),
+					new Tuple<string, uint> ( "RdtIcoCtrl_01^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_02^s", 0x02000000),
+					new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
+				if (res != BflytFile.PatchResult.OK)
+					return res;
+			}
+
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
 			if (FixFor8 && !Patch.Ready8X)
@@ -123,6 +135,7 @@ namespace SwitchThemes.Common
 				if (!sarc.Files.ContainsKey(p.FileName))
 					return BflytFile.PatchResult.Fail;
 				var target = new BflytFile(sarc.Files[p.FileName]);
+				target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
 				var res = target.ApplyLayoutPatch(p.Patches);
 				if (res != BflytFile.PatchResult.OK)
 					return res;
@@ -172,11 +185,11 @@ namespace SwitchThemes.Common
 			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
 			if (q.Rlt.Length != 0x80)
 			{
-				return BflytFile.PatchResult.Fail;
+				return BflytFile.PatchResult.CorruptedFile;
 			}
 			q.ReplaceTex(texName, DDS);
 			if (TexFlag != 0xFFFFFFFF)
-				q.Textures.Where(x => x.Name == texName).First().ChannelTypes = (int)TexFlag;
+				q.FindTex(texName).ChannelTypes = (int)TexFlag;
 			sarc.Files[@"timg/__Combined.bntx"] = null;
 			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
 			return BflytFile.PatchResult.OK;
@@ -187,12 +200,32 @@ namespace SwitchThemes.Common
 			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
 			if (q.Rlt.Length != 0x80)
 			{
-				return BflytFile.PatchResult.Fail;
+				return BflytFile.PatchResult.CorruptedFile;
 			}
 			q.ReplaceTex(targetPatch.MaintextureName, DDS);
 			DDS = null;
 			sarc.Files[@"timg/__Combined.bntx"] = null;
 			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
+			return BflytFile.PatchResult.OK;
+		}
+
+		public static BflytFile.PatchResult PatchBntxTextureAttribs(SARCExt.SarcData sarc, params Tuple<string, UInt32>[] patches)
+		{
+			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			if (q.Rlt.Length != 0x80)
+			{
+				return BflytFile.PatchResult.CorruptedFile;
+			}
+			try
+			{
+				foreach (var patch in patches)
+					q.FindTex(patch.Item1).ChannelTypes = (int)patch.Item2;
+				sarc.Files["timg/__Combined.bntx"] = q.Write();
+			}
+			catch (Exception ex)
+			{
+				return BflytFile.PatchResult.Fail;
+			}
 			return BflytFile.PatchResult.OK;
 		}
 

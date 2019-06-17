@@ -182,8 +182,8 @@ void TextureSection::WritePane(Buffer &writer)
 	BasePane::WritePane(writer);
 }
 
-MaterialsSection::MaterialsSection() : BasePane("mat1", 8) {}
-MaterialsSection::MaterialsSection(Buffer &reader) : BasePane("mat1", reader)
+MaterialsSection::MaterialsSection(u32 version) : BasePane("mat1", 8), Version(version) {}
+MaterialsSection::MaterialsSection(Buffer &reader, u32 version) : BasePane("mat1", reader) , Version(version)
 {
 	Buffer dataReader(data);
 	dataReader.ByteOrder = reader.ByteOrder;
@@ -192,7 +192,8 @@ MaterialsSection::MaterialsSection(Buffer &reader) : BasePane("mat1", reader)
 	for (int i = 0; i < matCount; i++)
 	{
 		int matLen = (i == matCount - 1 ? (int)dataReader.Length() : Offsets[i + 1] - 8) - (int)dataReader.Position;
-		Materials.push_back(dataReader.readBytes(matLen));
+		BflytMaterial mat (dataReader.readBytes(matLen), Version, dataReader.ByteOrder);
+		Materials.push_back(move(mat));
 	}
 }
 
@@ -206,7 +207,7 @@ void MaterialsSection::WritePane(Buffer &writer)
 	for (int i = 0; i < Materials.size(); i++)
 	{
 		u32 off = dataWriter.Position;
-		dataWriter.Write(Materials[i]);
+		dataWriter.Write(Materials[i].Write(Version, dataWriter.ByteOrder));
 		u32 endPos = dataWriter.Position;
 		dataWriter.Position = 4 + i * 4;
 		dataWriter.Write(off + 8);
@@ -256,7 +257,7 @@ BflytFile::BflytFile(const vector<u8>& file)
 		if (name == "txl1")
 			Panes.push_back((BasePane*) new TextureSection(bin));
 		else if (name == "mat1")
-			Panes.push_back((BasePane*) new MaterialsSection(bin));
+			Panes.push_back((BasePane*) new MaterialsSection(bin,Version));
 		else if (name == "pic1")
 			Panes.push_back((BasePane*) new PicturePane(bin));
 		else if (name == "usd1")
@@ -306,7 +307,7 @@ MaterialsSection* BflytFile::GetMatSection()
 		if (ptr->name == "mat1")
 			return (MaterialsSection*)ptr;
 	}
-	MaterialsSection *ptr = new MaterialsSection();
+	MaterialsSection *ptr = new MaterialsSection(Version);
 	Panes.insert(Panes.begin() + 3, (Panes::BasePane*)ptr);
 	return ptr;
 }
@@ -386,7 +387,8 @@ int BflytFile::AddBgMat(const std::string &texName)
 		bin.Write((float)1);
 		for (int i = 0; i < 0x10; i++)
 			bin.Write((u8)0);
-		MatSect->Materials.push_back(bin.getBuffer());
+		BflytMaterial mat{ bin.getBuffer() , Version, bin.ByteOrder };
+		MatSect->Materials.push_back(move(mat));
 	}
 	return MatSect->Materials.size() - 1;
 }
@@ -513,6 +515,22 @@ BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patc
 				}
 			}
 		}
+	}
+	return PatchResult::OK;
+}
+
+BflytFile::PatchResult BflytFile::ApplyMaterialsPatch(const vector<MaterialPatch>& Patches) 
+{
+	auto mats = GetMatSection();
+	if (!mats) return PatchResult::Fail;
+	for (const auto& p : Patches)
+	{
+		auto target = find_if(mats->Materials.begin(), mats->Materials.end(), [&p](BflytMaterial m) {return m.Name == p.MaterialName; });
+		if (target == mats->Materials.end()) continue; //Less strict patching
+		if (p.ForegroundColor != "")
+			(*target).ForegroundColor = (u32)std::stoul(p.ForegroundColor, 0, 16);
+		if (p.BackgroundColor!= "")
+			(*target).BackgroundColor = (u32)std::stoul(p.BackgroundColor, 0, 16);
 	}
 	return PatchResult::OK;
 }

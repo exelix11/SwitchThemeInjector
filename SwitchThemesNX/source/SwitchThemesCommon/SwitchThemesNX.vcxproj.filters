@@ -37,6 +37,9 @@
     <ClCompile Include="Layouts\NewFirmFixes.cpp">
       <Filter>Layouts</Filter>
     </ClCompile>
+    <ClCompile Include="Layouts\BflytMaterial.cpp">
+      <Filter>Layouts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BinaryReadWrite\Buffer.hpp">

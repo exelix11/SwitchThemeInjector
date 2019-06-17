@@ -192,6 +192,10 @@ namespace SwitchThemes
 			var res = LayoutDiff.Diff(originalSzs, CommonSzs);
 			if (res == null) return;
 			res.TargetName = targetPatch?.szsName;
+
+			if (MessageBox.Show("Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				res.PatchAppletColorAttrib = true;
+
 			SaveFileDialog sav = new SaveFileDialog()
 			{
 				Title = "save the patch file",

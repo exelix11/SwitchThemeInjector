@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bflan.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BflanSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\BflytMaterial.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\Grp1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\Usd1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Bntx.cs" />

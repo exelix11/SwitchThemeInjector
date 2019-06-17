@@ -317,7 +317,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set"); //On 5.x these files must patch the bg in common
 			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
 			if ((themeInfo.Target == "home" && SData.files.count("common.json")) || DoPatchCommonBG)
-			{				
+			{
+				//common.szs patching code
+				
 				string CommonSzs = "/themes/systemData/common.szs";
 				if (!filesystem::exists(CommonSzs))
 				{
