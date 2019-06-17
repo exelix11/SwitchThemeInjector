@@ -267,7 +267,7 @@ namespace SwitchThemes
 				var res = SwitchThemesCommon.GenerateNXTheme(
 					new ThemeFileManifest()
 					{
-						Version = 6,
+						Version = 7,
 						ThemeName = Name,
 						Author = Author,
 						Target = Target,
