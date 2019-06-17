@@ -58,6 +58,8 @@ namespace SwitchThemes.Common.Bntxx
 			ReplaceTex(texName, dds);
 		}
 
+		public Bntxx.Texture FindTex(string texName) => Textures.Where(x => x.Name == texName).FirstOrDefault();
+
 		public void ReplaceTex(string texName, DDSEncoder.DDSLoadResult dds)
 		{
 			var target = Textures.Where(x => x.Name == texName).First();

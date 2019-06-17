@@ -46,6 +46,14 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 
 BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, bool Fix8x, bool AddAnimations)
 {
+	if (patch.PatchAppletColorAttrib)
+		SwitchThemesCommon::PatchBntxTextureAttribs(sarc, {
+			{"RdtIcoPvr_00^s", 0x02000000}, {"RdtIcoNews_00^s", 0x02000000},
+			{"RdtIcoNews_01^s", 0x02000000}, {"RdtIcoSet^s", 0x02000000},
+			{"RdtIcoShop^s", 0x02000000}, {"RdtIcoCtrl_00^s", 0x02000000},
+			{"RdtIcoCtrl_01^s", 0x02000000}, {"RdtIcoCtrl_02^s", 0x02000000}, {"RdtIcoPwrForm^s", 0x02000000},
+		});
+
 	vector<LayoutFilePatch> Files;
 	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
 
@@ -61,6 +69,7 @@ BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, co
 		if (!sarc.files.count(p.FileName))
 			return BflytFile::PatchResult::Fail;
 		BflytFile target(sarc.files[p.FileName]);
+		target.ApplyMaterialsPatch(p.Materials); //Ignore result for 8.0 less strict patching
 		auto res = target.ApplyLayoutPatch(p.Patches);
 		if (res != BflytFile::PatchResult::OK)
 			return res;
@@ -110,7 +119,7 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntx(SARC::SarcData &sarc, const
 	QuickBntx q(Reader);
 	if (q.Rlt.size() != 0x80)
 	{
-		return BflytFile::PatchResult::Fail;
+		return BflytFile::PatchResult::CorruptedFile;
 	}
 	auto dds = DDSEncoder::LoadDDS(DDS);
 	q.ReplaceTex(targetPatch.MaintextureName, dds);
@@ -124,7 +133,7 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc
 	QuickBntx q(Reader);
 	if (q.Rlt.size() != 0x80)
 	{
-		return BflytFile::PatchResult::Fail;
+		return BflytFile::PatchResult::CorruptedFile;
 	}
 	try
 	{
@@ -132,6 +141,27 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc
 		q.ReplaceTex(texName, dds);
 		if (ChannelData != 0xFFFFFFFF)
 			q.FindTex(texName)->ChannelTypes = ChannelData;
+		sarc.files["timg/__Combined.bntx"] = q.Write();
+	}
+	catch (...)
+	{
+		return BflytFile::PatchResult::Fail;
+	}
+	return BflytFile::PatchResult::OK;
+}
+
+BflytFile::PatchResult SwitchThemesCommon::PatchBntxTextureAttribs(SARC::SarcData &sarc, const vector<BntxTexAttribPatch> &patches)
+{
+	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
+	QuickBntx q(Reader);
+	if (q.Rlt.size() != 0x80)
+	{
+		return BflytFile::PatchResult::CorruptedFile;
+	}
+	try
+	{
+		for (const auto &patch : patches)		
+			q.FindTex(patch.TargetTexutre)->ChannelTypes = patch.ChannelData;
 		sarc.files["timg/__Combined.bntx"] = q.Write();
 	}
 	catch (...)

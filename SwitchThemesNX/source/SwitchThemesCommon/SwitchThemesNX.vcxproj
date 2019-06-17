@@ -156,6 +156,7 @@
     <ClCompile Include="Fonts\TTF.cpp" />
     <ClCompile Include="Layouts\Bflan.cpp" />
     <ClCompile Include="Layouts\Bflyt.cpp" />
+    <ClCompile Include="Layouts\BflytMaterial.cpp" />
     <ClCompile Include="Layouts\DefaultTemplates.cpp" />
     <ClCompile Include="Layouts\NewFirmFixes.cpp" />
     <ClCompile Include="NXTheme.cpp" />

@@ -8,6 +8,8 @@
 
 namespace Panes 
 {
+	//Note: the u32 colors are encoded as 0xAABBGGRR
+
 	class BasePane
 	{
 	public:
@@ -69,12 +71,28 @@ namespace Panes
 		void WritePane(Buffer &writer) override;
 	};
 
+	class BflytMaterial 
+	{
+	public:
+		//TODO: support more properties in the layouts (?)
+		std::string Name;
+		u32 ForegroundColor;
+		u32 BackgroundColor;
+
+		BflytMaterial(const std::vector<u8>& data, u32 Version, Endianness bo);
+		std::vector<u8> Write(u32 version, Endianness bo);
+	private:
+		std::vector<u8> Data;
+	};
+
 	class MaterialsSection : BasePane
 	{
 	public:
-		std::vector<std::vector<u8>> Materials;
-		MaterialsSection(Buffer &reader);
-		MaterialsSection();
+		u32 Version;
+
+		std::vector<BflytMaterial> Materials;
+		MaterialsSection(Buffer &reader, u32 version);
+		MaterialsSection(u32 version);
 
 		void WritePane(Buffer &writer) override;
 	};
@@ -151,6 +169,7 @@ public:
 	std::vector<std::string> GetPaneNames();
 	std::vector<std::string> GetGroupNames();
 	PatchResult ApplyLayoutPatch(const std::vector<PanePatch>& Patches);
+	PatchResult ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches);
 	PatchResult PatchBgLayout(const PatchTemplate& patch);
 	PatchResult AddGroupNames(const std::vector<ExtraGroup>& Groups);
 private:

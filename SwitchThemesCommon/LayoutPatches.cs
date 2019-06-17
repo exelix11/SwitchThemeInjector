@@ -8,11 +8,12 @@ using Newtonsoft.Json;
 namespace SwitchThemes.Common
 {
 	public class LayoutPatch
-    {
+	{
 		public string PatchName;
 		public string AuthorName;
 		public string TargetName;
 		public bool Ready8X = false;
+		public bool PatchAppletColorAttrib = false;
 		public LayoutFilePatch[] Files;
 		public AnimFilePatch[] Anims;
 
@@ -86,11 +87,19 @@ namespace SwitchThemes.Common
 		public string AnimJson;
 	}
 
+	public class MaterialPatch
+	{
+		public string MaterialName;
+		public string ForegroundColor = null;
+		public string BackgroundColor = null;
+	}
+
 	public class LayoutFilePatch
 	{
 		public string FileName;
 		public PanePatch[] Patches;
 		public ExtraGroup[] AddGroups = null;
+		public MaterialPatch[] Materials = null;
 	}
 
 	public class ExtraGroup
