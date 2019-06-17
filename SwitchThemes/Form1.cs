@@ -589,7 +589,7 @@ namespace SwitchThemes
 				var res = SwitchThemesCommon.GenerateNXTheme(
 					new ThemeFileManifest()
 					{
-						Version = 6,
+						Version = 7,
 						ThemeName = info.Item1,
 						Author = info.Item2,
 						Target = targetPatch.NXThemeName,
@@ -648,7 +648,7 @@ namespace SwitchThemes
 				var res = SwitchThemesCommon.GenerateNXTheme(
 					new ThemeFileManifest()
 					{
-						Version = 6,
+						Version = 7,
 						ThemeName = info.Item1,
 						Author = info.Item2,
 						Target = HomeMenuParts[HomeMenuPartBox.Text],
