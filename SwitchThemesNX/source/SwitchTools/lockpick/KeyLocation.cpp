@@ -79,6 +79,7 @@ void KeyLocation::get_from_memory(u64 tid, u8 seg_mask) {
         if (addr == 0) break;
     }
 
+	addr = last_text_addr;
     for (u8 segment = 1; segment < BIT(3); )
     {
         svcQueryDebugProcessMemory(&mem_info, &page_info, debug_handle, addr);
