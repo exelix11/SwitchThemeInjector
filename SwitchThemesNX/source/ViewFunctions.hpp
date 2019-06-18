@@ -3,7 +3,7 @@
 #include <string>
 #include "UI/DialogPages.hpp"
 
-const std::string VersionString = "Ver. 1.6";
+const std::string VersionString = "Ver. 1.6.1";
 extern std::string SystemVer;
 
 extern bool UseAnimations;
