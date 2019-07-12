@@ -29,7 +29,16 @@ void TextPage::Update()
 CreditsPage::CreditsPage() :
 	creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
 		"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n"),
-	creditsText2("Thanks to:\n Syroot for BinaryData lib\n AboodXD for Bntx editor and sarc lib\n shchmue for Lockpick\n ScriesM for hactool\n Everyone from Atmosphere and libnx\n switch-stuff on github for the font converter")
+	creditsText2(
+		"Thanks to:\n"
+		"Syroot for BinaryData lib\n"
+		"AboodXD for Bntx editor and sarc lib\n"
+		"shchmue for Lockpick\n"
+		"ScriesM for hactool\n"
+		"Everyone from Atmosphere and libnx\n"
+		"switch-stuff on github for the font converter\n"
+		"Fincs for the hybrid_app template\n"
+		"Everyone from the DearImgui github repo")
 {
 	Name = "Credits";
 }
@@ -51,7 +60,10 @@ void CreditsPage::Render(int X, int Y)
 	PAGE_RESET_FOCUS
 	ImGui::SameLine();
 	if (ImGui::Button("Show licenses"))
-		Dialog("Here be licenses");
+	{
+		auto f = OpenFile(ASSET("licenses.txt"));
+		Dialog(string((char*)f.data(), f.size()));
+	}
 
 	IsLayoutBlockingLeft = GImGui->NavId == ImGui::GetCurrentWindow()->GetID("Show licenses");
 

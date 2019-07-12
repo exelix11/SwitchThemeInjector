@@ -84,7 +84,7 @@ void ThemesPage::SetPage(int num)
 const int EntryW = 860;
 void ThemesPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("Themes", X, Y, false);
+	Utils::ImGuiSetupPage("Themes", X, Y, false, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushFont(font25);
 
 	if (DisplayEntries.size() == 0)
@@ -139,7 +139,7 @@ void ThemesPage::Render(int X, int Y)
 	}
 
 	{
-		Utils::ImGuiSetupPage("Themes install", X, Y, focused, ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+		Utils::ImGuiSetupPage("Themes install", X, Y, focused, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
 		if (ResetScroll)
 		{
