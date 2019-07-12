@@ -26,7 +26,7 @@ void DisplayLoading(const std::string &msg);
 
 namespace Utils
 {
-	static inline void ImGuiSetupWin(const char* name, int x, int y, ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove)
+	static inline void ImGuiSetupWin(const char* name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
@@ -34,7 +34,7 @@ namespace Utils
 		ImGui::SetWindowPos(ImVec2(x, y));
 	}
 
-	static inline void ImGuiSetupPage(const char* name, int x, int y, bool focus, ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove)
+	static inline void ImGuiSetupPage(const char* name, int x, int y, bool focus, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGuiSetupWin(name, x, y, flags);
 		ImGui::SetWindowSize(ImVec2(SCR_W - x, SCR_H - y));

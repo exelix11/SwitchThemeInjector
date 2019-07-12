@@ -97,12 +97,16 @@ void PushPageBlocking(IUIControlObj* page)
 		PlatformGetInputs();
 		ImguiBindController();
 		PlatformImguiBinds();
+		
+		IUIControlObj* CurObj = ViewObj;
 
 		UiStartFrame();
-		ViewObj->Render(0,0);
+		CurObj->Render(0,0);
 		UiEndFrame();
 
-		ViewObj->Update();
+		if (CurObj == ViewObj)
+			CurObj->Update();
+		
 		ExecuteDeferredFunctions();
 		if (doPopPage)
 		{
@@ -167,14 +171,19 @@ static void MainLoop()
 		ImguiBindController();
 		PlatformImguiBinds();
 
+		//A control may push a page either in the render or the update function.
+		IUIControlObj* CurObj = ViewObj;
+
 		UiStartFrame();		
-		ViewObj->Render(0,0);
+		CurObj->Render(0,0);
 #ifndef __SWITCH__
 		calcFPS();
 #endif
 		UiEndFrame();
 
-		ViewObj->Update();
+		if (CurObj == ViewObj)
+			CurObj->Update();
+		
 		ExecuteDeferredFunctions();
 		if (doPopPage)
 			_PopPage();

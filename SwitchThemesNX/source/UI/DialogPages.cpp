@@ -24,15 +24,20 @@ DialogPage::DialogPage(const string &msg) : DialogPage(msg, "Continue") {}
 
 void DialogPage::Render(int X, int Y)
 {	
-	Utils::ImGuiSetupWin("DialogPage", 20, 20, ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
-	ImGui::SetWindowFocus();
+	Utils::ImGuiSetupWin("DialogPage", 20, 20, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30});
 	ImGui::PushFont(font30);
 	ImGui::SetCursorPos({ 10, 15 });
-	ImGui::TextWrapped(text.c_str());
-	
+
+	Utils::ImGuiSetupWin("DialogContent", 20, 20, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+	ImGui::SetWindowFocus();
+	ImGui::SetWindowSize({ SCR_W - 30 ,  SCR_H - 80 });
+	ImGui::TextUnformatted(text.c_str());
+	Utils::ImGuiCloseWin();
+
+	ImGui::SetCursorPosY(SCR_H - 70);
 	if (ImGui::Button("   OK   "))
-		PopPage(); 
+		PopPage();
 	Utils::ImGuiSelectItemOnce();
 
 	ImGui::PopFont();
@@ -42,7 +47,8 @@ void DialogPage::Render(int X, int Y)
 
 void DialogPage::Update()
 {
-
+	if (KeyPressed(GLFW_GAMEPAD_BUTTON_A))
+		PopPage();
 }
 
 YesNoPage::YesNoPage(const string &msg, bool *outRes): text(msg) 
@@ -57,7 +63,7 @@ void YesNoPage::Render(int X, int Y)
 	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30 });
 	ImGui::PushFont(font30);
 	ImGui::SetCursorPosY(30);
-	ImGui::TextWrapped(text.c_str());
+	ImGui::TextUnformatted(text.c_str());
 
 	if (ImGui::Button("   YES   "))
 	{

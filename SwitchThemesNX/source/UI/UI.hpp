@@ -10,6 +10,8 @@
 #include <switch.h>
 #endif
 
+constexpr ImGuiWindowFlags DefaultWinFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+
 extern ImFont* font25;
 extern ImFont* font30;
 extern ImFont* font40;
@@ -38,7 +40,9 @@ private:
 class IUIControlObj
 {
 	public:
+		//Execute commands out of the drawing code,eg manually check inputs or call UI blocking functions
 		virtual void Update() = 0;
+		//Draw the control in the existing Imgui frame
 		virtual void Render(int X, int Y) = 0;
 		virtual ~IUIControlObj();
 };
