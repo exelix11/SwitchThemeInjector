@@ -1,89 +1,112 @@
 #include "UI.hpp"
 #include "../ViewFunctions.hpp"
-#include "../input.hpp"
+#include "../Platform/Platform.hpp"
+
 using namespace std;
 
-const SDL_Rect ScreenRect = {0,0,SCR_W,SCR_H};
-const SDL_Rect BottomRect = {0, SCR_H - 67, SCR_W, 67};
-const SDL_Rect TopRect = {0,0,SCR_W,76};
-const SDL_Rect SideRect = {0,TopRect.h,378,BottomRect.y - TopRect.h};
+/*
+18					18
+--330  14  900		--
+  ----|  |-----------
+
+*/
+
+const int BorderPadding = 20;
+
+const ImVec4 BottomRect = { 0, SCR_H - 67, SCR_W, 67 };
+const ImVec4 TopRect = { 0,0,SCR_W,76 };
+const ImVec4 SideRect = { 0,TopRect.z,330,BottomRect.y - TopRect.w };
 
 #define TopLineLen 1200
 #define SideLineLen 510
 
-const SDL_Rect TopLine = {SCR_W/2 - TopLineLen/2, TopRect.h + 1,TopLineLen,2};
-const SDL_Rect BottomLine = {SCR_W/2 - TopLineLen/2, BottomRect.y - 1,TopLineLen,2};
-const SDL_Rect SideLine = {SideRect.w + 1, (SCR_H)/2 - SideLineLen /2 ,2,SideLineLen};
+const ImVec2 TopLineSz = { TopLineLen,2 };
+const ImVec2 SideLineSz = { 2,SideLineLen };
+
+const ImVec2 TopLine = { SCR_W / 2 - TopLineLen / 2, TopRect.w + 1 };
+const ImVec2 BottomLine = { SCR_W / 2 - TopLineLen / 2, BottomRect.y - 1 };
+const ImVec2 SideLine = { SideRect.z + 1, (SCR_H) / 2 - SideLineLen / 2 };
 
 void TabRenderer::Render(int X, int Y)
 {
-	SDL_SetRenderDrawColor(sdl_render,45,45,45,0xff); //Switch dark bg
-	SDL_RenderFillRect(sdl_render,&ScreenRect);
-	
-	//SDL_SetRenderDrawColor(sdl_render,45,45,45,0xff);
-	//SDL_RenderFillRect(sdl_render,&SideRect);
-	
-	int BaseLabelY = TopRect.h + 15;
+	Utils::ImGuiSetupWin("TabRenderer", 0, 0);
+	ImGui::SetWindowSize(ImVec2(SideRect.z, SideRect.w));
+
+	if (!ControlHasFocus)
+		ImGui::SetWindowFocus();
+
+	ImGui::PushFont(font30);
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0,0.5 });
+	int BaseLabelY = TopRect.w + 15;
+	ImGui::SetCursorPos({ TopLine.x + 4, (float)BaseLabelY });
 	int count = 0;
-	for (auto label : PageLables)
+	static int selectedIndex;
+	for (const IPage *page : Pages)
 	{
-		auto lSize = label->GetSize();
-		if (count == selectedPage){
-			auto border = lSize;
-			border.x = TopLine.x; border.y = BaseLabelY - 4; 
-			border.w = SideRect.w - TopLine.x - 4; border.h += 8;
-			if (!FocusedControl)
-			{
-				SDL_SetRenderDrawColor(sdl_render,11,255,209,0xff);
-				SDL_RenderDrawRect(sdl_render,&border); //two pixels border
-				border.x++; border.y++;
-				border.w -= 2; border.h -=2;
-				SDL_RenderDrawRect(sdl_render,&border);
-			}
-			else 
-			{
-				SDL_SetRenderDrawColor(sdl_render,90,90,90,0xff);
-				SDL_RenderFillRect(sdl_render,&border);			
-			}
+		ImGui::SetCursorPosX(TopLine.x + 4);
+		
+		bool Border = (page == CurrentControl);
+		if (Border)
+			ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
+
+		if (ImGui::Button(page->Name.c_str(), ImVec2(260,0)))
+		{
+			SetFocused(count);
+			selectedIndex = count;
 		}
-		label->Render(TopLine.x + 4,BaseLabelY);
-		BaseLabelY += label->GetSize().h + 4;
+		if (count == 0) Utils::ImGuiSelectItemOnce();
+
+		if (Border)
+			ImGui::PopStyleVar();
+
+		if (!ControlHasFocus && GImGui->NavId == ImGui::GetCurrentWindow()->GetID(page->Name.c_str()))
+			selectedIndex = count;
+
 		++count;
 	}
+	ImGui::PopStyleVar();
+	ImGui::PopStyleColor();
+
+	if (!ControlHasFocus)
+		CurrentControl = Pages[selectedIndex];
+
+	auto dList = ImGui::GetOverlayDrawList();
+
+	dList->AddText(font40, 40, { 21,21 }, 0xffffffff, Title.c_str());
+
+	dList->AddRectFilled(TopLine, TopLine + TopLineSz, 0xffffffff);
+	dList->AddRectFilled(BottomLine, BottomLine + TopLineSz, 0xffffffff);
+	dList->AddRectFilled(SideLine, SideLine + SideLineSz, 0xffffffff);
 	
-	SDL_SetRenderDrawColor(sdl_render,45,45,45,0xff);
-	SDL_RenderFillRect(sdl_render,&BottomRect);
-	SDL_RenderFillRect(sdl_render,&TopRect);
-	SDL_SetRenderDrawColor(sdl_render,0xff,0xff,0xff,0xff);
-	SDL_RenderFillRect(sdl_render,&TopLine);
-	SDL_RenderFillRect(sdl_render,&BottomLine);
-	SDL_RenderFillRect(sdl_render,&SideLine);
-	
-	Title.Render(21,21);
-	
-	if (selectedPage >= 0)
-		Pages[selectedPage]->Render(SideRect.w + 5, TopRect.h + 5);	
+	ImGui::PopFont();
+	Utils::ImGuiCloseWin();
+
+	if (CurrentControl)
+		CurrentControl->Render(SideRect.z + 14, TopRect.w + 14);
 }
 
 TabRenderer::TabRenderer() :
-Title("NXThemes Installer " + VersionString, WHITE, -1, font30)
+Title("NXThemes Installer " + VersionString)
 {
-	FocusedControl = nullptr;
+	CurrentControl = nullptr;
 }
 
 void TabRenderer::AddPage(IPage* page) 
 {
 	page->Parent = this;
+	page->focused = false;
 	Pages.push_back(page);
-	Label *lbl = new Label(page->Name,WHITE,-1,font30);
-	PageLables.push_back(lbl);
+	if (!CurrentControl)
+		CurrentControl = page;
 }
 
 void TabRenderer::RemoveAt(int id)
 {
+	if (Pages[id] == CurrentControl)
+		PageLeaveFocus(Pages[id]);
 	Pages.erase(Pages.begin() + id);
-	delete PageLables[id];
-	PageLables.erase(PageLables.begin() + id);
 }
 
 IPage* TabRenderer::At(int id)
@@ -93,28 +116,36 @@ IPage* TabRenderer::At(int id)
 
 void TabRenderer::PageLeaveFocus(IPage *page)
 {
-	FocusedControl->focused = false;
-	FocusedControl = nullptr;
+	ImGui::NavMoveRequestCancel();
+	CurrentControl->focused = false;
+	ControlHasFocus = false;
 }
 
 void TabRenderer::Update()
 {
-	if (FocusedControl) 
+	if (CurrentControl && ControlHasFocus)
 	{
-		FocusedControl->Update();
+		CurrentControl->Update();
 		return;
 	}
 	if (Pages.size() == 0)
 		return;
-	if (kDown & KEY_UP)
-		selectedPage = selectedPage == 0 ? Pages.size() - 1: selectedPage - 1;
-	else if (kDown & KEY_DOWN)
-		selectedPage = selectedPage == Pages.size() - 1 ? 0 : selectedPage + 1;
-	else if (kDown & KEY_A || kDown & KEY_RIGHT)
+	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT))
 	{
-		FocusedControl = Pages[selectedPage];
-		FocusedControl->focused = true;
+		auto res = std::find(Pages.begin(), Pages.end(), CurrentControl);
+		if (res != Pages.end())
+			SetFocused(res - Pages.begin());
 	}
 }
 
+void TabRenderer::SetFocused(int id)
+{
+	if (CurrentControl)
+		CurrentControl->focused = false;
+
+	CurrentControl = Pages[id];
+	CurrentControl->focused = true;
+	CurrentControl->FocusEvent.Set();
+	ControlHasFocus = true;
+}
 

@@ -1,43 +1,51 @@
 #include "UninstallPage.hpp"
-#include "../input.hpp"
 #include "../ViewFunctions.hpp"
 
 using namespace std;
 
 UninstallPage::UninstallPage() : 
-lblText("Press + to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory by pressing L+R as well.",WHITE, 870, font30), btn("Uninstall (+)")
+lblText("Use this to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory by pressing L+R as well.")
 {
 	Name = "Uninstall theme";
-	btn.selected = false;
-	btn.SetBorderColor({107,0,0,0xff});
 }
 
 void UninstallPage::Render(int X, int Y)
 {
-	lblText.Render(X + 20, Y + 20);
-	btn.Render(X + 20, Y + 30 + lblText.GetSize().h);
+	Utils::ImGuiSetupPage("Uninstall page", X, Y, focused);
+	ImGui::PushFont(font30);
+
+	ImGui::TextWrapped(lblText.c_str());
+
+	ImGui::PushStyleColor(ImGuiCol_Button, 0x6B70000ff);
+	if (ImGui::Button("Uninstall"))
+	{
+		PushFunction([]() {
+			if (!YesNoPage::Ask("Are you sure ?")) return;
+			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] && gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+			{
+				DisplayLoading("Clearing LayeredFS dir...");
+				UninstallTheme(true);
+				Dialog("Done, the layeredFS dir of the home menu was removed, restart your console to see the changes");
+			}
+			else
+			{
+				DisplayLoading("Loading...");
+				UninstallTheme(false);
+				Dialog("Done, all the installed themes have been removed, restart your console to see the changes");
+			}
+		});
+	}
+	PAGE_RESET_FOCUS
+	ImGui::PopStyleColor();
+
+	ImGui::PopFont();
+	Utils::ImGuiSetWindowScrollable();
+	Utils::ImGuiCloseWin();
 }
 
 void UninstallPage::Update()
 {	
-	btn.selected = true;
-	if (kDown & KEY_PLUS)
-	{
-		if ((kHeld & KEY_L) && (kHeld & KEY_R))
-		{			
-			DisplayLoading("Clearing LayeredFS dir...");
-			UninstallTheme(true);
-			Dialog("Done, the layeredFS dir of the home menu was removed, restart your console to see the changes");
-		}
-		else
-		{
-			DisplayLoading("Loading...");
-			UninstallTheme(false);
-			Dialog("Done, all the installed themes have been removed, restart your console to see the changes");
-		}
-	}
-	else if (kDown & KEY_B || kDown & KEY_LEFT){
-		btn.selected = false;
+	if (Utils::PageLeaveFocusInput()){
 		Parent->PageLeaveFocus(this);
 	}
 }

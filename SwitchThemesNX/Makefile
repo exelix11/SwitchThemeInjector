@@ -32,15 +32,15 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	source/SwitchTools source/SwitchTools/lockpick source/UI source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
+SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx  source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
 DATA		:=	data
-INCLUDES	:=	include
+INCLUDES	:=	include Libs
 EXEFS_SRC	:=	exefs_src
 ROMFS	:=	romfs
 
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
-APP_VERSION := 1.6
+APP_VERSION := 2.0
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -58,10 +58,8 @@ LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*
 
 # We need to use our own libmbedtls cause the portlibs one has been compiled without MBEDTLS_CMAC_C 
 LIBS	:= -lhactool $(CURDIR)/../Libs/mbedtls/lib/libmbedtls.a \
-			-lstdc++fs -lSDL2_ttf -lSDL2_image -lSDL2 \
-			-lpng -lz -ljpeg \
-			 -lEGL -lglapi -ldrm_nouveau \
-			-lnx -lm -lfreetype -lbz2 
+			-lstdc++fs \
+			-lglfw3 -lEGL -lglapi -ldrm_nouveau -lnx -lm
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib

@@ -1,5 +1,6 @@
 #include "hactool.hpp"
 #include "../ViewFunctions.hpp"
+#ifdef __SWITCH__
 #include <hactool.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -254,3 +255,10 @@ bool ExtractHomeMenu()
 		Dialog("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
 	return true;
 }
+#else
+
+bool ExtractPlayerSelectMenu() { return true; }
+bool ExtractUserPage() { return true; }
+bool ExtractHomeMenu() { return true; }
+
+#endif

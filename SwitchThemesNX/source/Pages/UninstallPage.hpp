@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,6 +16,5 @@ class UninstallPage : public IPage
 		void Update() override;
 	private:
 	
-		Label lblText;
-		Button btn;
+		std::string lblText;
 };

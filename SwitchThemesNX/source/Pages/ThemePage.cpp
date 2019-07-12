@@ -1,21 +1,24 @@
 #include "ThemePage.hpp"
-#include "../input.hpp"
 #include "../ViewFunctions.hpp"
 #include <algorithm>
+#include "../Platform/Platform.hpp"
+
+#include "../UI/imgui/imgui_internal.h"
 
 using namespace std;
 
+static constexpr int LimitLoad = 25;
+
 ThemesPage::ThemesPage(const std::vector<std::string> &files) : 
-lblPage("",WHITE, -1, font25),
-NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again", WHITE, 870, font25),
-lblCommands("", WHITE, -1, font25)
+lblPage(""),
+NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again")
 {
 	Name = "Themes";
 	focused = false;
 	ThemeFiles = files;
-	
+	lblCommands = CommandsTextNormal;
 	std::sort(ThemeFiles.begin(), ThemeFiles.end());
-	SetDir("/themes");	
+	SetDir(SD_PREFIX "/themes");
 }
 
 ThemesPage::~ThemesPage()
@@ -36,8 +39,8 @@ void ThemesPage::SetDir(const string &dir)
 			CurrentFiles.push_back(f);
 	}
 	
-	pageCount = CurrentFiles.size() / 5 + 1;
-	if (CurrentFiles.size() % 5 == 0) 
+	pageCount = CurrentFiles.size() / LimitLoad + 1;
+	if (CurrentFiles.size() % LimitLoad == 0)
 		pageCount--;
 	menuIndex = 0;
 	SetPage(0);
@@ -45,69 +48,175 @@ void ThemesPage::SetDir(const string &dir)
 
 void ThemesPage::SetPage(int num)
 {
+	ResetScroll = true;
+	ImGui::NavMoveRequestCancel();
 	if (pageNum != num)
 		menuIndex = 0;
 	for (auto i : DisplayEntries)
 		delete i;
 	DisplayEntries.clear();
 	
-	lblCommands.SetString(SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
-	
-	int baseIndex = num * 5;
+	int baseIndex = num * LimitLoad;
 	if (num < 0 || baseIndex >= CurrentFiles.size())  
 	{
-		lblPage.SetString(CurrentDir + " - Empty");
+		lblPage = (CurrentDir + " - Empty");
 		pageNum = num;
 		return;
 	}
 	
 	DisplayLoading("Loading...");
 	int imax = CurrentFiles.size() - baseIndex;
-	if (imax > 5) imax = 5;
+	if (imax > LimitLoad) imax = LimitLoad;
 	for (int i = 0; i < imax; i++)
 	{
 		auto entry = new ThemeEntry(CurrentFiles[baseIndex + i]);
-		if (IsSelected(CurrentFiles[baseIndex + i]))
-			entry->Highlighted = true;
+		/*if (IsSelected(CurrentFiles[baseIndex + i]))
+			entry->Highlighted = true;*/
 		DisplayEntries.push_back(entry);
 	}
 	pageNum = num;
 	auto LblPStr = CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount);
 	if (SelectedFiles.size() != 0)
 		LblPStr = "("+ to_string(SelectedFiles.size()) + " selected) " + LblPStr;
-	lblPage.SetString(LblPStr);
+	lblPage = (LblPStr);
 }
 
 const int EntryW = 860;
 void ThemesPage::Render(int X, int Y)
 {
-	lblPage.Render(X + EntryW + 16 - lblPage.GetSize().w, Y + 600);
-	
+	Utils::ImGuiSetupPage("Themes", X, Y, false);
+	ImGui::PushFont(font25);
+
 	if (DisplayEntries.size() == 0)
 	{
-		NoThemesLbl.Render(X + 15, Y + 15);
-		return;
+		ImGui::Text(NoThemesLbl.c_str());
+		goto QUIT_RENDERING;
 	}
-	
-	lblCommands.Render(10, Y + 575);
-	
-	int RenderY = Y + 20;
-	int count = 0;
-	for (auto e : DisplayEntries)
+
+	ImGui::SetCursorPosY(570);
+	ImGui::Text(lblCommands.c_str());
+
+	ImGui::SetCursorPosY(600);
+	Utils::ImGuiRightString(lblPage);
+
+	if (focused && KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) && menuIndex <= 0)
 	{
-		e->Render(X + 16, RenderY, focused && count == menuIndex);		
-		if ((kHeld & KEY_L) && focused && count == menuIndex && e->HasPreview())
-			return;
-		RenderY += e->GetRect().h + 15;
-		count++;
-	}	
+		PushFunction([this]()
+			{
+				if (pageNum > 0)
+				{
+					SetPage(pageNum - 1);
+					//menuIndex = PageItemsCount() - 1;
+					return;
+				}
+				else if (pageCount > 1)
+				{
+					SetPage(pageCount - 1);
+					//menuIndex = PageItemsCount() - 1;
+					return;
+				}
+				//else menuIndex = PageItemsCount() - 1;
+			});
+		goto QUIT_RENDERING;
+	}
+
+	if (focused && KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) && menuIndex >= PageItemsCount() - 1)
+	{
+		PushFunction([this]()
+			{
+				if (pageCount > pageNum + 1) {
+					SetPage(pageNum + 1);
+					return;
+				}
+				else if (pageNum != 0)
+				{
+					SetPage(0);
+					return;
+				}
+				//else menuIndex = 0;
+			});
+		goto QUIT_RENDERING;
+	}
+
+	{
+		Utils::ImGuiSetupPage("Themes install", X, Y, focused, ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+		int setNewMenuIndex = 0;
+		if (ResetScroll)
+		{
+			setNewMenuIndex = menuIndex;
+			ImGui::SetScrollY(0);
+			ImGui::SetNavID(0, 0);
+			ResetScroll = false;
+		}
+		ImGui::SetWindowSize(TabPageArea);
+		{
+			int count = 0;
+			for (auto& e : DisplayEntries)
+			{
+				bool Selected = IsSelected(e->GetPath());
+				if (Selected)
+					ImGui::PushStyleColor(ImGuiCol_Button, 0x366e64ff);
+
+				if (e->IsHighlighted())
+					menuIndex = count;
+				auto res = e->Render(Selected);
+
+				if (Selected)
+					ImGui::PopStyleColor();
+				if (count == setNewMenuIndex && FocusEvent.Reset()) Utils::ImGuiSelectItem(focused);
+				if (ImGui::IsItemActive())
+				{
+					ImVec2 value_with_lock_threshold = ImGui::GetMouseDragDelta(0);
+					ImGui::SetScrollY(ImGui::GetScrollY() - value_with_lock_threshold.y / 10);
+				}
+
+				if (res == ThemeEntry::UserAction::Preview)
+					break;
+				else if (res == ThemeEntry::UserAction::Install)
+					PushFunction([count, &e, this]()
+						{
+							if (e->IsFolder)
+								SetDir(e->GetPath());
+							else
+							{
+								if (SelectedFiles.size() == 0)
+								{
+									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
+									{
+										DisplayLoading("Installing to shuffle...");
+										e->InstallTheme(false, MakeThemeShuffleDir());
+									}
+									else
+										e->InstallTheme();
+								}
+								else
+								{
+									if (menuIndex != count)
+										menuIndex = count;
+									SelectCurrent();
+								}
+							}
+						});
+
+				count++;
+			}
+		}
+
+	QUIT_RENDERING_FROMCHILD:
+
+		Utils::ImGuiSetWindowScrollable();
+		Utils::ImGuiCloseWin();
+	}
+QUIT_RENDERING:
+	ImGui::PopFont();
+	Utils::ImGuiCloseWin();
 }
 
 int ThemesPage::PageItemsCount()
 {
-	int menuCount = CurrentFiles.size() - pageNum * 5;
-	if (menuCount > 5)
-		menuCount = 5;
+	int menuCount = CurrentFiles.size() - pageNum * LimitLoad;
+	if (menuCount > LimitLoad)
+		menuCount = LimitLoad;
 	return menuCount;
 }
 
@@ -129,18 +238,18 @@ void ThemesPage::SelectCurrent()
 	{
 		SelectedFiles.push_back(fname);
 	}
-	SetPage(pageNum);
+	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
 }
 
 void ThemesPage::Update()
 {
 	int menuCount = PageItemsCount();	
 	
-	if (kDown & KEY_LEFT)
+	if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT))
 		Parent->PageLeaveFocus(this);
-	if (kDown & KEY_B)
+	if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 	{
-		if (CurrentDir != "/themes/")
+		if (CurrentDir != SD_PREFIX "/themes/")
 			SetDir(GetParentDir(CurrentDir));
 		else 
 			Parent->PageLeaveFocus(this);
@@ -149,76 +258,18 @@ void ThemesPage::Update()
 	if (menuCount <= 0)
 		return;
 	
-	if (kDown & KEY_UP)
-	{
-		if (menuIndex <= 0)
-		{
-			if (pageNum > 0)
-			{
-				SetPage(pageNum - 1);
-				menuIndex = PageItemsCount() - 1;
-				return;
-			}
-			else if (pageCount > 1)
-			{
-				SetPage(pageCount - 1);
-				menuIndex = PageItemsCount() - 1;
-				return;				
-			}
-			else menuIndex = menuCount - 1;
-		}
-		else menuIndex--;
-	}
-	else if (kDown & KEY_DOWN)
-	{
-		if (menuIndex >= menuCount - 1)
-		{
-			if (pageCount > pageNum + 1){
-				SetPage(pageNum + 1);
-				return;
-			}
-			else if (pageNum != 0)
-			{
-				SetPage(0);
-				return;
-			}
-			else menuIndex = 0;
-		}
-		else menuIndex++;
-	}
-	else if ((kDown & KEY_A) && menuIndex >= 0 && menuIndex < menuCount)
-	{
-		if (DisplayEntries[menuIndex]->IsFolder)
-			SetDir(DisplayEntries[menuIndex]->GetPath());
-		else
-		{
-			if (SelectedFiles.size() == 0)
-			{
-				if (kHeld & KEY_R)
-				{
-					DisplayLoading("Installing to shuffle...");
-					DisplayEntries[menuIndex]->InstallTheme(false,MakeThemeShuffleDir());
-				}
-				else 
-					DisplayEntries[menuIndex]->InstallTheme();
-			}
-			else
-				SelectCurrent();
-		}
-	}
-	else if ((kDown & KEY_Y) && menuIndex >= 0)
+	if ((KeyPressed(GLFW_GAMEPAD_BUTTON_Y)) && menuIndex >= 0)
 	{
 		SelectCurrent();
 	}
-	else if ((kDown & KEY_X))
+	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_X))
 	{
 		SelectedFiles.clear();
-		SetPage(pageNum);
 	}
-	else if ((kDown & KEY_PLUS) && SelectedFiles.size() != 0)
+	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{
 		string shuffleDir = "";
-		if (kHeld & KEY_R)
+		if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
 			shuffleDir = MakeThemeShuffleDir();
 		for (string file : SelectedFiles)
 		{

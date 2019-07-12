@@ -4,9 +4,14 @@
 #include <fstream>
 #include <stdexcept>
 #include <stdio.h>
-#include <switch.h>
 #include <filesystem>
 #include <stack>
+#include <variant>
+
+#include "UI/UIManagement.hpp"
+#include "UI/UI.hpp"
+#include "Platform/Platform.hpp"
+
 #include "Pages/ThemePage.hpp"
 #include "Pages/CfwSelectPage.hpp"
 #include "Pages/UninstallPage.hpp"
@@ -22,13 +27,27 @@
 
 using namespace std;
 
+//Maybe settings should have their own file ?
 bool UseAnimations = true;
 
-u64 kDown = 0;
-u64 kHeld = 0;
+static inline void ImguiBindController()
+{
+	ImGuiIO& io = ImGui::GetIO();
+
+	io.NavInputs[ImGuiNavInput_DpadDown] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) || StickAsButton(0) < -.2f;
+	io.NavInputs[ImGuiNavInput_DpadUp] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) || StickAsButton(0) > .2f;
+	io.NavInputs[ImGuiNavInput_DpadLeft] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT) || StickAsButton(1) < -.2f;
+	io.NavInputs[ImGuiNavInput_DpadRight] = KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT) || StickAsButton(1) > .2f;
+
+	io.NavInputs[ImGuiNavInput_Activate] = KeyPressed(GLFW_GAMEPAD_BUTTON_A);
+	io.NavInputs[ImGuiNavInput_Cancel] = KeyPressed(GLFW_GAMEPAD_BUTTON_B);
+
+	io.NavActive = true;
+	io.NavVisible = true;
+}
+
 stack<IUIControlObj*> views;
 bool doPopPage = false;
-bool AppRunning = true;
 
 IUIControlObj *ViewObj = nullptr;
 
@@ -37,7 +56,7 @@ void PopPage()
 	doPopPage = true;
 }
 
-void _PopPage()
+static void _PopPage()
 {
 	doPopPage = false;
 	delete views.top();
@@ -56,29 +75,48 @@ void PushPage(IUIControlObj* page) //All pages must be dynamically allocated
 	ViewObj = page;
 }
 
+vector<function<void()>> DeferredFunctions;
+void PushFunction(const std::function<void()>& fun)
+{
+	DeferredFunctions.push_back(fun);
+}
+
+static void ExecuteDeferredFunctions() 
+{
+	auto vec = DeferredFunctions;
+	DeferredFunctions.clear();
+	for (auto& fun : vec)
+		fun();
+}
+
 void PushPageBlocking(IUIControlObj* page)
 {
 	PushPage(page);
-	while (AppRunning && appletMainLoop())
-	{ 
-		hidScanInput();
-		kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-		kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
-		
+	while (AppMainLoop())
+	{
+		PlatformGetInputs();
+		ImguiBindController();
+		PlatformImguiBinds();
+
+		UiStartFrame();
+		ViewObj->Render(0,0);
+		UiEndFrame();
+
 		ViewObj->Update();
+		ExecuteDeferredFunctions();
 		if (doPopPage)
-		{			
+		{
 			_PopPage();
 			break;
 		}
-		ViewObj->Render(0,0);
-		SDL_RenderPresent(sdl_render);		
+
+		_sleep(1 / 30.0 * 1000);
 	}
 }
 
 void ErrorFatal(const string &msg)
 {
-	PushPage(new FatalErrorPage(msg));
+	PushPage(new LoadingOverlay(msg));
 }
 
 void Dialog(const string &msg)
@@ -86,6 +124,7 @@ void Dialog(const string &msg)
 	PushPage(new DialogPage(msg));
 }
 
+//TODO less hacky way
 void DialogBlocking(const string &msg)
 {
 	PushPageBlocking(new DialogPage(msg));
@@ -93,30 +132,54 @@ void DialogBlocking(const string &msg)
 
 void DisplayLoading(const string &msg)
 {
+	UiStartFrame();
 	LoadingOverlay o(msg);
-	o.Render(0,0);
-	SDL_RenderPresent(sdl_render);		
+	o.Render(0, 0);
+	UiEndFrame();
 }
 
-void QuitApp()
-{
-	AppRunning = false;
-}
+#ifndef __SWITCH__
+double previousTime = glfwGetTime();
+int frameCount = 0;
+int fpsValue = 0;
 
-void AppMainLoop()
+static void calcFPS() 
 {
-	while (AppRunning && appletMainLoop())
-	{ 
-		hidScanInput();
-		kDown = hidKeysDown(CONTROLLER_P1_AUTO);
-		kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
-		
+	double currentTime = glfwGetTime();
+	frameCount++;
+
+	if (currentTime - previousTime >= 1.0)
+	{
+		fpsValue = frameCount;
+
+		frameCount = 0;
+		previousTime = currentTime;
+	}
+	ImGui::Text("%d", fpsValue);
+}
+#endif
+
+static void MainLoop()
+{
+	while (AppMainLoop())
+	{
+		PlatformGetInputs();
+		ImguiBindController();
+		PlatformImguiBinds();
+
+		UiStartFrame();		
+		ViewObj->Render(0,0);
+#ifndef __SWITCH__
+		calcFPS();
+#endif
+		UiEndFrame();
+
 		ViewObj->Update();
+		ExecuteDeferredFunctions();
 		if (doPopPage)
 			_PopPage();
-		
-		ViewObj->Render(0,0);
-		SDL_RenderPresent(sdl_render);		
+
+		_sleep(1 / 30.0 * 1000);
 	}
 }
 
@@ -132,7 +195,7 @@ class QuitPage : public IPage
 		
 		void Update() override
 		{
-			QuitApp();
+			SetAppShouldClose();
 		}
 };
 
@@ -154,23 +217,15 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
 }
 
-void MyUnexpected () {
-	DisplayLoading("There was an unexpected exception, close this app with the home button");
-	while (1)
-	{
-		svcSleepThread(10000000000L);
-	}
-}
-
 // Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
-void CheckCFWDir()
+static void CheckCFWDir()
 {
 	auto f = SearchCfwFolders();
 	if (f.size() != 1)
 		PushPage(new CfwSelectPage(f));
 }
 
-vector<string> GetArgsInstallList(int argc, char**argv)
+static vector<string> GetArgsInstallList(int argc, char**argv)
 {
 	int i;
 	string key = "installtheme=";
@@ -203,8 +258,9 @@ vector<string> GetArgsInstallList(int argc, char**argv)
 }	
 
 std::string SystemVer = "";
-void SetupSysVer()
+static void SetupSysVer()
 {
+#if __SWITCH__
 	setsysInitialize();
 	SetSysFirmwareVersion firmware;
 	auto res = setsysGetFirmwareVersion(&firmware);
@@ -212,7 +268,11 @@ void SetupSysVer()
 	{
 		ErrorFatal("Could not get sys ver res=" + to_string(res));
 		return;
+		setsysExit();
 	}
+#else 
+	struct { u32 major, minor, micro; } firmware = { 8,0,1 };
+#endif
 	if (firmware.major <= 5)
 	{
 		ThemeTargetToName = ThemeTargetToName5X;
@@ -225,23 +285,28 @@ void SetupSysVer()
 	}
 	NXTheme_FirmMajor = firmware.major;
 	SystemVer = to_string(firmware.major) + "." + to_string(firmware.minor) + "." + to_string(firmware.micro);
-	setsysExit();
 }
 
 int main(int argc, char **argv)
 {
-    romfsInit();
-	SdlInit();
-	FontInit();
-	socketInitializeDefault();
-	
-	std::set_unexpected (MyUnexpected);
-	
+	PlatformInit();
+
+	if (!UIMNG::InitUI())
+	{
+		PlatformExit();
+		return -1;
+	}
+	PlatformAfterInit();
+
 	SetupSysVer();
 	bool ThemesFolderExists = CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
 
-	if (envHasArgv() && argc > 1)
+	if (
+#ifdef __SWITCH__
+		envHasArgv() &&
+#endif
+		argc > 1)
 	{
 		auto paths = GetArgsInstallList(argc,argv);
 		if (paths.size() == 0)
@@ -249,7 +314,7 @@ int main(int argc, char **argv)
 		
 		PushPage(new ExternalInstallPage(paths));	
 		CheckCFWDir();		
-		AppMainLoop();
+		MainLoop();
 		
 		goto APP_QUIT;
 	}	
@@ -283,7 +348,7 @@ int main(int argc, char **argv)
 		
 		CheckCFWDir();
 		
-		AppMainLoop();
+		MainLoop();
 		
 		delete p;
 		delete up;
@@ -301,11 +366,9 @@ APP_QUIT:
 		delete views.top();
 		views.pop();
 	}
-	
-	socketExit();
-	FontExit();
-	SdlExit();
-	romfsExit();
+
+	UIMNG::ExitUI();
+	PlatformExit();
 	
     return 0;
 }

@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,8 +16,7 @@ class NcaDumpPage : public IPage
 		void Update() override;
 		
 		static void CheckHomeMenuVer();
-	private:
-	
-		Label guideText;
-		Button dumpNca;
+	private:	
+		std::string guideText;
+		std::string dumpNca;
 };

@@ -3,92 +3,36 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <functional>
+#include "imgui\imgui.h"
+
+#ifdef  __SWITCH__
 #include <switch.h>
+#endif
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
+extern ImFont* font25;
+extern ImFont* font30;
+extern ImFont* font40;
 
-#define SCR_W 1280
-#define SCR_H 720
+constexpr uint32_t SCR_W = 1280;
+constexpr uint32_t SCR_H = 720;
 
-const SDL_Color WHITE = {0xff,0xff,0xff};
-const SDL_Color BLACK = {0,0,0};
+const ImVec2 TabPageArea = { 900, 552 };
 
-extern SDL_Window* sdl_win;
-extern SDL_Renderer* sdl_render;
+typedef intptr_t LoadedImage;
 
-void SdlInit();
-void SdlExit();
-
-extern TTF_Font *font20;
-extern TTF_Font *font25;
-extern TTF_Font *font30;
-extern TTF_Font *font40;
-
-void FontInit();
-void FontExit();
-
-extern const SDL_Rect ScreenRect;
-
-struct LoadedImage
-{
-	SDL_Rect Rect;
-	SDL_Texture* image;
+namespace ImageCache {
+	void FreeImage(const std::string& img);
+	LoadedImage LoadDDS(const std::vector<u8>& data, const std::string& name);
 };
 
-LoadedImage OpenImage(const std::string &Path);
-LoadedImage LoadImage(const std::vector<u8> &data);
-void FreeImage(LoadedImage &img);
-
-LoadedImage LoadImage(std::string URL);
-
-#define defProp(name,type) type Get ## name(); void Set ## name(type arg); 
-
-class Label
+struct PageEvent
 {
-	private:
-		void RenderString();
-		SDL_Texture* tex = NULL;
-		std::string string = "";
-		int wrap = -1;
-		SDL_Color color = WHITE;
-		SDL_Rect rect = {0,0,0,0};
-		TTF_Font* font;
-	public:
-		SDL_Rect GetSize();
-		
-		defProp(String,std::string)
-		defProp(Wrap,int)
-		defProp(Color,SDL_Color)
-		defProp(Font,TTF_Font*)
-	
-		Label(const std::string &str, SDL_Color _color, int _wrap, TTF_Font* fnt = font20);
-		~Label();
-		void Render(int X, int Y);
-};
-
-class Button
-{
-	private:
-		Label *text;
-		SDL_Rect Border;
-		SDL_Color Color;
-		int Padding;
-		void CalcBorder();
-	public:
-		Button(const std::string &text, int padding = 15);
-		~Button();
-		bool selected;
-		bool Highlighted = false;
-		
-		void Render(int X, int Y);
-		
-		SDL_Rect GetSize();
-		defProp(Padding,int)
-		defProp(String,std::string)
-		defProp(TextColor,SDL_Color)
-		defProp(BorderColor,SDL_Color)
+	bool Reset() { if (Fired) { Fired = false; return true; } return false; }
+	void Set() { Fired = true; }
+	bool Peek() { return Fired; }
+private:
+	bool Fired = true;
 };
 
 class IUIControlObj
@@ -97,7 +41,7 @@ class IUIControlObj
 		virtual void Update() = 0;
 		virtual void Render(int X, int Y) = 0;
 		virtual ~IUIControlObj();
-	};
+};
 
 class TabRenderer;
 class IPage : public IUIControlObj
@@ -107,6 +51,8 @@ class IPage : public IUIControlObj
 		TabRenderer* Parent;
 		std::string Name;
 		virtual ~IPage();
+
+		PageEvent FocusEvent;
 };
 
 class TabRenderer : public IUIControlObj
@@ -124,27 +70,9 @@ class TabRenderer : public IUIControlObj
 		
 		void Update() override;
 	private:
-		IPage* FocusedControl = nullptr;
-		int selectedPage = 0;
+		void SetFocused(int id);
+		IPage* CurrentControl = nullptr;
+		bool ControlHasFocus = false;
 		std::vector<IPage*> Pages;
-		std::vector<Label*> PageLables;
-		
-		Label Title;
-};
-
-class Image
-{
-	public: 
-		bool Visible = true;
-	
-		Image(const std::vector<u8> &data);
-		~Image();
-		
-		defProp(Rect,SDL_Rect);
-		
-		void ImageSetMaxSize(int MaxW, int MaxH);
-		void ImageSetSize(int W, int H);
-		void Render(int X, int Y);
-	private:
-		LoadedImage _img;
+		std::string Title;
 };

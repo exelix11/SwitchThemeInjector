@@ -1,12 +1,13 @@
 #include "RemoteInstallPage.hpp"
-#include "../input.hpp"
 #include "../ViewFunctions.hpp"
+#ifdef __SWITCH__
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
+#endif
 
 using namespace std;
 
@@ -17,29 +18,40 @@ RemoteInstallPage::~RemoteInstallPage()
 
 RemoteInstallPage::RemoteInstallPage() : 
 BtnStart("Start remote install"),
-lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'Nxtheme builder' tab and click on 'Remote install...'", WHITE, 890, font30),
-lblConfirm("Press A to install, B to cancel.",WHITE, 890, font30)
+lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'Nxtheme builder' tab and click on 'Remote install...'"),
+lblConfirm("Press A to install, B to cancel.")
 {
 	Name = "Remote Install";
-	BtnStart.selected = false;
 }
 
 void RemoteInstallPage::Render(int X, int Y)
 {
+	Utils::ImGuiSetupPage("RemoteInstall", X, Y, focused);
+	ImGui::PushFont(font30);
 	if (entry)
 	{
-		entry->Render(X + 10, Y + 10,true);
-		lblConfirm.Render(X + 10, Y + 100);
+		entry->Render();
+		ImGui::TextWrapped(lblConfirm.c_str());
 	}
 	else 
 	{
-		lblInfo.Render(X + 10, Y + 20);
-		BtnStart.Render(X + 10, Y + 20 + lblInfo.GetSize().h + 10);
+		ImGui::TextWrapped(lblInfo.c_str());
+		if (ImGui::Button(BtnStart.c_str()))
+		{
+			if (sock >= 0)
+				StopSocketing();
+			else
+				StartSocketing();
+		}
+		PAGE_RESET_FOCUS
 	}
+	ImGui::PopFont();
+	Utils::ImGuiCloseWin();
 }
 
 void RemoteInstallPage::StartSocketing()
 {
+#if __SWITCH__
 	if (sock != -1)
 		return;
 	
@@ -92,19 +104,25 @@ void RemoteInstallPage::StartSocketing()
 		return;
 	}
 	
-	BtnStart.SetString("IP: " + string(hostname) + " - Press to stop");
+#else
+	sock = 66;
+	const char* hostname = "F:\remoteFile.bin";
+#endif
+	BtnStart = ("IP: " + string(hostname) + " - Press to stop");
 }
 
 void RemoteInstallPage::StopSocketing()
 {
+#if __SWITCH__
 	if (curSock != -1)
 		close(curSock);
-	curSock = -1;
-	ThemeSize = 0;
 	if (sock != -1)
 		close(sock);
+#endif
+	curSock = -1;
+	ThemeSize = 0;
 	sock = -1;
-	BtnStart.SetString("Start remote install");
+	BtnStart = ("Start remote install");
 }
 
 void RemoteInstallPage::DialogError(const std::string &msg)
@@ -118,7 +136,7 @@ void RemoteInstallPage::SocketUpdate()
 	{
 		return;
 	}	
-	
+#if __SWITCH__
 	int size = -1;
 	if (curSock == -1 && (curSock=accept(sock,0,0))!=-1)
 	{
@@ -170,16 +188,25 @@ void RemoteInstallPage::SocketUpdate()
 		}
 		return;
 	}
+#else
+	if (filesystem::exists("F:/RemoteFile.bin"))
+	{
+		data = OpenFile("F:/RemoteFile.bin");
+		ThemeSize = data.size();
+		entry = new ThemeEntry(data);
+		StopSocketing();
+	}
+#endif
 }
 
 void RemoteInstallPage::Update()
 {
 	if (entry)
 	{
-		if (kDown & KEY_A)
+		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A))
 		{
 			string overrideStr = "";
-			if (kHeld & KEY_R)
+			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
 				overrideStr = MakeThemeShuffleDir();
 			entry->InstallTheme(true,overrideStr);
 			delete entry;
@@ -187,7 +214,7 @@ void RemoteInstallPage::Update()
 			StopSocketing();
 			return;
 		}
-		else if (kDown & KEY_B)
+		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 		{
 			delete entry;
 			entry = 0;			
@@ -196,30 +223,13 @@ void RemoteInstallPage::Update()
 		}
 	}
 	
-	if (kDown & KEY_B || kDown & KEY_LEFT){
-		BtnStart.selected = false;
+	if (Utils::PageLeaveFocusInput()){
 		Parent->PageLeaveFocus(this);
 		return;
 	}
 	
-	BtnStart.selected = true;
-	
 	if (entry) return;
+	
 	if (sock >= 0)
-	{
 		SocketUpdate();
-		if (kDown & KEY_A)
-		{
-			StopSocketing();
-			return;
-		}
-	}
-	else 
-	{
-		if (kDown & KEY_A)
-		{
-			StartSocketing();
-			return;
-		}
-	}	
 }

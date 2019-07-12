@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,23 +16,11 @@ class SettingsPage : public IPage
 		void Update() override;
 	private:	
 		void LoadShuffleState();
-		void UpdateAnimState();
 		void WriteShuffleFlag(int i);
 		
-		void ClearBtnState();	
-	
-		Label lblAnimSupport;
-		Button btnAnimEnable;
-	
-		Label lblShuffleSettings;
-		Label lblGuide;
-		Label lblSortMode;
-		Button btnRandom;
-		Button btnCycle;
-		Label lblInstalled;
-		Button btnClear;
-		
-		int selectedIndex = 0;
-		
-		bool hasFocus = true;
+		std::string lblGuide;
+		std::string lblInstalled;
+
+		int shuffleValue = 0;
+		bool IsLayoutBlockingLeft = false;
 };

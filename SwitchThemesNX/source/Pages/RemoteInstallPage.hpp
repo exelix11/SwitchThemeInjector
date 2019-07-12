@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -8,10 +7,12 @@
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
 #include "ThemeEntry.hpp"
+#ifdef __SWITCH__
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <fcntl.h>
+#endif
 
 class RemoteInstallPage : public IPage
 {
@@ -35,8 +36,8 @@ class RemoteInstallPage : public IPage
 		int ThemeSize = 0;
 		std::vector<u8> data;
 		
-		Label lblInfo;
-		Label lblConfirm;
+		std::string lblInfo;
+		std::string lblConfirm;
 		ThemeEntry *entry = 0;
-		Button BtnStart;
+		std::string BtnStart;
 };

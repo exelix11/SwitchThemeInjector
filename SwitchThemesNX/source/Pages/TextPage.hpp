@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -17,7 +16,7 @@ class TextPage : public IPage
 		void Update() override;
 	private:
 	
-		Label Text;
+		std::string Text;
 };
 
 class CreditsPage : public IPage
@@ -29,7 +28,7 @@ class CreditsPage : public IPage
 		void Update() override;
 	private:
 	
-		Label creditsText;
-		Label creditsText2;
-		Button showHelp;
+		std::string creditsText;
+		std::string creditsText2;
+		bool IsLayoutBlockingLeft = false;
 };
