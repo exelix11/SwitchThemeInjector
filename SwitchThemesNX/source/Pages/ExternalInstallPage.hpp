@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -23,11 +22,9 @@ class ExternalInstallPage : public IUIControlObj
 		int RenderStartIndex = 0;
 		int SelectedIndex = 0;
 	
-		Label Title;
-        Button Install;
-        Button Reboot;
-        Button HBmenu;
+		std::string Title;
+		std::string Install;
         bool isInstalled = false;		
 		std::vector <ThemeEntry*> ArgEntries; 
-		const SDL_Color GRAY = {0x80,0x80,0x80};
+		const u32 GRAY = 0x808080FF;
 };

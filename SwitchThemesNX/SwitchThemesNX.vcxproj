@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Libs\SOIL\image_DXT.h" />
+    <ClInclude Include="Libs\SOIL\image_helper.h" />
+    <ClInclude Include="Libs\SOIL\SOIL.h" />
+    <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h" />
+    <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h" />
+    <ClInclude Include="Libs\SOIL\stb_image_aug.h" />
+    <ClInclude Include="source\fs.hpp" />
+    <ClInclude Include="source\Pages\CfwSelectPage.hpp" />
+    <ClInclude Include="source\Pages\ExternalInstallPage.hpp" />
+    <ClInclude Include="source\Pages\NcaDumpPage.hpp" />
+    <ClInclude Include="source\Pages\RemoteInstallPage.hpp" />
+    <ClInclude Include="source\Pages\SettingsPage.hpp" />
+    <ClInclude Include="source\Pages\TextPage.hpp" />
+    <ClInclude Include="source\Pages\ThemeEntry.hpp" />
+    <ClInclude Include="source\Pages\ThemePage.hpp" />
+    <ClInclude Include="source\Pages\UninstallPage.hpp" />
+    <ClInclude Include="source\Platform\Platform.hpp" />
+    <ClInclude Include="source\Platform\Windows\dirent.h" />
+    <ClInclude Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\BRTI.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflan.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\MyTypes.h" />
+    <ClInclude Include="source\SwitchThemesCommon\NXTheme.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\SarcLib\Sarc.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\SarcLib\Yaz0.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\SwitchThemesCommon.hpp" />
+    <ClInclude Include="source\SwitchTools\hactool.hpp" />
+    <ClInclude Include="source\SwitchTools\PayloadReboot.hpp" />
+    <ClInclude Include="source\UI\DialogPages.hpp" />
+    <ClInclude Include="source\UI\glad.h" />
+    <ClInclude Include="source\UI\imgui\imconfig.h" />
+    <ClInclude Include="source\UI\imgui\imgui.h" />
+    <ClInclude Include="source\UI\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="source\UI\imgui\imgui_internal.h" />
+    <ClInclude Include="source\UI\imgui\imstb_rectpack.h" />
+    <ClInclude Include="source\UI\imgui\imstb_textedit.h" />
+    <ClInclude Include="source\UI\imgui\imstb_truetype.h" />
+    <ClInclude Include="source\UI\UI.hpp" />
+    <ClInclude Include="source\UI\UIManagement.hpp" />
+    <ClInclude Include="source\ViewFunctions.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Libs\SOIL\image_DXT.c" />
+    <ClCompile Include="Libs\SOIL\image_helper.c" />
+    <ClCompile Include="Libs\SOIL\SOIL.c" />
+    <ClCompile Include="Libs\SOIL\stb_image_aug.c" />
+    <ClCompile Include="source\fs.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Pages\CfwSelectPage.cpp" />
+    <ClCompile Include="source\Pages\ExternalInstallPage.cpp" />
+    <ClCompile Include="source\Pages\NcaDumpPage.cpp" />
+    <ClCompile Include="source\Pages\RebootPage.cpp" />
+    <ClCompile Include="source\Pages\RemoteInstallPage.cpp" />
+    <ClCompile Include="source\Pages\SettingsPage.cpp" />
+    <ClCompile Include="source\Pages\TextPage.cpp" />
+    <ClCompile Include="source\Pages\ThemeEntry.cpp" />
+    <ClCompile Include="source\Pages\ThemePage.cpp" />
+    <ClCompile Include="source\Pages\UninstallPage.cpp" />
+    <ClCompile Include="source\Platform\PlatformSwitch.cpp" />
+    <ClCompile Include="source\Platform\PlatformWin.cpp" />
+    <ClCompile Include="source\Platform\Windows\dirent.c" />
+    <ClCompile Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\BRTI.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\BflytMaterial.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\NXTheme.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\SarcLib\Sarc.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\SarcLib\Yaz0.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\SwitchThemesCommon.cpp" />
+    <ClCompile Include="source\SwitchTools\hactool.cpp" />
+    <ClCompile Include="source\SwitchTools\PayloadReboot.cpp" />
+    <ClCompile Include="source\UI\DialogPages.cpp" />
+    <ClCompile Include="source\UI\glad.c" />
+    <ClCompile Include="source\UI\imgui\imgui.cpp" />
+    <ClCompile Include="source\UI\imgui\imgui_demo.cpp" />
+    <ClCompile Include="source\UI\imgui\imgui_draw.cpp" />
+    <ClCompile Include="source\UI\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="source\UI\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="source\UI\UIManagement.cpp" />
+    <ClCompile Include="source\UI\UI.cpp" />
+    <ClCompile Include="source\UI\UITabs.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{B6DA9247-8ED4-44D7-9FD3-6EAB523FC003}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <EnableModules>false</EnableModules>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <AdditionalIncludeDirectories>$(ProjectDir)Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

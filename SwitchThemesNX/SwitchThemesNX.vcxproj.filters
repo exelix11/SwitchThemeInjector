@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="UI">
+      <UniqueIdentifier>{66dbb092-85ca-4ac2-9be6-7b3c4496b62f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\imgui">
+      <UniqueIdentifier>{7207636e-fe99-4502-a420-5dbf979baaa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{6011a434-b573-4aaa-9a1f-0f122bd974bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages">
+      <UniqueIdentifier>{e34bf48e-dfad-4299-a306-67980142c4d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon">
+      <UniqueIdentifier>{33043256-8b6b-40c8-9a08-6f02cf8e623e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon\BinaryReadWrite">
+      <UniqueIdentifier>{46882153-70de-488d-b02e-2d4ca5d59c4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon\Btnx">
+      <UniqueIdentifier>{2ce7b452-4c4e-4e21-9095-d421672ae3a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon\Fonts">
+      <UniqueIdentifier>{6ef12d4b-345b-44f1-872f-1d553a1f4bec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon\Layouts">
+      <UniqueIdentifier>{a39a41fa-fbb0-453c-9e03-b56b2a64a038}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchThemesCommon\SarcLib">
+      <UniqueIdentifier>{312bcca4-5867-4b6f-b165-bd5f778340ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform\WindowsOnly">
+      <UniqueIdentifier>{3f4f7281-cde1-4fc4-8410-bb6cdaee912c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SwitchTools">
+      <UniqueIdentifier>{d3fe3158-fc7f-4aa9-a399-3609a030f054}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs">
+      <UniqueIdentifier>{531f4e38-1417-485f-92ca-e9cb14694160}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\SOIL">
+      <UniqueIdentifier>{74079f35-9814-4b14-b763-9f1cd47aa260}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\UI\imgui\imgui.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imgui_impl_opengl3.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imgui_internal.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imstb_rectpack.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imstb_textedit.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imstb_truetype.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\imgui\imconfig.h">
+      <Filter>UI\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\glad.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\DialogPages.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Platform\Platform.hpp">
+      <Filter>Platform</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\NcaDumpPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstallPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\SettingsPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\TextPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\ThemePage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\UninstallPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\CfwSelectPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\ExternalInstallPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\NXTheme.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\SwitchThemesCommon.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\MyTypes.h">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp">
+      <Filter>SwitchThemesCommon\BinaryReadWrite</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\BRTI.hpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS.hpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp">
+      <Filter>SwitchThemesCommon\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflan.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\SarcLib\Sarc.hpp">
+      <Filter>SwitchThemesCommon\SarcLib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\SarcLib\Yaz0.hpp">
+      <Filter>SwitchThemesCommon\SarcLib</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\UI.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI\UIManagement.hpp">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Platform\Windows\dirent.h">
+      <Filter>Platform\WindowsOnly</Filter>
+    </ClInclude>
+    <ClInclude Include="source\fs.hpp" />
+    <ClInclude Include="source\ViewFunctions.hpp" />
+    <ClInclude Include="source\SwitchTools\PayloadReboot.hpp">
+      <Filter>SwitchTools</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchTools\hactool.hpp">
+      <Filter>SwitchTools</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\image_helper.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\SOIL.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\stb_image_aug.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\image_DXT.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
+      <Filter>UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\imgui\imgui_draw.cpp">
+      <Filter>UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\imgui\imgui_impl_opengl3.cpp">
+      <Filter>UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\imgui\imgui_widgets.cpp">
+      <Filter>UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\imgui\imgui.cpp">
+      <Filter>UI\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\glad.c">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\UITabs.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\DialogPages.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Platform\PlatformSwitch.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Platform\PlatformWin.cpp">
+      <Filter>Platform</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\NcaDumpPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RebootPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstallPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\SettingsPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\TextPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemePage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\UninstallPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\CfwSelectPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ExternalInstallPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\SwitchThemesCommon.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\NXTheme.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp">
+      <Filter>SwitchThemesCommon\BinaryReadWrite</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS.cpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\BRTI.cpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp">
+      <Filter>SwitchThemesCommon\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\BflytMaterial.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\SarcLib\Sarc.cpp">
+      <Filter>SwitchThemesCommon\SarcLib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\SarcLib\Yaz0.cpp">
+      <Filter>SwitchThemesCommon\SarcLib</Filter>
+    </ClCompile>
+    <ClCompile Include="source\UI\UIManagement.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Platform\Windows\dirent.c">
+      <Filter>Platform\WindowsOnly</Filter>
+    </ClCompile>
+    <ClCompile Include="source\fs.cpp" />
+    <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\UI\UI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchTools\PayloadReboot.cpp">
+      <Filter>SwitchTools</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchTools\hactool.cpp">
+      <Filter>SwitchTools</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL\image_helper.c">
+      <Filter>Libs\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL\SOIL.c">
+      <Filter>Libs\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL\stb_image_aug.c">
+      <Filter>Libs\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL\image_DXT.c">
+      <Filter>Libs\SOIL</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

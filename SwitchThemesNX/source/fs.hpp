@@ -1,10 +1,12 @@
 #pragma once
 #include "SwitchThemesCommon/MyTypes.h"
-#include <switch.h>
 #include <stdio.h>
 #include <vector>
 #include <string>
+#ifdef __SWITCH__
 #include <dirent.h>
+#include <switch.h>
+#endif
 
 extern std::string CfwFolder;
 bool StrEndsWith(const std::string &str, const std::string &suffix);

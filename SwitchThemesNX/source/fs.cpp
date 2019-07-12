@@ -1,5 +1,14 @@
 #include "fs.hpp"
-#include <unistd.h>
+#include "Platform\Platform.hpp"
+#if WIN32
+	#include <io.h>
+	#include <direct.h>
+	#include "Platform\Windows\dirent.h"
+	#define mkdir(x,y) _mkdir(x)
+	#define rmdir(x) _rmdir(x)
+#else
+	#include <unistd.h>
+#endif
 #include <filesystem>
 #include "ViewFunctions.hpp"
 #include <sys/stat.h>
@@ -14,9 +23,9 @@ vector<string> SearchCfwFolders()
 	DIR * dir = nullptr;
 	#define CHECKFOLDER(f) dir = opendir(f); \
 	if (dir) { res.push_back(f); closedir(dir); dir = nullptr;}
-	CHECKFOLDER("/atmosphere")
-	CHECKFOLDER("/reinx")
-	CHECKFOLDER("/sxos")
+	CHECKFOLDER(SD_PREFIX "/atmosphere")
+	CHECKFOLDER(SD_PREFIX "/reinx")
+	CHECKFOLDER(SD_PREFIX "/sxos")
 	#undef CHECKFOLDER
 	if (res.size() == 1)
 		CfwFolder = res[0];
@@ -29,6 +38,19 @@ bool StrEndsWith(const std::string &str, const std::string &suffix)
            str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+string &replaceWindowsPathChar(string& str)
+{
+	char* c = str.data();
+	while (*c)
+	{
+		if (*c == '\\')
+			*c = '/';
+		c++;
+	}
+
+	return str;
+}
+
 vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 {
 	vector<string> res;
@@ -37,14 +59,17 @@ vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 	{
 		if (p.is_directory() && p.path().filename() != "systemData" && p.path().filename() != "shuffle")
 		{
-			res.push_back(p.path());
-			auto v = GetThemeFilesInDirRecursive(p.path(), level + 1);
+			auto path = p.path().string();
+			res.push_back(replaceWindowsPathChar(path));
+			auto v = GetThemeFilesInDirRecursive(p.path().string(), level + 1);
 			res.insert(res.end(), v.begin(), v.end());
 		}
 		else if (p.is_regular_file())
 		{
-			if (StrEndsWith(p.path(), ".szs") || StrEndsWith(p.path(), ".nxtheme")  || StrEndsWith(p.path(), ".ttf"))
-				res.push_back(p.path());
+			if (StrEndsWith(p.path().string(), ".szs") || StrEndsWith(p.path().string(), ".nxtheme") || StrEndsWith(p.path().string(), ".ttf")) {
+				auto str = p.path().string();
+				res.push_back(replaceWindowsPathChar(str));
+			}
 		}
 	}
 	return res;
@@ -56,13 +81,13 @@ vector<string> GetThemeFiles()
 	
 	{	
 		DIR *dir = nullptr;
-		if (dir = opendir("/themes"))
+		if (dir = opendir(SD_PREFIX "/themes"))
 			closedir(dir);
 		else
 			return res;
 	}
 	
-	res = GetThemeFilesInDirRecursive("/themes",0);
+	res = GetThemeFilesInDirRecursive(SD_PREFIX "/themes",0);
 	
 	return res;	
 }
@@ -106,11 +131,11 @@ void RecursiveDeleteFolder(const string &path)
 	{
 		if (p.is_directory())
 		{
-			toDelete.push_back(p.path());
+			toDelete.push_back(p.path().string());
 		}
 		else if (p.is_regular_file())
 		{
-			remove(p.path().c_str());
+			remove(p.path().string().c_str());
 		}
 	}
 	for (auto p : toDelete)
@@ -120,7 +145,7 @@ void RecursiveDeleteFolder(const string &path)
 	}
 }
 
-void UninstallTheme(bool full = false)
+void UninstallTheme(bool full)
 {
 	#define DelDirFromCfw(x) if (filesystem::exists(CfwFolder + x)) \
 		RecursiveDeleteFolder(CfwFolder + x);
@@ -170,11 +195,11 @@ void CreateThemeStructure(const string &tid)
 
 bool CheckThemesFolder()
 {
-	if (!filesystem::exists("/themes"))
-		mkdir("/themes", ACCESSPERMS);
-	bool Result = filesystem::exists("/themes/systemData");
+	if (!filesystem::exists(SD_PREFIX "/themes"))
+		mkdir(SD_PREFIX "/themes", ACCESSPERMS);
+	bool Result = filesystem::exists(SD_PREFIX "/themes/systemData");
 	if (!Result)
-		mkdir("/themes/systemData", ACCESSPERMS);
+		mkdir(SD_PREFIX "/themes/systemData", ACCESSPERMS);
 	return Result;
 }
 
@@ -197,6 +222,7 @@ string GetParentDir(const string &path)
 	return _path.substr(0, _path.find_last_of("/\\") + 1);
 }
 
+#ifdef __SWITCH__
 std::string GetNcaPath(u64 tid)
 {
 	char path[FS_MAX_PATH] = {0};
@@ -217,17 +243,19 @@ std::string GetNcaPath(u64 tid)
 	result.erase(0, ((std::string)"@SystemContent://").length());
 	return (std::string)"System:/Contents/" + result;
 }
+#endif
 
 bool DumpHomeMenuNca()
 {	
+#ifdef __SWITCH__
 	FsFileSystem sys;
     fsOpenBisFileSystem(&sys, 31, "");
 	fsdevMountDevice("System", sys);
 	try {		
 		auto targetNca = GetNcaPath(0x0100000000001000);
-		WriteFile("sdmc:/themes/systemData/home.nca",OpenFile(targetNca));
+		WriteFile(SD_PREFIX "/themes/systemData/home.nca",OpenFile(targetNca));
 		targetNca = GetNcaPath(0x0100000000001013);
-		WriteFile("sdmc:/themes/systemData/user.nca",OpenFile(targetNca));
+		WriteFile(SD_PREFIX "/themes/systemData/user.nca",OpenFile(targetNca));
 	}
 	catch (...)
 	{
@@ -238,20 +266,23 @@ bool DumpHomeMenuNca()
 	fsdevUnmountDevice("System");
 	fsFsClose(&sys);
 	return true;
+#else
+	return false;
+#endif
 }
 
 void RemoveSystemDataDir()
 {
-	RecursiveDeleteFolder("sdmc:/themes/systemData/");
-	mkdir("sdmc:/themes/systemData/",ACCESSPERMS);
+	RecursiveDeleteFolder(SD_PREFIX "/themes/systemData/");
+	mkdir(SD_PREFIX "/themes/systemData/",ACCESSPERMS);
 }
 
 int GetShuffleCount()
 {
-	if (!filesystem::exists("sdmc:/themes/shuffle"))
+	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
 		return 0;
 	int dirCount = 0;
-	for (auto p : filesystem::directory_iterator("sdmc:/themes/shuffle"))
+	for (auto p : filesystem::directory_iterator(SD_PREFIX "/themes/shuffle"))
 	{
 		if (p.is_directory())
 			dirCount++;
@@ -261,13 +292,13 @@ int GetShuffleCount()
 
 string MakeThemeShuffleDir()
 {
-	if (!filesystem::exists("sdmc:/themes/shuffle"))
-		mkdir("sdmc:/themes/shuffle", ACCESSPERMS);
+	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
+		mkdir(SD_PREFIX "/themes/shuffle", ACCESSPERMS);
 	int dirCount = GetShuffleCount();
-	string dirName = "sdmc:/themes/shuffle/set" + to_string(dirCount) + "/";
+	string dirName = SD_PREFIX "/themes/shuffle/set" + to_string(dirCount) + "/";
 	while (filesystem::exists(dirName))
 	{
-		dirName = "sdmc:/themes/shuffle/set" + to_string(++dirCount) + "/";
+		dirName = SD_PREFIX "/themes/shuffle/set" + to_string(++dirCount) + "/";
 	}
 	mkdir(dirName.c_str(), ACCESSPERMS);
 	return dirName;
@@ -275,15 +306,15 @@ string MakeThemeShuffleDir()
 
 void ClearThemeShuffle()
 {
-	if (!filesystem::exists("sdmc:/themes/shuffle"))
+	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
 		return;
-	RecursiveDeleteFolder("sdmc:/themes/shuffle/");
-	rmdir("sdmc:/themes/shuffle/");	
+	RecursiveDeleteFolder(SD_PREFIX "/themes/shuffle/");
+	rmdir(SD_PREFIX "/themes/shuffle/");	
 }
 
 bool WriteHomeDumpVer()
 {
-	FILE *ver = fopen("/themes/systemData/ver.cfg", "w");
+	FILE *ver = fopen(SD_PREFIX "/themes/systemData/ver.cfg", "w");
 	if (!ver)
 		return false;
 	fprintf(ver,"%s",SystemVer.c_str());

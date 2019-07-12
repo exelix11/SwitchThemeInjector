@@ -1,19 +1,16 @@
 #include "ExternalInstallPage.hpp"
 #include "../ViewFunctions.hpp"
-#include "../input.hpp"
 #include "ThemeEntry.hpp"
 #include "CfwSelectPage.hpp"
 #include "../SwitchTools/PayloadReboot.hpp"
+#include "../UI/UIManagement.hpp"
 
 using namespace std;
 
 ExternalInstallPage::ExternalInstallPage(const vector<string> &paths) :
-Title("Install theme from external source",WHITE, 1000, font30),
-Install("Press + to install, B to cancel"), Reboot("Reboot (-)"), HBmenu("Exit to hbmenu (+)")
+Title("Install theme from external source"),
+Install("Press + to install, B to cancel")
 {
-	Install.selected = false;
-    Reboot.selected = false;
-    HBmenu.selected = false;
     for (int i=0; i < (int)paths.size(); i++)
     {
         this->ArgEntries.push_back(new ThemeEntry(paths[i]));
@@ -29,99 +26,62 @@ ExternalInstallPage::~ExternalInstallPage()
 
 void ExternalInstallPage::Render(int X, int Y)
 {	
-	SDL_SetRenderDrawColor(sdl_render,45,45,45,0xff); //Switch dark bg
-	SDL_RenderFillRect(sdl_render,&ScreenRect);
+	Utils::ImGuiSetupWin("ExtInstallPage", 0, 0);
+	ImGui::SetWindowSize({ SCR_W, SCR_H });
+	ImGui::PushFont(font30);
 
-    if(isInstalled)
-    {
-        HBmenu.Render(Title.GetSize().x + Title.GetSize().w - HBmenu.GetSize().w, SCR_H - 50 - HBmenu.GetSize().h);
-        Reboot.Render(Title.GetSize().x, SCR_H - 50 - Reboot.GetSize().h);
+	ImGui::SetCursorPosY(30);
+	Utils::ImGuiCenterString(Title);
+
+	if (isInstalled)
+	{
+		Utils::ImGuiCenterString(Title.c_str());
+		if (ImGui::Button("Exit to homebrew launcher"))
+		{
+			SetAppShouldClose();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Reboot"))
+		{
+			if (PayloadReboot::Init())
+			{
+				PayloadReboot::Reboot();
+			}
+			else
+			{
+#if __SWITCH__
+				bpcInitialize();
+				bpcRebootSystem();
+#else
+				SetAppShouldClose();
+#endif
+			}
+		}
     }else
     {
-        Install.Render(SCR_W/2 - Install.GetSize().w/2, SCR_H - 50 - Install.GetSize().h);
-        int rectStartY = 70;
-        for (int i=RenderStartIndex; i < (int)ArgEntries.size(); i++)
+		Utils::ImGuiCenterString(Install);
+		ImGui::SetCursorPos({ SCR_W / 2 - ThemeEntry::EntryW / 2 , 70 });
+        for (int i=0; i < (int)ArgEntries.size(); i++)
         {
-            SDL_Rect EntryRect = ArgEntries[i]->GetRect();
-            int rectY = (EntryRect.h + 2) * ((i-RenderStartIndex)+1) + rectStartY;
-            if(rectY + EntryRect.h < Install.GetSize().y)
-            {
-                ArgEntries[i]->Render(SCR_W/2 - EntryRect.w/2, rectY, i == SelectedIndex);
-				if ((kHeld & KEY_L) && ArgEntries[SelectedIndex]->HasPreview()) return; //for preview
-            }
-            else
-			{
-                tooManyItems = true;
+			if (ArgEntries[i]->Render() == ThemeEntry::UserAction::Preview)
 				break;
-            }
-			tooManyItems = false;
         }
     }
-    Title.Render(SCR_W / 2 - Title.GetSize().w / 2,70);
+
+	ImGui::PopFont();
+	Utils::ImGuiSetWindowScrollable();
+	Utils::ImGuiCloseWin();
 }
 
 void ExternalInstallPage::Update()
 {
     if (isInstalled)
     {
-        if (kDown & KEY_PLUS)
-        {
-            QuitApp();
-        }
-        else if (kDown & KEY_MINUS)
-        {
-            bpcInitialize();
-            bpcRebootSystem();
-        }
-        else if (kDown & KEY_LEFT)
-        {
-            HBmenu.selected = false;
-            Reboot.selected = true;
-        }
-        else if (kDown & KEY_RIGHT)
-        {
-            HBmenu.selected = true;
-            Reboot.selected = false;
-        }
-        else if (kDown & KEY_A)
-        {
-            if(HBmenu.selected)
-            {
-                QuitApp();
-            }
-            else if(Reboot.selected)
-            {
-				if (PayloadReboot::Init())
-				{
-					PayloadReboot::Reboot();
-				}
-				else
-				{
-					bpcInitialize();
-					bpcRebootSystem();
-				}
-			}
-        }
+        
     }
 	else
-    {
-		if (kDown & KEY_DOWN)
-		{
-			if (tooManyItems)
-				RenderStartIndex++;
-			if (SelectedIndex + 1 < ArgEntries.size())
-				SelectedIndex++;
-		}
-		if (kDown & KEY_UP)
-		{
-			if (RenderStartIndex > 0)
-				RenderStartIndex--;
-			if (SelectedIndex > 0)
-				SelectedIndex--;
-		}
-
-		
-        if (kDown & KEY_PLUS)
+    {		
+        if (KeyPressed(GLFW_GAMEPAD_BUTTON_START))
         {
             DisplayLoading("Installing...");
             bool installSuccess = true;
@@ -131,17 +91,15 @@ void ExternalInstallPage::Update()
             }
             if(!installSuccess)
             {
-                Title.SetString("Theme(s) may have failed to install");
-                Title.SetColor({255, 0, 0});
+                Title = ("Theme(s) may have failed to install");
             }else{
-                Title.SetString("Installed theme from external source");
+                Title = "Installation completed.";
             }
-            isInstalled = true;
-            HBmenu.selected = true;
+			isInstalled = true;
         }
-		else if (kDown & KEY_B)
+		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 		{
-			QuitApp();
+			SetAppShouldClose();
 		}
     }
 }

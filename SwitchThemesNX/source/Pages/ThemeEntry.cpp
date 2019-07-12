@@ -3,35 +3,26 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../ViewFunctions.hpp"
 #include "../fs.hpp"
-#include "../input.hpp"
 #include "../SwitchTools/hactool.hpp"
 #include <filesystem>
+#include "../Platform/Platform.hpp"
 
 using namespace std;
 
-const int EntryW = 860;
-const int EntryH = 96;
-
 ThemeEntry::~ThemeEntry()
 {
-	if (Preview)
-	{
-		delete Preview;
-	}
+	if (NXThemeHasPreview)
+		ImageCache::FreeImage(FileName);
 }
 
-ThemeEntry::ThemeEntry(const string &fileName) :
-	lblFname("", WHITE, -1,font30),
-	lblLine1("", WHITE, -1,font25),
-	lblLine2("", WHITE, -1,font25),
-	Size {0,0, EntryW, EntryH }
+ThemeEntry::ThemeEntry(const string &fileName)
 {
 	FileName = fileName;
 	if (filesystem::is_directory(fileName))
 	{
-		lblFname.SetString(GetFileName(FileName));
-		lblLine1.SetString(FileName);
-		lblLine2.SetString("Folder");
+		lblFname = (GetFileName(FileName));
+		lblLine1 = (FileName);
+		lblLine2 = ("Folder");
 		CanInstall = false;
 		IsFolder = true;
 	}
@@ -42,11 +33,7 @@ ThemeEntry::ThemeEntry(const string &fileName) :
 	}
 }
 
-ThemeEntry::ThemeEntry(const vector<u8> &RawData):
-	lblFname("", WHITE, -1,font30),
-	lblLine1("", WHITE, -1,font25),
-	lblLine2("", WHITE, -1,font25),
-	Size {0,0, EntryW, EntryH }
+ThemeEntry::ThemeEntry(const vector<u8> &RawData)
 {
 	FileName = "";
 	file = RawData;
@@ -80,11 +67,11 @@ void ThemeEntry::ParseTheme()
 
 void ThemeEntry::ParseFont()
 {
-	lblLine2.SetString("Custom font");
+	lblLine2 = ("Custom font");
 	auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
 	CanInstall = fontName != "";
-	lblFname.SetString(CanInstall ? fontName : "Invalid font :(");
-	lblLine1.SetString(GetFileName(FileName));
+	lblFname = (CanInstall ? fontName : "Invalid font :(");
+	lblLine1 = (GetFileName(FileName));
 }
 
 void ThemeEntry::ParseNxTheme()
@@ -92,21 +79,21 @@ void ThemeEntry::ParseNxTheme()
 	auto themeInfo = ParseNXThemeFile(SData);
 	if (themeInfo.Version == -1)
 	{
-		lblLine1.SetString("Invalid theme");
+		lblLine1 = ("Invalid theme");
 		CanInstall = false;
 	}
 	if (themeInfo.Version > 7)
 	{
-		lblLine2.SetString("New version, update the installer !");
+		lblLine2 = ("New version, update the installer !");
 		CanInstall = false;
 	}		
-	if (SData.files.count("preview.png"))
+	if (SData.files.count("image.dds"))
 	{
 		NXThemeHasPreview = true;
 	}	
 	if (!ThemeTargetToName.count(themeInfo.Target))
 	{
-		lblLine2.SetString("Error: target not found");
+		lblLine2 = ("Error: target not found");
 		CanInstall = false;		
 	}
 	else
@@ -114,10 +101,10 @@ void ThemeEntry::ParseNxTheme()
 		string targetStr = ThemeTargetToName[themeInfo.Target];
 		if (NXThemeHasPreview)
 			targetStr += " - press L for preview";
-		lblLine2.SetString(targetStr);
+		lblLine2 = (targetStr);
 	}
 	
-	lblFname.SetString(themeInfo.ThemeName);
+	lblFname = (themeInfo.ThemeName);
 	string l1 = "";
 	if (themeInfo.Author != "")
 		l1 += "by " + themeInfo.Author;
@@ -127,70 +114,108 @@ void ThemeEntry::ParseNxTheme()
 	}
 	
 	if (l1 == "") //if meta is missing
-		lblLine1.SetString(FileName); 
-	lblLine1.SetString(l1);
+		lblLine1 = (FileName); 
+	lblLine1 = (l1);
 }
 
 void ThemeEntry::ParseLegacyTheme()
 {
 	if (FileName == "")
 	{
-		lblFname.SetString("Unknown.szs");
-		lblLine1.SetString("Remote install");
+		lblFname = ("Unknown.szs");
+		lblLine1 = ("Remote install");
 	}
 	else
 	{
-		lblFname.SetString(GetFileName(FileName));
-		lblLine1.SetString(FileName);		
+		lblFname = (GetFileName(FileName));
+		lblLine1 = (FileName);		
 	}
 	auto patch = SwitchThemesCommon::DetectSarc(SData);
 	if (patch.FirmName == "")
 	{
-		lblLine2.SetString("Invalid theme");
+		lblLine2 = ("Invalid theme");
 		CanInstall = false;
 	}
-	else lblLine2.SetString(patch.TemplateName + " for " + patch.FirmName);
+	else lblLine2 = (patch.TemplateName + " for " + patch.FirmName);
 }
 
-void ThemeEntry::NXLoadPreview()
+LoadedImage ThemeEntry::NXGetPreview()
 {
-	Preview = new Image(SData.files["preview.png"]);
-	Preview->ImageSetSize(1280,720);
-}
-		
-void ThemeEntry::Render(int X, int Y, bool selected)
-{
-	SDL_Rect aSize = Size;
-	if (selected)
+	if (!NXThemeHasPreview) return 0;
+	auto Preview = ImageCache::LoadDDS(SData.files["image.dds"], FileName);
+	if (!Preview)
 	{
-		aSize.x = X - 2; 
-		aSize.y = Y - 2;
-		aSize.w += 4; 
-		aSize.h += 4; 
-		SDL_SetRenderDrawColor(sdl_render,11,255,209,0xff);
-		SDL_RenderFillRect(sdl_render,&aSize);
-		aSize = Size;
-		
-		if (NXThemeHasPreview && (kHeld & KEY_L))
+		NXThemeHasPreview = false;
+		Dialog("Failed to load the preview image");
+	}
+	return Preview;
+}
+
+using namespace ImGui;
+bool ThemeEntry::IsHighlighted() 
+{
+	return GImGui->NavId == GetCurrentWindow()->GetID(FileName.c_str());
+}
+
+ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
+{
+	ImGuiWindow* window = GetCurrentWindow();
+	if (window->SkipItems)
+		return UserAction::None;
+
+	ImGuiContext& g = *GImGui;
+	const ImGuiStyle& style = g.Style;
+	const ImGuiID id = window->GetID(FileName.c_str());
+
+	ImGui::PushFont(font30);
+	const ImVec2 name_size = CalcTextSize(lblFname.c_str(), NULL, false);
+	ImGui::PopFont();
+	ImGui::PushFont(font25);
+	const ImVec2 line1_size = CalcTextSize(lblLine1.c_str(), NULL, false, EntryW - 5);
+	const ImVec2 line2_size = CalcTextSize(lblLine2.c_str(), NULL, false);
+	ImGui::PopFont();
+
+	ImVec2 pos = window->DC.CursorPos;
+	ImVec2 sz = { EntryW, 5 + name_size.y + line1_size.y };
+
+	const ImRect bb(pos, pos + sz);
+	ItemSize(sz, style.FramePadding.y);
+	if (!ItemAdd(bb, id))
+		return UserAction::None;
+
+	bool hovered, held;
+	bool pressed = ButtonBehavior(bb, id, &hovered, &held, 0);
+	if (pressed)
+		MarkItemEdited(id);
+
+	// Render
+	const ImU32 col = GetColorU32((held && hovered && !OverrideColor) ? ImGuiCol_ButtonActive : hovered && !OverrideColor ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
+	RenderNavHighlight(bb, id);
+	RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
+	
+	if (NXThemeHasPreview && (hovered || held) && gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+	{
+		auto Preview = NXGetPreview();
+		if (Preview)
 		{
-			if (!Preview)
-				NXLoadPreview();
-			if (Preview)
-			{
-				Preview->Render(0,0);
-				return;
-			}
+			ImGui::GetOverlayDrawList()->AddImage(
+				(ImTextureID)Preview,
+				{ 0,0 }, { SCR_W, SCR_H });
+			return UserAction::Preview;
 		}
 	}
-	aSize.x = X; aSize.y = Y;
-	if (Highlighted)
-		SDL_SetRenderDrawColor(sdl_render,0x36,0x6e,0x64,0xff); 
-	else 
-		SDL_SetRenderDrawColor(sdl_render,67,67,67,0xff); 
-	SDL_RenderFillRect(sdl_render,&aSize);
-	lblFname.Render(X + 12, Y + 5);
-	lblLine1.Render(X + 12, Y + 55);
-	lblLine2.Render(X + EntryW - lblLine2.GetSize().w - 5, Y + 5);
+
+	ImGui::PushFont(font30);
+	RenderText({ pos.x + 2, pos.y + 2 }, lblFname.c_str(), 0, false);
+	ImGui::PopFont();
+	ImGui::PushFont(font25);
+	RenderText({ pos.x + EntryW - line2_size.x - 2, pos.y + 2 }, lblLine2.c_str(), 0, false);
+	RenderTextWrapped({ pos.x + 2, pos.y + name_size.y + 2 }, lblLine1.c_str(), 0, EntryW - 5);
+	ImGui::PopFont();
+	
+QUIT_RENDER:
+	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
+	return pressed ? UserAction::Install : UserAction::None;
 }
 
 bool PatchBG(SARC::SarcData &ToPatch, const PatchTemplate &patch, const vector<u8> &data, const string &SzsName)
@@ -256,6 +281,7 @@ inline vector<u8> SarcPack(SARC::SarcData &data)
 	return Yaz0::Compress(packed.data, 3, packed.align);
 }
 
+//Uses blocking functions, only callable from Update()
 bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride) 
 {
 	if (!CanInstall)
@@ -298,7 +324,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 		else 
 		{
 			auto themeInfo = ParseNXThemeFile(SData);
-			string BaseSzs = "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
+			string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
 			if (!filesystem::exists(BaseSzs))
 			{
 				if (themeInfo.Target == "user" && ExtractUserPage())
@@ -320,7 +346,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			{
 				//common.szs patching code
 				
-				string CommonSzs = "/themes/systemData/common.szs";
+				string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
 				if (!filesystem::exists(CommonSzs))
 				{
 					MissingFileErrorDialog("common.szs");
@@ -427,9 +453,4 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 		return false;
 	}
 	return true;
-}
-
-SDL_Rect ThemeEntry::GetRect()
-{
-	return Size;
 }

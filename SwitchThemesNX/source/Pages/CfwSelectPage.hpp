@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -18,13 +17,7 @@ class CfwSelectPage : public IUIControlObj
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
-		void SetPage(int num);
-		int PageItemsCount();
 		
 		std::vector<std::string> Folders;
-		std::vector<Label*> DisplayEntries;
-		Label Title;
-		int pageNum = -1;
-		int pageCount = -1;
-		int menuIndex = 0;
+		std::string Title;
 };

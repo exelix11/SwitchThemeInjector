@@ -6,20 +6,29 @@
 class ThemeEntry 
 {
 	public:
+		enum class UserAction 
+		{
+			None,
+			Install,
+			Preview
+		};
+
 		ThemeEntry(const std::string &fileName);
 		ThemeEntry(const std::vector<u8> &RawData);
 		~ThemeEntry();
 		
+		static constexpr int EntryW = 860;
+
 		bool IsFolder = false;
 		bool CanInstall = true;		
 		bool InstallTheme(bool ShowDialogs = true, const std::string &homeDirOverride = "");
 		
+		bool IsHighlighted();
+
 		std::string GetPath() {return FileName;}
 		bool HasPreview() {return NXThemeHasPreview;}
 		
-		bool Highlighted = false;
-		void Render(int X, int Y, bool selected);
-		SDL_Rect GetRect();
+		UserAction Render(bool OverrideColor = false);
 	private:
 		bool LegacyTheme();
 		bool IsFont();
@@ -28,18 +37,16 @@ class ThemeEntry
 		void ParseLegacyTheme();
 		void ParseNxTheme();
 		void ParseFont();		
-		void NXLoadPreview();
+		LoadedImage NXGetPreview();
 		
 		std::vector<u8> DecompressedFile;
 		std::vector<u8> file;		
 		SARC::SarcData SData;
 	
 		std::string FileName;
-		SDL_Rect Size;
-		Label lblFname;
-		Label lblLine1;
-		Label lblLine2;
+		std::string lblFname;
+		std::string lblLine1;
+		std::string lblLine2;
 		
 		bool NXThemeHasPreview = false;
-		Image *Preview = 0;
 };

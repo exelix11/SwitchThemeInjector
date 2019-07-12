@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#ifdef __SWITCH__
 #include <switch.h>
 
 #define IRAM_PAYLOAD_MAX_SIZE 0x2F000
@@ -40,11 +41,13 @@ static void clear_iram(void) {
         copy_to_iram(IRAM_PAYLOAD_BASE + i, g_ff_page, sizeof(g_ff_page));
     }
 }
+#endif
 
-extern void QuitApp();
+extern void SetAppShouldClose();
 
 void PayloadReboot::Reboot(void) {	
-    splInitialize();
+#if __SWITCH__
+	splInitialize();
     clear_iram();
     
     for (size_t i = 0; i < IRAM_PAYLOAD_MAX_SIZE; i += 0x1000) {
@@ -53,17 +56,19 @@ void PayloadReboot::Reboot(void) {
     
     splSetConfig((SplConfigItem)65001, 2);
 	splExit();
-	
-	QuitApp();
+#endif
+	SetAppShouldClose();
 }
 
 bool PayloadReboot::Init()
 {
+#if __SWITCH__
     splInitialize();
 	FILE *f = fopen("sdmc:/atmosphere/reboot_payload.bin", "rb");
 	if (!f)
 		return false;
 	fread(g_reboot_payload, 1, sizeof(g_reboot_payload), f);
 	fclose(f);
+#endif
 	return true;
 }

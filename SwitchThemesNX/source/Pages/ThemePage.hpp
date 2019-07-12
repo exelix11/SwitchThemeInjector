@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -31,15 +30,18 @@ class ThemesPage : public IPage
 		std::vector<std::string> CurrentFiles;
 		
 		std::vector<ThemeEntry*> DisplayEntries;
-		Label lblPage;
-		Label lblCommands;
+		std::string lblPage;
+		std::string lblCommands;
 		int pageNum = -1;
 		int pageCount = -1;
-		int menuIndex = 0;
 		
+		//Will reset the scroll and force the selected item on the ui
+		bool ResetScroll = false;
+		int menuIndex = 0;
+
 		std::vector<std::string> SelectedFiles;
 		
-		Label NoThemesLbl;
+		std::string NoThemesLbl;
 		
 		const std::string CommandsTextNormal = "A: Install theme  Y: Multiselect";
 		const std::string CommandsTextSelected = "A: Add/Remove to selection  X: Clear selection  `+`: Install selected";

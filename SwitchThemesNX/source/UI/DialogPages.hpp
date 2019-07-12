@@ -1,5 +1,4 @@
 #pragma once
-#include <switch.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -13,22 +12,12 @@ class LoadingOverlay : public IUIControlObj
 {	
 	public:
 		LoadingOverlay(const std::string &msg);	
+		~LoadingOverlay() override {};
 
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
-		Button text;
-};
-
-class FatalErrorPage : public IUIControlObj
-{
-	public:
-		FatalErrorPage(const std::string &msg);	
-
-		void Render(int X, int Y) override;
-		void Update() override;
-	private:
-		Label text;
+		std::string text;
 };
 
 class DialogPage : public IUIControlObj
@@ -36,12 +25,13 @@ class DialogPage : public IUIControlObj
 	public:
 		DialogPage(const std::string &msg);	
 		DialogPage(const std::string &msg, const std::string &buttonMsg);	
+		~DialogPage() override {};
 
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
-		Label text;
-		Label Btn;
+		std::string text;
+		std::string btn;
 };
 
 class YesNoPage : public IUIControlObj
@@ -50,13 +40,12 @@ class YesNoPage : public IUIControlObj
 		static bool Ask(const std::string &msg);
 	
 		YesNoPage(const std::string &msg, bool *outRes);	
+		~YesNoPage() override {};
 
 		void Render(int X, int Y) override;
 		void Update() override;
 		
 	private:
 		bool *result;	
-		Label text;
-		Button btnYes;
-		Button btnNo;
+		std::string text;
 };
