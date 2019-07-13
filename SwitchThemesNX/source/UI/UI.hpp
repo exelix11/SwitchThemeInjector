@@ -51,7 +51,6 @@ class TabRenderer;
 class IPage : public IUIControlObj
 {
 	public:
-		bool focused;
 		TabRenderer* Parent;
 		std::string Name;
 		virtual ~IPage();

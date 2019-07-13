@@ -25,23 +25,25 @@ DialogPage::DialogPage(const string &msg) : DialogPage(msg, "Continue") {}
 void DialogPage::Render(int X, int Y)
 {	
 	Utils::ImGuiSetupWin("DialogPage", 20, 20, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
-	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30});
+	ImGui::SetWindowSize({ SCR_W - 40, SCR_H - 40});
 	ImGui::PushFont(font30);
 	ImGui::SetCursorPos({ 10, 15 });
 
 	Utils::ImGuiSetupWin("DialogContent", 20, 20, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 	ImGui::SetWindowFocus();
-	ImGui::SetWindowSize({ SCR_W - 30 ,  SCR_H - 80 });
+	ImGui::SetWindowSize({ SCR_W - 40 ,  SCR_H - 95 });
+	ImGui::PushTextWrapPos(0.0f);
 	ImGui::TextUnformatted(text.c_str());
+	ImGui::PopTextWrapPos();
+	Utils::ImGuiSetWindowScrollable();
 	Utils::ImGuiCloseWin();
 
-	ImGui::SetCursorPosY(SCR_H - 70);
+	ImGui::SetCursorPosY(SCR_H - 90);
 	if (ImGui::Button("   OK   "))
 		PopPage();
 	Utils::ImGuiSelectItemOnce();
 
 	ImGui::PopFont();
-	Utils::ImGuiSetWindowScrollable();
 	Utils::ImGuiCloseWin();
 }
 

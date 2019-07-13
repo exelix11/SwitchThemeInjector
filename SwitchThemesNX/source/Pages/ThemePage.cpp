@@ -14,7 +14,6 @@ lblPage(""),
 NoThemesLbl("There's nothing here, copy your themes in the themes folder on your sd and try again")
 {
 	Name = "Themes";
-	focused = false;
 	ThemeFiles = files;
 	lblCommands = CommandsTextNormal;
 	std::sort(ThemeFiles.begin(), ThemeFiles.end());
@@ -84,7 +83,7 @@ void ThemesPage::SetPage(int num)
 const int EntryW = 860;
 void ThemesPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("Themes", X, Y, false, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	Utils::ImGuiSetupPage("ThemesPageContainer", X, Y, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushFont(font25);
 
 	if (DisplayEntries.size() == 0)
@@ -99,47 +98,8 @@ void ThemesPage::Render(int X, int Y)
 	ImGui::SetCursorPosY(600);
 	Utils::ImGuiRightString(lblPage);
 
-	if (focused && KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) && menuIndex <= 0)
 	{
-		PushFunction([this]()
-			{
-				if (pageNum > 0)
-				{
-					SetPage(pageNum - 1);
-					//menuIndex = PageItemsCount() - 1;
-					return;
-				}
-				else if (pageCount > 1)
-				{
-					SetPage(pageCount - 1);
-					//menuIndex = PageItemsCount() - 1;
-					return;
-				}
-				//else menuIndex = PageItemsCount() - 1;
-			});
-		goto QUIT_RENDERING;
-	}
-
-	if (focused && KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) && menuIndex >= PageItemsCount() - 1)
-	{
-		PushFunction([this]()
-			{
-				if (pageCount > pageNum + 1) {
-					SetPage(pageNum + 1);
-					return;
-				}
-				else if (pageNum != 0)
-				{
-					SetPage(0);
-					return;
-				}
-				//else menuIndex = 0;
-			});
-		goto QUIT_RENDERING;
-	}
-
-	{
-		Utils::ImGuiSetupPage("Themes install", X, Y, focused, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+		Utils::ImGuiSetupPage(this, X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
 		if (ResetScroll)
 		{
@@ -163,11 +123,11 @@ void ThemesPage::Render(int X, int Y)
 
 				if (Selected)
 					ImGui::PopStyleColor();
-				if (count == setNewMenuIndex && FocusEvent.Reset()) Utils::ImGuiSelectItem(focused);
+				if (count == setNewMenuIndex && FocusEvent.Reset()) Utils::ImGuiSelectItem(true);
 				if (ImGui::IsItemActive())
 				{
-					ImVec2 value_with_lock_threshold = ImGui::GetMouseDragDelta(0);
-					ImGui::SetScrollY(ImGui::GetScrollY() - value_with_lock_threshold.y / 10);
+					ImVec2 drag = ImGui::GetMouseDragDelta(0);
+					ImGui::SetScrollY(ImGui::GetScrollY() - drag.y);
 				}
 
 				if (res == ThemeEntry::UserAction::Preview)
@@ -243,6 +203,9 @@ void ThemesPage::SelectCurrent()
 
 void ThemesPage::Update()
 {
+	if (DisplayEntries.size() == 0)
+		Parent->PageLeaveFocus(this);
+
 	int menuCount = PageItemsCount();	
 	
 	if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT))
@@ -258,7 +221,37 @@ void ThemesPage::Update()
 	if (menuCount <= 0)
 		return;
 	
-	if ((KeyPressed(GLFW_GAMEPAD_BUTTON_Y)) && menuIndex >= 0)
+
+	if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) && menuIndex <= 0)
+	{
+		if (pageNum > 0)
+		{
+			SetPage(pageNum - 1);
+			menuIndex = PageItemsCount() - 1;
+			return;
+		}
+		else if (pageCount > 1)
+		{
+			SetPage(pageCount - 1);
+			menuIndex = PageItemsCount() - 1;
+			return;
+		}
+		else menuIndex = PageItemsCount() - 1;
+	}
+	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) && menuIndex >= PageItemsCount() - 1)
+	{
+		if (pageCount > pageNum + 1) {
+			SetPage(pageNum + 1);
+			return;
+		}
+		else if (pageNum != 0)
+		{
+			SetPage(0);
+			return;
+		}
+		else menuIndex = 0;
+	}
+	else if ((KeyPressed(GLFW_GAMEPAD_BUTTON_Y)) && menuIndex >= 0)
 	{
 		SelectCurrent();
 	}

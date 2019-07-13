@@ -47,7 +47,7 @@ class RebootPage : public IPage
 		
 		void Render(int X, int Y) 
 		{
-			Utils::ImGuiSetupPage("RebootPage", X, Y, focused);
+			Utils::ImGuiSetupPage(this, X, Y);
 			ImGui::PushFont(font30);
 			ImGui::SetCursorPos({ 5, 10 });
 

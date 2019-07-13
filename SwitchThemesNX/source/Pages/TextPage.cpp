@@ -12,7 +12,7 @@ TextPage::TextPage(const std::string& title, const std::string& text) :
 
 void TextPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("TextPage", X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 	ImGui::TextWrapped(Text.c_str());
 	ImGui::PopFont();
@@ -46,7 +46,7 @@ CreditsPage::CreditsPage() :
 extern void ShowFirstTimeHelp(bool WelcomeScr); //from main.cpp
 void CreditsPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("CreditsPage", X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::SetCursorPosY(20);
 	ImGui::PushFont(font30);
 	ImGui::TextWrapped(creditsText.c_str());

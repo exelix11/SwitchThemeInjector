@@ -32,7 +32,7 @@ void TabRenderer::Render(int X, int Y)
 	Utils::ImGuiSetupWin("TabRenderer", 0, 0);
 	ImGui::SetWindowSize(ImVec2(SideRect.z, SideRect.w));
 
-	if (!ControlHasFocus)
+	if (!ControlHasFocus && !ImGui::IsWindowFocused())
 		ImGui::SetWindowFocus();
 
 	ImGui::PushFont(font30);
@@ -61,7 +61,7 @@ void TabRenderer::Render(int X, int Y)
 		if (Border)
 			ImGui::PopStyleVar();
 
-		if (!ControlHasFocus && GImGui->NavId == ImGui::GetCurrentWindow()->GetID(page->Name.c_str()))
+		if (!ControlHasFocus && GImGui->NavId == ImGui::GetID(page->Name.c_str()))
 			selectedIndex = count;
 
 		++count;
@@ -83,6 +83,9 @@ void TabRenderer::Render(int X, int Y)
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
 
+	if (ControlHasFocus && ImGui::IsWindowFocused())
+		SetFocused(selectedIndex);
+
 	if (CurrentControl)
 		CurrentControl->Render(SideRect.z + 14, TopRect.w + 14);
 }
@@ -96,7 +99,7 @@ Title("NXThemes Installer " + VersionString)
 void TabRenderer::AddPage(IPage* page) 
 {
 	page->Parent = this;
-	page->focused = false;
+	page->FocusEvent.Reset();
 	Pages.push_back(page);
 	if (!CurrentControl)
 		CurrentControl = page;
@@ -117,7 +120,6 @@ IPage* TabRenderer::At(int id)
 void TabRenderer::PageLeaveFocus(IPage *page)
 {
 	ImGui::NavMoveRequestCancel();
-	CurrentControl->focused = false;
 	ControlHasFocus = false;
 }
 
@@ -141,10 +143,10 @@ void TabRenderer::Update()
 void TabRenderer::SetFocused(int id)
 {
 	if (CurrentControl)
-		CurrentControl->focused = false;
+		CurrentControl->FocusEvent.Reset();
 
 	CurrentControl = Pages[id];
-	CurrentControl->focused = true;
+	ImGui::SetWindowFocus(CurrentControl->Name.c_str());
 	CurrentControl->FocusEvent.Set();
 	ControlHasFocus = true;
 }

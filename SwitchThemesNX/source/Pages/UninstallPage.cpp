@@ -11,7 +11,7 @@ lblText("Use this to uninstall the currently installed themes.\nIf you have issu
 
 void UninstallPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("Uninstall page", X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
 	ImGui::TextWrapped(lblText.c_str());

@@ -33,8 +33,8 @@ bool ImguiInit()
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2{ SCR_W, SCR_H};
 	
-	font25 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 30.0f);
-	font30 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 35.0f);
+	font25 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 33.0f);
+	font30 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 37.0f);
 	font40 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 40.0f);
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
