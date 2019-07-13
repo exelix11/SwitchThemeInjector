@@ -8,7 +8,7 @@
 using namespace std;
 
 ExternalInstallPage::ExternalInstallPage(const vector<string> &paths) :
-Title("Install theme from external source"),
+Title("Install theme(s) from external source"),
 Install("Press + to install, B to cancel")
 {
     for (int i=0; i < (int)paths.size(); i++)
@@ -26,22 +26,22 @@ ExternalInstallPage::~ExternalInstallPage()
 
 void ExternalInstallPage::Render(int X, int Y)
 {	
-	Utils::ImGuiSetupWin("ExtInstallPage", 0, 0);
+	Utils::ImGuiSetupWin("ExtInstallPage", 0, 0, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::SetWindowSize({ SCR_W, SCR_H });
 	ImGui::PushFont(font30);
 
-	ImGui::SetCursorPosY(30);
+	ImGui::SetCursorPosY(10);
 	Utils::ImGuiCenterString(Title);
 
 	if (isInstalled)
 	{
-		Utils::ImGuiCenterString(Title.c_str());
-		if (ImGui::Button("Exit to homebrew launcher"))
+		ImGui::SetCursorPosY(SCR_H - 50);
+		auto res = Utils::ImGuiCenterButtons({ "Exit to homebrew launcher" ,"Reboot" });
+		if (res == 0)
 		{
 			SetAppShouldClose();
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("Reboot"))
+		if (res == 1)
 		{
 			if (PayloadReboot::Init())
 			{
@@ -57,19 +57,30 @@ void ExternalInstallPage::Render(int X, int Y)
 #endif
 			}
 		}
-    }else
-    {
+    }
+	else
+	{
+		ImGui::SetCursorPosY(SCR_H - 50);
 		Utils::ImGuiCenterString(Install);
-		ImGui::SetCursorPos({ SCR_W / 2 - ThemeEntry::EntryW / 2 , 70 });
-        for (int i=0; i < (int)ArgEntries.size(); i++)
+
+		Utils::ImGuiSetupWin("ExtInstallPageContent", 20, 60, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+		ImGui::SetWindowSize({ SCR_W - 20, SCR_H - 110 });
+		for (int i=0; i < (int)ArgEntries.size(); i++)
         {
+			ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2 - ThemeEntry::EntryW / 2);
 			if (ArgEntries[i]->Render() == ThemeEntry::UserAction::Preview)
 				break;
+			if (ImGui::IsItemActive())
+			{
+				auto drag = ImGui::GetMouseDragDelta(0);
+				ImGui::SetScrollY(ImGui::GetScrollY() - drag.y);
+			}
         }
+		Utils::ImGuiSetWindowScrollable();
+		Utils::ImGuiCloseWin();
     }
 
 	ImGui::PopFont();
-	Utils::ImGuiSetWindowScrollable();
 	Utils::ImGuiCloseWin();
 }
 
