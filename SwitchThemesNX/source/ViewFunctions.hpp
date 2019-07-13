@@ -94,7 +94,7 @@ namespace Utils
 			auto sz = ImGui::CalcTextSize(str.c_str(), nullptr, false, win);
 			TotX += ImGui::CalcItemSize({}, sz.x + style.FramePadding.x * 2.0f, sz.y + style.FramePadding.y * 2.0f).x;
 		}
-		ImGui::SetCursorPosX((win / 2 - TotX / 2) - buttons.size() * style.FramePadding.x * 2);
+		ImGui::SetCursorPosX((win / 2 - TotX / 2) - (buttons.size() - 1) * style.FramePadding.x * 2);
 		int res = -1;
 		for (int i = 0; i < buttons.size(); i++)
 		{
