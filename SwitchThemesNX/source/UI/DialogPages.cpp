@@ -7,11 +7,11 @@ LoadingOverlay::LoadingOverlay(const string &msg) : text(msg) {}
 
 void LoadingOverlay::Render(int X, int Y)
 {		
-	Utils::ImGuiSetupWin("Loading", 20, 20, ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+	Utils::ImGuiSetupWin("Loading", 20, 20);
 	ImGui::SetWindowFocus();
 	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30});
 	ImGui::PushFont(font30);
-	ImGui::SetCursorPosY(400);
+	ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2 - 20);
 	Utils::ImGuiCenterString(text.c_str());
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();

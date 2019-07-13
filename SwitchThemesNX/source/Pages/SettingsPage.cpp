@@ -5,7 +5,7 @@
 using namespace std;
 
 SettingsPage::SettingsPage() : 
-lblGuide( "Theme shuffle is implemented as a custom sysmodule, get it from: https://git.io/fhtY8 \n"
+lblGuide( "Theme shuffle is implemented as a custom sysmodule, get it from:\nhttps://git.io/fhtY8 \n"
 "To install a theme in the shuffle list press R while pressing A or + in the theme install page"),
 lblInstalled("Currently installed themes number: 0")
 {
@@ -17,18 +17,18 @@ lblInstalled("Currently installed themes number: 0")
 void SettingsPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupPage(this, X, Y);
-	ImGui::PushFont(font30);
+	ImGui::PushFont(font25);
 
 	ImGui::NewLine();
 	ImGui::Checkbox("Animation support for nxthemes", &UseAnimations);
 	PAGE_RESET_FOCUS
 	ImGui::NewLine();
+
+	ImGui::PushFont(font30);
 	ImGui::Text("Theme shuffle settings (BETA)");
 	ImGui::PopFont();
 
-	ImGui::PushFont(font25);
 	ImGui::TextWrapped(lblGuide.c_str());
-	ImGui::NewLine();
 	ImGui::Text("Theme shuffle mode:");
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Shuffle", &shuffleValue, -1))
