@@ -19,7 +19,7 @@ NcaDumpPage::NcaDumpPage() :
 
 void NcaDumpPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("NcaDump", X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
 	ImGui::TextWrapped(guideText.c_str());

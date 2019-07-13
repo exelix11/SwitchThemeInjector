@@ -215,7 +215,7 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	
 QUIT_RENDER:
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
-	return pressed ? UserAction::Install : UserAction::None;
+	return pressed && Utils::ItemNotDragging() ? UserAction::Install : UserAction::None;
 }
 
 bool PatchBG(SARC::SarcData &ToPatch, const PatchTemplate &patch, const vector<u8> &data, const string &SzsName)

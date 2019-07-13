@@ -16,7 +16,7 @@ lblInstalled("Currently installed themes number: 0")
 
 void SettingsPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("Settings",X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
 	ImGui::NewLine();

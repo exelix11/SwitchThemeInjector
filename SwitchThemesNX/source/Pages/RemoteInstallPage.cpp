@@ -26,7 +26,7 @@ lblConfirm("Press A to install, B to cancel.")
 
 void RemoteInstallPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("RemoteInstall", X, Y, focused);
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 	if (entry)
 	{

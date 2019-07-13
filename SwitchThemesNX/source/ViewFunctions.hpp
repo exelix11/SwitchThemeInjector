@@ -34,12 +34,21 @@ namespace Utils
 		ImGui::SetWindowPos(ImVec2(x, y));
 	}
 
-	static inline void ImGuiSetupPage(const char* name, int x, int y, bool focus, ImGuiWindowFlags flags = DefaultWinFlags)
+	static inline void ImGuiSetupPage(const char *name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGuiSetupWin(name, x, y, flags);
 		ImGui::SetWindowSize(ImVec2(SCR_W - x, SCR_H - y));
-		if (focus)
-			ImGui::SetWindowFocus();
+		//if (page->focused)
+			//ImGui::SetWindowFocus();
+		//ImGui::GetCurrentContext()->NavDisableHighlight = !focus;
+	}
+
+	static inline void ImGuiSetupPage(const IPage* page, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
+	{
+		ImGuiSetupWin(page->Name.c_str(), x, y, flags);
+		ImGui::SetWindowSize(ImVec2(SCR_W - x, SCR_H - y));
+		//if (page->focused)
+			//ImGui::SetWindowFocus();
 		//ImGui::GetCurrentContext()->NavDisableHighlight = !focus;
 	}
 
@@ -60,11 +69,16 @@ namespace Utils
 			ImGui::Button("##drag", { ImGui::GetWindowSize().x, cursorLastPos });
 			if (ImGui::IsItemActive())
 			{
-				ImVec2 value_with_lock_threshold = ImGui::GetMouseDragDelta(0);
-				ImGui::SetScrollY(ImGui::GetScrollY() - value_with_lock_threshold.y / 10);
+				ImVec2 drag = ImGui::GetMouseDragDelta(0);
+				ImGui::SetScrollY(ImGui::GetScrollY() - drag.y);
 			}
 			ImGui::PopStyleColor(3);
 		}
+	}
+
+	static inline bool ItemNotDragging() 
+	{
+		return ImGui::GetMouseDragDelta(0).y == 0;
 	}
 
 	static inline void ImGuiCenterString(const std::string& str)
@@ -97,7 +111,7 @@ namespace Utils
 	}
 
 #define PAGE_RESET_FOCUS \
-	if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(focused);
+	if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(true);
 
 	static inline bool ImGuiSelectItemOnce(bool isFocused = true)
 	{
