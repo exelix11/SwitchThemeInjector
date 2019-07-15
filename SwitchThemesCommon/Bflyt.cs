@@ -86,7 +86,17 @@ namespace SwitchThemes.Common
 				}
 			}
 
-			public uint[] ColorData = null; //only for pic1 panes
+			//only for pic1 panes
+			public struct UVCoord
+			{
+				public Vector2 TopLeft;
+				public Vector2 TopRight;
+				public Vector2 BottomLeft;
+				public Vector2 BottomRight;
+			}
+
+			public UVCoord[] UVCoords = null;
+			public uint[] ColorData = null;
 
 			public PropertyEditablePanel(BasePanel p) : base(p)
 			{
@@ -110,6 +120,17 @@ namespace SwitchThemes.Common
 				{
 					dataReader.BaseStream.Position = 0x54 - 8;
 					ColorData = dataReader.ReadUInt32s(4);
+					dataReader.ReadUInt16(); //material index
+					UVCoords = new UVCoord[dataReader.ReadByte()];
+					dataReader.ReadByte(); //padding
+					for (int i = 0; i < UVCoords.Length; i++)
+						UVCoords[i] = new UVCoord()
+						{
+							TopLeft = dataReader.ReadVector2(),
+							TopRight = dataReader.ReadVector2(),
+							BottomLeft = dataReader.ReadVector2(),
+							BottomRight = dataReader.ReadVector2()
+						};
 				}
 			}
 
@@ -131,6 +152,14 @@ namespace SwitchThemes.Common
 					{
 						bin.BaseStream.Position = 0x54 - 8;
 						bin.Write(ColorData);
+						bin.BaseStream.Position += 4;
+						for (int i = 0; i < UVCoords.Length; i++)
+						{
+							bin.Write(UVCoords[i].TopLeft);
+							bin.Write(UVCoords[i].TopRight);
+							bin.Write(UVCoords[i].BottomLeft);
+							bin.Write(UVCoords[i].BottomRight);
+						}
 					}
 					data = mem.ToArray();
 				}
@@ -563,6 +592,25 @@ namespace SwitchThemes.Common
 			if (!patch.DirectPatchPane)
 				return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
 			else return PatchResult.OK;
+		}
+
+		public PatchResult ClearUVData(string name)
+		{
+			var PaneNames = GetPaneNames();
+			int index = Array.IndexOf(PaneNames, name);
+			if (index < 0 || Panels[index].name != "pic1") return PatchResult.Fail;
+
+			var e = new PropertyEditablePanel(Panels[index]);
+			Panels[index] = e;
+			for (int i = 0; i < e.UVCoords.Length; i++)
+			{
+				e.UVCoords[i].TopLeft = new Vector2(0, 0);
+				e.UVCoords[i].TopRight = new Vector2(1, 0);
+				e.UVCoords[i].BottomLeft = new Vector2(0, 1);
+				e.UVCoords[i].BottomRight = new Vector2(1, 1);
+			}
+
+			return PatchResult.OK;
 		}
 
 		public TextureSection GetTex

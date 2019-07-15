@@ -66,7 +66,7 @@ namespace SwitchThemes
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text += LoadFileText;
 
-			AppletIcoButtonsInit();
+			HomeAppletIcoButtonsInit();
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -343,6 +343,7 @@ namespace SwitchThemes
 		private void HomeMenuPartBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			grpHomeExtra.Visible = HomeMenuParts[HomeMenuPartBox.Text] == "home";
+			grpLockExtra.Visible = HomeMenuParts[HomeMenuPartBox.Text] == "lock";
 
 			AllLayoutsBox.Items.Clear();
 			AllLayoutsBox.Items.Add("Don't patch");
@@ -479,15 +480,21 @@ namespace SwitchThemes
 
 			if (targetPatch.NXThemeName == "home")
 			{
-				foreach (var n in AppletButtonPatch.Patches)
+				foreach (var n in TextureReplacement.NxNameToList[targetPatch.NXThemeName])
 				{
-					if (AppletIcons[n.NxThemeName] == null) continue;
-					string path = AppletIcons[n.NxThemeName];
+					if (HomeAppletIcons[n.NxThemeName] == null) continue;
+					string path = HomeAppletIcons[n.NxThemeName];
 					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
 						return;
-					AppletIcons[n.NxThemeName] = path;
-					Patcher.PatchBntxTexture(File.ReadAllBytes(path), n.BntxName, n.NewColorFlags);
+					HomeAppletIcons[n.NxThemeName] = path;
+					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName, n.NewColorFlags);
 				}
+			}
+			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
+			{
+				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
+					return;
+				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName, TextureReplacement.Entrance[0].NewColorFlags);
 			}
 
 			if (LayoutPatchList.SelectedIndex != 0)
@@ -611,7 +618,8 @@ namespace SwitchThemes
 		}
 
 		LayoutPatch ExtraCommonLyt = null;
-		Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
+		Dictionary<string, string> HomeAppletIcons = new Dictionary<string, string>();
+		string LockCustomIcon = null;
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
@@ -635,21 +643,26 @@ namespace SwitchThemes
 			//byte[] preview = null;
 			//if (info.Item3 && tbBntxFile.Text.Trim() != "")
 			//	preview = GenerateDDSPreview(tbBntxFile.Text);
+			string target = HomeMenuParts[HomeMenuPartBox.Text];
 
-			foreach (var k in AppletIcons.Keys)
-			{
-				string path = AppletIcons[k];
-				if (path != null && !path.EndsWith(".dds") && !IcontoDDS(ref path))
+			if (target == "home")
+				foreach (var k in HomeAppletIcons.Keys)
+				{
+					string path = HomeAppletIcons[k];
+					if (path != null && !path.EndsWith(".dds") && !IcontoDDS(ref path))
+						return;
+					HomeAppletIcons[k] = path;
+				}
+			else if (target == "lock")
+				if (LockCustomIcon != null && !LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
 					return;
-				AppletIcons[k] = path;
-			}
 
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
 			try
 			{
-				var builder = new NXThemeBuilder(HomeMenuParts[HomeMenuPartBox.Text], info.Item1, info.Item2);
+				var builder = new NXThemeBuilder(target, info.Item1, info.Item2);
 
 				if (layout != null)
 					builder.AddMainLayout(layout);
@@ -660,11 +673,16 @@ namespace SwitchThemes
 				if (ExtraCommonLyt != null)
 					builder.AddFile("common.json", ExtraCommonLyt.AsByteArray());
 
-				foreach (var ico in AppletIcons)
-					if (ico.Value != null)
-						builder.AddAppletIcon(ico.Key, File.ReadAllBytes(ico.Value));
+				if (target == "home")
+				{
+					foreach (var ico in HomeAppletIcons)
+						if (ico.Value != null)
+							builder.AddAppletIcon(ico.Key, File.ReadAllBytes(ico.Value));
+				}
+				else if (target == "lock" && LockCustomIcon != null)
+					builder.AddAppletIcon("lock", File.ReadAllBytes(LockCustomIcon));
 
-				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+				 SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
 				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
@@ -779,44 +797,65 @@ namespace SwitchThemes
 			btnOpenCustomLayout.Text = "X";
 		}
 
-		private void AppletIcoButtonsInit()
+		private void HomeAppletIcoButtonsInit()
 		{
 			var btns = new List<Button> { btnApplet1, btnApplet2, btnApplet3, btnApplet4, btnApplet5, btnApplet6 };
 			int i = 0;
-			foreach (var p in AppletButtonPatch.Patches)
+			foreach (var p in TextureReplacement.ResidentMenu)
 			{
-				AppletIcons.Add(p.NxThemeName, null);
+				HomeAppletIcons.Add(p.NxThemeName, null);
 				btns[i].Tag = btns[i].Text = p.NxThemeName;
-				btns[i].Click += delegate (object sender, EventArgs e) 
-				{
-					AppletIcoButtonBehavior((Button)sender, (string)((Button)sender).Tag);
-				};
+					btns[i].Click += delegate (object sender, EventArgs e) 
+					{
+						AppletIcoButtonBehavior((Button)sender, (string)((Button)sender).Tag);
+					};
 				i++;
 			}
 		}
 
 		private void AppletIcoButtonBehavior(Button sender, string Name)
 		{
-			if (AppletIcons[Name] != null)
+			if (HomeAppletIcons[Name] != null)
 			{
 				sender.Text = Name;
-				AppletIcons[Name] = null;
+				HomeAppletIcons[Name] = null;
 				return;
 			}
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			AppletIcons[Name] = opn.FileName;
+			HomeAppletIcons[Name] = opn.FileName;
 			sender.Text = "X";
+		}
+
+		private void BtnCustomLock_Click(object sender, EventArgs e)
+		{
+			if (LockCustomIcon != null)
+			{
+				btnCustomLock.Text = "...";
+				lblCustomLock.Text = "Custom home icon: not set";
+				LockCustomIcon = null;
+				return;
+			}
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			LockCustomIcon = opn.FileName;
+			btnCustomLock.Text = "X";
+			lblCustomLock.Text = "Custom home icon: " + LockCustomIcon;
 		}
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background");
+			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background.\r\nRemember to use a layout to center the images in the buttons");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
 		{
 			MessageBox.Show("This is a custom layout that is applied to the common.szs file, if unsure leave it empty. This is not the main layout");
+		}
+
+		private void Button7_Click(object sender, EventArgs e)
+		{
+			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 82x82 images, colors are not allowed: they should be white on a transparent background");
 		}
 	}
 }

@@ -170,20 +170,42 @@ namespace SwitchThemes.Common
 		};
 	}
 
-	public struct AppletButtonPatch
+	public struct TextureReplacement
 	{
 		public string NxThemeName;
 		public string BntxName;
 		public UInt32 NewColorFlags;
+		public string FileName;
+		public string PaneName;
 
-		public static List<AppletButtonPatch> Patches = new List<AppletButtonPatch>
+		public TextureReplacement(string name, string bntx, UInt32 cflag, string Fname, string Pname)
 		{
-			new AppletButtonPatch() { NxThemeName = "album", BntxName = "RdtIcoPvr_00^s", NewColorFlags = 0x02000000 },
-			new AppletButtonPatch() { NxThemeName = "news", BntxName = "RdtIcoNews_00^s", NewColorFlags = 0x02000000 },
-			new AppletButtonPatch() { NxThemeName = "shop", BntxName = "RdtIcoShop^s", NewColorFlags = 0x02000000 },
-			new AppletButtonPatch() { NxThemeName = "controller", BntxName = "RdtIcoCtrl_00^s", NewColorFlags = 0x02000000 },
-			new AppletButtonPatch() { NxThemeName = "settings", BntxName = "RdtIcoSet^s", NewColorFlags = 0x02000000 },
-			new AppletButtonPatch() { NxThemeName = "power", BntxName = "RdtIcoPwrForm^s", NewColorFlags = 0x02000000 },
+			NxThemeName = name;
+			BntxName = bntx;
+			NewColorFlags = cflag;
+			FileName = Fname;
+			PaneName = Pname;
+		}
+
+		public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
+		{
+			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00"),
+			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00"),
+			new TextureReplacement("shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict"),
+			new TextureReplacement("controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form"),
+			new TextureReplacement("settings",  "RdtIcoSet^s",      0x02000000, "blyt/RdtBtnSet.bflyt",     "P_Pict"),
+			new TextureReplacement("power",     "RdtIcoPwrForm^s",  0x02000000, "blyt/RdtBtnPow.bflyt",     "P_Pict_00"),
+		};
+
+		public static List<TextureReplacement> Entrance = new List<TextureReplacement>
+		{
+			new TextureReplacement("lock",     "EntIcoHome^s",  0x02000000, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome"),
+		};
+
+		public static Dictionary<string, List<TextureReplacement>> NxNameToList = new Dictionary<string, List<TextureReplacement>>
+		{
+			{ "home", ResidentMenu},
+			{ "lock", Entrance}
 		};
 	}
 }
