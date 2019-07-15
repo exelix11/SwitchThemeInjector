@@ -46,10 +46,11 @@ namespace SwitchThemes
 					ArgsHandled = true;
 					Console.WriteLine(
 						"Switch themes Injector V " + SwitchThemesCommon.CoreVer +" by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
-						"Usage: SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.nxtheme\"\r\n" +
+						"Usage: SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						"instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n"+
 						"Only the image and out file are needed.\r\n" +
-						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"album=<custom album icon.png/dds>\" \"out=<OutputPath>.szs\"\r\n");
+						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n");
+					Console.WriteLine("The following applet icons are supported as well: " + string.Join(", ", AppletButtonPatch.Patches.Select(x => x.NxThemeName).ToArray()));
 					if (IsMono)
 						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
 				}
@@ -83,7 +84,7 @@ namespace SwitchThemes
 
 			string Target = args[1];
 			var	CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
-			var targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, DefaultTemplates.templates);
+			var targetPatch = SzsPatcher.DetectSarc(CommonSzs, DefaultTemplates.templates);
 
 			if (targetPatch == null)
 			{
@@ -111,51 +112,49 @@ namespace SwitchThemes
 				else return false;
 			}
 
-			string album = GetArg("ablum");
-			if (album != null && !album.EndsWith(".dds"))
+			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
+			foreach (var a in AppletButtonPatch.Patches)
 			{
-				if (Form1.ImageToDDS(album, Path.GetTempPath(), "DXT5", true))
-					album = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(album) + ".dds");
-				else return false;
-			}
+				string path = GetArg(a.NxThemeName);
+				if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+					path = null;
+				AppletIcons.Add(a.NxThemeName, path);
+			}			
 
 			try
 			{				
 				var res = BflytFile.PatchResult.OK;
+				var Patcher = new SzsPatcher(CommonSzs, DefaultTemplates.templates);
 
 				if (Image != null)
 				{
-					if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(Image), targetPatch) == BflytFile.PatchResult.Fail)
+					res = Patcher.PatchMainBG(File.ReadAllBytes(Image));
+					if (res == BflytFile.PatchResult.Fail)
 					{
-						Console.WriteLine(
-								"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-								"without this information it is not possible to rebuild the bntx." +
-								"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						Console.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
+						return false;
+					}
+					else if (res == BflytFile.PatchResult.CorruptedFile)
+					{
+						Console.WriteLine("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 						return false;
 					}
 				}
 
-				if (album != null && targetPatch.szsName == "ResidentMenu.szs")
+				if (targetPatch.szsName == "ResidentMenu.szs")
 				{
-					SwitchThemesCommon.PatchBntxTexture(CommonSzs, File.ReadAllBytes(album), "RdtIcoPvr_00^s", 0x02000000);
-				}
-
-				res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
-
-				if (res == BflytFile.PatchResult.Fail)
-				{
-					Console.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
-					return false;
-				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
-				{
-					Console.WriteLine("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-					return false;
+					foreach (var a in AppletButtonPatch.Patches)
+					{
+						if (AppletIcons[a.NxThemeName] != null)
+							Patcher.PatchBntxTexture(File.ReadAllBytes(AppletIcons[a.NxThemeName]), a.BntxName, a.NewColorFlags);
+					}
 				}
 
 				if (Layout != null)
 				{
-					var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatch.LoadTemplate(File.ReadAllText(Layout)), targetPatch.NXThemeName, targetPatch.NXThemeName == "home", true);
+					Patcher.EnableAnimations = true;
+					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
+					var layoutres = Patcher.PatchLayouts(l, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
 					if (layoutres == BflytFile.PatchResult.Fail)
 					{
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
@@ -166,8 +165,10 @@ namespace SwitchThemes
 						Console.WriteLine("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
 						return false;
 					}
+					layoutres = Patcher.PatchAnimations(l.Anims);
 				}
 
+				CommonSzs = Patcher.GetFinalSarc();
 				var sarc = SARC.PackN(CommonSzs);
 
 				File.WriteAllBytes(Output, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
@@ -255,31 +256,31 @@ namespace SwitchThemes
 				else return false;
 			}
 
-			if (album != null && !album.EndsWith(".dds"))
+			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
+			foreach (var a in AppletButtonPatch.Patches)
 			{
-				if (Form1.ImageToDDS(album, Path.GetTempPath(), "DXT5", true))
-					album = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(album) + ".dds");
-				else return false;
+				string path = GetArg(a.NxThemeName);
+				if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+					path = null;
+				AppletIcons.Add(a.NxThemeName, path);
 			}
 
 			try
 			{
-				var res = SwitchThemesCommon.GenerateNXTheme(
-					new ThemeFileManifest()
-					{
-						Version = 7,
-						ThemeName = Name,
-						Author = Author,
-						Target = Target,
-						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					},
-					Image != null ? File.ReadAllBytes(Image) : null,
-					layout?.AsByteArray(),
-					new Tuple<string, byte[]>("preview.png", preview ? Form1.GenerateDDSPreview(Image) : null),
-					new Tuple<string, byte[]>("common.json", ExtraCommon != null ? File.ReadAllBytes(ExtraCommon) : null),
-					new Tuple<string, byte[]>("album.dds", album != null ? File.ReadAllBytes(album) : null));
+				var builder = new NXThemeBuilder(Target, Name, Author);
 
-				File.WriteAllBytes(Output, res);
+				if (layout != null)
+					builder.AddMainLayout(layout);
+				if (Image != null)
+					builder.AddMainBg(File.ReadAllBytes(Image));
+				if (ExtraCommon != null)
+					builder.AddFile("common.json", File.ReadAllBytes(ExtraCommon));
+
+				foreach (var i in AppletIcons)
+					if (i.Value != null)
+						builder.AddAppletIcon(i.Key, File.ReadAllBytes(i.Value));
+
+				File.WriteAllBytes(Output, builder.GetNxtheme());
 			}
 			catch (Exception ex)
 			{

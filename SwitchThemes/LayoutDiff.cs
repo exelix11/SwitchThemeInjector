@@ -23,7 +23,7 @@ namespace SwitchThemes
 				MessageBox.Show("The provided archives don't have the same files");
 				return null;
 			}
-			var targetPatch = SwitchThemesCommon.DetectSarc(original, DefaultTemplates.templates);
+			var targetPatch = SzsPatcher.DetectSarc(original, DefaultTemplates.templates);
 			string skipLayoutName = targetPatch != null ? targetPatch.MainLayoutName : "";
 
 			bool hasAtLeastAnExtraGroup = false; //Used to detect if animations are properly implemented

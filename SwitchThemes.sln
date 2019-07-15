@@ -12,6 +12,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNX", "SwitchThemesNX\SwitchThemesNX.vcxproj", "{B6DA9247-8ED4-44D7-9FD3-6EAB523FC003}"
 EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{cfbf6ef0-8237-442a-8997-a30072f0b9f8}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64

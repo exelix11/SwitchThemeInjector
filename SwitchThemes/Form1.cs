@@ -65,6 +65,8 @@ namespace SwitchThemes
 
 			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
 			tbPatches.Text += LoadFileText;
+
+			AppletIcoButtonsInit();
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -310,7 +312,7 @@ namespace SwitchThemes
 			LayoutPatchList.Items.Add("Don't patch");
 			
 			CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
-			targetPatch = SwitchThemesCommon.DetectSarc(CommonSzs, Templates);
+			targetPatch = SzsPatcher.DetectSarc(CommonSzs, Templates);
 
 			if (targetPatch == null)
 			{
@@ -415,13 +417,12 @@ namespace SwitchThemes
 			return true;
 		}
 
-		bool AlbumIcontoDDS()
+		public static bool IcontoDDS(ref string FilePath)
 		{
-			var res = ImageToDDS(AlbumIcon, Path.GetTempPath(), "DXT5",true); //Somehow it outputs a DXT4 image (?)
+			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT5",true); //Somehow it outputs a DXT4 image (?)
 			if (res)
 			{
-				AlbumIcon = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(AlbumIcon) + ".dds");
-				lblAlbumIco.Text = "Custom album icon: " + AlbumIcon;
+				FilePath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(FilePath) + ".dds");
 			}
 			return res;
 		}
@@ -456,29 +457,14 @@ namespace SwitchThemes
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
+			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
+
 			var res = BflytFile.PatchResult.OK;
 			if (tbBntxFile.Text.Trim() != "")
 			{
 				if (!BgImageCheck(true)) return;
 
-				if (SwitchThemesCommon.PatchBntx(CommonSzs, File.ReadAllBytes(tbBntxFile.Text), targetPatch) == BflytFile.PatchResult.Fail)
-				{
-					MessageBox.Show(
-							"Can't build this theme: the szs you opened doesn't contain some information needed to patch the bntx," +
-							"without this information it is not possible to rebuild the bntx." +
-							"You should use an original or at least working szs", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-
-				if (targetPatch.NXThemeName == "home" && AlbumIcon != null)
-				{
-					if (!AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
-						return;
-					SwitchThemesCommon.PatchBntxTexture(CommonSzs, File.ReadAllBytes(AlbumIcon), "RdtIcoPvr_00^s", 0x02000000);
-				}
-
-				res = SwitchThemesCommon.PatchBgLayouts(CommonSzs, targetPatch);
-
+				res = Patcher.PatchMainBG(File.ReadAllBytes(tbBntxFile.Text));
 				if (res == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
@@ -488,12 +474,26 @@ namespace SwitchThemes
 				{
 					MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 					return;
+				}						
+			}
+
+			if (targetPatch.NXThemeName == "home")
+			{
+				foreach (var n in AppletButtonPatch.Patches)
+				{
+					if (AppletIcons[n.NxThemeName] == null) continue;
+					string path = AppletIcons[n.NxThemeName];
+					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
+						return;
+					AppletIcons[n.NxThemeName] = path;
+					Patcher.PatchBntxTexture(File.ReadAllBytes(path), n.BntxName, n.NewColorFlags);
 				}
 			}
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				var layoutres = SwitchThemesCommon.PatchLayouts(CommonSzs, LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home", !UseAnim.Checked);
+				Patcher.EnableAnimations = !UseAnim.Checked;
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
 				if (layoutres == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
@@ -504,7 +504,7 @@ namespace SwitchThemes
 					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
 					return;
 				}
-				layoutres = SwitchThemesCommon.PatchAnimations(CommonSzs, (LayoutPatchList.SelectedItem as LayoutPatch).Anims);
+				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
 				if (layoutres != BflytFile.PatchResult.OK)
 				{
 					MessageBox.Show("Error while patching the animations !");
@@ -512,6 +512,7 @@ namespace SwitchThemes
 				}
 			}
 
+			CommonSzs = Patcher.GetFinalSarc();
 			var sarc = SARC.PackN(CommonSzs);
 			
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
@@ -523,6 +524,7 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
+		[Obsolete("Nxtheme installer now can directly preview .DDS files")]
 		public static byte[] GenerateDDSPreview(string path)
 		{
 			try
@@ -580,32 +582,26 @@ namespace SwitchThemes
 			if (info == null)
 				return;
 
-			byte[] preview = null;
-			if (info.Item3)
-				preview = GenerateDDSPreview(tbBntxFile.Text);
+			//byte[] preview = null;
+			//if (info.Item3)
+				//preview = GenerateDDSPreview(tbBntxFile.Text);
 
 			LayoutPatch layout = null;
 			if (LayoutPatchList.SelectedIndex != 0)
 				layout = LayoutPatchList.SelectedItem as LayoutPatch;
 			try
 			{
-				var res = SwitchThemesCommon.GenerateNXTheme(
-					new ThemeFileManifest()
-					{
-						Version = 7,
-						ThemeName = info.Item1,
-						Author = info.Item2,
-						Target = targetPatch.NXThemeName,
-						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					},
-					File.ReadAllBytes(tbBntxFile.Text),
-					layout?.AsByteArray(),
-					new Tuple<string, byte[]>("preview.png", preview));
+				var builder = new NXThemeBuilder(targetPatch.NXThemeName, info.Item1, info.Item2);
+
+				if (layout != null)
+					builder.AddMainLayout(layout);
+
+				builder.AddMainBg(File.ReadAllBytes(tbBntxFile.Text));
 
 				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
-				File.WriteAllBytes(sav.FileName, res);
+				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
 				MessageBox.Show("Done");
 			}
 			catch (Exception ex)
@@ -615,7 +611,7 @@ namespace SwitchThemes
 		}
 
 		LayoutPatch ExtraCommonLyt = null;
-		string AlbumIcon = null;
+		Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
 			if (tbBntxFile.Text.Trim() == "")
@@ -636,37 +632,42 @@ namespace SwitchThemes
 			if (info == null)
 				return;
 
-			byte[] preview = null;
-			if (info.Item3 && tbBntxFile.Text.Trim() != "")
-				preview = GenerateDDSPreview(tbBntxFile.Text);
+			//byte[] preview = null;
+			//if (info.Item3 && tbBntxFile.Text.Trim() != "")
+			//	preview = GenerateDDSPreview(tbBntxFile.Text);
 
-			if (AlbumIcon != null && !AlbumIcon.EndsWith(".dds") && !AlbumIcontoDDS())
-				return;
+			foreach (var k in AppletIcons.Keys)
+			{
+				string path = AppletIcons[k];
+				if (path != null && !path.EndsWith(".dds") && !IcontoDDS(ref path))
+					return;
+				AppletIcons[k] = path;
+			}
 
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
 			try
 			{
-				var res = SwitchThemesCommon.GenerateNXTheme(
-					new ThemeFileManifest()
-					{
-						Version = 7,
-						ThemeName = info.Item1,
-						Author = info.Item2,
-						Target = HomeMenuParts[HomeMenuPartBox.Text],
-						LayoutInfo = layout == null ? "" : layout.PatchName + " by " + layout.AuthorName,
-					},
-					tbBntxFile.Text != "" ? File.ReadAllBytes(tbBntxFile.Text) : null,
-					layout?.AsByteArray(),
-					new Tuple<string, byte[]>("preview.png", preview),
-					new Tuple<string, byte[]>("common.json", ExtraCommonLyt?.AsByteArray()),
-					new Tuple<string, byte[]>("album.dds", AlbumIcon != null ? File.ReadAllBytes(AlbumIcon) : null));
+				var builder = new NXThemeBuilder(HomeMenuParts[HomeMenuPartBox.Text], info.Item1, info.Item2);
+
+				if (layout != null)
+					builder.AddMainLayout(layout);
+
+				if (tbBntxFile.Text != "")
+					builder.AddMainBg(File.ReadAllBytes(tbBntxFile.Text));
+
+				if (ExtraCommonLyt != null)
+					builder.AddFile("common.json", ExtraCommonLyt.AsByteArray());
+
+				foreach (var ico in AppletIcons)
+					if (ico.Value != null)
+						builder.AddAppletIcon(ico.Key, File.ReadAllBytes(ico.Value));
 
 				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
-				File.WriteAllBytes(sav.FileName, res);
+				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
 				MessageBox.Show("Done");
 			}
 			catch (Exception ex)
@@ -778,25 +779,39 @@ namespace SwitchThemes
 			btnOpenCustomLayout.Text = "X";
 		}
 
-		private void btnAlbumIco_Click(object sender, EventArgs e)
+		private void AppletIcoButtonsInit()
 		{
-			if (AlbumIcon != null)
+			var btns = new List<Button> { btnApplet1, btnApplet2, btnApplet3, btnApplet4, btnApplet5, btnApplet6 };
+			int i = 0;
+			foreach (var p in AppletButtonPatch.Patches)
 			{
-				btnAlbumIco.Text = "...";
-				lblAlbumIco.Text = "Custom album icon: Not set";
-				AlbumIcon = null;
+				AppletIcons.Add(p.NxThemeName, null);
+				btns[i].Tag = btns[i].Text = p.NxThemeName;
+				btns[i].Click += delegate (object sender, EventArgs e) 
+				{
+					AppletIcoButtonBehavior((Button)sender, (string)((Button)sender).Tag);
+				};
+				i++;
+			}
+		}
+
+		private void AppletIcoButtonBehavior(Button sender, string Name)
+		{
+			if (AppletIcons[Name] != null)
+			{
+				sender.Text = Name;
+				AppletIcons[Name] = null;
 				return;
 			}
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			AlbumIcon = opn.FileName;
-			lblAlbumIco.Text = $"Custom album icon: {AlbumIcon}";
-			btnAlbumIco.Text = "X";
+			AppletIcons[Name] = opn.FileName;
+			sender.Text = "X";
 		}
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("This image will replace the album icon in the home menu. Use a 64x56 image, colors are not allowed: it should be white on a transparent background");
+			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background");
 		}
 
 		private void button1_Click(object sender, EventArgs e)

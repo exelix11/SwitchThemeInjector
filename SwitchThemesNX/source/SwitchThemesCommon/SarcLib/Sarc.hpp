@@ -17,7 +17,6 @@ public:
 
 	struct SarcData
 	{
-		std::vector<std::string> names; //This is needed to keep the original file order
 		std::unordered_map<std::string, std::vector<u8>> files;
 		Endianness endianness;
 		bool HashOnly;
@@ -27,9 +26,9 @@ public:
 	static SarcData Unpack(std::vector<u8> &data);
 
 private:
-	static u32 NameHash(std::string name);
-	static u32 StringHashToUint(std::string name);
-	static std::string GuessFileExtension(std::vector<u8> &file);
-	static u32 GuessAlignment(std::unordered_map<std::string, std::vector<u8>> &files);
-	static u32 GuessFileAlignment(std::vector<u8> &file);
+	static u32 NameHash(const std::string &name);
+	static u32 StringHashToUint(const std::string &name);
+	static std::string GuessFileExtension(const std::vector<u8> &file);
+	static u32 GuessAlignment(const std::unordered_map<std::string, std::vector<u8>> &files);
+	static u32 GuessFileAlignment(const std::vector<u8> &file);
 };
