@@ -80,9 +80,12 @@ namespace SwitchThemes.Common
 			if (info.Target != "home")
 			{
 				if (name == "common.json") return;
-				foreach (var s in AppletButtonPatch.Patches)
+				foreach (var s in TextureReplacement.ResidentMenu)
 					if (name == s.NxThemeName + ".dds" || name == s.NxThemeName + ".png") return;
 			}
+			if (info.Target != "lock")
+				foreach (var s in TextureReplacement.Entrance)
+					if (name == s.NxThemeName + ".dds" || name == s.NxThemeName + ".png") return;
 			files.Add(name, data);
 		}
 
@@ -127,13 +130,24 @@ namespace SwitchThemes.Common
 
 		public void AddAppletIcon(string name, byte[] data)
 		{
-			if (info.Target != "home") throw new Exception("Custom applet icons are allowed only in home menu themes");
+			if (!TextureReplacement.NxNameToList.ContainsKey(name)) throw new Exception("Not supported for this target");
+
+			var list = TextureReplacement.NxNameToList[name];
+			if (!list.Select(x => x.NxThemeName).Contains(name)) throw new Exception($"{name} not supported for this target");
+
+			int AllowedW = 64; int AllowedH = 56;
+			if (name == "lock") //maybe plan better this one
+			{
+				AllowedW = 82;
+				AllowedH = 82;
+			}
+
 			string ext = "";
 			if (data.Matches("DDS "))
 			{
 				ext = ".dds";
 				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != 64 || img.height != 56 || (img.Format != "DXT1" && img.Format != "DXT5"))
+				if (img.width != AllowedW || img.height != AllowedH || (img.Format != "DXT1" && img.Format != "DXT5"))
 					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/5 encoded.");
 			}
 			/* TODO: support png for applet images
@@ -141,7 +155,7 @@ namespace SwitchThemes.Common
 			{
 				ext = ".png";
 				(UInt32 w, UInt32 h) = GetPngSize(data);
-				if (w != 1280 || h != 720)
+				if (w != AllowedW || h != AllowedH)
 					throw new Exception("The applet image must be 64x56.");
 			}*/
 			else throw new Exception("Invalid image format");
@@ -226,6 +240,7 @@ namespace SwitchThemes.Common
 
 			foreach (var p in Files)
 			{
+				if (p.FileName == null) continue;
 				if (!sarc.Files.ContainsKey(p.FileName))
 					return BflytFile.PatchResult.Fail;
 				var target = new BflytFile(sarc.Files[p.FileName]);
@@ -256,6 +271,30 @@ namespace SwitchThemes.Common
 				q.FindTex(texName).ChannelTypes = (int)TexFlag;
 			return BflytFile.PatchResult.OK;
 		}
+
+		public BflytFile.PatchResult PatchAppletIcon(byte[] DDS, string name, uint TexFlag = 0xFFFFFFFF)
+		{
+			var patch = DetectSarc();
+			if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
+				return BflytFile.PatchResult.Fail;
+
+			QuickBntx q = GetBntx();
+			if (q.Rlt.Length != 0x80)
+				return BflytFile.PatchResult.CorruptedFile;
+
+			var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
+
+			q.ReplaceTex(target.BntxName, DDS);
+			if (TexFlag != 0xFFFFFFFF)
+				q.FindTex(target.BntxName).ChannelTypes = (int)TexFlag;
+
+			BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
+			curTarget.ClearUVData(target.PaneName);
+			sarc.Files[target.FileName] = curTarget.SaveFile();
+
+			return BflytFile.PatchResult.OK;
+		}
+
 
 		public BflytFile.PatchResult PatchMainBG(byte[] DDS)
 		{

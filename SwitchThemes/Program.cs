@@ -50,7 +50,8 @@ namespace SwitchThemes
 						"instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n"+
 						"Only the image and out file are needed.\r\n" +
 						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n");
-					Console.WriteLine("The following applet icons are supported as well: " + string.Join(", ", AppletButtonPatch.Patches.Select(x => x.NxThemeName).ToArray()));
+					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => x.NxThemeName).ToArray()));
+					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => x.NxThemeName).ToArray()));
 					if (IsMono)
 						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
 				}
@@ -110,16 +111,7 @@ namespace SwitchThemes
 				if (Form1.ImageToDDS(Image, Path.GetTempPath()))
 					Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
 				else return false;
-			}
-
-			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
-			foreach (var a in AppletButtonPatch.Patches)
-			{
-				string path = GetArg(a.NxThemeName);
-				if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
-					path = null;
-				AppletIcons.Add(a.NxThemeName, path);
-			}			
+			}		
 
 			try
 			{				
@@ -141,14 +133,20 @@ namespace SwitchThemes
 					}
 				}
 
-				if (targetPatch.szsName == "ResidentMenu.szs")
+				void ProcessAppletIcons(List<TextureReplacement> l)
 				{
-					foreach (var a in AppletButtonPatch.Patches)
+					foreach (var a in l)
 					{
-						if (AppletIcons[a.NxThemeName] != null)
-							Patcher.PatchBntxTexture(File.ReadAllBytes(AppletIcons[a.NxThemeName]), a.BntxName, a.NewColorFlags);
+						string path = GetArg(a.NxThemeName);
+						if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+							path = null;
+						if (path != null)
+							Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName, a.NewColorFlags);
 					}
 				}
+
+				if (TextureReplacement.NxNameToList.ContainsKey(targetPatch.NXThemeName))
+					ProcessAppletIcons(TextureReplacement.NxNameToList[targetPatch.NXThemeName]);
 
 				if (Layout != null)
 				{
@@ -257,13 +255,19 @@ namespace SwitchThemes
 			}
 
 			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
-			foreach (var a in AppletButtonPatch.Patches)
+			void PopulateAppletIcons(List<TextureReplacement> l)
 			{
-				string path = GetArg(a.NxThemeName);
-				if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
-					path = null;
-				AppletIcons.Add(a.NxThemeName, path);
+				foreach (var a in l)
+				{
+					string path = GetArg(a.NxThemeName);
+					if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+						path = null;
+					AppletIcons.Add(a.NxThemeName, path);
+				}
 			}
+
+			if (TextureReplacement.NxNameToList.ContainsKey(Target))
+				PopulateAppletIcons(TextureReplacement.NxNameToList[Target]);
 
 			try
 			{
