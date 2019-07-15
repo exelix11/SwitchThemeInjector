@@ -28,6 +28,8 @@
     <ClInclude Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\BRTI.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp" />
@@ -78,6 +80,7 @@
     <ClCompile Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\BRTI.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp" />

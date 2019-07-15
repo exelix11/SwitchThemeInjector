@@ -39,7 +39,6 @@ class ThemeEntry
 		void ParseFont();		
 		LoadedImage NXGetPreview();
 		
-		std::vector<u8> DecompressedFile;
 		std::vector<u8> file;		
 		SARC::SarcData SData;
 	

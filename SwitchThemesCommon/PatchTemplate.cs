@@ -169,4 +169,21 @@ namespace SwitchThemes.Common
 			},
 		};
 	}
+
+	public struct AppletButtonPatch
+	{
+		public string NxThemeName;
+		public string BntxName;
+		public UInt32 NewColorFlags;
+
+		public static List<AppletButtonPatch> Patches = new List<AppletButtonPatch>
+		{
+			new AppletButtonPatch() { NxThemeName = "album", BntxName = "RdtIcoPvr_00^s", NewColorFlags = 0x02000000 },
+			new AppletButtonPatch() { NxThemeName = "news", BntxName = "RdtIcoNews_00^s", NewColorFlags = 0x02000000 },
+			new AppletButtonPatch() { NxThemeName = "shop", BntxName = "RdtIcoShop^s", NewColorFlags = 0x02000000 },
+			new AppletButtonPatch() { NxThemeName = "controller", BntxName = "RdtIcoCtrl_00^s", NewColorFlags = 0x02000000 },
+			new AppletButtonPatch() { NxThemeName = "settings", BntxName = "RdtIcoSet^s", NewColorFlags = 0x02000000 },
+			new AppletButtonPatch() { NxThemeName = "power", BntxName = "RdtIcoPwrForm^s", NewColorFlags = 0x02000000 },
+		};
+	}
 }

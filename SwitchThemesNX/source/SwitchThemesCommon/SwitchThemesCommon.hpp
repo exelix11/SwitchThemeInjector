@@ -7,30 +7,46 @@
 #include "Layouts/Bflyt.hpp"
 #include "Layouts/Patches.hpp"
 #include "Fonts/TTF.hpp"
+#include "Bntx/QuickBntx.hpp"
 
 namespace SwitchThemesCommon {
 	
+	extern const std::string CoreVer;
+
 	struct BntxTexAttribPatch
 	{
 		std::string TargetTexutre;
 		u32 ChannelData;
 	};
 	
-	extern const std::string CoreVer;
+	class SzsPatcher 
+	{
+	public:
+		SzsPatcher(SARC::SarcData&& s);
+		~SzsPatcher();
+		
+		BflytFile::PatchResult PatchAnimations(const std::vector<AnimFilePatch>& files);
+		BflytFile::PatchResult PatchLayouts(const LayoutPatch& patch, const std::string& PartName, bool Fix8x);
+		BflytFile::PatchResult PatchMainBG(const std::vector<u8>& DDS);
+		BflytFile::PatchResult PatchBntxTexture(const std::vector<u8>& DDS, const std::string& texName, u32 ChannelData = 0xFFFFFFFF);
+		BflytFile::PatchResult PatchBntxTextureAttribs(const std::vector<BntxTexAttribPatch>& patches);
+		PatchTemplate DetectSarc();
+		static PatchTemplate DetectSarc(const SARC::SarcData&);
+
+		void SetPatchAnimations(bool);
+
+		const SARC::SarcData& GetSarc();
+		SARC::SarcData& GetFinalSarc();
+
+	private:
+		SARC::SarcData sarc;
+		QuickBntx* bntx = nullptr;
+
+		QuickBntx* OpenBntx();
+		void SaveBntx();
+
+		bool EnableAnimations = true;
+	};
 	
 	std::string GeneratePatchListString(const std::vector < PatchTemplate >& templates);
-
-	BflytFile::PatchResult PatchAnimations(SARC::SarcData& sarc, const std::vector<AnimFilePatch> &files);
-
-	BflytFile::PatchResult PatchLayouts(SARC::SarcData &sarc, const LayoutPatch &patch, const std::string &PartName, bool Fix8x, bool AddAnimations);
-
-	BflytFile::PatchResult PatchBgLayouts(SARC::SarcData &sarc, const PatchTemplate &layout);
-
-	BflytFile::PatchResult PatchBntx(SARC::SarcData &sarc, const std::vector<u8> &DDS, const PatchTemplate &targetPatch);
-
-	BflytFile::PatchResult PatchBntxTexture(SARC::SarcData &sarc, const std::vector<u8> &DDS, const std::string &texName, u32 ChannelData = 0xFFFFFFFF);
-	
-	BflytFile::PatchResult PatchBntxTextureAttribs(SARC::SarcData &sarc, const std::vector<BntxTexAttribPatch> &patches);
-
-	PatchTemplate DetectSarc(const SARC::SarcData &sarc);
 }

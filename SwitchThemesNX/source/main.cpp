@@ -34,10 +34,10 @@ static inline void ImguiBindController()
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	io.NavInputs[ImGuiNavInput_DpadDown] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) || StickAsButton(0) < -.2f;
-	io.NavInputs[ImGuiNavInput_DpadUp] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) || StickAsButton(0) > .2f;
-	io.NavInputs[ImGuiNavInput_DpadLeft] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT) || StickAsButton(1) < -.2f;
-	io.NavInputs[ImGuiNavInput_DpadRight] = KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT) || StickAsButton(1) > .2f;
+	io.NavInputs[ImGuiNavInput_DpadDown] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) || StickAsButton(1) < -.2f;
+	io.NavInputs[ImGuiNavInput_DpadUp] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) || StickAsButton(1) > .2f;
+	io.NavInputs[ImGuiNavInput_DpadLeft] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT) || StickAsButton(0) < -.2f;
+	io.NavInputs[ImGuiNavInput_DpadRight] = KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT) || StickAsButton(0) > .2f;
 
 	io.NavInputs[ImGuiNavInput_Activate] = KeyPressed(GLFW_GAMEPAD_BUTTON_A);
 	io.NavInputs[ImGuiNavInput_Cancel] = KeyPressed(GLFW_GAMEPAD_BUTTON_B);

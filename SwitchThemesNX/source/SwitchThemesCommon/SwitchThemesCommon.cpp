@@ -6,10 +6,11 @@
 #include "NXTheme.hpp"
 
 using namespace std;
+using namespace SwitchThemesCommon;
 
-const string SwitchThemesCommon::CoreVer = "4.1 (C++)";
+const string SwitchThemesCommon::CoreVer = "4.2 (C++)";
 
-string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate >& templates) 
+string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& templates) 
 {
 	string curSection = "";
 	string FileList = "";
@@ -20,21 +21,54 @@ string SwitchThemesCommon::GeneratePatchListString(const vector < PatchTemplate 
 	return FileList;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc, const std::vector<AnimFilePatch>& files)
+SzsPatcher::SzsPatcher(SARC::SarcData&& s) : sarc(s) {}
+void SzsPatcher::SetPatchAnimations(bool enable) { EnableAnimations = enable; }
+
+SzsPatcher::~SzsPatcher()
+{
+	if (bntx)
+		delete bntx;
+}
+
+const SARC::SarcData& SzsPatcher::GetSarc() { return sarc; }
+
+SARC::SarcData& SzsPatcher::GetFinalSarc()
+{
+	SaveBntx();
+	return sarc;
+}
+
+QuickBntx* SzsPatcher::OpenBntx() 
+{
+	if (bntx) return bntx;
+	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
+	bntx = new QuickBntx(Reader);
+	return bntx;
+}
+
+void SzsPatcher::SaveBntx()
+{
+	if (!bntx) return;
+	sarc.files["timg/__Combined.bntx"] = bntx->Write();
+	delete bntx;
+	bntx = nullptr;
+}
+
+BflytFile::PatchResult SzsPatcher::PatchAnimations(const std::vector<AnimFilePatch>& files)
 {
 	u32 TargetVersion = 0;
-	for(const auto &p : files)
+	for (const auto& p : files)
 	{
 		if (!sarc.files.count(p.FileName))
 			continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-		
+
 		if (TargetVersion == 0)
 		{
 			auto bflan = new Bflan(sarc.files[p.FileName]);
 			TargetVersion = bflan->Version;
 			delete bflan;
 		}
-		
+
 		auto bflan = BflanDeserializer::FromJson(p.AnimJson);
 		bflan->Version = TargetVersion;
 		bflan->byteOrder = Endianness::LittleEndian;
@@ -44,10 +78,10 @@ BflytFile::PatchResult SwitchThemesCommon::PatchAnimations(SARC::SarcData& sarc,
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, const LayoutPatch& patch, const string &partName, bool Fix8x, bool AddAnimations)
+BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, bool Fix8x)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
-		SwitchThemesCommon::PatchBntxTextureAttribs(sarc, {
+		PatchBntxTextureAttribs({
 			{"RdtIcoPvr_00^s", 0x02000000}, {"RdtIcoNews_00^s", 0x02000000},
 			{"RdtIcoNews_01^s", 0x02000000}, {"RdtIcoSet^s", 0x02000000},
 			{"RdtIcoShop^s", 0x02000000}, {"RdtIcoCtrl_00^s", 0x02000000},
@@ -73,7 +107,7 @@ BflytFile::PatchResult SwitchThemesCommon::PatchLayouts(SARC::SarcData &sarc, co
 		auto res = target.ApplyLayoutPatch(p.Patches);
 		if (res != BflytFile::PatchResult::OK)
 			return res;
-		if (AddAnimations)
+		if (EnableAnimations)
 		{
 			res = target.AddGroupNames(p.AddGroups);
 			if (res != BflytFile::PatchResult::OK)
@@ -95,52 +129,49 @@ static bool StrStartsWith(const std::string &str, const std::string &prefix)
 	return str.find(prefix, 0) == 0;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchBgLayouts(SARC::SarcData &sarc, const PatchTemplate& templ) 
+BflytFile::PatchResult SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 {
+	PatchTemplate templ = DetectSarc();
+
+	//Patch BG layouts
 	BflytFile MainFile(sarc.files[templ.MainLayoutName]);
 	auto res = MainFile.PatchBgLayout(templ);
-	if (res == BflytFile::PatchResult::OK)
+	if (res == BflytFile::PatchResult::Fail || res == BflytFile::PatchResult::CorruptedFile) return res;
+	
+	sarc.files[templ.MainLayoutName] = MainFile.SaveFile();
+	for (const auto& t : sarc.files)
 	{
-		sarc.files[templ.MainLayoutName] = MainFile.SaveFile();
-		for (const auto &f : sarc.names)
-		{
-			if (!StrEndsWith(f, ".bflyt") || !StrStartsWith(f, "blyt/") || f == templ.MainLayoutName) continue;
-			BflytFile curTarget(sarc.files[f]);
-			if (curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace))
-				sarc.files[f] = curTarget.SaveFile();
-		}
-	}
-	return res;
-}
+		auto& f = t.first;
+		if (!StrEndsWith(f, ".bflyt") || !StrStartsWith(f, "blyt/") || f == templ.MainLayoutName) continue;
+		BflytFile curTarget(sarc.files[f]);
+		if (curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace))
+			sarc.files[f] = curTarget.SaveFile();
+	}	
 
-BflytFile::PatchResult SwitchThemesCommon::PatchBntx(SARC::SarcData &sarc, const vector<u8> &DDS, const PatchTemplate &targetPatch) 
-{
-	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
-	QuickBntx q(Reader);
-	if (q.Rlt.size() != 0x80)
+	//Patch bntx
+	QuickBntx* q = OpenBntx();
+	if (q->Rlt.size() != 0x80)
 	{
 		return BflytFile::PatchResult::CorruptedFile;
 	}
 	auto dds = DDSEncoder::LoadDDS(DDS);
-	q.ReplaceTex(targetPatch.MaintextureName, dds);
-	sarc.files["timg/__Combined.bntx"] = q.Write();
+	q->ReplaceTex(templ.MaintextureName, dds);
+
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc, const vector<u8> &DDS, const string &texName, u32 ChannelData)
+BflytFile::PatchResult SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, u32 ChannelData)
 {
-	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
-	QuickBntx q(Reader);
-	if (q.Rlt.size() != 0x80)
+	QuickBntx* q = OpenBntx();
+	if (q->Rlt.size() != 0x80)
 		return BflytFile::PatchResult::CorruptedFile;
 
 	try
 	{
 		auto dds = DDSEncoder::LoadDDS(DDS);
-		q.ReplaceTex(texName, dds);
+		q->ReplaceTex(texName, dds);
 		if (ChannelData != 0xFFFFFFFF)
-			q.FindTex(texName)->ChannelTypes = ChannelData;
-		sarc.files["timg/__Combined.bntx"] = q.Write();
+			q->FindTex(texName)->ChannelTypes = ChannelData;
 	}
 	catch (...)
 	{
@@ -149,21 +180,19 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTexture(SARC::SarcData &sarc
 	return BflytFile::PatchResult::OK;
 }
 
-BflytFile::PatchResult SwitchThemesCommon::PatchBntxTextureAttribs(SARC::SarcData &sarc, const vector<BntxTexAttribPatch> &patches)
+BflytFile::PatchResult SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexAttribPatch> &patches)
 {
-	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
-	QuickBntx q(Reader);
-	if (q.Rlt.size() != 0x80)
+	QuickBntx *q = OpenBntx();
+	if (q->Rlt.size() != 0x80)
 		return BflytFile::PatchResult::CorruptedFile;
 
 	try
 	{
 		for (const auto& patch : patches) 
 		{
-			auto tex = q.FindTex(patch.TargetTexutre);
+			auto tex = q->FindTex(patch.TargetTexutre);
 			if (tex) tex->ChannelTypes = patch.ChannelData;
 		}
-		sarc.files["timg/__Combined.bntx"] = q.Write();
 	}
 	catch (...)
 	{
@@ -172,7 +201,13 @@ BflytFile::PatchResult SwitchThemesCommon::PatchBntxTextureAttribs(SARC::SarcDat
 	return BflytFile::PatchResult::OK;
 }
 
-PatchTemplate SwitchThemesCommon::DetectSarc(const SARC::SarcData &sarc)
+
+PatchTemplate SzsPatcher::DetectSarc()
+{
+	return DetectSarc(sarc);
+}
+
+PatchTemplate SzsPatcher::DetectSarc(const SARC::SarcData& sarc)
 {
 #define SzsHasKey(_str) (sarc.files.count(_str))
 

@@ -6,65 +6,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using SARCExt;
+using ExtensionMethods;
 
 namespace SwitchThemes.Common
 {
-    static class SwitchThemesCommon
-    {
-		public const string CoreVer = "4.1";
+	public static class SwitchThemesCommon
+	{
+		public const string CoreVer = "4.2";
+		public const int NxThemeFormatVersion = 8;
+
 		const string LoadFileText =
 			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
 			"{0} \r\n";
-
-		public static byte[] GenerateNXTheme(ThemeFileManifest info, byte[] image, byte[] layout = null, params Tuple<string,byte[]>[] _ExtraFiles)
-		{
-			Dictionary<string, byte[]> ExtFiles = new Dictionary<string, byte[]>();
-			foreach (var f in _ExtraFiles)
-				if (f != null && f.Item1 != null && f.Item2 != null)
-					ExtFiles.Add(f.Item1, f.Item2);
-
-			if (image == null && layout == null)
-				throw new Exception("You need at least an image or a layout to make a theme");
-
-			if (image != null)
-			{
-				var img = DDSEncoder.LoadDDS(image);
-				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
-					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded ");
-			}
-
-			if (info.Target != "home")
-			{
-				if (ExtFiles.ContainsKey("album.dds"))
-					ExtFiles.Remove("album.dds");
-				if (ExtFiles.ContainsKey("common.json"))
-					ExtFiles.Remove("common.json");
-			}
-
-			{
-				byte[] album_img = null;
-				ExtFiles.TryGetValue("album.dds", out album_img);
-				if (album_img != null)
-				{
-					var img = DDSEncoder.LoadDDS(album_img);
-					if (img.width != 64 || img.height != 56)
-						throw new Exception("The custom album image must be 64x56");
-				}
-			}
-
-			Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>();
-			Files.Add("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
-			if (image != null)
-				Files.Add("image.dds", image);
-			if (layout != null)
-				Files.Add("layout.json", layout);
-
-			foreach (var f in ExtFiles)
-				Files.Add(f.Key, f.Value);
-
-			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() {  endianness = ByteOrder.LittleEndian, Files = Files, HashOnly = false} );
-			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
-		}
 
 		public static string GeneratePatchListString(IEnumerable<PatchTemplate> Templates)
 		{
@@ -84,7 +38,152 @@ namespace SwitchThemes.Common
 			return string.Format(LoadFileText, FileList);
 		}
 
-		public static BflytFile.PatchResult PatchAnimations(SARCExt.SarcData sarc, AnimFilePatch[] files)
+		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
+			{"home","ResidentMenu.szs"},
+			{"lock","Entrance.szs"},
+			{"user","MyPage.szs"},
+			{"apps","Flaunch.szs"},
+			{"set","Set.szs"},
+			{"news","Notification.szs"},
+			//{ "opt","Option.szs" },
+			{ "psl","Psl.szs" },
+		};
+
+	}
+
+	public class NXThemeBuilder
+	{
+		private Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
+		ThemeFileManifest info;
+
+		public NXThemeBuilder(string target, string name, string author)
+		{
+			info = new ThemeFileManifest()
+			{
+				Version = SwitchThemesCommon.NxThemeFormatVersion,
+				ThemeName = name,
+				Author = author,
+				Target = target,
+			};
+		}
+
+		public byte[] GetNxtheme()
+		{
+			if (!files.ContainsKey("image.dds") || !files.ContainsKey("image.png") || !files.ContainsKey("layout.json"))
+				throw new Exception("An nxtheme must contain at least a custom background image or layout");
+			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
+			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
+		}
+
+		public void AddFile(string name, byte[] data)
+		{
+			if (info.Target != "home")
+			{
+				if (name == "common.json") return;
+				foreach (var s in AppletButtonPatch.Patches)
+					if (name == s.NxThemeName + ".dds" || name == s.NxThemeName + ".png") return;
+			}
+			files.Add(name, data);
+		}
+
+		private static (UInt32, UInt32) GetPngSize(byte[] data)
+		{
+			UInt32 w, h;
+			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
+			{
+				bin.ByteOrder = ByteOrder.BigEndian;
+				bin.BaseStream.Position = 0x10;
+				w = bin.ReadUInt32();
+				h = bin.ReadUInt32();
+			}
+			return (w, h);
+		}
+
+		public void AddMainBg(byte[] data)
+		{
+			if (data.Matches("DDS "))
+			{
+				var img = DDSEncoder.LoadDDS(data);
+				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
+					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded.");
+			}
+			else if (data.Matches(1,"PNG"))
+			{
+				(UInt32 w, UInt32 h) = GetPngSize(data);
+				if (w != 1280 || h != 720)
+					throw new Exception("The background image must be 1280x720.");
+			}
+			else throw new Exception("Invalid image format");
+			AddFile("image.dds", data);
+		}
+
+		public void AddMainLayout(string text) =>
+			AddMainLayout(LayoutPatch.LoadTemplate(text));
+
+		public void AddMainLayout(LayoutPatch l) { 
+			info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
+			AddFile("layout.json", l.AsByteArray());
+		}
+
+		public void AddAppletIcon(string name, byte[] data)
+		{
+			if (info.Target != "home") throw new Exception("Custom applet icons are allowed only in home menu themes");
+			string ext = "";
+			if (data.Matches("DDS "))
+			{
+				ext = ".dds";
+				var img = DDSEncoder.LoadDDS(data);
+				if (img.width != 64 || img.height != 56 || (img.Format != "DXT1" && img.Format != "DXT5"))
+					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/5 encoded.");
+			}
+			/* TODO: support png for applet images
+			else if (data.Matches(1, "PNG"))
+			{
+				ext = ".png";
+				(UInt32 w, UInt32 h) = GetPngSize(data);
+				if (w != 1280 || h != 720)
+					throw new Exception("The applet image must be 64x56.");
+			}*/
+			else throw new Exception("Invalid image format");
+			AddFile(name + ext, data);
+		}
+	}
+
+	public class SzsPatcher
+	{
+		private SarcData sarc;
+		private QuickBntx bntx = null;
+		private IEnumerable<PatchTemplate> templates;
+
+		public bool EnableAnimations = true;
+
+		public SzsPatcher(SarcData s, IEnumerable<PatchTemplate> t)
+		{
+			sarc = s;
+			templates = t;
+		}
+
+		void SaveBntx()
+		{
+			if (bntx == null) return;
+			sarc.Files[@"timg/__Combined.bntx"] = bntx.Write();
+			bntx = null;
+		}
+
+		QuickBntx GetBntx()
+		{
+			if (bntx != null) return bntx;
+			bntx = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			return bntx;
+		}
+
+		public SarcData GetFinalSarc()
+		{
+			SaveBntx();
+			return sarc;
+		}
+
+		public BflytFile.PatchResult PatchAnimations(AnimFilePatch[] files)
 		{
 			if (files == null) return BflytFile.PatchResult.OK;
 			uint TargetVersion = 0;
@@ -107,14 +206,14 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchLayouts(SARCExt.SarcData sarc, LayoutPatch Patch, string PartName, bool FixFor8, bool AddAnimations = false)
+		public BflytFile.PatchResult PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
-				 PatchBntxTextureAttribs(sarc, 	new Tuple<string, uint>( "RdtIcoPvr_00^s", 0x02000000),
-					new Tuple<string, uint>( "RdtIcoNews_00^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoNews_01^s", 0x02000000),
-					new Tuple<string, uint> ( "RdtIcoSet^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoShop^s", 0x02000000),
-					new Tuple<string, uint> ( "RdtIcoCtrl_00^s", 0x02000000), new Tuple<string, uint> ( "RdtIcoCtrl_01^s", 0x02000000), 
-					new Tuple<string, uint> ( "RdtIcoCtrl_02^s", 0x02000000), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
+				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x02000000),
+				   new Tuple<string, uint>("RdtIcoNews_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoNews_01^s", 0x02000000),
+				   new Tuple<string, uint>("RdtIcoSet^s", 0x02000000), new Tuple<string, uint>("RdtIcoShop^s", 0x02000000),
+				   new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x02000000),
+				   new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x02000000), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
 
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
@@ -134,7 +233,7 @@ namespace SwitchThemes.Common
 				var res = target.ApplyLayoutPatch(p.Patches);
 				if (res != BflytFile.PatchResult.OK)
 					return res;
-				if (AddAnimations)
+				if (EnableAnimations)
 				{
 					res = target.AddGroupNames(p.AddGroups);
 					if (res != BflytFile.PatchResult.OK)
@@ -145,39 +244,9 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchBgLayouts(SARCExt.SarcData sarc, PatchTemplate template)
+		public BflytFile.PatchResult PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
 		{
-			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
-			var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
-			foreach (var f in layouts)
-			{
-				BflytFile curTarget = BflytFromSzs(f);
-				if (curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace))
-					sarc.Files[f] = curTarget.SaveFile();
-			}
-			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
-			var res = MainFile.PatchBgLayout(template);
-			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
-			return res;
-		}
-
-		public static BflytFile.PatchResult PatchBntx(SARCExt.SarcData sarc, byte[] DDS, PatchTemplate targetPatch)
-		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
-			if (q.Rlt.Length != 0x80)
-			{
-				return BflytFile.PatchResult.Fail;
-			}
-			q.ReplaceTex(targetPatch.MaintextureName, DDS);
-			DDS = null;
-			sarc.Files[@"timg/__Combined.bntx"] = null;
-			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
-			return BflytFile.PatchResult.OK;
-		}
-
-		public static BflytFile.PatchResult PatchBntxTexture(SARCExt.SarcData sarc, byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
-		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
 			{
 				return BflytFile.PatchResult.CorruptedFile;
@@ -185,28 +254,48 @@ namespace SwitchThemes.Common
 			q.ReplaceTex(texName, DDS);
 			if (TexFlag != 0xFFFFFFFF)
 				q.FindTex(texName).ChannelTypes = (int)TexFlag;
-			sarc.Files[@"timg/__Combined.bntx"] = null;
-			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchBntx(SARCExt.SarcData sarc, DDSEncoder.DDSLoadResult DDS, PatchTemplate targetPatch)
+		public BflytFile.PatchResult PatchMainBG(byte[] DDS)
 		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			return PatchMainBG(DDSEncoder.LoadDDS(DDS));
+		}
+
+		public BflytFile.PatchResult PatchMainBG(DDSEncoder.DDSLoadResult DDS)
+		{
+			var template = DetectSarc();
+			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
+
+			//PatchBGLayouts
+			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
+			var res = MainFile.PatchBgLayout(template);
+			if (res == BflytFile.PatchResult.CorruptedFile || res == BflytFile.PatchResult.Fail)
+				return res;
+
+			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
+			var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
+			foreach (var f in layouts)
+			{
+				BflytFile curTarget = BflytFromSzs(f);
+				if (curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace))
+					sarc.Files[f] = curTarget.SaveFile();
+			}
+
+			//PatchBGBntx
+			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
 			{
 				return BflytFile.PatchResult.CorruptedFile;
 			}
-			q.ReplaceTex(targetPatch.MaintextureName, DDS);
+			q.ReplaceTex(template.MaintextureName, DDS);
 			DDS = null;
-			sarc.Files[@"timg/__Combined.bntx"] = null;
-			sarc.Files[@"timg/__Combined.bntx"] = q.Write();
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static BflytFile.PatchResult PatchBntxTextureAttribs(SARCExt.SarcData sarc, params Tuple<string, UInt32>[] patches)
+		public BflytFile.PatchResult PatchBntxTextureAttribs(params Tuple<string, UInt32>[] patches)
 		{
-			QuickBntx q = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
 			{
 				return BflytFile.PatchResult.CorruptedFile;
@@ -218,7 +307,6 @@ namespace SwitchThemes.Common
 					var target = q.FindTex(patch.Item1);
 					if (target != null) target.ChannelTypes = (int)patch.Item2;
 				}
-				sarc.Files["timg/__Combined.bntx"] = q.Write();
 			}
 			catch (Exception ex)
 			{
@@ -227,7 +315,12 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public static PatchTemplate DetectSarc(SARCExt.SarcData sarc, IEnumerable<PatchTemplate> Templates)
+		public PatchTemplate DetectSarc()
+		{
+			return DetectSarc(sarc, templates);
+		}
+
+		public static PatchTemplate DetectSarc(SarcData sarc, IEnumerable<PatchTemplate> Templates)
 		{
 			bool SzsHasKey(string key) => sarc.Files.ContainsKey(key);
 
@@ -261,17 +354,5 @@ namespace SwitchThemes.Common
 			}
 			return null;
 		}
-
-		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
-			{"home","ResidentMenu.szs"},
-			{"lock","Entrance.szs"},
-			{"user","MyPage.szs"},
-			{"apps","Flaunch.szs"},
-			{"set","Set.szs"},
-			{"news","Notification.szs"},
-			//{ "opt","Option.szs" },
-			{ "psl","Psl.szs" },
-		};
-
 	}
 }

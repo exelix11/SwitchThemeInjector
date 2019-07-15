@@ -1,4 +1,5 @@
 #include "Sarc.hpp"
+#include <algorithm>
 
 using namespace std;
 
@@ -65,7 +66,7 @@ public:
 	}
 };
 
-u32 SARC::NameHash(string name)
+u32 SARC::NameHash(const string &name)
 {
 	u32 result = 0;
 	for (int i = 0; i < name.length(); i++)
@@ -75,12 +76,12 @@ u32 SARC::NameHash(string name)
 	return result;
 }
 
-u32 SARC::StringHashToUint(string name)
+u32 SARC::StringHashToUint(const string &name)
 {
 	return (u32)std::stoul(name);
 }
 
-bool FormatMatches(const vector<u8> &f, int startIndex, const string header)
+bool FormatMatches(const vector<u8> &f, int startIndex, const string &header)
 {
 	auto strLen = header.length();
 	if (f.size() < strLen + startIndex) return false;
@@ -90,9 +91,9 @@ bool FormatMatches(const vector<u8> &f, int startIndex, const string header)
 	}
 	return true;
 }
-bool FormatMatches(const vector<u8> &f, const string header){return FormatMatches(f, 0, header);}
+bool FormatMatches(const vector<u8> &f, const string &header){return FormatMatches(f, 0, header);}
 
-string SARC::GuessFileExtension(vector<u8> &f)
+string SARC::GuessFileExtension(const vector<u8> &f)
 {
 	string Ext = ".bin";
 
@@ -128,7 +129,7 @@ string SARC::GuessFileExtension(vector<u8> &f)
 	return Ext;
 }
 
-u32 SARC::GuessFileAlignment(vector<u8> &file) 
+u32 SARC::GuessFileAlignment(const vector<u8> &file) 
 {
 	if (FormatMatches(file,"SARC")) return 0x2000;
 	else if (FormatMatches(file,"Yaz")) return 0x80;
@@ -145,7 +146,7 @@ u32 SARC::GuessFileAlignment(vector<u8> &file)
 	else return 0x4;
 }
 
-u32 SARC::GuessAlignment(unordered_map<string, vector<u8>> &files) //From https://github.com/aboood40091/SarcLib/blob/master/src/FileArchive.py#L487
+u32 SARC::GuessAlignment(const unordered_map<string, vector<u8>> &files) //From https://github.com/aboood40091/SarcLib/blob/master/src/FileArchive.py#L487
 {
 	u32 res = 4;
 	for (auto value : files)
@@ -170,11 +171,18 @@ SARC::PackedSarc SARC::Pack(SARC::SarcData &data, s32 _align)
 	bw.Write((u16)0x00);
 	bw.Write((string)"SFAT");
 	bw.Write((u16)0xc);
-	bw.Write((u16)data.names.size());
+	bw.Write((u16)data.files.size());
 	bw.Write((u32)0x00000065);
 	vector<u32> offsetToUpdate;
-	offsetToUpdate.reserve(data.names.size());
-	for (auto f : data.names) //These should be sorted by hash here.
+	offsetToUpdate.reserve(data.files.size());
+
+	//names must be sorted by hash
+	vector<string> names;
+	for (const auto& i : data.files)
+		names.push_back(i.first);
+	std::sort(names.begin(), names.end(), [](const string& a, const string& b) {return NameHash(a) < NameHash(b); });
+
+	for (auto f : names)
 	{
 		if (data.HashOnly)
 			bw.Write(StringHashToUint(f));
@@ -189,8 +197,8 @@ SARC::PackedSarc SARC::Pack(SARC::SarcData &data, s32 _align)
 	bw.Write((u16)0x8);
 	bw.Write((u16)0);
 	vector<u32> StringOffsets;
-	StringOffsets.reserve(data.names.size());
-	for (auto f : data.names)
+	StringOffsets.reserve(data.files.size());
+	for (auto f : names)
 	{
 		StringOffsets.push_back((u32)bw.Position);
 		bw.Write(f, Buffer::BinaryString::NullTerminated);
@@ -198,10 +206,10 @@ SARC::PackedSarc SARC::Pack(SARC::SarcData &data, s32 _align)
 	}
 	bw.WriteAlign(0x1000); //TODO: check if works in odyssey
 	vector<u32> FileOffsets;
-	FileOffsets.reserve(data.names.size());
+	FileOffsets.reserve(data.files.size());
 	vector<string> OrderedKeys;
-	OrderedKeys.reserve(data.names.size());
-	for (auto f : data.names)
+	OrderedKeys.reserve(data.files.size());
+	for (auto f : names)
 	{
 		bw.WriteAlign((int)GuessFileAlignment(data.files[f]));
 		FileOffsets.push_back((u32)bw.Position);
@@ -272,7 +280,7 @@ SARC::SarcData SARC::Unpack(vector<u8> &data)
 			name = std::to_string(sfat.Nodes[m].Hash) + GuessFileExtension(temp);
 
 		res.files[name] = temp;
-		res.names.push_back(name);
+		//res.names.push_back(name);
 	}
 	res.HashOnly = HashOnly;
 	res.endianness = buf.ByteOrder;

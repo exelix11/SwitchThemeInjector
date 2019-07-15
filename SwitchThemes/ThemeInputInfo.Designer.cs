@@ -111,6 +111,7 @@
 			this.checkBox1.TabIndex = 20;
 			this.checkBox1.Text = "Generate preview image for the background (doesn\'t include layout)";
 			this.checkBox1.UseVisualStyleBackColor = true;
+			this.checkBox1.Visible = false;
 			// 
 			// ThemeInputInfo
 			// 

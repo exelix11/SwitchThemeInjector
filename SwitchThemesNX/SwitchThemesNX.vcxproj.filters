@@ -43,6 +43,9 @@
     <Filter Include="Libs\SOIL">
       <UniqueIdentifier>{74079f35-9814-4b14-b763-9f1cd47aa260}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SwitchThemesCommon\Btnx\DDSConv">
+      <UniqueIdentifier>{bd0674db-f5fa-4069-94ef-21925bd13823}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -170,9 +173,6 @@
     <ClInclude Include="Libs\SOIL\SOIL.h">
       <Filter>Libs\SOIL</Filter>
     </ClInclude>
-    <ClInclude Include="Libs\SOIL\stb_image_aug.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
     <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h">
       <Filter>Libs\SOIL</Filter>
     </ClInclude>
@@ -180,6 +180,15 @@
       <Filter>Libs\SOIL</Filter>
     </ClInclude>
     <ClInclude Include="Libs\SOIL\image_DXT.h">
+      <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.hpp">
+      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h">
+      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL\stb_image_aug.h">
       <Filter>Libs\SOIL</Filter>
     </ClInclude>
   </ItemGroup>
@@ -309,10 +318,13 @@
     <ClCompile Include="Libs\SOIL\SOIL.c">
       <Filter>Libs\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="Libs\SOIL\stb_image_aug.c">
+    <ClCompile Include="Libs\SOIL\image_DXT.c">
       <Filter>Libs\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="Libs\SOIL\image_DXT.c">
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.cpp">
+      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL\stb_image_aug.c">
       <Filter>Libs\SOIL</Filter>
     </ClCompile>
   </ItemGroup>
