@@ -646,7 +646,7 @@ namespace SwitchThemes
 			string target = HomeMenuParts[HomeMenuPartBox.Text];
 
 			if (target == "home")
-				foreach (var k in HomeAppletIcons.Keys)
+				foreach (var k in HomeAppletIcons.Keys.ToArray())
 				{
 					string path = HomeAppletIcons[k];
 					if (path != null && !path.EndsWith(".dds") && !IcontoDDS(ref path))

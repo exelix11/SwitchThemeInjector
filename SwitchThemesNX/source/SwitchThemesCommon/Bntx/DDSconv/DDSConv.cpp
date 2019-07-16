@@ -61,9 +61,7 @@ static void extractBlock(const unsigned char* src, int x, int y,
 	}
 }
 
-#include "../..//..//fs.hpp"
-
-vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, int ExpectedW, int ExpectedH)
+vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int ExpectedW, int ExpectedH)
 {
 	if ((ExpectedW % 4) || (ExpectedH % 4))
 	{
@@ -80,7 +78,9 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, int ExpectedW, int Exp
 		return {};
 	}
 
-	//Hacky af but works(TM), untested with non 720p images
+	const int BytePerBlock = DXT5 ? 16 : 8;
+
+	//Hacky af but works(TM)
 	Buffer bin;
 	bin.ByteOrder = Endianness::LittleEndian;
 	bin.Write("DDS ");
@@ -88,14 +88,14 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, int ExpectedW, int Exp
 	bin.Write((u32)0xA1007);
 	bin.Write((u32)h);
 	bin.Write((u32)w);
-	bin.Write((u32)0x70800);
+	bin.Write((u32)((w * h / 16) * BytePerBlock)); //Linear size
 	bin.Write((u32)0);
-	bin.Write((u32)0xB);
+	bin.Write((u32)0); //Mipmap count (?)
 	for (int i = 0; i < 11; i++)
 		bin.Write((u32)0);
 	bin.Write((u32)0x20);
 	bin.Write((u32)0x4);
-	bin.Write("DXT1");
+	bin.Write(DXT5 ? "DXT5" : "DXT1");
 	for (int i = 0; i < 5; i++)
 		bin.Write((u32)0);
 	bin.Write((u32)0x401008);
@@ -111,7 +111,7 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, int ExpectedW, int Exp
 		for (x = 0; x < w; x += 4)
 		{
 			extractBlock(data, x, y, w, h, block);
-			stb_compress_dxt_block(dst.data(), block, 0, STB_DXT_DITHER | STB_DXT_HIGHQUAL);
+			stb_compress_dxt_block(dst.data(), block, DXT5, STB_DXT_DITHER | STB_DXT_HIGHQUAL);
 			bin.Write(dst);
 		}
 	}

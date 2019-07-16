@@ -11,5 +11,5 @@
 
 namespace DDSConv
 {	
-	std::vector<u8> ImageToDDS(const std::vector<u8>& imgData, int ExpectedW = 1280, int ExpectedH = 720);
+	std::vector<u8> ImageToDDS(const std::vector<u8>& imgData, bool DXT5 = false, int ExpectedW = 1280, int ExpectedH = 720);
 }

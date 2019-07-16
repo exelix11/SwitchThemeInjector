@@ -84,7 +84,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1 = ("Invalid theme");
 		CanInstall = false;
 	}
-	if (themeInfo.Version > 7)
+	if (themeInfo.Version > 8)
 	{
 		lblLine2 = ("New version, update the installer !");
 		CanInstall = false;
@@ -94,9 +94,9 @@ void ThemeEntry::ParseNxTheme()
 		{
 			NXThemeHasPreview = true;
 		}
-		else if (SData.files.count("image.png"))
+		else if (SData.files.count("image.jpg"))
 		{
-			auto res = DDSConv::ImageToDDS(SData.files["image.png"]);
+			auto res = DDSConv::ImageToDDS(SData.files["image.jpg"]);
 			if (res.size() != 0)
 			{
 				//HACK: don't save the nxtheme after this
@@ -110,7 +110,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine2 = ("Error: target not found");
 		CanInstall = false;		
 	}
-	else
+	else if (CanInstall)
 	{
 		string targetStr = ThemeTargetToName[themeInfo.Target];
 		if (NXThemeHasPreview)

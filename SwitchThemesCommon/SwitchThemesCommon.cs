@@ -69,8 +69,12 @@ namespace SwitchThemes.Common
 
 		public byte[] GetNxtheme()
 		{
-			if (!files.ContainsKey("image.dds") || !files.ContainsKey("image.png") || !files.ContainsKey("layout.json"))
+			if (!files.ContainsKey("image.dds") && !files.ContainsKey("image.png") && !files.ContainsKey("layout.json"))
 				throw new Exception("An nxtheme must contain at least a custom background image or layout");
+
+			if (!files.ContainsKey("info.json"))
+				AddFile("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
+
 			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
 			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
 		}
@@ -102,22 +106,50 @@ namespace SwitchThemes.Common
 			return (w, h);
 		}
 
+		private static (UInt32, UInt32) GetJpgSize(byte[] data)
+		{
+			UInt32 w = 0, h = 0;
+			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
+			{
+				bin.ByteOrder = ByteOrder.BigEndian;
+				while (bin.BaseStream.Position < bin.BaseStream.Length)
+				{
+					byte marker = 0;
+					while ((marker = bin.ReadByte()) != 0xFF) ;
+					while ((marker = bin.ReadByte()) == 0xFF) ;
+
+					if (marker != 0xC0 && marker != 0xC2) continue;
+					
+					bin.ReadByte();
+					bin.ReadByte();
+					bin.ReadByte();
+
+					h = bin.ReadUInt16();
+					w = bin.ReadUInt16();
+				}
+			}
+			return (w, h);
+		}
+
 		public void AddMainBg(byte[] data)
 		{
+			string ext = "";
 			if (data.Matches("DDS "))
 			{
+				ext = "dds";
 				var img = DDSEncoder.LoadDDS(data);
 				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
 					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded.");
 			}
-			else if (data.Matches(1,"PNG"))
+			else if (data.Matches(6, "JFIF"))
 			{
-				(UInt32 w, UInt32 h) = GetPngSize(data);
+				ext = "jpg";
+				(UInt32 w, UInt32 h) = GetJpgSize(data);
 				if (w != 1280 || h != 720)
 					throw new Exception("The background image must be 1280x720.");
 			}
 			else throw new Exception("Invalid image format");
-			AddFile("image.dds", data);
+			AddFile("image." + ext, data);
 		}
 
 		public void AddMainLayout(string text) =>
