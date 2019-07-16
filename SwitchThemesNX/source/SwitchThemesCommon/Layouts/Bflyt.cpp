@@ -115,6 +115,17 @@ PropertyEditablePane::PropertyEditablePane(const BasePane &p) : BasePane(p)
 	{
 		buf.Position = 0x54 - 8;
 		ColorData = buf.ReadU32Array(4);
+		buf.readUInt16(); //material index
+		int uvCount = buf.readUInt8();
+		buf.readUInt8(); //padding
+		for (int i = 0; i < uvCount; i++)
+			UvCoords.push_back(
+				{
+					ReadVec2(buf),
+					ReadVec2(buf),
+					ReadVec2(buf),
+					ReadVec2(buf)
+				});
 	}
 }
 
@@ -135,6 +146,14 @@ void PropertyEditablePane::ApplyChanges()
 	{
 		bin.Position = 0x54 - 8;
 		bin.WriteU32Array(ColorData);
+		bin.Position += 4;
+		for (const auto &uv : UvCoords)
+		{
+			WriteVec2(uv.TopLeft);
+			WriteVec2(uv.TopRight);
+			WriteVec2(uv.BottomLeft);
+			WriteVec2(uv.BottomRight);
+		}
 	}
 	data = bin.getBuffer();
 }
@@ -585,6 +604,24 @@ BflytFile::PatchResult BflytFile::PatchBgLayout(const PatchTemplate& patch)
 	if (!patch.DirectPatchPane)
 		return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
 	else return PatchResult::OK;
+}
+
+BflytFile::PatchResult BflytFile::ClearUVData(const string& name)
+{
+	auto paneNames = GetPaneNames();
+	auto index = indexOf(paneNames, name);
+	if (index < 0 || Panes[index]->name != "pic1") return PatchResult::Fail;
+
+	auto e = new PropertyEditablePane(*Panes[index]);
+	delete Panes[index];
+	Panes[index] = (BasePane*)e;
+	for (auto& uv : e->UvCoords)
+	{
+		uv.TopLeft = { 0,0 };
+		uv.TopRight = { 1,0 };
+		uv.BottomLeft = { 0,1 };
+		uv.BottomRight = { 1,1 };
+	}
 }
 
 BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, const string &Pic1Name)

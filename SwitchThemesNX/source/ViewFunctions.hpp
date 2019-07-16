@@ -52,6 +52,15 @@ namespace Utils
 		ImGui::End();
 	}
 
+	static inline void ImGuiDragWithLastElement() 
+	{
+		if (ImGui::IsItemActive())
+		{
+			ImVec2 drag = ImGui::GetMouseDragDelta(0);
+			ImGui::SetScrollY(ImGui::GetScrollY() - drag.y / 2);
+		}
+	}
+
 	static inline void ImGuiSetWindowScrollable() 
 	{
 		if (!AnyNavButtonPressed()) {
@@ -61,11 +70,7 @@ namespace Utils
 			ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0,0,0,0 });
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0,0,0,0 });
 			ImGui::Button("##drag", { ImGui::GetWindowSize().x, cursorLastPos });
-			if (ImGui::IsItemActive())
-			{
-				ImVec2 drag = ImGui::GetMouseDragDelta(0);
-				ImGui::SetScrollY(ImGui::GetScrollY() - drag.y);
-			}
+			ImGuiDragWithLastElement();
 			ImGui::PopStyleColor(3);
 		}
 	}

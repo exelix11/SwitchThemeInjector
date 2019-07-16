@@ -19,11 +19,102 @@ bool LayoutPatch::IsCompatible(const SARC::SarcData &sarc)
 
 using json = nlohmann::json;
 
-LayoutPatch Patches::LoadLayout(const string &jsn)
-{
 #define ParseVec3(_n) {_n["X"],_n["Y"],_n["Z"]}
 #define ParseVec2(_n) {_n["X"],_n["Y"]}
+static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
+{
+	if (!filePatch.count("FileName") || !filePatch.count("Patches"))
+		return {""};
+	LayoutFilePatch p;
+	p.FileName = filePatch["FileName"].get<string>();
+	for (auto panePatch : filePatch["Patches"])
+	{
+		if (!panePatch.count("PaneName"))
+			continue;
+		PanePatch pp;
+		pp.PaneName = panePatch["PaneName"].get<string>();
+		pp.ApplyFlags = 0;
+		if (panePatch.count("Position"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Position;
+			pp.Position = ParseVec3(panePatch["Position"]);
+		}if (panePatch.count("Rotation"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Rotation;
+			pp.Rotation = ParseVec3(panePatch["Rotation"]);
+		}if (panePatch.count("Scale"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Scale;
+			pp.Scale = ParseVec2(panePatch["Scale"]);
+		}if (panePatch.count("Size"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Size;
+			pp.Size = ParseVec2(panePatch["Size"]);
+		}if (panePatch.count("Visible"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Visible;
+			pp.Visible = panePatch["Visible"].get<bool>();
+		}
 
+		if (panePatch.count("ColorTL"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTL;
+			pp.ColorTL = panePatch["ColorTL"].get<string>();
+		}if (panePatch.count("ColorTR"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTR;
+			pp.ColorTR = panePatch["ColorTR"].get<string>();
+		}if (panePatch.count("ColorBL"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBL;
+			pp.ColorBL = panePatch["ColorBL"].get<string>();
+		}if (panePatch.count("ColorBR"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBR;
+			pp.ColorBR = panePatch["ColorBR"].get<string>();
+		}
+
+		if (panePatch.count("UsdPatches") && panePatch["UsdPatches"].is_array())
+			for (auto& usdPatch : panePatch["UsdPatches"])
+			{
+				pp.UsdPatches.push_back({
+					usdPatch["PropName"].get<string>(),
+					usdPatch["PropValues"].get<vector<string>>(),
+					usdPatch["type"].get<int>(),
+					});
+			}
+
+		if (pp.UsdPatches.size() > 0)
+			pp.ApplyFlags |= (u32)PanePatch::Flags::Usd1;
+
+		p.Patches.push_back(pp);
+	}
+	if (filePatch.count("AddGroups") && filePatch["AddGroups"].is_array())
+		for (auto& g : filePatch["AddGroups"])
+		{
+			if (!g.count("GroupName") || !g.count("Panes"))
+				continue;
+			ExtraGroup grp;
+			grp.GroupName = g["GroupName"];
+			grp.Panes = g["Panes"].get<vector<string>>();
+			p.AddGroups.push_back(grp);
+		}
+	if (filePatch.count("Materials") && filePatch["Materials"].is_array())
+		for (auto& m : filePatch["Materials"])
+		{
+			if (!m.count("MaterialName")) continue;
+			MaterialPatch mat;
+			mat.MaterialName = m["MaterialName"];
+			mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"] : "";
+			mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"] : "";
+			p.Materials.push_back(mat);
+		}
+
+	return p;
+}
+
+LayoutPatch Patches::LoadLayout(const string &jsn)
+{
 	LayoutPatch res;
 	auto j = json::parse(jsn);
 	if (j.count("PatchName"))
@@ -50,96 +141,11 @@ LayoutPatch Patches::LoadLayout(const string &jsn)
 	}
 	if (j.count("Files") && j["Files"].is_array())
 	{
-		for (auto &filePatch : j["Files"])
+		for (auto& filePatch : j["Files"])
 		{
-			if (!filePatch.count("FileName") || !filePatch.count("Patches"))
-				continue;
-			LayoutFilePatch p;
-			p.FileName = filePatch["FileName"].get<string>();
-			for (auto panePatch : filePatch["Patches"])
-			{
-				if (!panePatch.count("PaneName"))
-					continue;
-				PanePatch pp;
-				pp.PaneName = panePatch["PaneName"].get<string>();
-				pp.ApplyFlags = 0;
-				if (panePatch.count("Position"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Position;
-					pp.Position = ParseVec3(panePatch["Position"]);
-				}if (panePatch.count("Rotation"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Rotation;
-					pp.Rotation = ParseVec3(panePatch["Rotation"]);
-				}if (panePatch.count("Scale"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Scale;
-					pp.Scale = ParseVec2(panePatch["Scale"]);
-				}if (panePatch.count("Size"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Size;
-					pp.Size = ParseVec2(panePatch["Size"]);
-				}if (panePatch.count("Visible"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Visible;
-					pp.Visible = panePatch["Visible"].get<bool>();
-				}
-
-				if (panePatch.count("ColorTL"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTL;
-					pp.ColorTL = panePatch["ColorTL"].get<string>();
-				}if (panePatch.count("ColorTR"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTR;
-					pp.ColorTR = panePatch["ColorTR"].get<string>();
-				}if (panePatch.count("ColorBL"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBL;
-					pp.ColorBL = panePatch["ColorBL"].get<string>();
-				}if (panePatch.count("ColorBR"))
-				{
-					pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBR;
-					pp.ColorBR = panePatch["ColorBR"].get<string>();
-				}
-
-				if (panePatch.count("UsdPatches") && panePatch["UsdPatches"].is_array())
-					for (auto &usdPatch : panePatch["UsdPatches"])
-					{
-						pp.UsdPatches.push_back({
-							usdPatch["PropName"].get<string>(),
-							usdPatch["PropValues"].get<vector<string>>(),
-							usdPatch["type"].get<int>(),
-							});
-					}
-
-				if (pp.UsdPatches.size() > 0)
-					pp.ApplyFlags |= (u32)PanePatch::Flags::Usd1;
-
-				p.Patches.push_back(pp);
-			}
-			if (filePatch.count("AddGroups") && filePatch["AddGroups"].is_array())
-				for (auto& g : filePatch["AddGroups"])
-				{
-					if (!g.count("GroupName") || !g.count("Panes"))
-						continue;
-					ExtraGroup grp;
-					grp.GroupName = g["GroupName"];
-					grp.Panes = g["Panes"].get<vector<string>>();
-					p.AddGroups.push_back(grp);
-				}
-			if (filePatch.count("Materials") && filePatch["Materials"].is_array())
-				for (auto& m : filePatch["Materials"])
-				{
-					if (!m.count("MaterialName")) continue;
-					MaterialPatch mat;
-					mat.MaterialName = m["MaterialName"];
-					mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"] : "";
-					mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"] : "";
-					p.Materials.push_back(mat);
-				}
-
-			res.Files.push_back(p);
+			auto p = DeserializeFilePatch(filePatch);
+			if (p.FileName != "")
+				res.Files.push_back(p);
 		}
 	}
 	return res;
@@ -228,3 +234,41 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "P_Bg" },
         "White1x1^r" },
 };
+
+namespace Patches::textureReplacement {
+	
+	//Generate these with the injector using TextureReplacement.GenerateJsonPatchesForInstaller()
+	static constexpr string_view AlbumPatch = "{\"FileName\":\"blyt/RdtBtnPvr.bflyt\",\"Patches\":[{\"PaneName\":\"N_00\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0}},{\"PaneName\":\"P_Pict_00\",\"Position\":{\"X\":1.0,\"Y\":11.0,\"Z\":0.0},\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"N_02\",\"Visible\":false},{\"PaneName\":\"N_01\",\"Visible\":false},{\"PaneName\":\"P_Pict_01\",\"Visible\":false},{\"PaneName\":\"P_Color\",\"Visible\":false}]}";
+	static constexpr string_view NtfPatch = "{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictNtf_00\",\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_PictNtf_01\",\"Visible\":false}]}";
+	static constexpr string_view ShopPatch = "{\"FileName\":\"blyt/RdtBtnShop.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
+	static constexpr string_view CtrlPatch = "{\"FileName\":\"blyt/RdtBtnCtrl.bflyt\",\"Patches\":[{\"PaneName\":\"P_Form\",\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"P_Y\",\"Visible\":false},{\"PaneName\":\"P_X\",\"Visible\":false},{\"PaneName\":\"P_A\",\"Visible\":false},{\"PaneName\":\"P_B\",\"Visible\":false}]}";
+	static constexpr string_view SetPatch = "{\"FileName\":\"blyt/RdtBtnSet.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
+	static constexpr string_view PowPatch = "{\"FileName\":\"blyt/RdtBtnPow.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict_00\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
+	static constexpr string_view LockPatch = "{\"FileName\":\"blyt/EntBtnResumeSystemApplet.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictHome\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0},\"Size\":{\"X\":184.0,\"Y\":168.0}}]}";
+
+	static LayoutFilePatch GetPatch(const string_view &str)
+	{
+		return DeserializeFilePatch(json::parse(str));
+	}
+
+	static vector<TextureReplacement> ResidentMenu
+	{
+		{"album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",    64,56, GetPatch(AlbumPatch)	},
+		{"news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00", 64,56, GetPatch(NtfPatch)		},
+		{"shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict",       64,56, GetPatch(ShopPatch)	},
+		{"controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form",   64,56, GetPatch(CtrlPatch)	},
+		{"settings",  "RdtIcoSet^s",      0x02000000, "blyt/RdtBtnSet.bflyt",     "P_Pict",       64,56, GetPatch(SetPatch)		},
+		{"power",     "RdtIcoPwrForm^s",  0x02000000, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",    64,56, GetPatch(PowPatch)		},
+	};
+
+	static vector<TextureReplacement> Entrance
+	{
+		{"lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome",184,168, GetPatch(LockPatch)}
+	};
+	
+	unordered_map <string, vector<TextureReplacement>> NxNameToList
+	{
+		{"home", ResidentMenu},
+		{"lock", Entrance}
+	};
+}

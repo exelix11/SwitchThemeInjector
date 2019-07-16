@@ -43,7 +43,8 @@ void RemoteInstallPage::Render(int X, int Y)
 			else
 				StartSocketing();
 		}
-		PAGE_RESET_FOCUS
+		PAGE_RESET_FOCUS;
+		ImGui::TextWrapped("Keep the menu focus on this page or requests won't be executed");
 	}
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
