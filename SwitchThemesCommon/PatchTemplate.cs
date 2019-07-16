@@ -170,39 +170,122 @@ namespace SwitchThemes.Common
 		};
 	}
 
-	public struct TextureReplacement
+	public class TextureReplacement
 	{
+		#region Patches
+
+		//Patches to center the applet buttons, only for the nxtheme builder
+		readonly static LayoutFilePatch CtrlPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnCtrl.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_Form", Size = new NullableVector2(64,56) },
+				new PanePatch { PaneName = "P_Stick", Visible = false },
+				new PanePatch { PaneName = "P_Y", Visible = false },
+				new PanePatch { PaneName = "P_X", Visible = false },
+				new PanePatch { PaneName = "P_A", Visible = false },
+				new PanePatch { PaneName = "P_B", Visible = false }
+			}
+		};
+
+		readonly static LayoutFilePatch SetPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnSet.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_Pict", Size = new NullableVector2(64,56) }
+			}
+		};
+
+		readonly static LayoutFilePatch ShopPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnShop.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_Pict", Size = new NullableVector2(64,56) }
+			}
+		};
+
+		readonly static LayoutFilePatch PowPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnPow.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56) }
+			}
+		};
+
+		readonly static LayoutFilePatch NtfPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnNtf.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_PictNtf_00", Size = new NullableVector2(64,56) },
+				new PanePatch { PaneName = "P_PictNtf_01", Visible = false }
+			}
+		};
+
+		readonly static LayoutFilePatch AlbumPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnPvr.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "N_00", Position = new NullableVector3(0,0,0) },
+				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56), Position = new NullableVector3(1,11,0) },
+				new PanePatch { PaneName = "P_Stick", Visible = false },
+				new PanePatch { PaneName = "N_02", Visible = false },
+				new PanePatch { PaneName = "N_01", Visible = false },
+				new PanePatch { PaneName = "P_Pict_01", Visible = false },
+				new PanePatch { PaneName = "P_Color", Visible = false }
+			}
+		};
+
+		readonly static LayoutFilePatch LockPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/EntBtnResumeSystemApplet.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_PictHome", Size = new NullableVector2(184,168), Position = new NullableVector3(0,0,0) }
+			}
+		};
+		#endregion
+
 		public string NxThemeName;
 		public string BntxName;
 		public UInt32 NewColorFlags;
 		public string FileName;
 		public string PaneName;
+		public int W, H;
+		public LayoutFilePatch patch;
 
-		public TextureReplacement(string name, string bntx, UInt32 cflag, string Fname, string Pname)
+		public TextureReplacement(string name, string bntx, UInt32 cflag, string Fname, string Pname, int w, int h, LayoutFilePatch p)
 		{
 			NxThemeName = name;
 			BntxName = bntx;
 			NewColorFlags = cflag;
 			FileName = Fname;
 			PaneName = Pname;
+			W = w; H = h;
+			patch = p;
 		}
 
-		public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
+		readonly public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
 		{
-			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00"),
-			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00"),
-			new TextureReplacement("shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict"),
-			new TextureReplacement("controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form"),
-			new TextureReplacement("settings",  "RdtIcoSet^s",      0x02000000, "blyt/RdtBtnSet.bflyt",     "P_Pict"),
-			new TextureReplacement("power",     "RdtIcoPwrForm^s",  0x02000000, "blyt/RdtBtnPow.bflyt",     "P_Pict_00"),
+			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",	64,56, AlbumPatch),
+			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00", 64,56, NtfPatch),
+			new TextureReplacement("shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict",       64,56, ShopPatch),
+			new TextureReplacement("controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form",   64,56, CtrlPatch),
+			new TextureReplacement("settings",  "RdtIcoSet^s",      0x02000000, "blyt/RdtBtnSet.bflyt",     "P_Pict",       64,56, SetPatch),
+			new TextureReplacement("power",     "RdtIcoPwrForm^s",  0x02000000, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",    64,56, PowPatch),
 		};
 
-		public static List<TextureReplacement> Entrance = new List<TextureReplacement>
+		readonly public static List<TextureReplacement> Entrance = new List<TextureReplacement>
 		{
-			new TextureReplacement("lock",     "EntIcoHome^s",  0x02000000, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome"),
+			new TextureReplacement("lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome",184,168, LockPatch),
 		};
 
-		public static Dictionary<string, List<TextureReplacement>> NxNameToList = new Dictionary<string, List<TextureReplacement>>
+		readonly public static Dictionary<string, List<TextureReplacement>> NxNameToList = new Dictionary<string, List<TextureReplacement>>
 		{
 			{ "home", ResidentMenu},
 			{ "lock", Entrance}

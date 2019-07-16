@@ -123,31 +123,24 @@ namespace SwitchThemes.Common
 		public void AddMainLayout(string text) =>
 			AddMainLayout(LayoutPatch.LoadTemplate(text));
 
-		public void AddMainLayout(LayoutPatch l) { 
-			info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
+		public void AddMainLayout(LayoutPatch l) {
 			AddFile("layout.json", l.AsByteArray());
+			info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
 		}
 
 		public void AddAppletIcon(string name, byte[] data)
 		{
 			if (!TextureReplacement.NxNameToList.ContainsKey(name)) throw new Exception("Not supported for this target");
 
-			var list = TextureReplacement.NxNameToList[name];
-			if (!list.Select(x => x.NxThemeName).Contains(name)) throw new Exception($"{name} not supported for this target");
-
-			int AllowedW = 64; int AllowedH = 56;
-			if (name == "lock") //maybe plan better this one
-			{
-				AllowedW = 82;
-				AllowedH = 82;
-			}
+			var item = TextureReplacement.NxNameToList[name].Where(x => x.NxThemeName == name).FirstOrDefault();
+			if (item == null) throw new Exception($"{name} not supported for this target");
 
 			string ext = "";
 			if (data.Matches("DDS "))
 			{
 				ext = ".dds";
 				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != AllowedW || img.height != AllowedH || (img.Format != "DXT1" && img.Format != "DXT5"))
+				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT5"))
 					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/5 encoded.");
 			}
 			/* TODO: support png for applet images
@@ -155,7 +148,7 @@ namespace SwitchThemes.Common
 			{
 				ext = ".png";
 				(UInt32 w, UInt32 h) = GetPngSize(data);
-				if (w != AllowedW || h != AllowedH)
+				if (w != item.W || h != item.H)
 					throw new Exception("The applet image must be 64x56.");
 			}*/
 			else throw new Exception("Invalid image format");
@@ -220,6 +213,26 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
+		private BflytFile.PatchResult PatchSingleLayout(LayoutFilePatch p)
+		{
+			if (p == null || p.FileName == null) return BflytFile.PatchResult.OK;
+			if (!sarc.Files.ContainsKey(p.FileName))
+				return BflytFile.PatchResult.Fail;
+			var target = new BflytFile(sarc.Files[p.FileName]);
+			target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
+			var res = target.ApplyLayoutPatch(p.Patches);
+			if (res != BflytFile.PatchResult.OK)
+				return res;
+			if (EnableAnimations)
+			{
+				res = target.AddGroupNames(p.AddGroups);
+				if (res != BflytFile.PatchResult.OK)
+					return res;
+			}
+			sarc.Files[p.FileName] = target.SaveFile();
+			return BflytFile.PatchResult.OK;
+		}
+
 		public BflytFile.PatchResult PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
@@ -240,21 +253,8 @@ namespace SwitchThemes.Common
 
 			foreach (var p in Files)
 			{
-				if (p.FileName == null) continue;
-				if (!sarc.Files.ContainsKey(p.FileName))
-					return BflytFile.PatchResult.Fail;
-				var target = new BflytFile(sarc.Files[p.FileName]);
-				target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
-				var res = target.ApplyLayoutPatch(p.Patches);
-				if (res != BflytFile.PatchResult.OK)
-					return res;
-				if (EnableAnimations)
-				{
-					res = target.AddGroupNames(p.AddGroups);
-					if (res != BflytFile.PatchResult.OK)
-						return res;
-				}
-				sarc.Files[p.FileName] = target.SaveFile();
+				var res = PatchSingleLayout(p);
+				if (res != BflytFile.PatchResult.OK) return res;
 			}
 			return BflytFile.PatchResult.OK;
 		}
@@ -272,21 +272,18 @@ namespace SwitchThemes.Common
 			return BflytFile.PatchResult.OK;
 		}
 
-		public BflytFile.PatchResult PatchAppletIcon(byte[] DDS, string name, uint TexFlag = 0xFFFFFFFF)
+		public BflytFile.PatchResult PatchAppletIcon(byte[] DDS, string name)
 		{
 			var patch = DetectSarc();
 			if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
 				return BflytFile.PatchResult.Fail;
 
-			QuickBntx q = GetBntx();
-			if (q.Rlt.Length != 0x80)
-				return BflytFile.PatchResult.CorruptedFile;
-
 			var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
 
-			q.ReplaceTex(target.BntxName, DDS);
-			if (TexFlag != 0xFFFFFFFF)
-				q.FindTex(target.BntxName).ChannelTypes = (int)TexFlag;
+			var res = PatchSingleLayout(target.patch);
+			if (res != BflytFile.PatchResult.OK) return res;
+
+			PatchBntxTexture(DDS, target.BntxName, target.NewColorFlags);
 
 			BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
 			curTarget.ClearUVData(target.PaneName);
