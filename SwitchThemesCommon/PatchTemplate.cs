@@ -15,7 +15,19 @@ namespace SwitchThemes.Common
 		public string LayoutInfo;
 		public string Target;
 
-		public string Serialize() { return JsonConvert.SerializeObject(this); }
+		public string Serialize()
+		{
+			if (string.IsNullOrWhiteSpace(Target) || string.IsNullOrWhiteSpace(ThemeName))
+				throw new Exception("Invalid target or theme name");
+			JsonSerializerSettings settings = new JsonSerializerSettings()
+			{
+				Formatting = Formatting.None,
+				DefaultValueHandling = DefaultValueHandling.Ignore,
+				NullValueHandling = NullValueHandling.Ignore,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+			};
+			return JsonConvert.SerializeObject(this, settings);
+		}
 		public static ThemeFileManifest Deserialize(string json) { return JsonConvert.DeserializeObject<ThemeFileManifest>(json); }
 	}
 
