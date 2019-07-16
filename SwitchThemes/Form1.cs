@@ -487,14 +487,14 @@ namespace SwitchThemes
 					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
 						return;
 					HomeAppletIcons[n.NxThemeName] = path;
-					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName, n.NewColorFlags);
+					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName);
 				}
 			}
 			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
 			{
 				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
 					return;
-				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName, TextureReplacement.Entrance[0].NewColorFlags);
+				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
 			}
 
 			if (LayoutPatchList.SelectedIndex != 0)
@@ -845,7 +845,7 @@ namespace SwitchThemes
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background.\r\nRemember to use a layout to center the images in the buttons");
+			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background.");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -855,7 +855,7 @@ namespace SwitchThemes
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 82x82 images, colors are not allowed: they should be white on a transparent background");
+			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 images, colors are not allowed: they should be white on a transparent background");
 		}
 	}
 }

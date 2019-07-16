@@ -141,7 +141,7 @@ namespace SwitchThemes
 						if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
 							path = null;
 						if (path != null)
-							Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName, a.NewColorFlags);
+							Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName);
 					}
 				}
 
