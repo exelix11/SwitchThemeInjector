@@ -284,7 +284,7 @@ namespace SwitchThemes.Common
 
 		readonly public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
 		{
-			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",	64,56, AlbumPatch),
+			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",    64,56, AlbumPatch),
 			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00", 64,56, NtfPatch),
 			new TextureReplacement("shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict",       64,56, ShopPatch),
 			new TextureReplacement("controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form",   64,56, CtrlPatch),
@@ -302,5 +302,28 @@ namespace SwitchThemes.Common
 			{ "home", ResidentMenu},
 			{ "lock", Entrance}
 		};
+
+#if WIN && DEBUG
+		public static string GenerateJsonPatchesForInstaller()
+		{
+			JsonSerializerSettings settings = new JsonSerializerSettings()
+			{
+				DefaultValueHandling = DefaultValueHandling.Ignore,
+				NullValueHandling = NullValueHandling.Ignore,
+				Formatting = Formatting.None,
+				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+			};
+
+			Dictionary<string, string> p = new Dictionary<string, string>();
+			foreach (var v in NxNameToList.Values)
+			{
+				foreach (var i in v)
+				{
+					p.Add(i.NxThemeName, JsonConvert.SerializeObject(i.patch, settings));
+				}
+			}
+			return JsonConvert.SerializeObject(p, settings);
+		}
+#endif
 	}
 }

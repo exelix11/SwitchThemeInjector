@@ -124,11 +124,7 @@ void ThemesPage::Render(int X, int Y)
 				if (Selected)
 					ImGui::PopStyleColor();
 				if (count == setNewMenuIndex && FocusEvent.Reset()) Utils::ImGuiSelectItem(true);
-				if (ImGui::IsItemActive())
-				{
-					ImVec2 drag = ImGui::GetMouseDragDelta(0);
-					ImGui::SetScrollY(ImGui::GetScrollY() - drag.y);
-				}
+				Utils::ImGuiDragWithLastElement();
 
 				if (res == ThemeEntry::UserAction::Preview)
 					break;

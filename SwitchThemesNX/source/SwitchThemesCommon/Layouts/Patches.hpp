@@ -104,8 +104,26 @@ struct PatchTemplate
 	bool NoRemovePanel = false;
 };
 
+struct TextureReplacement 
+{
+	std::string NxThemeName;
+	std::string BntxName;
+	u32 NewColorFlags;
+	std::string FileName;
+	std::string PaneName;
+	s32 W, H;
+	LayoutFilePatch patch;
+};
+
 namespace Patches {
 	extern std::vector<PatchTemplate> DefaultTemplates;
+
+	namespace textureReplacement {
+		extern std::vector<TextureReplacement> ResidentMenu;
+		extern std::vector<TextureReplacement> Entrance;
+		extern std::unordered_map < std::string, std::vector<TextureReplacement>> NxNameToList;
+	}
+
 	LayoutPatch LoadLayout(const std::string &json);
 }
 

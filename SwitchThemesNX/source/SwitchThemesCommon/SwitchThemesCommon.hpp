@@ -28,6 +28,7 @@ namespace SwitchThemesCommon {
 		BflytFile::PatchResult PatchAnimations(const std::vector<AnimFilePatch>& files);
 		BflytFile::PatchResult PatchLayouts(const LayoutPatch& patch, const std::string& PartName, bool Fix8x);
 		BflytFile::PatchResult PatchMainBG(const std::vector<u8>& DDS);
+		BflytFile::PatchResult PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName);
 		BflytFile::PatchResult PatchBntxTexture(const std::vector<u8>& DDS, const std::string& texName, u32 ChannelData = 0xFFFFFFFF);
 		BflytFile::PatchResult PatchBntxTextureAttribs(const std::vector<BntxTexAttribPatch>& patches);
 		PatchTemplate DetectSarc();
@@ -39,6 +40,8 @@ namespace SwitchThemesCommon {
 		SARC::SarcData& GetFinalSarc();
 
 	private:
+		BflytFile::PatchResult PatchSingleLayout(const LayoutFilePatch& p);
+
 		SARC::SarcData sarc;
 		QuickBntx* bntx = nullptr;
 

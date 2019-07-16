@@ -4,6 +4,7 @@
 #include "Bntx/BRTI.hpp"
 #include "Layouts/Bflan.hpp"
 #include "NXTheme.hpp"
+#include <algorithm>
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -78,6 +79,25 @@ BflytFile::PatchResult SzsPatcher::PatchAnimations(const std::vector<AnimFilePat
 	return BflytFile::PatchResult::OK;
 }
 
+BflytFile::PatchResult SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
+{
+	if (!sarc.files.count(p.FileName))
+		return BflytFile::PatchResult::Fail;
+	BflytFile target(sarc.files[p.FileName]);
+	target.ApplyMaterialsPatch(p.Materials); //Ignore result for 8.0 less strict patching
+	auto res = target.ApplyLayoutPatch(p.Patches);
+	if (res != BflytFile::PatchResult::OK)
+		return res;
+	if (EnableAnimations)
+	{
+		res = target.AddGroupNames(p.AddGroups);
+		if (res != BflytFile::PatchResult::OK)
+			return res;
+	}
+	sarc.files[p.FileName] = target.SaveFile();
+	return BflytFile::PatchResult::OK;
+}
+
 BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, bool Fix8x)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
@@ -100,20 +120,9 @@ BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const 
 
 	for (auto p : Files)
 	{
-		if (!sarc.files.count(p.FileName))
-			return BflytFile::PatchResult::Fail;
-		BflytFile target(sarc.files[p.FileName]);
-		target.ApplyMaterialsPatch(p.Materials); //Ignore result for 8.0 less strict patching
-		auto res = target.ApplyLayoutPatch(p.Patches);
+		auto res = PatchSingleLayout(p);
 		if (res != BflytFile::PatchResult::OK)
 			return res;
-		if (EnableAnimations)
-		{
-			res = target.AddGroupNames(p.AddGroups);
-			if (res != BflytFile::PatchResult::OK)
-				return res;
-		}
-		sarc.files[p.FileName] = target.SaveFile();
 	}
 	return BflytFile::PatchResult::OK;
 }
@@ -177,6 +186,37 @@ BflytFile::PatchResult SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const
 	{
 		return BflytFile::PatchResult::Fail;
 	}
+	return BflytFile::PatchResult::OK;
+}
+
+BflytFile::PatchResult SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName)
+{
+	auto patch = DetectSarc();
+	string nxthemeTarget = "";
+
+	{
+		auto it = find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(),
+			[&patch](const pair<string, string>& v) { return v.second == patch.szsName;	});
+		if (it == ThemeTargetToFileName.end()) return BflytFile::PatchResult::Fail;
+		auto nxthemeTarget = it->first;
+	}
+
+	if (!Patches::textureReplacement::NxNameToList.count(nxthemeTarget))
+		return BflytFile::PatchResult::Fail;
+
+	auto& list = Patches::textureReplacement::NxNameToList[nxthemeTarget];
+	auto it = find_if(list.begin(), list.end(),
+		[&texName](const TextureReplacement& t) {return t.NxThemeName == texName; });
+
+	auto res = PatchSingleLayout(it->patch);
+	if (res != BflytFile::PatchResult::OK) return res;
+
+	PatchBntxTexture(DDS, it->BntxName, it->NewColorFlags);
+
+	BflytFile curTarget{ sarc.files[it->FileName] };
+	curTarget.ClearUVData(it->PaneName);
+	sarc.files[it->FileName] = curTarget.SaveFile();
+
 	return BflytFile::PatchResult::OK;
 }
 

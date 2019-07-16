@@ -43,6 +43,14 @@ namespace Panes
 	class PropertyEditablePane : public BasePane 
 	{
 	public :
+		struct UVCoord 
+		{
+			Vector2 TopLeft;
+			Vector2 TopRight;
+			Vector2 BottomLeft;
+			Vector2 BottomRight;
+		};
+
 		std::string ToString() override;
 		std::string PaneName;
 		Vector3 Position, Rotation;
@@ -52,6 +60,7 @@ namespace Panes
 		void SetVisible(bool);
 
 		std::vector<u32> ColorData;
+		std::vector<UVCoord> UvCoords;
 
 		PropertyEditablePane(const BasePane &p);
 		void ApplyChanges();
@@ -171,6 +180,7 @@ public:
 	PatchResult ApplyLayoutPatch(const std::vector<PanePatch>& Patches);
 	PatchResult ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches);
 	PatchResult PatchBgLayout(const PatchTemplate& patch);
+	PatchResult ClearUVData(const std::string& name);
 	PatchResult AddGroupNames(const std::vector<ExtraGroup>& Groups);
 private:
 	Panes::BasePane*& operator[] (int index);

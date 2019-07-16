@@ -96,12 +96,17 @@ void ThemeEntry::ParseNxTheme()
 		}
 		else if (SData.files.count("image.jpg"))
 		{
-			auto res = DDSConv::ImageToDDS(SData.files["image.jpg"]);
+			auto res = DDSConv::ImageToDDS(SData.files["image.jpg"], false, 1280, 720);
 			if (res.size() != 0)
 			{
 				//HACK: don't save the nxtheme after this
 				SData.files["image.dds"] = res;
 				NXThemeHasPreview = true;
+			}
+			else 
+			{
+				CanInstall = false;
+				lblLine2 = "Couldn't load the image";
 			}
 		}
 	}
@@ -410,6 +415,32 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					if (!PatchBG(Patcher, SData.files["image.dds"], BaseSzs))
 						return false;
 			}
+
+			if (Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
+			{
+				auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
+				for (const TextureReplacement& p : list)
+				{
+					auto pResult = BflytFile::PatchResult::Fail;
+					if (SData.files.count(p.NxThemeName + ".dds"))
+						pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
+					else if (SData.files.count(p.NxThemeName + ".png"))
+					{
+						auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
+						if (dds.size() != 0)
+							pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
+						else
+						{
+							Dialog("Couldn't load the icon image for " + p.NxThemeName);
+							continue;
+						}
+					}
+					else continue;
+
+					if (pResult != BflytFile::PatchResult::OK)
+						Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+				}
+			}
 					
 			if (SData.files.count("layout.json"))
 			{
@@ -418,16 +449,6 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
 				if (!PatchLayout(Patcher, JSON, themeInfo.Target))
 					return false;
-			}
-			
-			if (themeInfo.Target == "home" && SData.files.count("album.dds"))
-			{
-				SkipSaveActualFile = false;
-				auto pResult = Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000);
-				if (pResult != BflytFile::PatchResult::OK)
-				{
-					Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-				}
 			}
 			
 			if (!SkipSaveActualFile)
