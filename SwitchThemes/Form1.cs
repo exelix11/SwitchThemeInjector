@@ -478,25 +478,6 @@ namespace SwitchThemes
 				}						
 			}
 
-			if (targetPatch.NXThemeName == "home")
-			{
-				foreach (var n in TextureReplacement.NxNameToList[targetPatch.NXThemeName])
-				{
-					if (HomeAppletIcons[n.NxThemeName] == null) continue;
-					string path = HomeAppletIcons[n.NxThemeName];
-					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
-						return;
-					HomeAppletIcons[n.NxThemeName] = path;
-					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName);
-				}
-			}
-			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
-			{
-				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
-					return;
-				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
-			}
-
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
 				Patcher.EnableAnimations = !UseAnim.Checked;
@@ -517,6 +498,25 @@ namespace SwitchThemes
 					MessageBox.Show("Error while patching the animations !");
 					return;
 				}
+			}
+
+			if (targetPatch.NXThemeName == "home")
+			{
+				foreach (var n in TextureReplacement.NxNameToList[targetPatch.NXThemeName])
+				{
+					if (HomeAppletIcons[n.NxThemeName] == null) continue;
+					string path = HomeAppletIcons[n.NxThemeName];
+					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
+						return;
+					HomeAppletIcons[n.NxThemeName] = path;
+					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName);
+				}
+			}
+			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
+			{
+				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
+					return;
+				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
 			}
 
 			CommonSzs = Patcher.GetFinalSarc();
