@@ -52,17 +52,7 @@ namespace Utils
 		ImGui::End();
 	}
 
-	static inline void ImGuiDragWithLastElement() 
-	{
-		static float scrollY = 0;
-		if (ImGui::IsItemActive())
-		{
-			if (!scrollY) scrollY = ImGui::GetScrollY();
-			ImVec2 drag = ImGui::GetMouseDragDelta(0);
-			ImGui::SetScrollY(scrollY - drag.y);
-		}
-		else if (scrollY) scrollY = 0;
-	}
+	void ImGuiDragWithLastElement(); //Defined in UI.cpp
 
 	static inline void ImGuiSetWindowScrollable() 
 	{

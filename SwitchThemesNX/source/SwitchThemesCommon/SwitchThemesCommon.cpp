@@ -102,9 +102,9 @@ BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const 
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
-			{"RdtIcoPvr_00^s", 0x2000000}, {"RdtIcoNews_00^s", 0x2000000},
-			{"RdtIcoNews_01^s", 0x2000000}, {"RdtIcoSet^s", 0x2000000},
-			{"RdtIcoShop^s", 0x2000000}, {"RdtIcoCtrl_00^s", 0x2000000},
+			{"RdtIcoPvr_00^s",	0x2000000}, {"RdtIcoNews_00^s", 0x2000000},
+			{"RdtIcoNews_01^s", 0x2000000}, {"RdtIcoSet^s",		0x2000000},
+			{"RdtIcoShop^s",	0x2000000}, {"RdtIcoCtrl_00^s", 0x2000000},
 			{"RdtIcoCtrl_01^s", 0x2000000}, {"RdtIcoCtrl_02^s", 0x2000000}, {"RdtIcoPwrForm^s", 0x2000000},
 		});
 

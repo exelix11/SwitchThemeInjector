@@ -7,6 +7,27 @@ using Newtonsoft.Json;
 
 namespace SwitchThemes.Common
 {
+	/*
+		The nxtheme format.
+		nxtheme files are a yaz0-compressed sarc archives, aka szs files but the content is fully custom.
+		A list of the allowed files follows, when a file has an alternative extension only one of the two can be in an archive:
+			info.json - this is mandatory and it contains a serialized ThemeFileManifest struct.
+				+ the Version field should be increased every time features are added
+			image.dds/jpg - The main bg image
+			layout.json - the main layout to be applied to the file, contains a serialized LayoutPatch struct
+		*at least one of these two files must be in the theme for it to be valid*
+		Home-menu only files: these files can only be present if the theme targets the home menu, all of them are optional.
+			common.json - a layout to be applied to the common.szs file
+			album.dds/png, news.dds/png, shop.dds/png, controller.dds/png, settings.dds/png, power.dds/png - custom applet icons
+		Lock-screen only files:
+			lock.dds/png - custom home icon
+
+		non-DDS images are automatically converted by the installer to dds, as some algorithms may perform better than the built-in one the injector still uses dds images
+		
+		 Deprecated files:
+			Preview.png - an image used for previewing the dds, not supported anymore as the installer now can load the dds directly
+		 */
+
 	public class ThemeFileManifest
 	{
 		public int Version;
