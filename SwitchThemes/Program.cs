@@ -134,22 +134,7 @@ namespace SwitchThemes
 						Console.WriteLine("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 						return false;
 					}
-				}
-
-				void ProcessAppletIcons(List<TextureReplacement> l)
-				{
-					foreach (var a in l)
-					{
-						string path = GetArg(a.NxThemeName);
-						if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
-							path = null;
-						if (path != null)
-							Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName);
-					}
-				}
-
-				if (TextureReplacement.NxNameToList.ContainsKey(targetPatch.NXThemeName))
-					ProcessAppletIcons(TextureReplacement.NxNameToList[targetPatch.NXThemeName]);
+				}				
 
 				if (Layout != null)
 				{
@@ -168,6 +153,21 @@ namespace SwitchThemes
 					}
 					layoutres = Patcher.PatchAnimations(l.Anims);
 				}
+
+				void ProcessAppletIcons(List<TextureReplacement> l)
+				{
+					foreach (var a in l)
+					{
+						string path = GetArg(a.NxThemeName);
+						if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+							path = null;
+						if (path != null)
+							Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName);
+					}
+				}
+
+				if (TextureReplacement.NxNameToList.ContainsKey(targetPatch.NXThemeName))
+					ProcessAppletIcons(TextureReplacement.NxNameToList[targetPatch.NXThemeName]);
 
 				CommonSzs = Patcher.GetFinalSarc();
 				var sarc = SARC.PackN(CommonSzs);
