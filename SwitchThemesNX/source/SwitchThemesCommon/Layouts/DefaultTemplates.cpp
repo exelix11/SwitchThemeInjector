@@ -236,15 +236,16 @@ vector<PatchTemplate> Patches::DefaultTemplates{
 };
 
 namespace Patches::textureReplacement {
-	
-	//Generate these with the injector using TextureReplacement.GenerateJsonPatchesForInstaller()
-	static constexpr string_view AlbumPatch = "{\"FileName\":\"blyt/RdtBtnPvr.bflyt\",\"Patches\":[{\"PaneName\":\"N_00\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0}},{\"PaneName\":\"P_Pict_00\",\"Position\":{\"X\":1.0,\"Y\":11.0,\"Z\":0.0},\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"N_02\",\"Visible\":false},{\"PaneName\":\"N_01\",\"Visible\":false},{\"PaneName\":\"P_Pict_01\",\"Visible\":false},{\"PaneName\":\"P_Color\",\"Visible\":false}]}";
-	static constexpr string_view NtfPatch = "{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictNtf_00\",\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_PictNtf_01\",\"Visible\":false}]}";
-	static constexpr string_view ShopPatch = "{\"FileName\":\"blyt/RdtBtnShop.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
-	static constexpr string_view CtrlPatch = "{\"FileName\":\"blyt/RdtBtnCtrl.bflyt\",\"Patches\":[{\"PaneName\":\"P_Form\",\"Size\":{\"X\":64.0,\"Y\":56.0}},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"P_Y\",\"Visible\":false},{\"PaneName\":\"P_X\",\"Visible\":false},{\"PaneName\":\"P_A\",\"Visible\":false},{\"PaneName\":\"P_B\",\"Visible\":false}]}";
-	static constexpr string_view SetPatch = "{\"FileName\":\"blyt/RdtBtnSet.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
-	static constexpr string_view PowPatch = "{\"FileName\":\"blyt/RdtBtnPow.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict_00\",\"Size\":{\"X\":64.0,\"Y\":56.0}}]}";
-	static constexpr string_view LockPatch = "{\"FileName\":\"blyt/EntBtnResumeSystemApplet.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictHome\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0},\"Size\":{\"X\":184.0,\"Y\":168.0}}]}";
+
+
+	//Do not manually edit, these are generated with the injector using TextureReplacement.GenerateJsonPatchesForInstaller()
+	static constexpr string_view AlbumPatch = "{\"FileName\":\"blyt/RdtBtnPvr.bflyt\",\"Patches\":[{\"PaneName\":\"N_00\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0}},{\"PaneName\":\"P_Pict_00\",\"Position\":{\"X\":0.0,\"Y\":10.0,\"Z\":0.0},\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"N_02\",\"Visible\":false},{\"PaneName\":\"N_01\",\"Visible\":false},{\"PaneName\":\"P_Pict_01\",\"Visible\":false},{\"PaneName\":\"P_Color\",\"Visible\":false}]}";
+	static constexpr string_view NtfPatch = "{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictNtf_00\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]},{\"PaneName\":\"P_PictNtf_01\",\"Visible\":false}]}";
+	static constexpr string_view ShopPatch = "{\"FileName\":\"blyt/RdtBtnShop.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]}]}";
+	static constexpr string_view CtrlPatch = "{\"FileName\":\"blyt/RdtBtnCtrl.bflyt\",\"Patches\":[{\"PaneName\":\"P_Form\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]},{\"PaneName\":\"P_Stick\",\"Visible\":false},{\"PaneName\":\"P_Y\",\"Visible\":false},{\"PaneName\":\"P_X\",\"Visible\":false},{\"PaneName\":\"P_A\",\"Visible\":false},{\"PaneName\":\"P_B\",\"Visible\":false}]}";
+	static constexpr string_view SetPatch = "{\"FileName\":\"blyt/RdtBtnSet.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]}]}";
+	static constexpr string_view PowPatch = "{\"FileName\":\"blyt/RdtBtnPow.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict_00\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]}]}";
+	static constexpr string_view LockPatch		= "{\"FileName\":\"blyt/EntBtnResumeSystemApplet.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictHome\",\"Position\":{\"X\":0.0,\"Y\":0.0,\"Z\":0.0},\"Size\":{\"X\":184.0,\"Y\":168.0}}]}";
 
 	static LayoutFilePatch GetPatch(const string_view &str)
 	{
@@ -253,17 +254,17 @@ namespace Patches::textureReplacement {
 
 	static vector<TextureReplacement> ResidentMenu
 	{
-		{"album",     "RdtIcoPvr_00^s",   0x02000000, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",    64,56, GetPatch(AlbumPatch)	},
-		{"news",      "RdtIcoNews_00^s",  0x02000000, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00", 64,56, GetPatch(NtfPatch)		},
-		{"shop",      "RdtIcoShop^s",     0x02000000, "blyt/RdtBtnShop.bflyt",    "P_Pict",       64,56, GetPatch(ShopPatch)	},
-		{"controller",    "RdtIcoCtrl_00^s",  0x02000000, "blyt/RdtBtnCtrl.bflyt",    "P_Form",   64,56, GetPatch(CtrlPatch)	},
-		{"settings",  "RdtIcoSet^s",      0x02000000, "blyt/RdtBtnSet.bflyt",     "P_Pict",       64,56, GetPatch(SetPatch)		},
-		{"power",     "RdtIcoPwrForm^s",  0x02000000, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",    64,56, GetPatch(PowPatch)		},
+		{"album",     "RdtIcoPvr_00^s",   0x5050505, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",   64,56, GetPatch(AlbumPatch)	},
+		{"news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00",64,56, GetPatch(NtfPatch)	},
+		{"shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",    "P_Pict",      64,56, GetPatch(ShopPatch)	},
+		{"controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",    "P_Form",		64,56, GetPatch(CtrlPatch)	},
+		{"settings",  "RdtIcoSet^s",      0x5050505, "blyt/RdtBtnSet.bflyt",     "P_Pict",      64,56, GetPatch(SetPatch)	},
+		{"power",     "RdtIcoPwrForm^s",  0x5050505, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",   64,56, GetPatch(PowPatch)	},
 	};
 
 	static vector<TextureReplacement> Entrance
 	{
-		{"lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome",184,168, GetPatch(LockPatch)}
+		{"lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",  "P_PictHome", 184,168, GetPatch(LockPatch)}
 	};
 	
 	unordered_map <string, vector<TextureReplacement>> NxNameToList

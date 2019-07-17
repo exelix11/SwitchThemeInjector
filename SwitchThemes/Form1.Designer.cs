@@ -32,10 +32,6 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
 			this.NXThemePage = new System.Windows.Forms.TabPage();
-			this.grpLockExtra = new System.Windows.Forms.GroupBox();
-			this.button7 = new System.Windows.Forms.Button();
-			this.btnCustomLock = new System.Windows.Forms.Button();
-			this.lblCustomLock = new MaterialSkin.Controls.MaterialLabel();
 			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
 			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
 			this.btnApplet6 = new System.Windows.Forms.Button();
@@ -63,6 +59,10 @@
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
+			this.grpLockExtra = new System.Windows.Forms.GroupBox();
+			this.button7 = new System.Windows.Forms.Button();
+			this.btnCustomLock = new System.Windows.Forms.Button();
+			this.lblCustomLock = new MaterialSkin.Controls.MaterialLabel();
 			this.PatchListPage = new System.Windows.Forms.TabPage();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
@@ -111,8 +111,8 @@
 			this.lblDebug = new System.Windows.Forms.Label();
 			this.materialTabControl1.SuspendLayout();
 			this.NXThemePage.SuspendLayout();
-			this.grpLockExtra.SuspendLayout();
 			this.grpHomeExtra.SuspendLayout();
+			this.grpLockExtra.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
 			this.NCADumpPage.SuspendLayout();
@@ -143,7 +143,6 @@
 			// 
 			this.NXThemePage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
 			this.NXThemePage.Controls.Add(this.materialFlatButton2);
-			this.NXThemePage.Controls.Add(this.grpHomeExtra);
 			this.NXThemePage.Controls.Add(this.linkLabel2);
 			this.NXThemePage.Controls.Add(this.AllLayoutsBox);
 			this.NXThemePage.Controls.Add(this.materialLabel9);
@@ -158,6 +157,7 @@
 			this.NXThemePage.Controls.Add(this.materialLabel11);
 			this.NXThemePage.Controls.Add(this.ImageToDDSBtn);
 			this.NXThemePage.Controls.Add(this.materialLabel8);
+			this.NXThemePage.Controls.Add(this.grpHomeExtra);
 			this.NXThemePage.Controls.Add(this.grpLockExtra);
 			this.NXThemePage.ForeColor = System.Drawing.Color.White;
 			this.NXThemePage.Location = new System.Drawing.Point(4, 22);
@@ -166,61 +166,6 @@
 			this.NXThemePage.Size = new System.Drawing.Size(638, 331);
 			this.NXThemePage.TabIndex = 4;
 			this.NXThemePage.Text = "Nxtheme builder";
-			// 
-			// grpLockExtra
-			// 
-			this.grpLockExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.grpLockExtra.Controls.Add(this.button7);
-			this.grpLockExtra.Controls.Add(this.btnCustomLock);
-			this.grpLockExtra.Controls.Add(this.lblCustomLock);
-			this.grpLockExtra.ForeColor = System.Drawing.Color.White;
-			this.grpLockExtra.Location = new System.Drawing.Point(5, 209);
-			this.grpLockExtra.Name = "grpLockExtra";
-			this.grpLockExtra.Size = new System.Drawing.Size(630, 70);
-			this.grpLockExtra.TabIndex = 26;
-			this.grpLockExtra.TabStop = false;
-			this.grpLockExtra.Text = "Lock screen optional settings";
-			this.grpLockExtra.Visible = false;
-			// 
-			// button7
-			// 
-			this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button7.Location = new System.Drawing.Point(566, 12);
-			this.button7.Name = "button7";
-			this.button7.Size = new System.Drawing.Size(19, 23);
-			this.button7.TabIndex = 18;
-			this.button7.Text = "?";
-			this.button7.UseVisualStyleBackColor = true;
-			this.button7.Click += new System.EventHandler(this.Button7_Click);
-			// 
-			// btnCustomLock
-			// 
-			this.btnCustomLock.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnCustomLock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnCustomLock.Location = new System.Drawing.Point(591, 12);
-			this.btnCustomLock.Name = "btnCustomLock";
-			this.btnCustomLock.Size = new System.Drawing.Size(33, 23);
-			this.btnCustomLock.TabIndex = 14;
-			this.btnCustomLock.Text = "...";
-			this.btnCustomLock.UseVisualStyleBackColor = true;
-			this.btnCustomLock.Click += new System.EventHandler(this.BtnCustomLock_Click);
-			// 
-			// lblCustomLock
-			// 
-			this.lblCustomLock.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblCustomLock.Depth = 0;
-			this.lblCustomLock.Font = new System.Drawing.Font("Roboto", 11F);
-			this.lblCustomLock.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.lblCustomLock.Location = new System.Drawing.Point(6, 16);
-			this.lblCustomLock.MouseState = MaterialSkin.MouseState.HOVER;
-			this.lblCustomLock.Name = "lblCustomLock";
-			this.lblCustomLock.Size = new System.Drawing.Size(554, 19);
-			this.lblCustomLock.TabIndex = 12;
-			this.lblCustomLock.Text = "Custom home icon: Not set";
 			// 
 			// materialFlatButton2
 			// 
@@ -325,7 +270,7 @@
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button1.Location = new System.Drawing.Point(566, 12);
+			this.button1.Location = new System.Drawing.Point(605, 12);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(19, 23);
 			this.button1.TabIndex = 18;
@@ -374,7 +319,7 @@
 			// 
 			this.btnOpenCustomLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnOpenCustomLayout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnOpenCustomLayout.Location = new System.Drawing.Point(591, 12);
+			this.btnOpenCustomLayout.Location = new System.Drawing.Point(566, 12);
 			this.btnOpenCustomLayout.Name = "btnOpenCustomLayout";
 			this.btnOpenCustomLayout.Size = new System.Drawing.Size(33, 23);
 			this.btnOpenCustomLayout.TabIndex = 14;
@@ -592,6 +537,61 @@
 			this.materialLabel8.TabIndex = 7;
 			this.materialLabel8.Text = "Use this page to build nxtheme files. (You don\'t need to open an SZS for this)";
 			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// grpLockExtra
+			// 
+			this.grpLockExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.grpLockExtra.Controls.Add(this.button7);
+			this.grpLockExtra.Controls.Add(this.btnCustomLock);
+			this.grpLockExtra.Controls.Add(this.lblCustomLock);
+			this.grpLockExtra.ForeColor = System.Drawing.Color.White;
+			this.grpLockExtra.Location = new System.Drawing.Point(5, 209);
+			this.grpLockExtra.Name = "grpLockExtra";
+			this.grpLockExtra.Size = new System.Drawing.Size(630, 70);
+			this.grpLockExtra.TabIndex = 26;
+			this.grpLockExtra.TabStop = false;
+			this.grpLockExtra.Text = "Lock screen optional settings";
+			this.grpLockExtra.Visible = false;
+			// 
+			// button7
+			// 
+			this.button7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button7.Location = new System.Drawing.Point(604, 12);
+			this.button7.Name = "button7";
+			this.button7.Size = new System.Drawing.Size(19, 23);
+			this.button7.TabIndex = 18;
+			this.button7.Text = "?";
+			this.button7.UseVisualStyleBackColor = true;
+			this.button7.Click += new System.EventHandler(this.Button7_Click);
+			// 
+			// btnCustomLock
+			// 
+			this.btnCustomLock.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnCustomLock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnCustomLock.Location = new System.Drawing.Point(566, 12);
+			this.btnCustomLock.Name = "btnCustomLock";
+			this.btnCustomLock.Size = new System.Drawing.Size(33, 23);
+			this.btnCustomLock.TabIndex = 14;
+			this.btnCustomLock.Text = "...";
+			this.btnCustomLock.UseVisualStyleBackColor = true;
+			this.btnCustomLock.Click += new System.EventHandler(this.BtnCustomLock_Click);
+			// 
+			// lblCustomLock
+			// 
+			this.lblCustomLock.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblCustomLock.Depth = 0;
+			this.lblCustomLock.Font = new System.Drawing.Font("Roboto", 11F);
+			this.lblCustomLock.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.lblCustomLock.Location = new System.Drawing.Point(6, 16);
+			this.lblCustomLock.MouseState = MaterialSkin.MouseState.HOVER;
+			this.lblCustomLock.Name = "lblCustomLock";
+			this.lblCustomLock.Size = new System.Drawing.Size(554, 19);
+			this.lblCustomLock.TabIndex = 12;
+			this.lblCustomLock.Text = "Custom home icon: Not set";
 			// 
 			// PatchListPage
 			// 
@@ -1275,8 +1275,8 @@
 			this.materialTabControl1.ResumeLayout(false);
 			this.NXThemePage.ResumeLayout(false);
 			this.NXThemePage.PerformLayout();
-			this.grpLockExtra.ResumeLayout(false);
 			this.grpHomeExtra.ResumeLayout(false);
+			this.grpLockExtra.ResumeLayout(false);
 			this.PatchListPage.ResumeLayout(false);
 			this.PatchListPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);

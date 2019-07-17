@@ -102,10 +102,10 @@ BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const 
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
-			{"RdtIcoPvr_00^s", 0x02000000}, {"RdtIcoNews_00^s", 0x02000000},
-			{"RdtIcoNews_01^s", 0x02000000}, {"RdtIcoSet^s", 0x02000000},
-			{"RdtIcoShop^s", 0x02000000}, {"RdtIcoCtrl_00^s", 0x02000000},
-			{"RdtIcoCtrl_01^s", 0x02000000}, {"RdtIcoCtrl_02^s", 0x02000000}, {"RdtIcoPwrForm^s", 0x02000000},
+			{"RdtIcoPvr_00^s", 0x2000000}, {"RdtIcoNews_00^s", 0x2000000},
+			{"RdtIcoNews_01^s", 0x2000000}, {"RdtIcoSet^s", 0x2000000},
+			{"RdtIcoShop^s", 0x2000000}, {"RdtIcoCtrl_00^s", 0x2000000},
+			{"RdtIcoCtrl_01^s", 0x2000000}, {"RdtIcoCtrl_02^s", 0x2000000}, {"RdtIcoPwrForm^s", 0x2000000},
 		});
 
 	vector<LayoutFilePatch> Files;
@@ -198,7 +198,7 @@ BflytFile::PatchResult SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, c
 		auto it = find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(),
 			[&patch](const pair<string, string>& v) { return v.second == patch.szsName;	});
 		if (it == ThemeTargetToFileName.end()) return BflytFile::PatchResult::Fail;
-		auto nxthemeTarget = it->first;
+		nxthemeTarget = it->first;
 	}
 
 	if (!Patches::textureReplacement::NxNameToList.count(nxthemeTarget))
@@ -207,6 +207,8 @@ BflytFile::PatchResult SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, c
 	auto& list = Patches::textureReplacement::NxNameToList[nxthemeTarget];
 	auto it = find_if(list.begin(), list.end(),
 		[&texName](const TextureReplacement& t) {return t.NxThemeName == texName; });
+	if (it == list.end()) 
+		return BflytFile::PatchResult::Fail;
 
 	auto res = PatchSingleLayout(it->patch);
 	if (res != BflytFile::PatchResult::OK) return res;

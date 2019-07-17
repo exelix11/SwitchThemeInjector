@@ -21,6 +21,7 @@ namespace Panes
 		BasePane(const std::string &_name, u32 len);
 		BasePane(const BasePane &ref);
 		BasePane(const std::string &_name, Buffer &reader);
+		virtual ~BasePane() {}
 
 		virtual void WritePane(Buffer &writer);
 	};

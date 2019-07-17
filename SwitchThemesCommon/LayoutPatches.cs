@@ -13,6 +13,7 @@ namespace SwitchThemes.Common
 		public string AuthorName;
 		public string TargetName;
 		public bool Ready8X = false;
+		[Obsolete("Editing C_W in the usd panes is a better way of achieving this")]
 		public bool PatchAppletColorAttrib = false;
 		public LayoutFilePatch[] Files;
 		public AnimFilePatch[] Anims;

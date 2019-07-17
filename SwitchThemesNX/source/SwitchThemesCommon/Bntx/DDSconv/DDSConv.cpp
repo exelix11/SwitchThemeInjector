@@ -103,7 +103,7 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int Expecte
 		bin.Write((u32)0);
 
 	unsigned char block[64];
-	vector<u8> dst(8);
+	vector<u8> dst(BytePerBlock);
 	int x, y;
 
 	for (y = 0; y < h; y += 4)

@@ -195,11 +195,11 @@ namespace SwitchThemes
 			if (res == null) return;
 			res.TargetName = targetPatch?.szsName;
 
-			if (targetPatch == null || targetPatch.NXThemeName == "home")
-			if (MessageBox.Show(
-				"Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.\r\n" +
-				"This feature is only for the home menu.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-				res.PatchAppletColorAttrib = true;
+			//if (targetPatch == null || targetPatch.NXThemeName == "home")
+			//if (MessageBox.Show(
+			//	"Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.\r\n" +
+			//	"This feature is only for the home menu.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
+			//	res.PatchAppletColorAttrib = true;
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
@@ -420,7 +420,7 @@ namespace SwitchThemes
 
 		public static bool IcontoDDS(ref string FilePath)
 		{
-			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT5",true); //Somehow it outputs a DXT4 image (?)
+			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT4", true); //Somehow it outputs a DXT4 image (?)
 			if (res)
 			{
 				FilePath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(FilePath) + ".dds");
