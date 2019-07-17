@@ -9,6 +9,33 @@
 
 #include "../Platform/Platform.hpp"
 
+#include "imgui/imgui_internal.h"
+#include "../ViewFunctions.hpp"
+
+//moved here from ViewFunctions as it needs static variables
+void Utils::ImGuiDragWithLastElement()
+{
+	static float scrollY = 0;
+	static ImGuiID item = 0;
+	auto cur = GImGui->CurrentWindow->DC.LastItemId;
+	if ((!item || item == cur) && ImGui::IsItemActive())
+	{
+		if (!item)
+		{
+			item = cur;
+			scrollY = ImGui::GetScrollY();
+		}
+		ImVec2 drag = ImGui::GetMouseDragDelta(0);
+		ImGui::SetScrollY(scrollY - drag.y);
+	}
+	else if (item == cur)
+	{
+		scrollY = 0;
+		item = 0;
+	}
+}
+
+
 using namespace std;
 
 const int MaxCachedImages = 8;
