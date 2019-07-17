@@ -415,6 +415,15 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					if (!PatchBG(Patcher, SData.files["image.dds"], BaseSzs))
 						return false;
 			}
+								
+			if (SData.files.count("layout.json"))
+			{
+				SkipSaveActualFile = false;
+				auto JsonBinary = SData.files["layout.json"];
+				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
+				if (!PatchLayout(Patcher, JSON, themeInfo.Target))
+					return false;
+			}
 
 			if (Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
 			{
@@ -439,16 +448,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 
 					if (pResult != BflytFile::PatchResult::OK)
 						Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+					else
+						SkipSaveActualFile = false;
 				}
-			}
-					
-			if (SData.files.count("layout.json"))
-			{
-				SkipSaveActualFile = false;
-				auto JsonBinary = SData.files["layout.json"];
-				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
-				if (!PatchLayout(Patcher, JSON, themeInfo.Target))
-					return false;
 			}
 			
 			if (!SkipSaveActualFile)

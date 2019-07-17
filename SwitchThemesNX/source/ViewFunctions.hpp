@@ -54,11 +54,14 @@ namespace Utils
 
 	static inline void ImGuiDragWithLastElement() 
 	{
+		static float scrollY = 0;
 		if (ImGui::IsItemActive())
 		{
+			if (!scrollY) scrollY = ImGui::GetScrollY();
 			ImVec2 drag = ImGui::GetMouseDragDelta(0);
-			ImGui::SetScrollY(ImGui::GetScrollY() - drag.y / 2);
+			ImGui::SetScrollY(scrollY - drag.y);
 		}
+		else if (scrollY) scrollY = 0;
 	}
 
 	static inline void ImGuiSetWindowScrollable() 

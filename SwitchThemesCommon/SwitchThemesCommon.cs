@@ -162,9 +162,9 @@ namespace SwitchThemes.Common
 
 		public void AddAppletIcon(string name, byte[] data)
 		{
-			if (!TextureReplacement.NxNameToList.ContainsKey(name)) throw new Exception("Not supported for this target");
+			if (!TextureReplacement.NxNameToList.ContainsKey(info.Target)) throw new Exception("Not supported for this target");
 
-			var item = TextureReplacement.NxNameToList[name].Where(x => x.NxThemeName == name).FirstOrDefault();
+			var item = TextureReplacement.NxNameToList[info.Target].Where(x => x.NxThemeName == name).FirstOrDefault();
 			if (item == null) throw new Exception($"{name} not supported for this target");
 
 			string ext = "";
@@ -172,8 +172,8 @@ namespace SwitchThemes.Common
 			{
 				ext = ".dds";
 				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT5"))
-					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/5 encoded.");
+				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT4" && img.Format != "DXT5"))
+					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1, DXT4 or DXT5 encoded.");
 			}
 			/* TODO: support png for applet images
 			else if (data.Matches(1, "PNG"))
@@ -268,11 +268,11 @@ namespace SwitchThemes.Common
 		public BflytFile.PatchResult PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
-				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x02000000),
-				   new Tuple<string, uint>("RdtIcoNews_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoNews_01^s", 0x02000000),
-				   new Tuple<string, uint>("RdtIcoSet^s", 0x02000000), new Tuple<string, uint>("RdtIcoShop^s", 0x02000000),
-				   new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x02000000), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x02000000),
-				   new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x02000000), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x02000000));
+				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
+				   new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),
+				   new Tuple<string, uint>("RdtIcoSet^s", 0x5050505), new Tuple<string, uint>("RdtIcoShop^s", 0x5050505),
+				   new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x5050505),
+				   new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x5050505), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x5050505));
 
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);

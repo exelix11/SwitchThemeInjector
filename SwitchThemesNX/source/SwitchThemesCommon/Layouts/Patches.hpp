@@ -119,8 +119,8 @@ namespace Patches {
 	extern std::vector<PatchTemplate> DefaultTemplates;
 
 	namespace textureReplacement {
-		extern std::vector<TextureReplacement> ResidentMenu;
-		extern std::vector<TextureReplacement> Entrance;
+		//extern std::vector<TextureReplacement> ResidentMenu;
+		//extern std::vector<TextureReplacement> Entrance;
 		extern std::unordered_map < std::string, std::vector<TextureReplacement>> NxNameToList;
 	}
 

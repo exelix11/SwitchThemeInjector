@@ -622,6 +622,7 @@ BflytFile::PatchResult BflytFile::ClearUVData(const string& name)
 		uv.BottomLeft = { 0,1 };
 		uv.BottomRight = { 1,1 };
 	}
+	return PatchResult::OK;
 }
 
 BflytFile::PatchResult BflytFile::AddBgPanel(int index, const string &TexName, const string &Pic1Name)
