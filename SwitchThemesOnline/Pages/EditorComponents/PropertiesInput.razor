@@ -1,0 +1,20 @@
+<h3>Select the theme target and choose a name</h3>
+
+<div style="display: flex;">
+	<p>Theme target:</p>
+	<select style="margin-left:3%;background-color:#DDD;" @bind="@State.Target">
+		@foreach (var a in Constants.NXPartToName)
+		{
+			<option value="@a.Key">@a.Value</option>
+		}
+	</select>
+</div>
+
+<p>Theme name: </p>
+<input class="TextBox" type="text" @bind="@State.Name"/>
+<p>Theme author:</p>
+<input class="TextBox" type="text" @bind="@State.Author"/>
+
+@code {
+[Parameter] StateHolder State { get; set; }
+}

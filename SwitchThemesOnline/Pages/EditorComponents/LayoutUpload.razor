@@ -1,0 +1,99 @@
+@inject HttpClient http;
+@using Newtonsoft.Json;
+@using System.IO;
+@using SwitchThemes.Common;
+@using System.Linq;
+@using System.Text;
+
+<h3>Upload a layout (optional)</h3>
+
+<FileUploader Filter=".json" Text="Upload a file from your pc" OnUpload="@PcJsonUpload" />
+
+@if (LayoutIndex == null)
+{
+	<p>Error while downloading the built-in layouts index</p>
+}
+else
+{
+	<div style="display: flex;margin-top:2%">
+		<p>or use a built-in one: </p>
+		<select style="background-color:#DDD;margin-left:2%" @onchange="@ListBoxOnChange" value="@ListBoxValue">
+			<option value="">--none--</option>
+			@if (LayoutIndex.ContainsKey(state.Target))
+			{
+				@foreach (var a in LayoutIndex[state.Target])
+				{
+					<option value="@a.File">@a.File</option>
+				}
+			}
+		</select>
+	</div>
+	@if (state.MainLayout != null && LayoutUrl != null)
+	{
+		<p>Preview:</p>
+		<img src="@LayoutUrl" />
+	}
+}
+
+@if (state.MainLayout != null)
+{
+	<p>
+		Selected layout: @state.MainLayout.PatchName by @state.MainLayout.AuthorName
+	</p>
+	<button class="btn--raised btn--red buttonCenter" @onclick="@(() => state.MainLayout = null)">Remove</button>
+}
+
+@code {
+	[Parameter] StateHolder state { get; set; }
+
+	struct LayoutEntry
+	{
+		public string File, Prev;
+	}
+
+	async Task<T> NewtonSoftGetAndDeserialize<T>(string url)
+	{
+		var content = await (await http.GetAsync(url)).Content.ReadAsStringAsync();
+		return JsonConvert.DeserializeObject<T>(content);
+	}
+
+	string LayoutUrl = null;
+	string ListBoxValue = "";
+	async Task ListBoxOnChange(UIChangeEventArgs newVal)
+	{
+		Console.WriteLine("event, val: " + newVal.Value);
+		if (string.IsNullOrEmpty(newVal.Value as string))
+			return;
+		LayoutUrl = null;
+		ListBoxValue = (string)newVal.Value;
+		state.MainLayout = await NewtonSoftGetAndDeserialize<LayoutPatch>("layout/builtin/" + ListBoxValue);
+		LayoutUrl = "layout/builtin/" + LayoutIndex[state.Target].Where(x => x.File == ListBoxValue).First().Prev;
+		StateHasChanged();
+	}
+
+	void PcJsonUpload(MemoryStream file)
+	{
+		LayoutUrl = null;
+		ListBoxValue = "";
+		state.MainLayout = JsonConvert.DeserializeObject<LayoutPatch>(Encoding.UTF8.GetString(file.ToArray()));
+		Console.WriteLine(state.MainLayout.PatchName);
+		StateHasChanged();
+	}
+
+	Dictionary<string, List<LayoutEntry>> LayoutIndex = null;
+
+	protected override async Task OnInitAsync()
+	{
+		state.TargetHasChanged += delegate () { state.MainLayout = null; StateHasChanged(); };
+		try
+		{
+			LayoutIndex = await NewtonSoftGetAndDeserialize<Dictionary<string, List<LayoutEntry>>>("layout/index.json");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine("LayoutUpload init: " + ex.ToString());
+			LayoutIndex = null;
+		}
+		this.StateHasChanged();
+	}
+}

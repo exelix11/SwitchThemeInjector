@@ -11,6 +11,8 @@ namespace SwitchThemes.Common
 		public static byte[] Compress(byte[] Data, int level = 3, int reserved1 = 0, int reserved2 = 0)
 		{
 			int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
+			if (maxBackLevel <= 0)
+				maxBackLevel = 1;
 
 			int dataptr = 0;
 

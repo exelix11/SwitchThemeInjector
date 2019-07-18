@@ -28,11 +28,11 @@ namespace ExtensionMethods
 		}
 
 		public static bool Matches(this byte[] arr, string magic) =>
-			arr.Matches(0, magic.ToCharArray());
+			arr.Matches(0, Encoding.ASCII.GetBytes(magic));
 		public static bool Matches(this byte[] arr, uint startIndex, string magic) =>
-			arr.Matches(startIndex, magic.ToCharArray());
+			arr.Matches(startIndex, Encoding.ASCII.GetBytes(magic));
 
-		public static bool Matches(this byte[] arr, uint startIndex, params char[] magic)
+		public static bool Matches(this byte[] arr, uint startIndex, params byte[] magic)
 		{
 			if (arr.Length < magic.Length + startIndex) return false;
 			for (uint i = 0; i < magic.Length; i++)
