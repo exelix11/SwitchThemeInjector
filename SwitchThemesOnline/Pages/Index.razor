@@ -1,0 +1,33 @@
+﻿@page "/"
+@using SwitchThemes.Common;
+@inject IJSRuntime js
+
+<h1>Hi !</h1>
+<h2>Let's make a theme in 3 steps: </h2>
+
+<SwitchThemesOnline.Pages.EditorComponents.PropertiesInput state="@holder" />
+<SwitchThemesOnline.Pages.EditorComponents.BGSelect state="@holder" />
+<SwitchThemesOnline.Pages.EditorComponents.LayoutUpload state="@holder" />
+
+<br /> <br /> <br />
+<button class="btn--raised btn--green buttonCenter" @onclick="@BuildNxtheme">Build nxtheme !</button>
+
+@code
+{
+StateHolder holder = new StateHolder();
+
+async Task BuildNxtheme()
+{
+	try
+	{
+		NXThemeBuilder nx = new NXThemeBuilder(holder.Target, holder.Name, holder.Author);
+		nx.AddMainBg(holder.MainBG);
+		nx.AddMainLayout(holder.MainLayout);
+		await js.DownloadFile($"{holder.Name}.nxtheme", nx.GetNxtheme());
+	}
+	catch (Exception ex)
+	{
+		js.Alert("Error: " + ex.Message);
+	}
+}
+}

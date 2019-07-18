@@ -69,18 +69,23 @@ namespace SwitchThemes.Common
 
 		public byte[] GetNxtheme()
 		{
-			if (!files.ContainsKey("image.dds") && !files.ContainsKey("image.png") && !files.ContainsKey("layout.json"))
+			if (!files.ContainsKey("image.dds") && !files.ContainsKey("image.jpg") && !files.ContainsKey("layout.json"))
 				throw new Exception("An nxtheme must contain at least a custom background image or layout");
 
 			if (!files.ContainsKey("info.json"))
 				AddFile("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
 
 			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
+#if WIN
 			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
+#else
+			return ManagedYaz0.Compress(sarc.Item2, 0, (int)sarc.Item1);
+#endif
 		}
 
 		public void AddFile(string name, byte[] data)
 		{
+			if (name == null || data == null) return;
 			if (info.Target != "home")
 			{
 				if (name == "common.json") return;
@@ -133,6 +138,7 @@ namespace SwitchThemes.Common
 
 		public void AddMainBg(byte[] data)
 		{
+			if (data == null) return;
 			string ext = "";
 			if (data.Matches("DDS "))
 			{
@@ -141,7 +147,7 @@ namespace SwitchThemes.Common
 				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
 					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded.");
 			}
-			else if (data.Matches(6, "JFIF"))
+			else if (data.Matches(0,new byte[] { 0xFF, 0xD8, 0xFF }))
 			{
 				ext = "jpg";
 				(UInt32 w, UInt32 h) = GetJpgSize(data);
@@ -156,6 +162,7 @@ namespace SwitchThemes.Common
 			AddMainLayout(LayoutPatch.LoadTemplate(text));
 
 		public void AddMainLayout(LayoutPatch l) {
+			if (l == null) return;
 			AddFile("layout.json", l.AsByteArray());
 			info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
 		}

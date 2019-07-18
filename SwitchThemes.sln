@@ -14,6 +14,7 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{3ee76b71-422a-4e80-8f17-63da105bb4bc}*SharedItemsImports = 4
 		SwitchThemesCommon\SwitchThemesCommon.projitems*{cfbf6ef0-8237-442a-8997-a30072f0b9f8}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

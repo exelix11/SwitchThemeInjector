@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29021.104
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwitchThemesOnline", "SwitchThemesOnline.csproj", "{361E5321-1365-4F8F-87A6-064BCEEEEB6C}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwitchThemesCommon", "..\SwitchThemesCommon\SwitchThemesCommon.shproj", "{11174F92-402D-4064-B278-F52842A48251}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{361E5321-1365-4F8F-87A6-064BCEEEEB6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{361E5321-1365-4F8F-87A6-064BCEEEEB6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{361E5321-1365-4F8F-87A6-064BCEEEEB6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{361E5321-1365-4F8F-87A6-064BCEEEEB6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {647DADAF-500E-4C50-A5C3-3A3781B66714}
+	EndGlobalSection
+EndGlobal

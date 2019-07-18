@@ -42,9 +42,9 @@ namespace SwitchThemes.Common
 				throw new Exception("Invalid target or theme name");
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
-				Formatting = Formatting.None,
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
+				Formatting = Formatting.None,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 			};
 			return JsonConvert.SerializeObject(this, settings);
@@ -205,7 +205,7 @@ namespace SwitchThemes.Common
 
 	public class TextureReplacement
 	{
-		#region Patches
+#region Patches
 
 		/*
 		 * The C_W property is weird, it seems to affect color in some way, it has 4 values but doesn't seem to argb or similar.
@@ -295,7 +295,7 @@ namespace SwitchThemes.Common
 				new PanePatch { PaneName = "P_PictHome", Size = new NullableVector2(184,168), Position = new NullableVector3(0,0,0) }
 			}
 		};
-		#endregion
+#endregion
 
 		public string NxThemeName;
 		public string BntxName;

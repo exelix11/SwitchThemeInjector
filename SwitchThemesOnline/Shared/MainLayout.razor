@@ -1,0 +1,30 @@
+﻿@inherits LayoutComponentBase
+
+<div>
+	<header class="header">
+		@if (ShowDebug)
+		{
+			<div class="card WarnCard" style="background: #ffbd00 !important;">
+				This tool is wip. Stuff will break, you've been warned
+			</div>
+		}
+		<p class="g--12 nudge--left HeaderTextBig">Switch theme injector 2🌐</p>
+		<p class="g--12 nudge--left HeaderTextSmall">Electric boogaloo (?)</p>
+		<p class="g--12 nudge--left HeaderTextSmall">by exelix</p>
+	</header>
+
+	<div class="card BaseCard" id="CardTutorial" style="color:#fff">
+		@Body
+	</div>
+
+</div>
+
+
+@code
+{
+#if DEBUG
+bool ShowDebug = true;
+#else
+bool ShowDebug = false;
+#endif
+}

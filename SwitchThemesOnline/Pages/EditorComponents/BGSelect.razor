@@ -1,0 +1,24 @@
+@using System.IO;
+
+<h3>Select a background image:</h3>
+
+<FileUploader Text="Open an image" Filter=".jpg" OnUpload="@LoadImage" />
+<p>
+	Upload a 1280x720 image, only jpg files are supported
+</p>
+
+<img src="@imageAsString" />
+
+@functions {
+	[Parameter] StateHolder state { get; set; }
+
+	string imageAsString { get; set; } = "";
+
+	public void LoadImage(MemoryStream file)
+	{
+		state.MainBG = new byte[file.Length];
+		file.Read(state.MainBG, 0, state.MainBG.Length);
+		imageAsString = $"data:image/jpeg;base64,{Convert.ToBase64String(state.MainBG)}";
+		StateHasChanged();
+	}
+}
