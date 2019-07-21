@@ -10,8 +10,6 @@
 const std::string VersionString = "Ver. 2.0";
 extern std::string SystemVer;
 
-extern bool UseAnimations;
-
 void PushPage(IUIControlObj* page);
 void PopPage();
 void ErrorFatal(const std::string &msg);

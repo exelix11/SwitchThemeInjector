@@ -4,6 +4,12 @@
 
 using namespace std;
 
+namespace Settings {
+	bool UseAnimations = true;
+	bool UseIcons = true;
+	bool UseCommon = true;
+};
+
 SettingsPage::SettingsPage() : 
 lblGuide( "Theme shuffle is implemented as a custom sysmodule, get it from:\nhttps://git.io/fhtY8 \n"
 "To install a theme in the shuffle list press R while pressing A or + in the theme install page"),
@@ -16,11 +22,19 @@ lblInstalled("Currently installed themes number: 0")
 
 void SettingsPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage(this, X, Y);
+	Utils::ImGuiSetupWin(Name.c_str(), X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+	ImGui::SetWindowSize(ImVec2(SCR_W - X, SCR_H - Y - 70));
 	ImGui::PushFont(font25);
 
-	ImGui::NewLine();
-	ImGui::Checkbox("Animation support for nxthemes", &UseAnimations);
+	ImGui::PushFont(font30);
+	ImGui::Text("Nxtheme settings");
+	ImGui::PopFont();
+	ImGui::TextWrapped("These settings only apply for installing nxthemes and are not saved, you have to switch them back every time you launch this app");
+	ImGui::Checkbox("Enable animations", &Settings::UseAnimations);
+	if (ImGui::IsItemFocused())
+		ImGui::SetScrollY(0);
+	ImGui::Checkbox("Enable custom icons", &Settings::UseIcons);
+	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
 	PAGE_RESET_FOCUS
 	ImGui::NewLine();
 

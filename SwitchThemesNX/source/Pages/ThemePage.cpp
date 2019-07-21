@@ -88,7 +88,7 @@ void ThemesPage::Render(int X, int Y)
 
 	if (DisplayEntries.size() == 0)
 	{
-		ImGui::Text(NoThemesLbl.c_str());
+		ImGui::TextWrapped(NoThemesLbl.c_str());
 		goto QUIT_RENDERING;
 	}
 

@@ -8,6 +8,8 @@
 #include "../Platform/Platform.hpp"
 #include "../SwitchThemesCommon/Bntx/DDSconv/DDSConv.hpp"
 
+#include "SettingsPage.hpp"
+
 using namespace std;
 using namespace SwitchThemesCommon;
 
@@ -256,14 +258,14 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 		Dialog("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
 		return false;
 	}
-	Patcher.SetPatchAnimations(UseAnimations);
+	Patcher.SetPatchAnimations(Settings::UseAnimations);
 	auto res = Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home");
 	if (res != BflytFile::PatchResult::OK)
 	{
 		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
 	}
-	if (UseAnimations)
+	if (Settings::UseAnimations)
 	{
 		res = Patcher.PatchAnimations(patch.Anims);
 		if (res != BflytFile::PatchResult::OK)
@@ -356,7 +358,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			//On 5.x some custom applet bg use common.szs
 			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
 			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
-			if ((themeInfo.Target == "home" && SData.files.count("common.json")) || DoPatchCommonBG)
+			if ((themeInfo.Target == "home" && SData.files.count("common.json")) && Settings::UseCommon || DoPatchCommonBG)
 			{
 				//common.szs patching code
 				
@@ -377,7 +379,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 							return false;
 				}
 				
-				if (SData.files.count("common.json") && themeInfo.Target == "home")
+				if (SData.files.count("common.json") && themeInfo.Target == "home" && Settings::UseCommon)
 				{
 					auto JsonBinary = SData.files["common.json"];
 					string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
@@ -425,7 +427,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 			}
 
-			if (Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
+			if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
 			{
 				auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
 				for (const TextureReplacement& p : list)
