@@ -26,6 +26,11 @@ void DisplayLoading(const std::string &msg);
 
 namespace Utils
 {
+	static inline bool AnyNavButtonPressed()
+	{
+		return	NAV_UP || NAV_DOWN || NAV_LEFT || NAV_RIGHT;
+	}
+
 	static inline void ImGuiSetupWin(const char* name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -112,7 +117,7 @@ namespace Utils
 
 	static inline bool PageLeaveFocusInput(bool AllowLeft = true)
 	{
-		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT) && AllowLeft;
+		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || NAV_LEFT && AllowLeft;
 	}
 
 	static inline void ImGuiSelectItem(bool isFocused = true, ImGuiID ID = 0)

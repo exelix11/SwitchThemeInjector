@@ -7,12 +7,19 @@
 #include "../UI/UIManagement.hpp"
 #include "../UI/UI.hpp"
 
+//#define __NXLINK_ENABLE__
+
 #ifdef __NXLINK_ENABLE__
 static int nxlink_sock = -1;
 #endif
 
 GLFWgamepadstate gamepad;
 GLFWgamepadstate OldGamepad;
+
+bool NAV_UP;
+bool NAV_DOWN;
+bool NAV_LEFT;
+bool NAV_RIGHT;
 
 void PlatformInit() 
 {

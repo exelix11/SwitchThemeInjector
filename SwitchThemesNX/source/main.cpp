@@ -25,6 +25,8 @@
 #include "Pages/SettingsPage.hpp"
 #include "Pages/RebootPage.cpp"
 
+//#define DEBUG
+
 using namespace std;
 
 //Maybe settings should have their own file ?
@@ -34,10 +36,15 @@ static inline void ImguiBindController()
 {
 	ImGuiIO& io = ImGui::GetIO();
 
-	io.NavInputs[ImGuiNavInput_DpadDown] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) || StickAsButton(1) < -.2f;
-	io.NavInputs[ImGuiNavInput_DpadUp] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) || StickAsButton(1) > .2f;
-	io.NavInputs[ImGuiNavInput_DpadLeft] =	KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT) || StickAsButton(0) < -.2f;
-	io.NavInputs[ImGuiNavInput_DpadRight] = KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT) || StickAsButton(0) > .2f;
+	NAV_DOWN	= (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN)	|| StickAsButton(1) > .3f	|| StickAsButton(3) > .3f );
+	NAV_UP		= (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP)		|| StickAsButton(1) < -.3f	|| StickAsButton(3) < -.3f);
+	NAV_LEFT	= (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT)	|| StickAsButton(0) < -.3f	|| StickAsButton(2) < -.3f);
+	NAV_RIGHT	= (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT)	|| StickAsButton(0) > .3f	|| StickAsButton(2) > .3f );
+
+	io.NavInputs[ImGuiNavInput_DpadDown]	= NAV_DOWN	? 1.0f : 0;
+	io.NavInputs[ImGuiNavInput_DpadUp]		= NAV_UP	? 1.0f : 0;
+	io.NavInputs[ImGuiNavInput_DpadLeft]	= NAV_LEFT	? 1.0f : 0;
+	io.NavInputs[ImGuiNavInput_DpadRight]	= NAV_RIGHT	? 1.0f : 0;
 
 	io.NavInputs[ImGuiNavInput_Activate] = KeyPressed(GLFW_GAMEPAD_BUTTON_A);
 	io.NavInputs[ImGuiNavInput_Cancel] = KeyPressed(GLFW_GAMEPAD_BUTTON_B);
@@ -46,6 +53,7 @@ static inline void ImguiBindController()
 	io.NavVisible = true;
 }
 
+static bool IsRendering = false;
 stack<IUIControlObj*> views;
 bool doPopPage = false;
 
@@ -91,6 +99,13 @@ static void ExecuteDeferredFunctions()
 
 void PushPageBlocking(IUIControlObj* page)
 {
+	if (IsRendering)
+	{
+		LOGf("Attempted to push a blocking page while rendering");
+		PushFunction([page]() {PushPageBlocking(page); });
+		return;
+	}
+
 	PushPage(page);
 	while (AppMainLoop())
 	{
@@ -100,9 +115,11 @@ void PushPageBlocking(IUIControlObj* page)
 		
 		IUIControlObj* CurObj = ViewObj;
 
+		IsRendering = true;
 		UiStartFrame();
 		CurObj->Render(0,0);
 		UiEndFrame();
+		IsRendering = false;
 
 		if (CurObj == ViewObj)
 			CurObj->Update();
@@ -142,7 +159,7 @@ void DisplayLoading(const string &msg)
 	UiEndFrame();
 }
 
-#ifndef __SWITCH__
+#ifdef DEBUG
 double previousTime = glfwGetTime();
 int frameCount = 0;
 int fpsValue = 0;
@@ -159,7 +176,11 @@ static void calcFPS()
 		frameCount = 0;
 		previousTime = currentTime;
 	}
-	ImGui::Text("%d", fpsValue);
+	ImGui::Text("FPS %d", fpsValue);
+	for (int i = 0; i < 6; i++)
+	{
+		ImGui::Text("pad[%d] = %d %f %f ", i, (int)(StickAsButton(i) != 0), gamepad.axes[i], OldGamepad.axes[i]);
+	}
 }
 #endif
 
@@ -174,12 +195,14 @@ static void MainLoop()
 		//A control may push a page either in the render or the update function.
 		IUIControlObj* CurObj = ViewObj;
 
+		IsRendering = true;
 		UiStartFrame();		
 		CurObj->Render(0,0);
-#ifndef __SWITCH__
+#ifdef DEBUG
 		calcFPS();
 #endif
 		UiEndFrame();
+		IsRendering = false;
 
 		if (CurObj == ViewObj)
 			CurObj->Update();
@@ -188,7 +211,7 @@ static void MainLoop()
 		if (doPopPage)
 			_PopPage();
 
-		_sleep(1 / 30.0 * 1000);
+		_sleep(1 / 20.0 * 1000);
 	}
 }
 

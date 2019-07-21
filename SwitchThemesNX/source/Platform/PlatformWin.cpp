@@ -10,6 +10,11 @@ using namespace UIMNG;
 GLFWgamepadstate gamepad;
 GLFWgamepadstate OldGamepad;
 
+bool NAV_UP;
+bool NAV_DOWN;
+bool NAV_LEFT;
+bool NAV_RIGHT;
+
 static void windowKeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for toggle-fullscreen combo
