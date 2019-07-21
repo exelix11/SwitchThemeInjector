@@ -90,7 +90,6 @@ void SettingsPage::Update()
 {	
 	if (Utils::PageLeaveFocusInput(!IsLayoutBlockingLeft))
 	{
-		//hasFocus = false;
 		Parent->PageLeaveFocus(this);
 		return;
 	}

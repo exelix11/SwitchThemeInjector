@@ -96,7 +96,8 @@ vector<u8> OpenFile(const string &name)
 {
 	FILE* f = fopen(name.c_str(),"rb");
 	if (!f){
-		ErrorFatal("File open fail");
+		DialogBlocking("Reading file " + name + "failed !");
+		return {};
 	}
 	fseek(f,0,SEEK_END);
 	auto len = ftell(f);
@@ -116,7 +117,8 @@ void WriteFile(const string &name,const vector<u8> &data)
 	FILE* f = fopen(name.c_str(),"wb");
 	if (!f)
 	{
-		ErrorFatal("Fail save");
+		DialogBlocking("Saving file " + name + "failed !");
+		return;
 	}
 	fwrite(data.data(),1,data.size(),f);
 	fflush(f);

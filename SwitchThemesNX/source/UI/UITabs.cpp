@@ -132,7 +132,7 @@ void TabRenderer::Update()
 	}
 	if (Pages.size() == 0)
 		return;
-	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_RIGHT))
+	else if (NAV_RIGHT)
 	{
 		auto res = std::find(Pages.begin(), Pages.end(), CurrentControl);
 		if (res != Pages.end())

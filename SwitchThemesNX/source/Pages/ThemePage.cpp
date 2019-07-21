@@ -204,7 +204,7 @@ void ThemesPage::Update()
 
 	int menuCount = PageItemsCount();	
 	
-	if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT))
+	if (NAV_LEFT)
 		Parent->PageLeaveFocus(this);
 	if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 	{
@@ -254,6 +254,7 @@ void ThemesPage::Update()
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_X))
 	{
 		SelectedFiles.clear();
+		lblCommands = CommandsTextNormal;
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{

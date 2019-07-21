@@ -255,10 +255,32 @@ bool ExtractHomeMenu()
 		Dialog("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
 	return true;
 }
+
+bool ExtractTitle(u64 titleID, const string& Path) {
+	EXTRACTION_INIT
+
+		NcaDecryptionkeys Keys;
+	if (!GetKeys(&Keys))
+		return false;
+
+	DisplayLoading("Extracting ...");
+	RecursiveDeleteFolder(Path);
+	if (HactoolExtractNCA(GetNcaPath(titleID), Path, Keys.header_key, Keys.key_area_key_application_source))
+	{
+		Dialog("Done");
+		return true;
+	}
+	else
+	{
+		Dialog("Couldn't extract");
+		return false;
+	}
+}
 #else
 
 bool ExtractPlayerSelectMenu() { return true; }
 bool ExtractUserPage() { return true; }
 bool ExtractHomeMenu() { return true; }
+bool ExtractTitle(u64 titleID, const string& Path) { return true; }
 
 #endif
