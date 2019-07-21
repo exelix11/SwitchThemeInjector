@@ -26,11 +26,7 @@
 #include "Pages/RebootPage.cpp"
 
 //#define DEBUG
-
 using namespace std;
-
-//Maybe settings should have their own file ?
-bool UseAnimations = true;
 
 static inline void ImguiBindController()
 {
@@ -211,7 +207,7 @@ static void MainLoop()
 		if (doPopPage)
 			_PopPage();
 
-		_sleep(1 / 20.0 * 1000);
+		_sleep(1 / 30.0 * 1000);
 	}
 }
 

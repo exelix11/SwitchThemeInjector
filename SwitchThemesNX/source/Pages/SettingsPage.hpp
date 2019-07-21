@@ -7,6 +7,12 @@
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
 
+namespace Settings {
+	extern bool UseAnimations;
+	extern bool UseIcons;
+	extern bool UseCommon;
+};
+
 class SettingsPage : public IPage
 {
 	public:
