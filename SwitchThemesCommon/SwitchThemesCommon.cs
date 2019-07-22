@@ -179,17 +179,16 @@ namespace SwitchThemes.Common
 			{
 				ext = ".dds";
 				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT4" && img.Format != "DXT5"))
-					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1, DXT4 or DXT5 encoded.");
+				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT4" && img.Format != "DXT5" && img.Format != "DXT3"))
+					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/3/4/5 encoded.");
 			}
-			/* TODO: support png for applet images
 			else if (data.Matches(1, "PNG"))
 			{
 				ext = ".png";
 				(UInt32 w, UInt32 h) = GetPngSize(data);
 				if (w != item.W || h != item.H)
 					throw new Exception("The applet image must be 64x56.");
-			}*/
+			}
 			else throw new Exception("Invalid image format");
 			AddFile(name + ext, data);
 		}

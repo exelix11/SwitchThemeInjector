@@ -95,7 +95,7 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int Expecte
 		bin.Write((u32)0);
 	bin.Write((u32)0x20);
 	bin.Write((u32)0x4);
-	bin.Write(DXT5 ? "DXT5" : "DXT1");
+	bin.Write(DXT5 ? "DXT5" : "DXT1"); //Not sure about the difference between DXT3 and 5
 	for (int i = 0; i < 5; i++)
 		bin.Write((u32)0);
 	bin.Write((u32)0x401008);

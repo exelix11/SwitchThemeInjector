@@ -845,7 +845,7 @@ namespace SwitchThemes
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 images, colors are not allowed: they should be white on a transparent background.");
+			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 PNG images, colors are not allowed: they should be white on a transparent background.\r\nIf you know what you're doing dds is supported as well.");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -855,7 +855,7 @@ namespace SwitchThemes
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 images, colors are not allowed: they should be white on a transparent background");
+			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 PNG images, colors are supported.\r\nIf you know what you're doing dds is supported as well.");
 		}
 	}
 }

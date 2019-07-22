@@ -23,6 +23,7 @@ string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& 
 }
 
 SzsPatcher::SzsPatcher(SARC::SarcData&& s) : sarc(s) {}
+SzsPatcher::SzsPatcher(SARC::SarcData& s) : sarc(s) {}
 void SzsPatcher::SetPatchAnimations(bool enable) { EnableAnimations = enable; }
 
 SzsPatcher::~SzsPatcher()

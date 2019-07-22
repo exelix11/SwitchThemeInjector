@@ -56,6 +56,14 @@ bool ThemeEntry::IsFont()
 
 void ThemeEntry::ParseTheme()
 {	
+	if (file.size() == 0)
+	{
+		CanInstall = false;
+		lblLine1 = FileName;
+		lblFname = "Couldn't open this file";
+		return;
+	}
+
 	if (IsFont())
 	{
 		ParseFont();
@@ -80,6 +88,7 @@ void ThemeEntry::ParseFont()
 
 void ThemeEntry::ParseNxTheme()
 {
+	file.clear(); //we don't need the full file for nxthemes
 	auto themeInfo = ParseNXThemeFile(SData);
 	if (themeInfo.Version == -1)
 	{
@@ -92,24 +101,9 @@ void ThemeEntry::ParseNxTheme()
 		CanInstall = false;
 	}		
 	if (CanInstall) {
-		if (SData.files.count("image.dds"))
+		if (SData.files.count("image.dds") || SData.files.count("image.jpg"))
 		{
 			NXThemeHasPreview = true;
-		}
-		else if (SData.files.count("image.jpg"))
-		{
-			auto res = DDSConv::ImageToDDS(SData.files["image.jpg"], false, 1280, 720);
-			if (res.size() != 0)
-			{
-				//HACK: don't save the nxtheme after this
-				SData.files["image.dds"] = res;
-				NXThemeHasPreview = true;
-			}
-			else 
-			{
-				CanInstall = false;
-				lblLine2 = "Couldn't load the image";
-			}
 		}
 	}
 	if (!ThemeTargetToName.count(themeInfo.Target))
@@ -139,6 +133,30 @@ void ThemeEntry::ParseNxTheme()
 	lblLine1 = (l1);
 }
 
+vector<u8> ThemeEntry::NxThemeGetBgImage()
+{
+	if (!NXThemeHasPreview || !CanInstall) return {};
+	if (SData.files.count("image.dds"))
+		return SData.files["image.dds"];
+	else if (SData.files.count("image.jpg"))
+	{
+		auto res = DDSConv::ImageToDDS(SData.files["image.jpg"], false, 1280, 720);
+		if (res.size() != 0)
+		{
+			//HACK: don't save the nxtheme after this
+			SData.files["image.dds"] = res;
+			NXThemeHasPreview = true;
+		}
+		else
+		{
+			NXThemeHasPreview = false;
+			CanInstall = false;
+			lblLine2 = "Couldn't load the image";
+		}
+	}
+	return {};
+}
+
 void ThemeEntry::ParseLegacyTheme()
 {
 	if (FileName == "")
@@ -163,7 +181,9 @@ void ThemeEntry::ParseLegacyTheme()
 LoadedImage ThemeEntry::NXGetPreview()
 {
 	if (!NXThemeHasPreview) return 0;
-	auto Preview = ImageCache::LoadDDS(SData.files["image.dds"], FileName);
+	auto image = NxThemeGetBgImage();
+	if (image.size() == 0) return 0;
+	auto Preview = ImageCache::LoadDDS(image, FileName);
 	if (!Preview)
 	{
 		NXThemeHasPreview = false;
@@ -283,14 +303,16 @@ void MissingFileErrorDialog(const string &name)
 			"To install theme packs (.nxtheme files) you need to dump the home menu romfs following the guide in the \"Extract home menu\" tab");
 }
 
-inline SARC::SarcData SarcOpen(const string &path)
+static inline bool SarcOpen(const string &path, SARC::SarcData *out)
 {
 	auto f = OpenFile(path);
+	if (f.size() == 0) return false;
 	f = Yaz0::Decompress(f);
-	return SARC::Unpack(f);
+	*out = SARC::Unpack(f);
+	return true;
 }
 
-inline vector<u8> SarcPack(SARC::SarcData &data)
+static inline vector<u8> SarcPack(SARC::SarcData &data)
 {
 	auto packed = SARC::Pack(data);
 	return Yaz0::Compress(packed.data, 3, packed.align);
@@ -369,13 +391,15 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 				}
 				
-				SzsPatcher Patcher(SarcOpen(CommonSzs));
+				SARC::SarcData sarc;
+				if (!SarcOpen(CommonSzs, &sarc)) return false;
+				SzsPatcher Patcher(sarc);
 				
 				if (DoPatchCommonBG)
 				{
 					SkipSaveActualFile = true; //Do not save resident if the bg has been applied to common
-					if (SData.files.count("image.dds"))
-						if (!PatchBG(Patcher, SData.files["image.dds"], CommonSzs))
+					if (NxThemeGetBgImage().size() != 0)
+						if (!PatchBG(Patcher, NxThemeGetBgImage(), CommonSzs))
 							return false;
 				}
 				
@@ -396,7 +420,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				}
 			}
 			
-			SzsPatcher Patcher(SarcOpen(BaseSzs));
+			SARC::SarcData sarc;
+			if (!SarcOpen(BaseSzs, &sarc)) return false;
+			SzsPatcher Patcher(sarc);
 			string TitleId = "0100000000001000";
 			string SzsName = ThemeTargetToFileName[themeInfo.Target];
 			auto patch = Patcher.DetectSarc();
@@ -413,8 +439,8 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 					return false;
 				}				
-				if (SData.files.count("image.dds"))
-					if (!PatchBG(Patcher, SData.files["image.dds"], BaseSzs))
+				if (NxThemeGetBgImage().size() != 0)
+					if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 						return false;
 			}
 								
@@ -427,31 +453,45 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 			}
 
-			if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
-			{
-				auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
-				for (const TextureReplacement& p : list)
+			if (ParseNXThemeFile(SData).Version >= 8) {
+				//New applet texture patching method
+				if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
 				{
-					auto pResult = BflytFile::PatchResult::Fail;
-					if (SData.files.count(p.NxThemeName + ".dds"))
-						pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
-					else if (SData.files.count(p.NxThemeName + ".png"))
+					auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
+					for (const TextureReplacement& p : list)
 					{
-						auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
-						if (dds.size() != 0)
-							pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
-						else
+						auto pResult = BflytFile::PatchResult::Fail;
+						if (SData.files.count(p.NxThemeName + ".dds"))
+							pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
+						else if (SData.files.count(p.NxThemeName + ".png"))
 						{
-							Dialog("Couldn't load the icon image for " + p.NxThemeName);
-							continue;
+							auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
+							if (dds.size() != 0)
+								pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
+							else
+							{
+								Dialog("Couldn't load the icon image for " + p.NxThemeName);
+								continue;
+							}
 						}
-					}
-					else continue;
+						else continue;
 
+						if (pResult != BflytFile::PatchResult::OK)
+							Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+						else
+							SkipSaveActualFile = false;
+					}
+				}
+			}
+			else
+			{
+				//Old album.szs patching to avoid breaking old themes
+				if (themeInfo.Target == "home" && SData.files.count("album.dds"))
+				{
+					SkipSaveActualFile = false;
+					auto pResult = Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000);
 					if (pResult != BflytFile::PatchResult::OK)
-						Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-					else
-						SkipSaveActualFile = false;
+						Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 				}
 			}
 			

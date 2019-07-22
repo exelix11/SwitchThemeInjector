@@ -19,7 +19,7 @@ class RebootPage : public IPage
 		RebootPage() :
 		DescriptionLbl("Reboot to payload allows you to reboot your console without having to inject a payload again. Currently it's supported only on atmosphere."),
 		ErrorLbl("This feature isn't available with your current setup, you need to use Atmosphere >= 0.8.3 and the reboot payload placed in your sd card at /atmosphere/reboot_payload.bin" ),
-		WarningLbl("Reboot to payload is properly setup but multiple CFWs were detected on your sd card, THIS WILL CRASH IF YOU'RE NOT RUNNING ATMOSPHERE "),
+		WarningLbl("Reboot to payload is properly setup but multiple CFWs were detected on your sd card, this may not work if you're not running atmosphere "),
 		RebootBtn("Reboot")
 		{
 			Name = "Reboot to payload";
