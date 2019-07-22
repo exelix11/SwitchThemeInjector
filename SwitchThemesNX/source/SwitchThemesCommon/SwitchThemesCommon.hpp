@@ -23,6 +23,7 @@ namespace SwitchThemesCommon {
 	{
 	public:
 		SzsPatcher(SARC::SarcData&& s);
+		SzsPatcher(SARC::SarcData& s);
 		~SzsPatcher();
 		
 		BflytFile::PatchResult PatchAnimations(const std::vector<AnimFilePatch>& files);

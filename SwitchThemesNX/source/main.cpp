@@ -238,7 +238,7 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 	Dialog("Altough .nxtheme files can be INSTALLED on every firmware you still have to uninstall any theme before updating, this is because the nxtheme gets converted to an SZS when it's installed. After the update you will be able to reinstall all your themes in .nxtheme format without any compatibility issue.\n"
 "(Please note that some features such as custom Settings page are available only on >= 6.X firmwares)");
 	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files. These work just like SZS but they can be freely shared and most importantly installed on every firmware");
-	Dialog("Custom themes are custom SZS files that replace some files in the home menu, these files are firmware-dependent, this means that if you update your firmware while having a custom theme installed your console may not boot anymore until you manually remove the custom theme.\n"
+	Dialog("Custom themes are custom SZS files that replace some files in the home menu, these files are firmware-dependent, this means that if you update your firmware while having a custom theme installed your console may not boot anymore until you manually remove the custom theme.\n\n"
 "To remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the 0100000000001000 folder in sdcard/<your cfw folder>/titles\n"
 "Custom themes CANNOT brick your console because they're installed only on the sd card");
 	if (WelcomeScr)
@@ -327,6 +327,7 @@ int main(int argc, char **argv)
 	PlatformAfterInit();
 
 	SetupSysVer();
+	DisplayLoading("Loading theme list...");
 	bool ThemesFolderExists = CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
 

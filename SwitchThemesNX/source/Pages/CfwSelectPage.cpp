@@ -20,7 +20,7 @@ CfwSelectPage::~CfwSelectPage()
 }
 
 static const int BtnWidth = 500;
-static const int XCursorBtn = SCR_W / 2 - XCursorBtn / 2;
+static const int XCursorBtn = SCR_W / 2 - BtnWidth / 2;
 
 void CfwSelectPage::Render(int X, int Y)
 {

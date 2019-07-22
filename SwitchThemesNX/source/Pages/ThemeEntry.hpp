@@ -38,6 +38,8 @@ class ThemeEntry
 		void ParseNxTheme();
 		void ParseFont();		
 		LoadedImage NXGetPreview();
+
+		std::vector<u8> NxThemeGetBgImage();
 		
 		std::vector<u8> file;		
 		SARC::SarcData SData;
