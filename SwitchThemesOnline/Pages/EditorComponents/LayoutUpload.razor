@@ -5,7 +5,7 @@
 @using System.Linq;
 @using System.Text;
 
-<h3>Upload a layout (optional)</h3>
+<h5>Upload a layout (optional)</h5>
 
 <FileUploader Filter=".json" Text="Upload a file from your pc" OnUpload="@PcJsonUpload" />
 
@@ -15,7 +15,7 @@
 }
 else
 {
-	<div style="display: flex;margin-top:2%">
+	<div style="margin:auto;text-align:center;align-content:center">
 		<p>or use a built-in one: </p>
 		<select style="background-color:#DDD;margin-left:2%" @onchange="@ListBoxOnChange" value="@ListBoxValue">
 			<option value="">--none--</option>
@@ -61,7 +61,6 @@ else
 	string ListBoxValue = "";
 	async Task ListBoxOnChange(UIChangeEventArgs newVal)
 	{
-		Console.WriteLine("event, val: " + newVal.Value);
 		if (string.IsNullOrEmpty(newVal.Value as string))
 			return;
 		LayoutUrl = null;

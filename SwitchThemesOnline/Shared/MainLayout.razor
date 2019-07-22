@@ -1,19 +1,20 @@
 ﻿@inherits LayoutComponentBase
+@using SwitchThemes.Common
 
 <div>
 	<header class="header">
 		@if (ShowDebug)
 		{
 			<div class="card WarnCard" style="background: #ffbd00 !important;">
-				This tool is wip. Stuff will break, you've been warned
+				This is a debug build: Stuff will break and generated themes may not install with the public installer, you've been warned.
 			</div>
 		}
-		<p class="g--12 nudge--left HeaderTextBig">Switch theme injector 2🌐</p>
-		<p class="g--12 nudge--left HeaderTextSmall">Electric boogaloo (?)</p>
-		<p class="g--12 nudge--left HeaderTextSmall">by exelix</p>
+		<p class="g--12 nudge--left HeaderTextBig" style="margin-bottom:1%">Switch theme injector 🌐</p>
+		<p class="g--12 nudge--left HeaderTextSmall" style="margin-top:1%">Version @WebVersion - Core @SwitchThemesCommon.CoreVer</p>
+		<p class="g--12 nudge--left HeaderTextSmall" style="margin-top:2%">by exelix - <a href="https://github.com/exelix11/SwitchThemeInjector">Github repo</a></p>
 	</header>
 
-	<div class="card BaseCard" id="CardTutorial" style="color:#fff">
+	<div class="card BaseCard" id="CardTutorial" style="color:#fff;margin-left:2px;margin-right:2px;">
 		@Body
 	</div>
 
@@ -22,8 +23,10 @@
 
 @code
 {
+public static readonly string WebVersion = "2.0 BETA";
+
 #if DEBUG
-bool ShowDebug = true;
+bool ShowDebug = false;
 #else
 bool ShowDebug = false;
 #endif

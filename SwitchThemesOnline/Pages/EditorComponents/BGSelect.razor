@@ -1,10 +1,10 @@
 @using System.IO;
 
-<h3>Select a background image:</h3>
+<h5>Select a background image:</h5>
 
 <FileUploader Text="Open an image" Filter=".jpg" OnUpload="@LoadImage" />
 <p>
-	Upload a 1280x720 image, only jpg files are supported
+	Upload a <strong>1280x720</strong> image, only JPG files are supported. <strike>Who needs DDS files anyway ?</strike>
 </p>
 
 <img src="@imageAsString" />
