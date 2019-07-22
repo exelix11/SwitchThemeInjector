@@ -2,8 +2,15 @@
 @using SwitchThemes.Common;
 @inject IJSRuntime js
 
-<h1>Hi !</h1>
-<h2>Let's make a theme in 3 steps: </h2>
+<p>Welcome to the new WebInjector, this version can only build .nxtheme files. (You can still go to the <a href="https://exelix11.github.io/SwitchThemeInjector/">old version</a>)</p>
+<h5>What is .nxtheme ?</h5>
+<p>
+	.nxtheme is a custom file format for themes, it's legal to share and works on most firmwares.<br>
+	To install nxtheme files you need to download <a href="https://github.com/exelix11/SwitchThemeInjector/releases">NXThemes Installer</a> on your console. <br />
+	All the cumbersome parts of the process have been automated, now all you need to do is to launch the installer and select a theme !
+</p>
+
+<h3>Enough ! Let's make a theme:</h3>
 
 <SwitchThemesOnline.Pages.EditorComponents.PropertiesInput state="@holder" />
 <SwitchThemesOnline.Pages.EditorComponents.BGSelect state="@holder" />
