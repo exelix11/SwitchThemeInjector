@@ -49,10 +49,12 @@ void ThemesPage::SetDir(const string &dir)
 
 void ThemesPage::SetPage(int num)
 {
-	ResetScroll = true;
 	ImGui::NavMoveRequestCancel();
 	if (pageNum != num)
+	{
 		menuIndex = 0;
+		ResetScroll = true;
+	}
 	for (auto i : DisplayEntries)
 		delete i;
 	DisplayEntries.clear();
@@ -71,15 +73,14 @@ void ThemesPage::SetPage(int num)
 	for (int i = 0; i < imax; i++)
 	{
 		auto entry = new ThemeEntry(CurrentFiles[baseIndex + i]);
-		/*if (IsSelected(CurrentFiles[baseIndex + i]))
-			entry->Highlighted = true;*/
 		DisplayEntries.push_back(entry);
 	}
 	pageNum = num;
 	auto LblPStr = CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount);
 	if (SelectedFiles.size() != 0)
 		LblPStr = "("+ to_string(SelectedFiles.size()) + " selected) " + LblPStr;
-	lblPage = (LblPStr);
+	lblPage = LblPStr;
+	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
 }
 
 const int EntryW = 860;
@@ -106,8 +107,9 @@ void ThemesPage::Render(int X, int Y)
 		if (ResetScroll)
 		{
 			setNewMenuIndex = menuIndex;
+			ImGui::NavMoveRequestCancel();
 			ImGui::SetScrollY(0);
-			ImGui::SetNavID(0, 0);
+			FocusEvent.Set();
 			ResetScroll = false;
 		}
 		ImGui::SetWindowSize(TabPageArea);
@@ -161,7 +163,6 @@ void ThemesPage::Render(int X, int Y)
 		}
 
 	QUIT_RENDERING_FROMCHILD:
-
 		Utils::ImGuiSetWindowScrollable();
 		Utils::ImGuiCloseWin();
 	}
@@ -220,7 +221,7 @@ void ThemesPage::Update()
 		return;
 	
 
-	if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_UP) && menuIndex <= 0)
+	if (NAV_UP && menuIndex <= 0)
 	{
 		if (pageNum > 0)
 		{
@@ -234,20 +235,23 @@ void ThemesPage::Update()
 			menuIndex = PageItemsCount() - 1;
 			return;
 		}
-		else menuIndex = PageItemsCount() - 1;
-	}
-	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_DPAD_DOWN) && menuIndex >= PageItemsCount() - 1)
-	{
-		if (pageCount > pageNum + 1) {
-			SetPage(pageNum + 1);
-			return;
-		}
-		else if (pageNum != 0)
+		else
 		{
-			SetPage(0);
-			return;
+			menuIndex = PageItemsCount() - 1;
+			ResetScroll = true;
 		}
-		else menuIndex = 0;
+	}
+	else if (NAV_DOWN && menuIndex >= PageItemsCount() - 1)
+	{
+		if (pageCount > pageNum + 1)
+			SetPage(pageNum + 1);
+		else if (pageNum != 0)
+			SetPage(0);
+		else
+		{
+			menuIndex = 0;
+			ResetScroll = true;
+		}
 	}
 	else if ((KeyPressed(GLFW_GAMEPAD_BUTTON_Y)) && menuIndex >= 0)
 	{
