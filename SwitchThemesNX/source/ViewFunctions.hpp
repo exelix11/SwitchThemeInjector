@@ -122,9 +122,10 @@ namespace Utils
 	{
 		auto win = ImGui::GetCurrentWindow();
 		if (ID == 0) ID = win->DC.LastItemId;
-		ImGui::SetNavID(ID, 0);
 		ImGui::SetFocusID(ID, win);
-		ImGui::GetCurrentContext()->NavDisableHighlight = !isFocused;
+		GImGui->NavDisableHighlight = !isFocused;
+		GImGui->NavInitResultId = ID;
+		ImGui::SetScrollHereY();
 	}
 
 #define PAGE_RESET_FOCUS \
