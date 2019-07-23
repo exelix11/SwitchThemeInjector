@@ -62,6 +62,20 @@ namespace SwitchThemes.Common
 
 		public class PropertyEditablePanel : BasePanel
 		{
+			public enum OriginX : byte
+			{
+				Center = 0,
+				Left = 1,
+				Right = 2
+			};
+
+			public enum OriginY : byte
+			{
+				Center = 0,
+				Top = 1,
+				Bottom = 2
+			};
+
 			public override string ToString()
 			{
 				return $"Panel {name} {PaneName}";
@@ -86,6 +100,47 @@ namespace SwitchThemes.Common
 				}
 			}
 
+			byte _flag2;
+			public OriginX originX
+			{
+				get => (OriginX)((_flag2 & 0xC0) >> 6);
+				set
+				{
+					_flag2 &= unchecked((byte)(~0xC0));
+					_flag2 |= (byte)((byte)value << 6);
+				}
+			}
+
+			public OriginY originY
+			{
+				get => (OriginY)((_flag2 & 0x30) >> 4);
+				set
+				{
+					_flag2 &= unchecked((byte)(~0x30));
+					_flag2 |= (byte)((byte)value << 4);
+				}
+			}
+
+			public OriginX ParentOriginX
+			{
+				get => (OriginX)((_flag2 & 0xC) >> 2);
+				set
+				{
+					_flag2 &= unchecked((byte)(~0xC));
+					_flag2 |= (byte)((byte)value << 2);
+				}
+			}
+
+			public OriginY ParentOriginY
+			{
+				get => (OriginY)((_flag2 & 0x3));
+				set
+				{
+					_flag2 &= unchecked((byte)(~0x3));
+					_flag2 |= (byte)value;
+				}
+			}
+
 			//only for pic1 panes
 			public struct UVCoord
 			{
@@ -103,14 +158,9 @@ namespace SwitchThemes.Common
 				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 				dataReader.ByteOrder = ByteOrder.LittleEndian;
 				_flag1 = dataReader.ReadByte();
-				dataReader.BaseStream.Position += 3;
-				PaneName = "";
-				for (int i = 0; i < 0x18; i++)
-				{
-					var c = dataReader.ReadChar();
-					if (c == 0) break;
-					PaneName += c;
-				}
+				_flag2 = dataReader.ReadByte();
+				dataReader.BaseStream.Position += 2;
+				PaneName = dataReader.ReadFixedLenString(0x18);
 				dataReader.BaseStream.Position = 0x2C - 8;
 				Position = dataReader.ReadVector3();
 				Rotation = dataReader.ReadVector3();
@@ -143,6 +193,7 @@ namespace SwitchThemes.Common
 					bin.Write(data);
 					bin.BaseStream.Position = 0;
 					bin.Write(_flag1);
+					bin.Write(_flag2);
 					bin.BaseStream.Position = 0x2C - 8;
 					bin.Write(Position);
 					bin.Write(Rotation);
@@ -463,6 +514,16 @@ namespace SwitchThemes.Common
 					e.Size.X = p.Size.Value.X ?? e.Size.X;
 					e.Size.Y = p.Size.Value.Y ?? e.Size.Y;
 				}
+				#endregion
+				#region Change other prperties
+				if (p.OriginX != null)
+					e.originX = (PropertyEditablePanel.OriginX)p.OriginX.Value;
+				if (p.OriginY != null)
+					e.originY = (PropertyEditablePanel.OriginY)p.OriginY.Value;
+				if (p.ParentOriginX != null)
+					e.ParentOriginX = (PropertyEditablePanel.OriginX)p.ParentOriginX.Value;
+				if (p.ParentOriginY != null)
+					e.ParentOriginY = (PropertyEditablePanel.OriginY)p.ParentOriginY.Value;
 				#endregion
 				#region ColorDataForPic1
 				if (e.name == "pic1")

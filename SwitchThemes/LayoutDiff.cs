@@ -64,6 +64,16 @@ namespace SwitchThemes
 						curPatch.Size = ToNullVec(edPan.Size);
 					if (edPan.Visible != orPan.Visible)
 						curPatch.Visible = edPan.Visible;
+
+					if (edPan.originX != orPan.originX)
+						curPatch.OriginX = (byte)edPan.originX;
+					if (edPan.originY != orPan.originY)
+						curPatch.OriginY = (byte)edPan.originY;
+					if (edPan.ParentOriginX != orPan.ParentOriginX)
+						curPatch.ParentOriginX = (byte)edPan.ParentOriginX;
+					if (edPan.ParentOriginY != orPan.ParentOriginY)
+						curPatch.ParentOriginY = (byte)edPan.ParentOriginY;
+
 					if (edPan.name == "pic1")
 					{
 						if (edPan.ColorData[0] != orPan.ColorData[0])

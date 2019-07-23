@@ -74,6 +74,24 @@ static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
 			pp.ColorBR = panePatch["ColorBR"].get<string>();
 		}
 
+		if (panePatch.count("OriginX"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::OriginX;
+			pp.OriginX = panePatch["OriginX"].get<u8>();
+		}if (panePatch.count("OriginY"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::OriginY;
+			pp.OriginY = panePatch["OriginY"].get<u8>();
+		}if (panePatch.count("ParentOriginX"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::P_OriginX;
+			pp.ParentOriginX = panePatch["ParentOriginX"].get<u8>();
+		}if (panePatch.count("ParentOriginY"))
+		{
+			pp.ApplyFlags |= (u32)PanePatch::Flags::P_OriginY;
+			pp.ParentOriginY = panePatch["ParentOriginY"].get<u8>();
+		}
+
 		if (panePatch.count("UsdPatches") && panePatch["UsdPatches"].is_array())
 			for (auto& usdPatch : panePatch["UsdPatches"])
 			{
