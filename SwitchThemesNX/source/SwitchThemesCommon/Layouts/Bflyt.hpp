@@ -41,6 +41,20 @@ namespace Panes
 		void ApplyChanges();
 	};
 
+	enum class OriginX : u8
+	{
+		Center = 0,
+		Left = 1,
+		Right = 2
+	};
+
+	enum class OriginY : u8
+	{
+		Center = 0,
+		Top = 1,
+		Bottom = 2
+	};
+
 	class PropertyEditablePane : public BasePane 
 	{
 	public :
@@ -60,6 +74,15 @@ namespace Panes
 		bool GetVisible();
 		void SetVisible(bool);
 
+		OriginX GetOriginX();
+		void SetOriginX(OriginX val);
+		OriginY GetOriginY();
+		void SetOriginY(OriginY val);
+		OriginX GetParentOriginX();
+		void SetParentOriginX(OriginX val);
+		OriginY GetParentOriginY();
+		void SetParentOriginY(OriginY val);
+
 		std::vector<u32> ColorData;
 		std::vector<UVCoord> UvCoords;
 
@@ -69,6 +92,7 @@ namespace Panes
 		void WritePane(Buffer &writer) override;
 	private:
 		u8 _flag1;
+		u8 _flag2;
 	};
 
 	class TextureSection : public BasePane

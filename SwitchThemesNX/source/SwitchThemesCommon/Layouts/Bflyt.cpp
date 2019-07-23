@@ -82,6 +82,51 @@ void PropertyEditablePane::SetVisible(bool value)
 		_flag1 &= 0xFE;
 }
 
+OriginX PropertyEditablePane::GetOriginX() 
+{
+	return (OriginX)((_flag2 & 0xC0) >> 6);;
+}
+
+void PropertyEditablePane::SetOriginX(OriginX val)
+{
+	_flag2 &= ((u8)(~0xC0));
+	_flag2 |= (u8)((u8)val << 6);
+}
+
+OriginY PropertyEditablePane::GetOriginY()
+{
+	return (OriginY)((_flag2 & 0x30) >> 4);
+}
+
+void PropertyEditablePane::SetOriginY(OriginY val)
+{
+	_flag2 &= ((u8)(~0x30));
+	_flag2 |= (u8)((u8)val << 4);
+}
+
+OriginX PropertyEditablePane::GetParentOriginX()
+{
+	return (OriginX)((_flag2 & 0xC) >> 2);
+}
+
+void PropertyEditablePane::SetParentOriginX(OriginX val)
+{
+	_flag2 &= ((u8)(~0xC));
+	_flag2 |= (u8)((u8)val << 2);
+}
+
+OriginY PropertyEditablePane::GetParentOriginY()
+{
+	return (OriginY)((_flag2 & 0x3));
+}
+
+void PropertyEditablePane::SetParentOriginY(OriginY val)
+{
+	_flag2 &= ((u8)(~0x3));
+	_flag2 |= (u8)val;
+}
+
+
 Vector3 ReadVec3(Buffer &buf)
 {
 	Vector3 res;
@@ -104,7 +149,8 @@ PropertyEditablePane::PropertyEditablePane(const BasePane &p) : BasePane(p)
 	Buffer buf(p.data);
 	buf.ByteOrder = Endianness::LittleEndian;
 	_flag1 = buf.readUInt8();
-	buf.Position += 3;
+	_flag2 = buf.readUInt8();
+	buf.Position += 2;
 	PaneName = buf.readStr_NullTerm(0x18);
 	buf.Position = 0x2c - 8;
 	Position = ReadVec3(buf);
@@ -137,6 +183,7 @@ void PropertyEditablePane::ApplyChanges()
 	Buffer bin(data);
 	bin.Position = 0;
 	bin.Write(_flag1);
+	bin.Write(_flag2);
 	bin.Position = 0x2C - 8;
 	WriteVec3(Position)
 	WriteVec3(Rotation)
@@ -506,6 +553,15 @@ BflytFile::PatchResult BflytFile::ApplyLayoutPatch(const vector<PanePatch>& Patc
 			e->Size.X = p.Size.X;
 			e->Size.Y = p.Size.Y;
 		}
+
+		if (p.ApplyFlags & (u32)PanePatch::Flags::OriginX)
+			e->SetOriginX((OriginX)p.OriginX);
+		if (p.ApplyFlags & (u32)PanePatch::Flags::OriginY)
+			e->SetOriginY((OriginY)p.OriginY);
+		if (p.ApplyFlags & (u32)PanePatch::Flags::P_OriginX)
+			e->SetParentOriginX((OriginX)p.ParentOriginX);
+		if (p.ApplyFlags & (u32)PanePatch::Flags::P_OriginY)
+			e->SetParentOriginY((OriginY)p.ParentOriginY);
 
 		if (e->name == "pic1")
 		{

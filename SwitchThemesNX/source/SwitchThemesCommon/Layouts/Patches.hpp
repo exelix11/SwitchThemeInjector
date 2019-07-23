@@ -26,6 +26,11 @@ struct PanePatch
 	std::string ColorBL;
 	std::string ColorBR;
 
+	u8 OriginX;
+	u8 OriginY;
+	u8 ParentOriginX;
+	u8 ParentOriginY;
+
 	u32 ApplyFlags; //to disable the properties set to null in the json
 
 	enum class Flags : u32 
@@ -39,7 +44,11 @@ struct PanePatch
 		ColorTR = 1 << 6,
 		ColorBL = 1 << 7,
 		ColorBR = 1 << 8,
-		Usd1 = 1 << 9
+		Usd1 = 1 << 9,
+		OriginX = 1 << 10,
+		OriginY = 1 << 11,
+		P_OriginX = 1 << 12,
+		P_OriginY = 1 << 13,
 	};
 
 	std::vector<UsdPatch> UsdPatches;
