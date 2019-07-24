@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LayoutDiff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PatchTemplate.cs" />
