@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
+using SwitchThemes.Common.Bflan;
+using SwitchThemes.Common.Bflyt;
 using SwitchThemes.Common.Serializers;
+using Syroot.BinaryData;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemes
+namespace SwitchThemes.Common
 {
 	public static class LayoutDiff
 	{
-		//Note: usd1 is ignored here as it's usually linked to the pane directly above it
 		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1", "cnt1" };
 
 		public static LayoutPatch Diff(SarcData original, SarcData edited)
@@ -23,8 +28,6 @@ namespace SwitchThemes
 				MessageBox.Show("The provided archives don't have the same files");
 				return null;
 			}
-			var targetPatch = SzsPatcher.DetectSarc(original, DefaultTemplates.templates);
-			string skipLayoutName = targetPatch != null ? targetPatch.MainLayoutName : "";
 
 			bool hasAtLeastAnExtraGroup = false; //Used to detect if animations are properly implemented
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflyt")))
@@ -32,19 +35,17 @@ namespace SwitchThemes
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
 				BflytFile or = new BflytFile(original.Files[f]);
 				BflytFile ed = new BflytFile(edited.Files[f]);
-				string[] orPaneNames = or.GetPaneNames();
-				string[] edPaneNames = ed.GetPaneNames();
+				string[] orPaneNames = GetPaneNames(or);
+				string[] edPaneNames = GetPaneNames(ed);
 				List<PanePatch> curFile = new List<PanePatch>();
 				for (int i = 0; i < edPaneNames.Length; i++)
 				{
-					if (ed[i].data.Length < 0x4C || IgnorePaneList.Contains(ed[i].name)) continue;
-					if (f == skipLayoutName && (targetPatch?.targetPanels?.Contains(edPaneNames[i]) ?? false)) continue;
+					if (edPaneNames[i] == null || !(ed[i] is Pan1Pane) || IgnorePaneList.Contains(ed[i].name)) continue;
 					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
 					if (j == -1) continue;
 
 					PanePatch curPatch = new PanePatch() { PaneName = edPaneNames[i] };
-
-					curPatch.UsdPatches = MakeUsdPatch(or, i, ed, j);
+					curPatch.UsdPatches = MakeUsdPatch(or[j].UserData, ed[i].UserData);
 					if (ed[i].data.SequenceEqual(or[j].data))
 					{
 						if (curPatch.UsdPatches == null) continue;
@@ -52,8 +53,8 @@ namespace SwitchThemes
 						continue;
 					}
 
-					var orPan = new BflytFile.PropertyEditablePanel(or[j]);
-					var edPan = new BflytFile.PropertyEditablePanel(ed[i]);
+					var orPan = (Pan1Pane)(or[j]);
+					var edPan = (Pan1Pane)(ed[i]);
 					if (!VecEqual(edPan.Position, orPan.Position))
 						curPatch.Position = ToNullVec(edPan.Position);
 					if (!VecEqual(edPan.Rotation, orPan.Rotation))
@@ -74,23 +75,25 @@ namespace SwitchThemes
 					if (edPan.ParentOriginY != orPan.ParentOriginY)
 						curPatch.ParentOriginY = (byte)edPan.ParentOriginY;
 
-					if (edPan.name == "pic1")
+					if (edPan is Pic1Pane && orPan is Pic1Pane)
 					{
-						if (edPan.ColorData[0] != orPan.ColorData[0])
-							curPatch.ColorTL = edPan.ColorData[0].ToString("X8");
-						if (edPan.ColorData[1] != orPan.ColorData[1])
-							curPatch.ColorTR = edPan.ColorData[1].ToString("X8");
-						if (edPan.ColorData[2] != orPan.ColorData[2])
-							curPatch.ColorBL = edPan.ColorData[2].ToString("X8");
-						if (edPan.ColorData[3] != orPan.ColorData[3])
-							curPatch.ColorBR = edPan.ColorData[3].ToString("X8");
+						var edPic = (Pic1Pane)edPan;
+						var orPic = (Pic1Pane)orPan;
+						if (edPic.ColorTopLeft != orPic.ColorTopLeft)
+							curPatch.ColorTL = edPic.ColorTopLeft.AsHexLEString();
+						if (edPic.ColorTopRight != orPic.ColorTopRight)
+							curPatch.ColorTR = edPic.ColorTopRight.AsHexLEString();
+						if (edPic.ColorBottomLeft != orPic.ColorBottomLeft)
+							curPatch.ColorBL = edPic.ColorBottomLeft.AsHexLEString();
+						if (edPic.ColorBottomRight != orPic.ColorBottomRight)
+							curPatch.ColorBR = edPic.ColorBottomRight.AsHexLEString();
 					}
 					curFile.Add(curPatch);
 				}
 
 				List<ExtraGroup> extraGroups = new List<ExtraGroup>();
 				string[] ogPanes = or.GetGroupNames();
-				foreach (var p_ in ed.Panels.Where(x => x is Grp1Pane))
+				foreach (var p_ in ed.Panes.Where(x => x is Grp1Pane))
 				{
 					var p = ((Grp1Pane)p_);
 					if (ogPanes.Contains(p.GroupName)) continue;
@@ -101,7 +104,7 @@ namespace SwitchThemes
 
 				List<MaterialPatch> materials = new List<MaterialPatch>();
 				if (ed.GetMat != null && or.GetMat != null)
-				{
+				{					
 					var edMat = ed.GetMat;
 					foreach (var orM in or.GetMat.Materials)
 					{
@@ -110,9 +113,9 @@ namespace SwitchThemes
 						if (edM.ForegroundColor == orM.ForegroundColor && edM.BackgroundColor == orM.BackgroundColor) continue;
 						MaterialPatch m = new MaterialPatch() { MaterialName = orM.Name };
 						if (edM.ForegroundColor != orM.ForegroundColor)
-							m.ForegroundColor = edM.ForegroundColor.ToString("X8");
+							m.ForegroundColor = edM.ForegroundColor.AsHexLEString();
 						if (edM.BackgroundColor != orM.BackgroundColor)
-							m.BackgroundColor = edM.BackgroundColor.ToString("X8");
+							m.BackgroundColor = edM.BackgroundColor.AsHexLEString();
 						materials.Add(m);
 					}
 				}
@@ -131,7 +134,7 @@ namespace SwitchThemes
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
 			{
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
-				Bflan anim = new Bflan(edited.Files[f]);
+				BflanFile anim = new BflanFile(edited.Files[f]);
 				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
 			}
 			if (AnimPatches.Count == 0) AnimPatches = null;
@@ -139,22 +142,17 @@ namespace SwitchThemes
 
 			return new LayoutPatch()
 			{
-				PatchName = "diffPatch" + (targetPatch == null ? "" : "for " + targetPatch.TemplateName),
+				PatchName = "diffPatch",
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
-				Ready8X = true //Aka tell the patcher to not fix this layout
+				Ready8X = true
 			};
 		}
 
-		static List<UsdPatch> MakeUsdPatch(BflytFile original, int oindex, BflytFile edited, int eindex)
+		static List<UsdPatch> MakeUsdPatch(Usd1Pane or, Usd1Pane ed)
 		{
-			if (original.Panels.Count <= oindex + 1) return null;
-			if (edited.Panels.Count <= eindex + 1) return null;
-			if (original.Panels[oindex + 1].name != "usd1" || edited.Panels[eindex + 1].name != "usd1") return null;
-
-			Usd1Pane or = (Usd1Pane)original.Panels[oindex + 1];
-			Usd1Pane ed = (Usd1Pane)edited.Panels[eindex + 1];
+			if (or == null || ed == null) return null;
 			if (or.data.SequenceEqual(ed.data)) return null;
 
 			List<UsdPatch> res = new List<UsdPatch>();
@@ -166,7 +164,7 @@ namespace SwitchThemes
 					if (orP.ValueCount != edP.ValueCount) continue;
 					if (orP.type != edP.type) continue;
 					if (orP.type != Usd1Pane.EditableProperty.ValueType.int32 && orP.type != Usd1Pane.EditableProperty.ValueType.single) continue;
-					
+
 					if (orP.value.SequenceEqual(edP.value)) continue;
 				}
 				res.Add(new UsdPatch()
@@ -185,6 +183,35 @@ namespace SwitchThemes
 		static NullableVector3 ToNullVec(Vector3 v) => new NullableVector3() { X = v.X, Y = v.Y, Z = v.Z };
 		static bool VecEqual(Vector2 v, Vector2 v1) => v.X == v1.X && v.Y == v1.Y;
 		static NullableVector2 ToNullVec(Vector2 v) => new NullableVector2() { X = v.X, Y = v.Y };
+
+		static string[] GetPaneNames(BflytFile layout)
+		{
+			string TryGetPaneName(BasePane p)
+			{
+				if (p.data.Length < 0x18 + 4) return null;
+				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(p.data), Encoding.ASCII, false);
+				dataReader.ByteOrder = layout.FileByteOrder;
+				dataReader.ReadInt32(); //Unknown
+				string PaneName = "";
+				for (int i = 0; i < 0x18; i++)
+				{
+					var c = dataReader.ReadChar();
+					if (c == 0) break;
+					PaneName += c;
+				}
+				return PaneName;
+			}
+
+			List<string> str = new List<string>();
+			foreach (var p in layout.Panes)
+			{
+				string res = null;
+				if (!IgnorePaneList.Contains(p.name))
+					res = TryGetPaneName(p);
+				str.Add(res);
+			}
+			return str.ToArray();
+		}
 
 		public static bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
 		{
