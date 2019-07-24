@@ -139,7 +139,7 @@ namespace SwitchThemes
 
 			return new LayoutPatch()
 			{
-				PatchName = "diffPatch" + (targetPatch == null ? "" : "for " + targetPatch.TemplateName),
+				PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),

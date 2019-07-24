@@ -125,7 +125,7 @@ namespace SwitchThemes
 			if (CommonSzs == null) return;
 			if (!CommonSzs.Files.ContainsKey(@"timg/__Combined.bntx"))
 			{
-				MessageBox.Show("This szs doesn't contain the btnx file");
+				MessageBox.Show("This SZS doesn't contain the btnx file");
 				return;
 			}
 			QuickBntx b = new QuickBntx(new BinaryDataReader(new MemoryStream(CommonSzs.Files["timg/__Combined.bntx"])));
@@ -181,13 +181,13 @@ namespace SwitchThemes
 		{
 			if (CommonSzs == null)
 			{
-				MessageBox.Show("Open the modded file from Open szs first");
+				MessageBox.Show("Open the modded file via SZS PATCHING>OPEN SZS first");
 				return;
 			}
 			OpenFileDialog opn = new OpenFileDialog()
 			{
-				Title = "open the original szs to diff",
-				Filter = "szs file|*.szs"
+				Title = "Open the original SZS to diff",
+				Filter = "SZS file|*.szs"
 			};
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
@@ -247,7 +247,7 @@ namespace SwitchThemes
 			if (CommonSzs == null) return;
 			SaveFileDialog sav = new SaveFileDialog()
 			{
-				Filter = "szs file|*.szs",
+				Filter = "SZS file|*.szs",
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 			var sarc = SARC.PackN(CommonSzs);
@@ -278,17 +278,17 @@ namespace SwitchThemes
 			OpenFileDialog opn = new OpenFileDialog()
 			{
 				Title = "open a picture",
-				Filter = "Supported files (dds,jpg,png)|*.dds;*.jpg;*.jpeg;*.png|all files|*.*",
+				Filter = "Supported files (DDS,JPG,PNG)|*.dds;*.jpg;*.jpeg;*.png|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
 			{
-				tbBntxFile.Text = "";
-				tbBntxFile2.Text = "";
+				tbImageFile.Text = "";
+				tbImageFile2.Text = "";
 			}
 			else
 			{
-				tbBntxFile.Text = opn.FileName;
-				tbBntxFile2.Text = opn.FileName;
+				tbImageFile.Text = opn.FileName;
+				tbImageFile2.Text = opn.FileName;
 			}
 		}
 
@@ -296,8 +296,8 @@ namespace SwitchThemes
 		{
 			OpenFileDialog opn = new OpenFileDialog()
 			{
-				Title = "open szs",
-				Filter = "szs file|*.szs|all files|*.*",
+				Title = "Open SZS",
+				Filter = "SZS file|*.szs|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
 				return;
@@ -319,7 +319,7 @@ namespace SwitchThemes
 				if (Advanced)
 				{
 					AdvancedUpdate();
-					lblDetected.Text = "Unknown szs file";
+					lblDetected.Text = "Unknown SZS file";
 					return;
 				}
 
@@ -396,21 +396,21 @@ namespace SwitchThemes
 		
 		bool BgImageCheck(bool IsLegacyTarget)
 		{
-			if (tbBntxFile.Text.Trim() == "") return true;
-			if (!tbBntxFile.Text.EndsWith(".dds"))
+			if (tbImageFile.Text.Trim() == "") return true;
+			if (!tbImageFile.Text.EndsWith(".dds"))
 			{
-				var res = ImageToDDS(tbBntxFile.Text, Path.GetTempPath());
+				var res = ImageToDDS(tbImageFile.Text, Path.GetTempPath());
 				if (res)
 				{
-					tbBntxFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbBntxFile.Text) + ".dds");
-					tbBntxFile2.Text = tbBntxFile.Text;
+					tbImageFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbImageFile.Text) + ".dds");
+					tbImageFile2.Text = tbImageFile.Text;
 				}
 				else return false;
 			}
 
 			if (IsLegacyTarget) //This is checked at a later stage for nxtheme
 			{
-				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbBntxFile.Text));
+				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbImageFile.Text));
 				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
 				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}
@@ -432,28 +432,28 @@ namespace SwitchThemes
 		{
 			if (CommonSzs == null || targetPatch == null)
 			{
-				MessageBox.Show("Open a valid theme first !");
+				MessageBox.Show("Open a valid SZS first");
 				return;
 			}
-			if (tbBntxFile.Text.Trim() == "")
+			if (tbImageFile.Text.Trim() == "")
 			{
 				if (LayoutPatchList.SelectedIndex <= 0)
 				{
 					MessageBox.Show("There is nothing to patch");
 					return;
 				}
-				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("Are you sure you want to continue without selecting a background?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
-			else if (!File.Exists(tbBntxFile.Text))
+			else if (!File.Exists(tbImageFile.Text))
 			{
-				MessageBox.Show($"{tbBntxFile.Text} not found !");
+				MessageBox.Show($"{tbImageFile.Text} not found!");
 				return;
 			}
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
-				Filter = "szs file|*.szs",
+				Filter = "SZS file|*.szs",
 				FileName = targetPatch.szsName
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
@@ -461,11 +461,11 @@ namespace SwitchThemes
 			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
 
 			var res = BflytFile.PatchResult.OK;
-			if (tbBntxFile.Text.Trim() != "")
+			if (tbImageFile.Text.Trim() != "")
 			{
 				if (!BgImageCheck(true)) return;
 
-				res = Patcher.PatchMainBG(File.ReadAllBytes(tbBntxFile.Text));
+				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
 				if (res == BflytFile.PatchResult.Fail)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
@@ -495,7 +495,7 @@ namespace SwitchThemes
 				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
 				if (layoutres != BflytFile.PatchResult.OK)
 				{
-					MessageBox.Show("Error while patching the animations !");
+					MessageBox.Show("Error while patching the animations!");
 					return;
 				}
 			}
@@ -531,7 +531,7 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
-		[Obsolete("Nxtheme installer now can directly preview .DDS files")]
+		[Obsolete("NXTheme Installer now can directly preview .DDS files")]
 		public static byte[] GenerateDDSPreview(string path)
 		{
 			try
@@ -574,10 +574,10 @@ namespace SwitchThemes
 		{
 			if (CommonSzs == null || targetPatch == null)
 			{
-				MessageBox.Show("Open a valid theme first !");
+				MessageBox.Show("Open a valid SZS first");
 				return;
 			}
-			if (tbBntxFile.Text.Trim() == "")
+			if (tbImageFile.Text.Trim() == "")
 			{
 				MessageBox.Show("Select an image first");
 				return;
@@ -591,7 +591,7 @@ namespace SwitchThemes
 
 			//byte[] preview = null;
 			//if (info.Item3)
-				//preview = GenerateDDSPreview(tbBntxFile.Text);
+				//preview = GenerateDDSPreview(tbImageFile.Text);
 
 			LayoutPatch layout = null;
 			if (LayoutPatchList.SelectedIndex != 0)
@@ -603,9 +603,9 @@ namespace SwitchThemes
 				if (layout != null)
 					builder.AddMainLayout(layout);
 
-				builder.AddMainBg(File.ReadAllBytes(tbBntxFile.Text));
+				builder.AddMainBg(File.ReadAllBytes(tbImageFile.Text));
 
-				SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+				SaveFileDialog sav = new SaveFileDialog() { Filter = "Theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
 				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
@@ -622,7 +622,7 @@ namespace SwitchThemes
 		string LockCustomIcon = null;
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
-			if (tbBntxFile.Text.Trim() == "")
+			if (tbImageFile.Text.Trim() == "")
 			{
 				if (AllLayoutsBox.SelectedIndex == 0)
 				{
@@ -630,7 +630,7 @@ namespace SwitchThemes
 					return;
 				}
 
-				if (MessageBox.Show("This will create a theme without any background image, the console default one will be used. Do you want to continue ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("This will create a theme without any background image, the console default one will be used. Do you want to continue?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
 
@@ -641,8 +641,8 @@ namespace SwitchThemes
 				return;
 
 			//byte[] preview = null;
-			//if (info.Item3 && tbBntxFile.Text.Trim() != "")
-			//	preview = GenerateDDSPreview(tbBntxFile.Text);
+			//if (info.Item3 && tbImageFile.Text.Trim() != "")
+			//	preview = GenerateDDSPreview(tbImageFile.Text);
 			string target = HomeMenuParts[HomeMenuPartBox.Text];
 
 			if (target == "home")
@@ -667,8 +667,8 @@ namespace SwitchThemes
 				if (layout != null)
 					builder.AddMainLayout(layout);
 
-				if (tbBntxFile.Text != "")
-					builder.AddMainBg(File.ReadAllBytes(tbBntxFile.Text));
+				if (tbImageFile.Text != "")
+					builder.AddMainBg(File.ReadAllBytes(tbImageFile.Text));
 
 				if (ExtraCommonLyt != null)
 					builder.AddFile("common.json", ExtraCommonLyt.AsByteArray());
@@ -682,7 +682,7 @@ namespace SwitchThemes
 				else if (target == "lock" && LockCustomIcon != null)
 					builder.AddAppletIcon("lock", File.ReadAllBytes(LockCustomIcon));
 
-				 SaveFileDialog sav = new SaveFileDialog() { Filter = "theme pack (*.nxtheme)|*.nxtheme" };
+				 SaveFileDialog sav = new SaveFileDialog() { Filter = "Theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
 				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
@@ -697,11 +697,11 @@ namespace SwitchThemes
 		int eggCounter = 0;
 		private void label1_Click(object sender, EventArgs e)
 		{
-			if (eggCounter++ == 5)
+			if (eggCounter++ == 4)
 				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
 			else
 				MessageBox.Show(
-					"Switch theme injector V "+ SwitchThemesCommon.CoreVer + "\r\n" +
+					"Switch Theme Injector V "+ SwitchThemesCommon.CoreVer + "\r\n" +
 					"by exelix\r\n\r\n" +
 					"Team Qcean:\r\n" +
 					"Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\n" +
@@ -747,7 +747,7 @@ namespace SwitchThemes
 				if (!ImageToDDS(f, Path.GetDirectoryName(f)))
 					return;
 			}
-			MessageBox.Show("Done !");
+			MessageBox.Show("Done!");
 		}
 
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
@@ -757,7 +757,7 @@ namespace SwitchThemes
 
 		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			MessageBox.Show(".nxtheme files are a new file format for custom themes, they work pretty much like szs files but they are legal to share and work on every firmware. To install nxtheme files you need to download NXThemes Installer on your console");
+			MessageBox.Show(".nxtheme files are a new file format for custom themes, they work pretty much like SZS files but they are legal to share and work on every firmware. To install .nxtheme files you need to download the NXThemes Installer on your console");
 		}
 
 		private void LayoutPatchList_SelectedIndexChanged(object sender, EventArgs e)
@@ -821,7 +821,7 @@ namespace SwitchThemes
 				HomeAppletIcons[Name] = null;
 				return;
 			}
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "PNG or DDS|*.png;*.dds" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			HomeAppletIcons[Name] = opn.FileName;
 			sender.Text = "X";
@@ -836,7 +836,7 @@ namespace SwitchThemes
 				LockCustomIcon = null;
 				return;
 			}
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "png or dds image|*.png;*.dds" };
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "PNG or DDS|*.png;*.dds" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			LockCustomIcon = opn.FileName;
 			btnCustomLock.Text = "X";
@@ -845,7 +845,7 @@ namespace SwitchThemes
 
 		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 PNG images, colors are not allowed: they should be white on a transparent background.\r\nIf you know what you're doing dds is supported as well.");
+			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 PNG images, colors are not allowed: they should be white on a transparent background.\r\nIf you know what you're doing: DDS is supported as well.");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -855,7 +855,7 @@ namespace SwitchThemes
 
 		private void Button7_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 PNG images, colors are supported.\r\nIf you know what you're doing dds is supported as well.");
+			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 PNG images, colors are supported.\r\nIf you know what you're doing: DDS is supported as well.");
 		}
 	}
 }
