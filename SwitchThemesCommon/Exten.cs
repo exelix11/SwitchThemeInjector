@@ -8,6 +8,12 @@ namespace ExtensionMethods
 {
 	public static class Extensions
 	{
+		public static Color ReadColorRGBA(this BinaryDataReader bin)
+		{
+			byte[] values = bin.ReadBytes(4);
+			return new Color(values[0], values[1], values[2], values[3]);
+		}
+
 		public static Vector3 ReadVector3(this BinaryDataReader bin) =>
 			new Vector3 { X = bin.ReadSingle(), Y = bin.ReadSingle(), Z = bin.ReadSingle() };
 

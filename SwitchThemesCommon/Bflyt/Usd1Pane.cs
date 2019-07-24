@@ -1,16 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using ExtensionMethods;
 using Syroot.BinaryData;
-using static SwitchThemes.Common.BflytFile;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Dynamic;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Collections;
+using System.Windows.Forms;
+using static SwitchThemes.Common.Bflyt.BflytFile;
 
-namespace SwitchThemes.Common
+namespace SwitchThemes.Common.Bflyt
 {
-	public class Usd1Pane : BasePanel
+	public class Usd1Pane : BasePane
 	{
-		public class EditableProperty //Has to be nullable for the differ
+		public ByteOrder order;
+
+		public override string ToString() => "User data pane";
+
+		[TypeConverter(typeof(ExpandableObjectConverter))]
+		public class EditableProperty
 		{
 			public override string ToString() => Name;
 
@@ -22,55 +33,24 @@ namespace SwitchThemes.Common
 				other = 3
 			}
 
-			public string Name;
 			public long ValueOffset;
 			public ushort ValueCount;
-			public ValueType type;
 
-			public string[] value;
-
-			/*
-			 public string[] Value
-			{
-				get
-				{
-					if (type != ValueType.int32 && type != ValueType.single) return null;
-					string[] res = new string[ValueCount];
-					BinaryDataReader bin = new BinaryDataReader(new MemoryStream(Data));
-					if (type == ValueType.int32)
-						for (int i = 0; i < ValueCount; i++) res[i] = bin.ReadInt32().ToString();
-					else
-						for (int i = 0; i < ValueCount; i++) res[i] = bin.ReadSingle().ToString();
-					return res;
-				}
-				set
-				{
-					if (type != ValueType.int32 && type != ValueType.single) throw new Exception("Value type not supported");
-					MemoryStream mem = new MemoryStream(); BinaryDataWriter bin = new BinaryDataWriter(mem);
-					ValueCount = (ushort)value.Length;
-					if (type == ValueType.int32)
-						for (int i = 0; i < ValueCount; i++) bin.Write(int.Parse(value[i]));
-					else
-						for (int i = 0; i < ValueCount; i++) bin.Write(float.Parse(value[i]));
-					Data = mem.ToArray();
-				}
-			 */
+			public ValueType type { get; set; }
+			public string Name { get; set; }
+			public string[] value { get; set; }
 		}
-		
-		public List<EditableProperty> Properties = new List<EditableProperty>();
 
+		List<string> OriginalProperties = new List<string>();
+
+		public List<EditableProperty> Properties { get; set; }
 		public EditableProperty FindName(string name) => Properties.Where(x => x.Name == name).FirstOrDefault();
-
-		 List<EditableProperty> AddedProperties = new List<EditableProperty>();
-		public void AddNewProperty(string name, string[] value, EditableProperty.ValueType type)
-		{
-			AddedProperties.Add(new EditableProperty { Name = name, ValueCount = (ushort)value.Length, type = type, value = value });
-		}
 
 		void LoadProperties()
 		{
+			Properties = new List<EditableProperty>();
 			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-			dataReader.ByteOrder = ByteOrder.LittleEndian;
+			dataReader.ByteOrder = order;
 			dataReader.Position = 0;
 			ushort Count = dataReader.ReadUInt16();
 			ushort Unk1 = dataReader.ReadUInt16();
@@ -108,6 +88,7 @@ namespace SwitchThemes.Common
 					ValueCount = ValueLen,
 					value = values
 				});
+				OriginalProperties.Add(propName);
 
 				dataReader.Position = pos;
 			}
@@ -115,26 +96,50 @@ namespace SwitchThemes.Common
 
 		public Usd1Pane(BinaryDataReader bin) : base("usd1", bin)
 		{
+			order = bin.ByteOrder;
 			LoadProperties();
 		}
 
-		public Usd1Pane(BasePanel p) : base(p)
+		public Usd1Pane(Usd1Pane p) : base("usd1", p.data)
 		{
+			order = p.order;
 			LoadProperties();
+			Properties = p.Properties;
 		}
 
-		void ApplyChanges()
+		List<EditableProperty> AddedProperties = new List<EditableProperty>();
+		void AddNewProperties()
 		{
+			foreach (var p in Properties)
+				if (!OriginalProperties.Contains(p.Name))
+				{
+					if (p.type != EditableProperty.ValueType.int32 && p.type != EditableProperty.ValueType.single)
+						throw new Exception("The only types supported for usd properties are single and int32");
+					AddedProperties.Add(p);
+				}
+			Properties.RemoveAll(x => !OriginalProperties.Contains(x.Name));
+			foreach (var s in OriginalProperties)
+				if (!Properties.Any(x => x.Name == s))
+					throw new Exception("You can't remove existing properties");
+		}
+
+		public void ApplyChanges()
+		{
+			AddNewProperties();
+
 			MemoryStream mem = new MemoryStream();
 			BinaryDataWriter bin = new BinaryDataWriter(mem);
+			bin.ByteOrder = order;
 			bin.Write((ushort)(Properties.Count + AddedProperties.Count));
 			bin.Write((ushort)0);
 			bin.Write(new byte[0xC * AddedProperties.Count]);
-			bin.Write(data,4,data.Length - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
+			bin.Write(data, 4, data.Length - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
 			foreach (var m in Properties)
 			{
 				if ((byte)m.type != 1 && (byte)m.type != 2) continue;
-				bin.Position = m.ValueOffset + 0xC * AddedProperties.Count;
+				m.ValueOffset += + 0xC * AddedProperties.Count;
+				bin.Position = m.ValueOffset;
+				if (m.value.Length != m.ValueCount) throw new Exception("Can't change the number of values of an usd1 property");
 				for (int i = 0; i < m.ValueCount; i++)
 					if (m.type == EditableProperty.ValueType.int32)
 						bin.Write(int.Parse(m.value[i]));
@@ -145,7 +150,9 @@ namespace SwitchThemes.Common
 			{
 				bin.Position = bin.BaseStream.Length;
 				uint DataOffset = (uint)bin.BaseStream.Position;
-				for (int j = 0; j < AddedProperties[i].ValueCount; j++)
+				AddedProperties[i].ValueOffset = DataOffset;
+				AddedProperties[i].ValueCount = (ushort)AddedProperties[i].value.Length;
+				for (int j = 0; j < AddedProperties[i].value.Length; j++)
 					if (AddedProperties[i].type == EditableProperty.ValueType.int32)
 						bin.Write(int.Parse(AddedProperties[i].value[j]));
 					else
@@ -157,17 +164,26 @@ namespace SwitchThemes.Common
 				bin.BaseStream.Position = entryStart;
 				bin.Write(NameOffest - entryStart);
 				bin.Write(DataOffset - entryStart);
-				bin.Write(AddedProperties[i].ValueCount);
+				bin.Write((ushort)AddedProperties[i].ValueCount);
 				bin.Write((byte)AddedProperties[i].type);
 				bin.Write((byte)0);
+				OriginalProperties.Add(AddedProperties[i].Name);
 			}
 			data = mem.ToArray();
+
+			Properties.AddRange(AddedProperties);
+			AddedProperties.Clear();
 		}
 
-		public override void WritePanel(BinaryDataWriter bin)
+		public override void WritePane(BinaryDataWriter bin)
 		{
 			ApplyChanges();
-			base.WritePanel(bin);
+			base.WritePane(bin);
 		}
+
+		public override BasePane Clone() => new Usd1Pane(this);
+
+		[Browsable(false)]
+		public override Usd1Pane UserData { get => base.UserData; set => base.UserData = value; }
 	}
 }

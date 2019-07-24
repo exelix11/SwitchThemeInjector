@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using SwitchThemes.Common.Bflan;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using static SwitchThemes.Common.Pai1Section;
+using static SwitchThemes.Common.Bflan.Pai1Section;
 
 namespace SwitchThemes.Common.Serializers
 {
@@ -15,7 +16,7 @@ namespace SwitchThemes.Common.Serializers
 		public Pat1Serializer pat1;
 		public Pai1Serializer pai1;
 
-		public static string ToJson(Bflan file)
+		public static string ToJson(BflanFile file)
 		{
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
@@ -27,10 +28,10 @@ namespace SwitchThemes.Common.Serializers
 			return JsonConvert.SerializeObject(BflanSerializer.Serialize(file), settings);
 		}
 
-		public static Bflan FromJson(string json) =>
+		public static BflanFile FromJson(string json) =>
 			JsonConvert.DeserializeObject<BflanSerializer>(json).Deserialize();
 
-		public static BflanSerializer Serialize(Bflan file)
+		public static BflanSerializer Serialize(BflanFile file)
 		{
 			BflanSerializer res = new BflanSerializer()
 			{
@@ -55,9 +56,9 @@ namespace SwitchThemes.Common.Serializers
 			return res;
 		}
 
-		public Bflan Deserialize()
+		public BflanFile Deserialize()
 		{
-			Bflan res = new Bflan();
+			BflanFile res = new BflanFile();
 			res.byteOrder = LittleEndian ? Syroot.BinaryData.ByteOrder.LittleEndian : Syroot.BinaryData.ByteOrder.BigEndian;
 			res.Version = Version;
 

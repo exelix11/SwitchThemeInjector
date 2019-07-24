@@ -460,40 +460,30 @@ namespace SwitchThemes
 
 			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
 
-			var res = BflytFile.PatchResult.OK;
+			var res = true;
 			if (tbBntxFile.Text.Trim() != "")
 			{
 				if (!BgImageCheck(true)) return;
 
 				res = Patcher.PatchMainBG(File.ReadAllBytes(tbBntxFile.Text));
-				if (res == BflytFile.PatchResult.Fail)
+				if (!res)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 					return;
-				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
-				{
-					MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-					return;
-				}						
+				}					
 			}
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
 				Patcher.EnableAnimations = !UseAnim.Checked;
 				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
-				if (layoutres == BflytFile.PatchResult.Fail)
+				if (!layoutres)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
 					return;
 				}
-				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
-				{
-					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
-					return;
-				}
 				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
-				if (layoutres != BflytFile.PatchResult.OK)
+				if (!layoutres)
 				{
 					MessageBox.Show("Error while patching the animations !");
 					return;
@@ -525,10 +515,7 @@ namespace SwitchThemes
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
 
-			if (res == BflytFile.PatchResult.AlreadyPatched)
-				MessageBox.Show("Done, This file has already been patched before.\r\nIf you have issues try with an unmodified file");
-			else
-				MessageBox.Show("Done");
+			MessageBox.Show("Done");
 		}
 
 		[Obsolete("Nxtheme installer now can directly preview .DDS files")]

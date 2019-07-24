@@ -11,10 +11,14 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bflan.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)BflanSerializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Bflyt.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\BflytMaterial.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\Grp1Pane.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BflytPanes\Usd1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\BflytFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\BflytMaterial.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Grp1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pan1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\PatchingExtension.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pic1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Txt1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Usd1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Bntx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
