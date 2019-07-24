@@ -55,7 +55,7 @@
 			this.linkLabel3 = new System.Windows.Forms.LinkLabel();
 			this.HomeMenuPartBox = new System.Windows.Forms.ComboBox();
 			this.materialLabel15 = new MaterialSkin.Controls.MaterialLabel();
-			this.tbBntxFile2 = new System.Windows.Forms.TextBox();
+			this.tbImageFile2 = new System.Windows.Forms.TextBox();
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
@@ -72,7 +72,7 @@
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.linkLabel5 = new System.Windows.Forms.LinkLabel();
-			this.tbBntxFile = new System.Windows.Forms.TextBox();
+			this.tbImageFile = new System.Windows.Forms.TextBox();
 			this.materialLabel7 = new MaterialSkin.Controls.MaterialLabel();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.LayoutPatchList = new System.Windows.Forms.ComboBox();
@@ -153,7 +153,7 @@
 			this.NXThemePage.Controls.Add(this.linkLabel3);
 			this.NXThemePage.Controls.Add(this.HomeMenuPartBox);
 			this.NXThemePage.Controls.Add(this.materialLabel15);
-			this.NXThemePage.Controls.Add(this.tbBntxFile2);
+			this.NXThemePage.Controls.Add(this.tbImageFile2);
 			this.NXThemePage.Controls.Add(this.materialLabel11);
 			this.NXThemePage.Controls.Add(this.ImageToDDSBtn);
 			this.NXThemePage.Controls.Add(this.materialLabel8);
@@ -165,7 +165,7 @@
 			this.NXThemePage.Padding = new System.Windows.Forms.Padding(3);
 			this.NXThemePage.Size = new System.Drawing.Size(638, 331);
 			this.NXThemePage.TabIndex = 4;
-			this.NXThemePage.Text = "Nxtheme builder";
+			this.NXThemePage.Text = "NXTheme builder";
 			// 
 			// materialFlatButton2
 			// 
@@ -393,7 +393,7 @@
 			this.materialLabel12.TabIndex = 17;
 			this.materialLabel12.Text = "Warning: layout compatibility is not automatically checked, make sure to select a" +
     " layout compatible with the home menu part you selected and test your theme befo" +
-    "re sharing it !";
+    "re sharing it!";
 			this.materialLabel12.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// materialLabel16
@@ -408,7 +408,7 @@
 			this.materialLabel16.Name = "materialLabel16";
 			this.materialLabel16.Size = new System.Drawing.Size(617, 24);
 			this.materialLabel16.TabIndex = 24;
-			this.materialLabel16.Text = "For nxthemes you must use a 720p image (1280x720 pixels)";
+			this.materialLabel16.Text = "For NXThemes you must use a 720p image (1280x720 pixels)";
 			this.materialLabel16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// materialRaisedButton9
@@ -441,7 +441,7 @@
 			this.NxBuilderBuild.Primary = true;
 			this.NxBuilderBuild.Size = new System.Drawing.Size(126, 36);
 			this.NxBuilderBuild.TabIndex = 22;
-			this.NxBuilderBuild.Text = "Build nxtheme";
+			this.NxBuilderBuild.Text = "Build NXTheme";
 			this.NxBuilderBuild.UseVisualStyleBackColor = true;
 			this.NxBuilderBuild.Click += new System.EventHandler(this.NnBuilderBuild_Click);
 			// 
@@ -454,7 +454,7 @@
 			this.linkLabel3.Size = new System.Drawing.Size(632, 21);
 			this.linkLabel3.TabIndex = 21;
 			this.linkLabel3.TabStop = true;
-			this.linkLabel3.Text = "What is a nxtheme file ?";
+			this.linkLabel3.Text = "What is an NXTheme file?";
 			this.linkLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.linkLabel3.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
 			// 
@@ -483,15 +483,15 @@
 			this.materialLabel15.TabIndex = 19;
 			this.materialLabel15.Text = "Home menu part:";
 			// 
-			// tbBntxFile2
+			// tbImageFile2
 			// 
-			this.tbBntxFile2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbImageFile2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbBntxFile2.Location = new System.Drawing.Point(67, 87);
-			this.tbBntxFile2.Name = "tbBntxFile2";
-			this.tbBntxFile2.ReadOnly = true;
-			this.tbBntxFile2.Size = new System.Drawing.Size(537, 20);
-			this.tbBntxFile2.TabIndex = 10;
+			this.tbImageFile2.Location = new System.Drawing.Point(67, 87);
+			this.tbImageFile2.Name = "tbImageFile2";
+			this.tbImageFile2.ReadOnly = true;
+			this.tbImageFile2.Size = new System.Drawing.Size(537, 20);
+			this.tbImageFile2.TabIndex = 10;
 			// 
 			// materialLabel11
 			// 
@@ -535,7 +535,7 @@
 			this.materialLabel8.Name = "materialLabel8";
 			this.materialLabel8.Size = new System.Drawing.Size(633, 25);
 			this.materialLabel8.TabIndex = 7;
-			this.materialLabel8.Text = "Use this page to build nxtheme files. (You don\'t need to open an SZS for this)";
+			this.materialLabel8.Text = "Use this page to create NXTheme files (You don\'t need to open an SZS for this)";
 			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// grpLockExtra
@@ -630,7 +630,7 @@
 			this.InjectPage.Controls.Add(this.lblDetected);
 			this.InjectPage.Controls.Add(this.materialRaisedButton3);
 			this.InjectPage.Controls.Add(this.linkLabel5);
-			this.InjectPage.Controls.Add(this.tbBntxFile);
+			this.InjectPage.Controls.Add(this.tbImageFile);
 			this.InjectPage.Controls.Add(this.materialLabel7);
 			this.InjectPage.Controls.Add(this.linkLabel1);
 			this.InjectPage.Controls.Add(this.LayoutPatchList);
@@ -720,7 +720,7 @@
 			this.materialRaisedButton3.Primary = true;
 			this.materialRaisedButton3.Size = new System.Drawing.Size(85, 36);
 			this.materialRaisedButton3.TabIndex = 11;
-			this.materialRaisedButton3.Text = "Open szs";
+			this.materialRaisedButton3.Text = "Open SZS";
 			this.materialRaisedButton3.UseVisualStyleBackColor = true;
 			this.materialRaisedButton3.Click += new System.EventHandler(this.OpenSzsButton);
 			// 
@@ -733,19 +733,19 @@
 			this.linkLabel5.Size = new System.Drawing.Size(126, 21);
 			this.linkLabel5.TabIndex = 12;
 			this.linkLabel5.TabStop = true;
-			this.linkLabel5.Text = "What is a nxtheme ?";
+			this.linkLabel5.Text = "What is a nxtheme?";
 			this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
 			// 
-			// tbBntxFile
+			// tbImageFile
 			// 
-			this.tbBntxFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.tbImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbBntxFile.Location = new System.Drawing.Point(65, 82);
-			this.tbBntxFile.Name = "tbBntxFile";
-			this.tbBntxFile.ReadOnly = true;
-			this.tbBntxFile.Size = new System.Drawing.Size(530, 20);
-			this.tbBntxFile.TabIndex = 1;
+			this.tbImageFile.Location = new System.Drawing.Point(65, 82);
+			this.tbImageFile.Name = "tbImageFile";
+			this.tbImageFile.ReadOnly = true;
+			this.tbImageFile.Size = new System.Drawing.Size(530, 20);
+			this.tbImageFile.TabIndex = 1;
 			// 
 			// materialLabel7
 			// 
@@ -855,8 +855,8 @@
 			this.materialLabel3.Name = "materialLabel3";
 			this.materialLabel3.Size = new System.Drawing.Size(475, 57);
 			this.materialLabel3.TabIndex = 13;
-			this.materialLabel3.Text = "To install themes copy them in the themes folder on your sd and use the new NXThe" +
-    "mes Installer homebrew";
+			this.materialLabel3.Text = "To install themes copy them to the themes folder on your SD card and use the NXThe" +
+    "mes Installer homebrew.";
 			// 
 			// materialLabel17
 			// 
@@ -1119,7 +1119,7 @@
 			this.materialLabel5.Name = "materialLabel5";
 			this.materialLabel5.Size = new System.Drawing.Size(626, 23);
 			this.materialLabel5.TabIndex = 7;
-			this.materialLabel5.Text = "Files in the SZS : (left click to replace or extract)";
+			this.materialLabel5.Text = "Files in the SZS (right click to replace or extract):";
 			// 
 			// SzsFileList
 			// 
@@ -1189,7 +1189,7 @@
 			this.materialRaisedButton5.Primary = true;
 			this.materialRaisedButton5.Size = new System.Drawing.Size(175, 36);
 			this.materialRaisedButton5.TabIndex = 3;
-			this.materialRaisedButton5.Text = "Texture usage Count";
+			this.materialRaisedButton5.Text = "Texture usage count";
 			this.materialRaisedButton5.UseVisualStyleBackColor = true;
 			this.materialRaisedButton5.Click += new System.EventHandler(this.materialRaisedButton5_Click);
 			// 
@@ -1218,7 +1218,7 @@
 			this.materialLabel4.Name = "materialLabel4";
 			this.materialLabel4.Size = new System.Drawing.Size(638, 46);
 			this.materialLabel4.TabIndex = 6;
-			this.materialLabel4.Text = "Advanced tools allow you to manually edit the szs and more to create custom patch" +
+			this.materialLabel4.Text = "Advanced tools allow you to manually edit the SZS and more to create custom patch" +
     "es, enable them only if you know what you\'re doing";
 			// 
 			// label1
@@ -1270,7 +1270,7 @@
 			this.MaximizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(645, 439);
 			this.Name = "Form1";
-			this.Text = "Switch theme injector";
+			this.Text = "Switch Theme Injector";
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.materialTabControl1.ResumeLayout(false);
 			this.NXThemePage.ResumeLayout(false);
@@ -1297,7 +1297,7 @@
 		private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
 		private System.Windows.Forms.TabPage InjectPage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel2;
-		private System.Windows.Forms.TextBox tbBntxFile;
+		private System.Windows.Forms.TextBox tbImageFile;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton2;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton3;
 		private System.Windows.Forms.Label label1;
@@ -1342,7 +1342,7 @@
 		private System.Windows.Forms.LinkLabel linkLabel5;
 		private System.Windows.Forms.ComboBox HomeMenuPartBox;
 		private MaterialSkin.Controls.MaterialLabel materialLabel15;
-		private System.Windows.Forms.TextBox tbBntxFile2;
+		private System.Windows.Forms.TextBox tbImageFile2;
 		private System.Windows.Forms.LinkLabel linkLabel2;
 		private System.Windows.Forms.ComboBox AllLayoutsBox;
 		private MaterialSkin.Controls.MaterialLabel materialLabel9;
