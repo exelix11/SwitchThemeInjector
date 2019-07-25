@@ -18,7 +18,7 @@ RemoteInstallPage::~RemoteInstallPage()
 
 RemoteInstallPage::RemoteInstallPage() : 
 BtnStart("Start remote install"),
-lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'Nxtheme builder' tab and click on 'Remote install...'"),
+lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'"),
 lblConfirm("Press A to install, B to cancel.")
 {
 	Name = "Remote Install";
