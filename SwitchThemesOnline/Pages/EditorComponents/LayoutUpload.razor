@@ -7,7 +7,7 @@
 
 <h5>Upload a layout (optional)</h5>
 
-<FileUploader Filter=".json" Text="Upload a file from your pc" OnUpload="@PcJsonUpload" />
+<FileUploader Filter="application/json" Text="Upload a file from your pc" OnUpload="@PcJsonUpload" />
 
 @if (LayoutIndex == null)
 {
@@ -31,7 +31,7 @@ else
 	@if (state.MainLayout != null && LayoutUrl != null)
 	{
 		<p>Preview:</p>
-		<img src="@LayoutUrl" />
+		<img src="@LayoutUrl" width="640" height="360"/>
 	}
 }
 

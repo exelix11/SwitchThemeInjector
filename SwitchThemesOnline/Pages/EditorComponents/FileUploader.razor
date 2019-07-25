@@ -2,9 +2,6 @@
 @inject Blazor.FileReader.IFileReaderService fileReaderService;
 @inject IJSRuntime js;
 
-<input type="file" id="dioboia" @ref="@inputTypeFileElement" @onchange="@ReadFile" accept="@Filter" hidden/>
-<button class="btn--raised buttonCenter" @onclick="@(() => js.Click(inputTypeFileElement))">@Text</button>
-
 @code {
 [Parameter] string Text { get; set; }
 [Parameter] string Filter { get; set; }
@@ -18,8 +15,20 @@ public async Task ReadFile()
 	int c = 0;
 	foreach (var file in await fileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
 	{
+		var info = await file.ReadFileInfoAsync();
+
+		if (Filter != null)
+			if (info.Type != Filter)
+			{
+				js.Alert("This file format is not supported");
+				continue;
+			}
+
 		OnUpload(await file.CreateMemoryStreamAsync());
 		if (++c >= FileCount) break;
 	}
 }
 }
+
+<input type="file" @ref="@inputTypeFileElement" @onchange="@ReadFile" accept="@Filter" hidden />
+<button class="btn--raised buttonCenter" @onclick="@(() => js.Click(inputTypeFileElement))">@Text</button>
