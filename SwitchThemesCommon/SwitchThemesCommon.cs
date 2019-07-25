@@ -382,7 +382,7 @@ namespace SwitchThemes.Common
 					if (target != null) target.ChannelTypes = (int)patch.Item2;
 				}
 			}
-			catch (Exception ex)
+			catch
 			{
 				return BflytFile.PatchResult.Fail;
 			}
