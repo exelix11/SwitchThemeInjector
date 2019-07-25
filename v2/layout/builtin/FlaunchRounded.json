@@ -1,0 +1,67 @@
+{
+  "PatchName": "All Apps 90% scale rounded icons",
+  "AuthorName": "Such Meme, Many Skill",
+  "TargetName": "Flaunch.szs",
+  "Files": [
+    {
+      "FileName": "blyt/FlcBtnIconGame.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Delete",
+          "Scale": {
+            "X": 0.9,
+            "Y": 0.9
+          }
+        },
+        {
+          "PaneName": "P_BtnBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_IconGame",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "38"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_InnerCursor",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

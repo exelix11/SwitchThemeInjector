@@ -1,0 +1,107 @@
+.header {
+    background-color: rgb(38,50,56) !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.tabColor {
+    background-color: rgb(55,71,79) !important;
+    border-radius: 0 !important;
+}
+
+body {
+    background-color: #333;
+    float: left;
+}
+
+.tab-content {
+    background-color: #333333;
+    position: absolute !important;
+    left: 0px !important;
+    padding: 5px !important;
+    width: 100% !important;
+    color: white;
+}
+
+p {
+    color: white;
+	margin: 1%;
+}
+
+.HeaderTextBig {
+    font-size: 8vw;
+    margin-bottom: 2vw;
+}
+
+.HeaderTextSmall {
+    font-size: 3vw;
+    margin-top: 2vw;
+    margin-bottom: 10px;
+}
+
+.BigScreenContent {
+    width: 100%;
+    margin: auto;
+}
+
+@media screen and (min-width: 600px) {
+    .HeaderTextBig {
+        font-size: 40px;
+    }
+
+    .HeaderTextSmall {
+        font-size: 20px;
+    }
+
+    .BigScreenContent {
+        max-width: 600px;
+        margin: auto;
+    }
+}
+
+.buttonCenter {
+    margin: auto;
+    display: block;
+}
+
+b {
+    font-weight: bold !important;
+}
+
+.PathLabel {
+    margin-bottom: 15px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.BaseCard {
+	padding: 10px !important;
+	background: #37474f !important;
+	margin: 15px !important;
+	color: #fff !important;
+}
+
+.WarnCard {
+	padding: 10px !important;
+	background: #ff5c5c !important;
+	margin: 15px !important;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+}
+
+h2, h3, h4, h5 {
+	color: white;
+	margin-top: 5%;
+	margin-bottom: 2%
+}
+
+.TextBox {
+	margin-bottom: 1% !important;
+	width: 100% !important;
+	background-color: #DDD !important;
+	height: 1vw !important;
+}

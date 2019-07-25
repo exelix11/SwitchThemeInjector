@@ -1,0 +1,78 @@
+{
+   "home":[
+      {
+         "Prev":"CarefulLayout.jpg",
+         "File":"CarefulLayout.json"
+      },
+      {
+         "Prev":"DiamondLayoutHomescreen.jpg",
+         "File":"DiamondLayoutHomescreen.json"
+      },
+      {
+         "Prev":"DogeLayoutRounded.jpg",
+         "File":"DogeLayoutRounded.json"
+      },
+      {
+         "Prev":"Flow Layout.jpg",
+         "File":"Flow Layout.json"
+      },
+      {
+         "Prev":"RoundedSmallCompact.jpg",
+         "File":"RoundedSmallCompact.json"
+      },
+      {
+         "Prev":"SmallCompactHomescreen.jpg",
+         "File":"SmallCompactHomescreen.json"
+      },
+      {
+         "Prev":"SuchHm.jpg",
+         "File":"SuchHm.json"
+      },
+      {
+         "Prev":"ZnHm.jpg",
+         "File":"ZnHm.json"
+      }
+   ],
+   "lock":[
+      {
+         "Prev":"SimpleLockscreenLayout.jpg",
+         "File":"SimpleLockscreenLayout.json"
+      },
+      {
+         "Prev":"SuchLk.jpg",
+         "File":"SuchLk.json"
+      },
+      {
+         "Prev":"GleLk.jpg",
+         "File":"GleLk.json"
+      }
+   ],
+   "psl":[
+      {
+         "Prev":"Transparant Playerselect 90% Scale centered.jpg",
+         "File":"Transparant Playerselect 90% Scale centered.json"
+      },
+      {
+         "Prev":"Transparant Playerselect 90% Scale.jpg",
+         "File":"Transparant Playerselect 90% Scale.json"
+      },
+      {
+         "Prev":"Transparant Playerselect centered.jpg",
+         "File":"Transparant Playerselect centered.json"
+      },
+      {
+         "Prev":"Transparant Playerselect.jpg",
+         "File":"Transparant Playerselect.json"
+      }
+   ],
+   "apps":[
+      {
+         "Prev":"FlaunchRounded.jpg",
+         "File":"FlaunchRounded.json"
+      },
+      {
+         "Prev":"DogeFl.png",
+         "File":"DogeFl.json"
+      }
+   ]
+}

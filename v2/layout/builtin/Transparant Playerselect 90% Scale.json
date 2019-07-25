@@ -1,0 +1,44 @@
+{
+  "PatchName": "Transparant Playerselect 90% Scale",
+  "AuthorName": "Migush",
+  "TargetName": "Psl.szs",
+  "Files": [
+    {
+      "FileName": "blyt/DBtmHeaderNml.bflyt",
+      "Patches": [
+        {
+          "PaneName": "T_00",
+          "Visible": false
+        },
+        {
+          "PaneName": "P_Line",
+          "Visible": false
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/PslSelectSinglePlayer.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Cnt",
+          "Position": {
+            "X": 0.0,
+            "Y": -200.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "P_Bg",
+          "Visible": false
+        },
+        {
+          "PaneName": "RootPane",
+          "Scale": {
+            "X": 0.9,
+            "Y": 0.9
+          }
+        }
+      ]
+    }
+  ]
+}
