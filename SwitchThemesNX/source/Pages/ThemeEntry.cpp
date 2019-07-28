@@ -146,12 +146,14 @@ vector<u8> ThemeEntry::NxThemeGetBgImage()
 			//HACK: don't save the nxtheme after this
 			SData.files["image.dds"] = res;
 			NXThemeHasPreview = true;
+			return SData.files["image.dds"];
 		}
 		else
 		{
 			NXThemeHasPreview = false;
 			CanInstall = false;
 			lblLine2 = "Couldn't load the image";
+			return {};
 		}
 	}
 	return {};

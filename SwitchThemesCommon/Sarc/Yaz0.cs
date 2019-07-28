@@ -12,7 +12,7 @@ namespace SwitchThemes.Common
 		{
 			int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
 			if (maxBackLevel <= 0)
-				maxBackLevel = 1;
+				maxBackLevel = 32;
 
 			int dataptr = 0;
 

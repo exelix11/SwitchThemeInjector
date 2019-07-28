@@ -3,31 +3,31 @@
 @inject IJSRuntime js;
 
 @code {
-[Parameter] string Text { get; set; }
-[Parameter] string Filter { get; set; }
-[Parameter] Action<MemoryStream> OnUpload { get; set; }
-[Parameter] int FileCount { get; set; } = 1;
+	[Parameter] string Text { get; set; }
+	[Parameter] string Filter { get; set; }
+	[Parameter] Action<MemoryStream> OnUpload { get; set; }
+	[Parameter] int FileCount { get; set; } = 1;
 
-ElementRef inputTypeFileElement;
+	ElementRef inputTypeFileElement;
 
-public async Task ReadFile()
-{
-	int c = 0;
-	foreach (var file in await fileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
+	public async Task ReadFile()
 	{
-		var info = await file.ReadFileInfoAsync();
+		int c = 0;
+		foreach (var file in await fileReaderService.CreateReference(inputTypeFileElement).EnumerateFilesAsync())
+		{
+			var info = await file.ReadFileInfoAsync();
 
-		if (Filter != null)
-			if (info.Type != Filter)
-			{
-				js.Alert("This file format is not supported");
-				continue;
-			}
+			if (Filter != null)
+				if (info.Type != Filter)
+				{
+					js.Alert("This file format is not supported");
+					continue;
+				}
 
-		OnUpload(await file.CreateMemoryStreamAsync());
-		if (++c >= FileCount) break;
+			OnUpload(await file.CreateMemoryStreamAsync());
+			if (++c >= FileCount) break;
+		}
 	}
-}
 }
 
 <input type="file" @ref="@inputTypeFileElement" @onchange="@ReadFile" accept="@Filter" hidden />
