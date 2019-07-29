@@ -59,6 +59,8 @@ You need your custom szs and the original szs you used as a base, the bg image d
 5) Look for bad panes in the json and manually remove them, they have a weird name or no properties. (this bug should have been fixed but checking anyway doesn't hurt) Use a json checker to make sure you didn't make any mistakes like skipping commas 
 6) Save and share your layout
 
+Note that if the output file is big (100-200kb) and it clearly contains more data than just the stuff you've edited you most likely used as original szs a file for a different firmware and the differ picked up the firmware differences, using that layout may fail or cause crashes, that's why it's important to use the original szs to dif
+ 
 ## Extracting the layout from an nxtheme
 If a theme uses a layout you like you can easily extract it with the injector:\
 1) Enable the advanced tools
