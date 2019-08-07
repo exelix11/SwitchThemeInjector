@@ -12,7 +12,7 @@ namespace SwitchThemes
 {
 	public partial class ThemeInputInfo : Form
 	{
-		public Tuple<string, string,bool> result = null;
+		public Tuple<string, string,bool> result { get; set; }
 
 		public ThemeInputInfo()
 		{
