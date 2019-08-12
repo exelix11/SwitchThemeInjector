@@ -593,7 +593,8 @@ namespace SwitchThemes.Common
 			foreach (var g in Groups)
 			{
 				if (GroupNames.ContainsStr(g.GroupName)) continue;
-				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s)) return PatchResult.Fail;
+				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s))
+						return PatchResult.Fail;
 				Panels.Insert(rootGroupIndex, new Grp1Pane(version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
 			}
 

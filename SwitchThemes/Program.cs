@@ -263,8 +263,8 @@ namespace SwitchThemes
 				foreach (var a in l)
 				{
 					string path = GetArg(a.NxThemeName);
-					if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
-						path = null;
+					if (path == null || (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path)))
+						continue;
 					AppletIcons.Add(a.NxThemeName, path);
 				}
 			}

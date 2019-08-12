@@ -292,7 +292,8 @@ namespace SwitchThemes.Common
 			foreach (var p in Files)
 			{
 				var res = PatchSingleLayout(p);
-				if (res != BflytFile.PatchResult.OK) return res;
+				if (res != BflytFile.PatchResult.OK)
+					return res;
 			}
 			return BflytFile.PatchResult.OK;
 		}
