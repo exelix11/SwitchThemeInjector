@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 public static class Exten
 {
-	public static async void Click(this IJSRuntime runtime, ElementRef element) =>
+	public static async void Click(this IJSRuntime runtime, ElementReference element) =>
 		await runtime.InvokeAsync<object>("DomUtil.Click", element);
 
 	public static async void Alert(this IJSRuntime runtime, string message) =>

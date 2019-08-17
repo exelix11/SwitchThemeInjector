@@ -3,12 +3,12 @@
 @inject IJSRuntime js;
 
 @code {
-	[Parameter] string Text { get; set; }
-	[Parameter] string Filter { get; set; }
-	[Parameter] Action<MemoryStream> OnUpload { get; set; }
-	[Parameter] int FileCount { get; set; } = 1;
+	[Parameter] public string Text { get; set; }
+	[Parameter] public string Filter { get; set; }
+	[Parameter] public Action<MemoryStream> OnUpload { get; set; }
+	[Parameter] public int FileCount { get; set; } = 1;
 
-	ElementRef inputTypeFileElement;
+	ElementReference inputTypeFileElement;
 
 	public async Task ReadFile()
 	{
@@ -30,5 +30,5 @@
 	}
 }
 
-<input type="file" @ref="@inputTypeFileElement" @onchange="@ReadFile" accept="@Filter" hidden />
+<input type="file" @ref="@inputTypeFileElement" @ref:suppressField @onchange="@ReadFile" accept="@Filter" hidden />
 <button class="btn--raised buttonCenter" @onclick="@(() => js.Click(inputTypeFileElement))">@Text</button>

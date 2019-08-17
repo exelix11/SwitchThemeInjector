@@ -44,7 +44,7 @@ else
 }
 
 @code {
-	[Parameter] StateHolder state { get; set; }
+	[Parameter] public StateHolder state { get; set; }
 
 	struct LayoutEntry
 	{
@@ -81,7 +81,7 @@ else
 
 	Dictionary<string, List<LayoutEntry>> LayoutIndex = null;
 
-	protected override async Task OnInitAsync()
+	protected override async Task OnInitializedAsync()
 	{
 		state.TargetHasChanged += delegate () { state.MainLayout = null; StateHasChanged(); };
 		try
