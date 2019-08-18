@@ -1,15 +1,60 @@
 ;
 ;
-var FileReaderComponent = /** @class */ (function () {
+var FileReaderComponent = (function () {
     function FileReaderComponent() {
         var _this = this;
+        this.assembly = "Blazor.FileReader";
+        this.namespace = "Blazor.FileReader";
+        this.className = "FileReaderJsInterop";
         this.newFileStreamReference = 0;
         this.fileStreams = {};
+        this.dragElements = new Map();
+        this.elementDataTransfers = new Map();
+        this.RegisterDropEvents = function (element) {
+            var handler = function (ev) {
+                _this.PreventDefaultHandler(ev);
+                if (ev.target instanceof HTMLElement) {
+                    _this.elementDataTransfers.set(ev.target, ev.dataTransfer.files);
+                }
+            };
+            _this.dragElements.set(element, handler);
+            element.addEventListener("drop", handler);
+            element.addEventListener("dragover", _this.PreventDefaultHandler);
+            return true;
+        };
+        this.UnregisterDropEvents = function (element) {
+            var handler = _this.dragElements.get(element);
+            if (handler) {
+                element.removeEventListener("drop", handler);
+                element.removeEventListener("dragover", _this.PreventDefaultHandler);
+            }
+            _this.elementDataTransfers.delete(element);
+            _this.dragElements.delete(element);
+            return true;
+        };
+        this.GetFileCount = function (element) {
+            var files = _this.GetFiles(element);
+            if (!files) {
+                return -1;
+            }
+            var result = files.length;
+            return result;
+        };
+        this.ClearValue = function (element) {
+            if (element instanceof HTMLInputElement) {
+                element.value = null;
+            }
+            else {
+                _this.elementDataTransfers.delete(element);
+            }
+            return 0;
+        };
         this.GetFileInfoFromElement = function (element, index, property) {
-            if (!element.files) {
+            var files = _this.GetFiles(element);
+            if (!files) {
                 return null;
             }
-            var file = element.files.item(index);
+            var file = files.item(index);
             if (!file) {
                 return null;
             }
@@ -19,10 +64,11 @@ var FileReaderComponent = /** @class */ (function () {
             return delete (_this.fileStreams[fileRef]);
         };
         this.OpenRead = function (element, fileIndex) {
-            if (!element.files) {
-                throw 'No FileList available. Is this element a reference to an input of type="file"?';
+            var files = _this.GetFiles(element);
+            if (!files) {
+                throw 'No FileList available.';
             }
-            var file = element.files.item(fileIndex);
+            var file = files.item(fileIndex);
             if (!file) {
                 throw "No file with index " + fileIndex + " available.";
             }
@@ -30,37 +76,35 @@ var FileReaderComponent = /** @class */ (function () {
             _this.fileStreams[fileRef] = file;
             return fileRef;
         };
-        this.ReadFileUnmarshalled = function (dotNetArrayPtr, readFileParamsPtr) {
-            var readFileParams = JSON.parse(Blazor.platform.toJavaScriptString(readFileParamsPtr));
-            var callBack = function (bytesRead, exception) {
-                return DotNet.invokeMethodAsync("Blazor.FileReader", "ReadFileUnmarshalledCallback", { callBackId: readFileParams.callBackId, bytesRead: bytesRead, exception: exception });
-            };
-            var resolve = function (bytesRead) { return callBack(bytesRead, undefined); };
-            var reject = function (exception) { return callBack(0, exception); };
-            var dotNetBuffer = { toUint8Array: function () { return Blazor.platform.toUint8Array(dotNetArrayPtr); } };
-            var file = _this.fileStreams[readFileParams.fileRef];
-            try {
-                var reader = new FileReader();
-                reader.onload = (function (r) {
-                    return function () {
-                        try {
-                            var contents = r.result;
-                            var dotNetBufferView = dotNetBuffer.toUint8Array();
-                            dotNetBufferView.set(new Uint8Array(contents));
-                            resolve(contents.byteLength);
-                        }
-                        catch (e) {
-                            reject(e);
-                        }
-                    };
-                })(reader);
-                reader.readAsArrayBuffer(file.slice(readFileParams.position, readFileParams.position + readFileParams.count));
-                return true;
-            }
-            catch (e) {
-                reject(e);
-            }
-            return false;
+        this.ReadFileUnmarshalledAsync = function (readFileParams) {
+            return new Promise(function (resolve, reject) {
+                if (!FileReaderComponent.getStreamBuffer) {
+                    FileReaderComponent.getStreamBuffer =
+                        Blazor.platform.findMethod(_this.assembly, _this.namespace, _this.className, "GetStreamBuffer");
+                }
+                var file = _this.fileStreams[readFileParams.fileRef];
+                try {
+                    var reader = new FileReader();
+                    reader.onload = (function (r) {
+                        return function () {
+                            try {
+                                var contents = r.result;
+                                var dotNetBuffer = Blazor.platform.callMethod(FileReaderComponent.getStreamBuffer, null, [Blazor.platform.toDotNetString(readFileParams.callBackId.toString())]);
+                                var dotNetBufferView = Blazor.platform.toUint8Array(dotNetBuffer);
+                                dotNetBufferView.set(new Uint8Array(contents));
+                                resolve(contents.byteLength);
+                            }
+                            catch (e) {
+                                reject(e);
+                            }
+                        };
+                    })(reader);
+                    reader.readAsArrayBuffer(file.slice(readFileParams.position, readFileParams.position + readFileParams.count));
+                }
+                catch (e) {
+                    reject(e);
+                }
+            });
         };
         this.ReadFileMarshalledAsync = function (readFileParams) {
             return new Promise(function (resolve, reject) {
@@ -86,18 +130,23 @@ var FileReaderComponent = /** @class */ (function () {
                 }
             });
         };
+        this.PreventDefaultHandler = function (ev) {
+            ev.preventDefault();
+        };
     }
-    FileReaderComponent.prototype.GetFileCount = function (element) {
-        if (!element.files) {
-            return -1;
+    FileReaderComponent.prototype.GetFiles = function (element) {
+        var files = null;
+        if (element instanceof HTMLInputElement) {
+            files = element.files;
         }
-        var result = element.files.length;
-        return result;
+        else {
+            var dataTransfer = this.elementDataTransfers.get(element);
+            if (dataTransfer) {
+                files = dataTransfer;
+            }
+        }
+        return files;
     };
-    FileReaderComponent.prototype.ClearValue = function (input) {
-        input.value = null;
-    };
-    ;
     FileReaderComponent.prototype.GetFileInfoFromFile = function (file) {
         var result = {
             lastModified: file.lastModified,
@@ -106,34 +155,6 @@ var FileReaderComponent = /** @class */ (function () {
             type: file.type
         };
         return result;
-    };
-    FileReaderComponent.prototype.ReadFileUnmarshalledAsync = function (dotNetArrayPtr, readFileParamsPtr) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var readFileParams = JSON.parse(Blazor.platform.toJavaScriptString(readFileParamsPtr));
-            var dotNetBuffer = { toUint8Array: function () { return Blazor.platform.toUint8Array(dotNetArrayPtr); } };
-            var file = _this.fileStreams[readFileParams.fileRef];
-            try {
-                var reader = new FileReader();
-                reader.onload = (function (r) {
-                    return function () {
-                        try {
-                            var contents = r.result;
-                            var dotNetBufferView = dotNetBuffer.toUint8Array();
-                            dotNetBufferView.set(new Uint8Array(contents));
-                            resolve(contents.byteLength);
-                        }
-                        catch (e) {
-                            reject(e);
-                        }
-                    };
-                })(reader);
-                reader.readAsArrayBuffer(file.slice(readFileParams.position, readFileParams.position + readFileParams.count));
-            }
-            catch (e) {
-                reject(e);
-            }
-        });
     };
     return FileReaderComponent;
 }());
