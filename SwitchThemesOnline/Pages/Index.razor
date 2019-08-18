@@ -1,6 +1,6 @@
 ﻿@page "/"
 @using SwitchThemes.Common;
-@inject IJSRuntime js;
+@inject Mono.WebAssembly.Interop.MonoWebAssemblyJSRuntime js;
 
 <p>Welcome to the new WebInjector, this version can only build .nxtheme files. (You can still go to the <a href="https://exelix11.github.io/SwitchThemeInjector/">old version</a>)</p>
 <h5>What is .nxtheme ?</h5>
@@ -38,15 +38,7 @@
 			nx.AddMainBg(holder.MainBG);
 			nx.AddMainLayout(holder.MainLayout);
 
-			if (js is Mono.WebAssembly.Interop.MonoWebAssemblyJSRuntime)
-				((Mono.WebAssembly.Interop.MonoWebAssemblyJSRuntime)js).DownloadFile($"{holder.Name}.nxtheme", nx.GetNxtheme());
-			else
-			{
-				Console.WriteLine("Falling back to legacy download mode !");
-				await js.LegacyDownloadFile($"{holder.Name}.nxtheme", nx.GetNxtheme());
-				PrintAlert = "For some reason your browser seems to use the legacy download mode for themes, this is not an issue but it should be reported.";
-				StateHasChanged();
-			}
+			js.DownloadFile($"{holder.Name}.nxtheme", nx.GetNxtheme());
 		}
 		catch (Exception ex)
 		{
