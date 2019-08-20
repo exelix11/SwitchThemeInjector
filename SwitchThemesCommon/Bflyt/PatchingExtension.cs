@@ -84,19 +84,20 @@ namespace SwitchThemes.Common.Bflyt
 				if (p.ParentOriginY != null)
 					e.ParentOriginY = (Pan1Pane.OriginY)p.ParentOriginY.Value;
 				#endregion
-				/*#region ColorDataForPic1
+				#region ColorDataForPic1
                 if (e.name == "pic1")
                 {
+					var ee = e as Pic1Pane;
                     if (p.ColorTL != null)
-                        e.ColorData[0] = Convert.ToUInt32(p.ColorTL, 16);
+                        ee.ColorTopLeft = ByteStringLEToColor(p.ColorTL);
                     if (p.ColorTR != null)
-                        e.ColorData[1] = Convert.ToUInt32(p.ColorTR, 16);
+                        ee.ColorTopRight = ByteStringLEToColor(p.ColorTR);
                     if (p.ColorBL != null)
-                        e.ColorData[2] = Convert.ToUInt32(p.ColorBL, 16);
+                        ee.ColorBottomLeft = ByteStringLEToColor(p.ColorBL);
                     if (p.ColorBR != null)
-                        e.ColorData[3] = Convert.ToUInt32(p.ColorBR, 16);
+                        ee.ColorBottomRight = ByteStringLEToColor(p.ColorBR);
                 }
-                #endregion*/
+                #endregion
 				#region usdPane
 				if (e.UserData != null && p.UsdPatches != null)
 				{
