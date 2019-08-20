@@ -182,8 +182,5 @@ namespace SwitchThemes.Common.Bflyt
 		}
 
 		public override BasePane Clone() => new Usd1Pane(this);
-
-		[Browsable(false)]
-		public override Usd1Pane UserData { get => base.UserData; set => base.UserData = value; }
 	}
 }

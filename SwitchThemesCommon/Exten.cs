@@ -14,6 +14,14 @@ namespace ExtensionMethods
 			return new Color(values[0], values[1], values[2], values[3]);
 		}
 
+		public static void Write(this BinaryDataWriter bin, Color c)
+		{
+			bin.Write(c.R);
+			bin.Write(c.G);
+			bin.Write(c.B);
+			bin.Write(c.A);
+		}
+
 		public static Vector3 ReadVector3(this BinaryDataReader bin) =>
 			new Vector3 { X = bin.ReadSingle(), Y = bin.ReadSingle(), Z = bin.ReadSingle() };
 
