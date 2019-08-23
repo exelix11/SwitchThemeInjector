@@ -160,7 +160,7 @@ namespace SwitchThemes.Common
 				(UInt32 w, UInt32 h, bool IsProgressive) = GetJpgInfo(data);
 
 				if (IsProgressive)
-					throw new Exception("Progressive JPG images are not currently supported, check the encoding settings in your image editor");
+					throw new Exception("Progressive JPG images are not currently supported for the background image, check the encoding settings in your image editor");
 
 				if (w != 1280 || h != 720)
 					throw new Exception("The background image must be 1280x720.");
