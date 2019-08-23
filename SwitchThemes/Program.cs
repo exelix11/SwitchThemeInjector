@@ -118,20 +118,15 @@ namespace SwitchThemes
 
 			try
 			{				
-				var res = BflytFile.PatchResult.OK;
+				var res = true;
 				var Patcher = new SzsPatcher(CommonSzs, DefaultTemplates.templates);
 
 				if (Image != null)
 				{
 					res = Patcher.PatchMainBG(File.ReadAllBytes(Image));
-					if (res == BflytFile.PatchResult.Fail)
+					if (!res)
 					{
 						Console.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
-						return false;
-					}
-					else if (res == BflytFile.PatchResult.CorruptedFile)
-					{
-						Console.WriteLine("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
 						return false;
 					}
 				}				
@@ -141,14 +136,9 @@ namespace SwitchThemes
 					Patcher.EnableAnimations = true;
 					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
 					var layoutres = Patcher.PatchLayouts(l, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
-					if (layoutres == BflytFile.PatchResult.Fail)
+					if (!layoutres)
 					{
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-						return false;
-					}
-					else if (layoutres == BflytFile.PatchResult.CorruptedFile)
-					{
-						Console.WriteLine("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
 						return false;
 					}
 					layoutres = Patcher.PatchAnimations(l.Anims);
@@ -175,10 +165,7 @@ namespace SwitchThemes
 				File.WriteAllBytes(Output, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 				GC.Collect();
 
-				if (res == BflytFile.PatchResult.AlreadyPatched)
-					Console.WriteLine("Done, This file has already been patched before.\r\nIf you have issues try with an unmodified file");
-				else
-					Console.WriteLine("Done");
+				Console.WriteLine("Done");
 			}
 			catch (Exception ex)
 			{
@@ -264,7 +251,10 @@ namespace SwitchThemes
 				{
 					string path = GetArg(a.NxThemeName);
 					if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+					{
 						path = null;
+						continue;
+					}
 					AppletIcons.Add(a.NxThemeName, path);
 				}
 			}

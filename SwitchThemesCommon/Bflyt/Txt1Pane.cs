@@ -84,16 +84,16 @@ namespace SwitchThemes.Common.Bflyt
 
 		public float ItalicTilt { get; set; }
 
-		public Color FontTopColor { get; set; }
-		public Color FontBottomColor { get; set; }
+		public RGBAColor FontTopColor { get; set; }
+		public RGBAColor FontBottomColor { get; set; }
 		public Vector2 FontXYSize { get; set; }
 		public float CharacterSpace { get; set; }
 		public float LineSpace { get; set; }
 
 		public float[] ShadowXY { get; set; } = new float[0];
 		public float[] ShadowXYSize { get; set; } = new float[0];
-		public Color ShadowTopColor { get; set; }
-		public Color ShadowBottomColor { get; set; }
+		public RGBAColor ShadowTopColor { get; set; }
+		public RGBAColor ShadowBottomColor { get; set; }
 		public float ShadowItalic { get; set; }
 
 		public string Text { get; internal set; }
