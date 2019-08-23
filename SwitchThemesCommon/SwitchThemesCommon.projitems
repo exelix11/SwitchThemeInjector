@@ -6,7 +6,7 @@
     <SharedGUID>11174f92-402d-4064-b278-f52842a48251</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>SwitchThemesCommon</Import_RootNamespace>
+    <Import_RootNamespace>SwitchThemes.Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Bflan.cs" />
@@ -23,6 +23,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RGBAColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutDiff.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
