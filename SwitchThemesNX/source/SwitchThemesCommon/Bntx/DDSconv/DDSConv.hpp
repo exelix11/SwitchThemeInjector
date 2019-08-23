@@ -3,6 +3,7 @@
 //The image must be converted to DDS so it can go through the already existing lib
 
 #include <vector>
+#include <string>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -12,4 +13,5 @@
 namespace DDSConv
 {	
 	std::vector<u8> ImageToDDS(const std::vector<u8>& imgData, bool DXT5 = false, int ExpectedW = 1280, int ExpectedH = 720);
+	const std::string& GetError();
 }
