@@ -69,8 +69,8 @@ namespace SwitchThemes.Common.Bflyt
 			}
 		}
 
-		public Color ForegroundColor { get; set; }
-		public Color BackgroundColor { get; set; }
+		public RGBAColor ForegroundColor { get; set; }
+		public RGBAColor BackgroundColor { get; set; }
 		
 		//TODO: finish the implementation
 		//public bool HasAlphaComparisonConditions { get; set; }

@@ -3,6 +3,8 @@ using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing.Design;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -15,13 +17,83 @@ namespace SwitchThemes.Common
 		byte[] GetData();
 	}
 
-	public class Color
+#if LYTEDITOR
+
+	class ArgbConverter : System.Drawing.ColorConverter
+	{ 
+		public override bool GetStandardValuesSupported(
+				ITypeDescriptorContext context)
+		{
+			return false;
+		}
+
+		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) => 
+			sourceType == typeof(string);
+		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) =>
+			destinationType == typeof(string);
+
+		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+		{
+			string[] s = ((string)value).Split(';');
+			if (s.Length < 3 || s.Length > 4) throw new Exception("Parse error");
+			if (s.Length == 3)
+				return new RGBAColor(byte.Parse(s[0]), byte.Parse(s[1]), byte.Parse(s[2]));
+			else
+				return new RGBAColor(byte.Parse(s[0]), byte.Parse(s[1]), byte.Parse(s[2]), byte.Parse(s[3]));		
+		}
+
+		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) =>
+			((RGBAColor)value).ToString();
+	}
+
+	class RGBAEditor : System.Drawing.Design.ColorEditor
+	{
+		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+		{
+			var col = base.EditValue(context, provider, ((RGBAColor)value).Color);
+			return new RGBAColor((System.Drawing.Color)col);
+		}
+
+		public override void PaintValue(PaintValueEventArgs e)
+		{
+			PaintValueEventArgs evt = new PaintValueEventArgs(e.Context, ((RGBAColor)e.Value).Color, e.Graphics, e.Bounds);
+			base.PaintValue(evt);
+		}
+	}
+
+	[TypeConverter(typeof(ArgbConverter))]
+	[Editor(typeof(RGBAEditor),typeof(System.Drawing.Design.UITypeEditor))]
+#endif
+	public class RGBAColor
 	{
 		public byte R, G, B, A;
-		public Color(byte r, byte g, byte b, byte a = 255)
+		public RGBAColor(byte r, byte g, byte b, byte a = 255)
 		{
 			R = r; G = g; B = b; A = a;
 		}
+
+		public override string ToString() => A == 255 ? $"{R};{G};{B}" : $"{R};{G};{B};{A}";
+
+#if LYTEDITOR
+		public RGBAColor(System.Drawing.Color c)
+		{
+			Color = c;
+		}
+
+		public System.Drawing.Color Color {
+			get => System.Drawing.Color.FromArgb(A, R, G, B);
+			set
+			{
+				R = value.R;
+				G = value.G;
+				B = value.B;
+				A = value.A;
+			}
+		}
+
+		public static explicit operator System.Drawing.Color(RGBAColor d) => d.Color;
+		public static explicit operator RGBAColor(System.Drawing.Color c) => new RGBAColor(c.R,c.G,c.B,c.A);
+#endif
 
 		public string AsHexLEString() =>
 			((uint)(R | G << 8 | B << 16 | A << 24)).ToString("X8");
@@ -223,7 +295,7 @@ namespace SwitchThemes.Common.Bflyt
 		public BasePane RootPane;
 		public Grp1Pane RootGroup { get; set; }
 		public List<BasePane> Panes = new List<BasePane>();
-		public UInt32 version;
+		public UInt32 Version;
 
 		public byte[] SaveFile()
 		{
@@ -233,7 +305,7 @@ namespace SwitchThemes.Common.Bflyt
 			bin.Write("FLYT", BinaryStringFormat.NoPrefixOrTermination);
 			bin.Write((ushort)0xFEFF); //should match 0xFF 0xFE
 			bin.Write((UInt16)0x14); //Header size
-			bin.Write(version);
+			bin.Write(Version);
 			bin.Write((Int32)0);
 			UInt16 PaneCount = (UInt16)Panes.Count;
 			for (int i = 0; i < Panes.Count; i++)
@@ -293,7 +365,7 @@ namespace SwitchThemes.Common.Bflyt
 				bin.ByteOrder = FileByteOrder;
 			}
 			bin.ReadUInt16(); //HeaderSize
-			version = bin.ReadUInt32();
+			Version = bin.ReadUInt32();
 			bin.ReadUInt32(); //File size
 			var sectionCount = bin.ReadUInt16();
 			bin.ReadUInt16(); //padding
@@ -307,7 +379,7 @@ namespace SwitchThemes.Common.Bflyt
 						Panes.Add(new TextureSection(bin));
 						break;
 					case "mat1":
-						Panes.Add(new MaterialsSection(bin, version));
+						Panes.Add(new MaterialsSection(bin, Version));
 						break;
 					case "usd1":
 						Panes.Last().UserData = new Usd1Pane(bin);
@@ -508,7 +580,7 @@ namespace SwitchThemes.Common.Bflyt
 				case "txt1":
 					return new Txt1Pane(pane, FileByteOrder);
 				case "grp1":
-					return new Grp1Pane(pane, FileByteOrder, version);
+					return new Grp1Pane(pane, FileByteOrder, Version);
 				default:
 					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
 						return pane;

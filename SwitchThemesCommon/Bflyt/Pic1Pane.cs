@@ -12,10 +12,10 @@ namespace SwitchThemes.Common.Bflyt
 {
 	public class Pic1Pane : Pan1Pane
 	{
-		public Color ColorTopRight { get; set; } 
-		public Color ColorTopLeft { get; set; } 
-		public Color ColorBottomRight { get; set; }
-		public Color ColorBottomLeft { get; set; } 
+		public RGBAColor ColorTopRight { get; set; } 
+		public RGBAColor ColorTopLeft { get; set; } 
+		public RGBAColor ColorBottomRight { get; set; }
+		public RGBAColor ColorBottomLeft { get; set; } 
 
 		public UInt16 MaterialIndex { get; set; } = 0;
 

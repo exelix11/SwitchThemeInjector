@@ -134,10 +134,10 @@ namespace SwitchThemes.Common.Bflyt
 			return true;
 		}
 
-		static Color ByteStringLEToColor(string col)
+		static RGBAColor ByteStringLEToColor(string col)
 		{
 			uint Col = Convert.ToUInt32(col, 16);
-			return new Color((byte)(Col & 0xFF), (byte)((Col >> 8) & 0xFF), (byte)((Col >> 16) & 0xFF), (byte)((Col >> 24) & 0xFF));
+			return new RGBAColor((byte)(Col & 0xFF), (byte)((Col >> 8) & 0xFF), (byte)((Col >> 16) & 0xFF), (byte)((Col >> 24) & 0xFF));
 			//((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24))
 		}
 
@@ -162,7 +162,7 @@ namespace SwitchThemes.Common.Bflyt
 			{
 				if (GroupNames.ContainsStr(g.GroupName)) continue;
 				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s)) return false;
-				f.Panes.Insert(rootGroupIndex, new Grp1Pane(f.version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
+				f.Panes.Insert(rootGroupIndex, new Grp1Pane(f.Version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
 			}
 
 			return true;
@@ -210,7 +210,7 @@ namespace SwitchThemes.Common.Bflyt
 					bin.Write(1f);
 					bin.Write(1f);
 					bin.Write(new byte[0x10]);
-					MatSect.Materials.Add(new BflytMaterial(mem.ToArray(), bin.ByteOrder, f.version));
+					MatSect.Materials.Add(new BflytMaterial(mem.ToArray(), bin.ByteOrder, f.Version));
 				}
 			}
 			#endregion

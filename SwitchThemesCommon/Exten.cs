@@ -8,13 +8,13 @@ namespace ExtensionMethods
 {
 	public static class Extensions
 	{
-		public static Color ReadColorRGBA(this BinaryDataReader bin)
+		public static RGBAColor ReadColorRGBA(this BinaryDataReader bin)
 		{
 			byte[] values = bin.ReadBytes(4);
-			return new Color(values[0], values[1], values[2], values[3]);
+			return new RGBAColor(values[0], values[1], values[2], values[3]);
 		}
 
-		public static void Write(this BinaryDataWriter bin, Color c)
+		public static void Write(this BinaryDataWriter bin, RGBAColor c)
 		{
 			bin.Write(c.R);
 			bin.Write(c.G);
