@@ -234,14 +234,6 @@ void RemoteInstallPage::Update()
 			return;			
 		}
 	}
-	else 
-	{
-		if (KeyPressed(GLFW_GAMEPAD_BUTTON_CROSS))
-		{
-			AutoInstall = true;
-			StartSocketing();
-		}
-	}
 	
 	if (Utils::PageLeaveFocusInput()){
 		Parent->PageLeaveFocus(this);
