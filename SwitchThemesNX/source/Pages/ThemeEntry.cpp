@@ -152,7 +152,7 @@ vector<u8> ThemeEntry::NxThemeGetBgImage()
 		{
 			NXThemeHasPreview = false;
 			CanInstall = false;
-			lblLine2 = "Couldn't load the image";
+			lblLine2 = DDSConv::GetError();
 			return {};
 		}
 	}

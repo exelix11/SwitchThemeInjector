@@ -218,7 +218,7 @@ TextureSection::TextureSection(Buffer &buf) : BasePane("txl1",buf)
 	int texCount = rd.readInt32();
 	u32 BaseOff = rd.Position;
 	auto Offsets = rd.ReadS32Array(texCount);
-	for (auto off : Offsets)
+	for (u64 off : Offsets)
 	{
 		rd.Position = BaseOff + off;
 		Textures.push_back(rd.readStr_NullTerm());
@@ -238,9 +238,8 @@ void TextureSection::WritePane(Buffer &writer)
 	{
 		u32 off = dataWriter.Position;
 		dataWriter.Write(Textures[i], Buffer::BinaryString::NullTerminated);
-		dataWriter.WriteAlign(4);
 		u32 endPos = dataWriter.Position;
-		dataWriter.Position = 4 + i * 4;
+		dataWriter.Position = 4 + (u64)i * 4;
 		dataWriter.Write(off - 4);
 		dataWriter.Position = endPos;
 	}
@@ -270,7 +269,7 @@ void MaterialsSection::WritePane(Buffer &writer)
 	dataWriter.Write((s32)Materials.size());
 	for (int i = 0; i < Materials.size(); i++)
 		dataWriter.Write((s32)0);
-	for (int i = 0; i < Materials.size(); i++)
+	for (u64 i = 0; i < Materials.size(); i++)
 	{
 		u32 off = dataWriter.Position;
 		dataWriter.Write(Materials[i].Write(Version, dataWriter.ByteOrder));
@@ -795,7 +794,7 @@ void Usd1Pane::ApplyChanges()
 	for(const auto &m : Properties)
 	{
 		if (m.type != ValueType::int32 && m.type != ValueType::single) continue;
-		bin.Position = m.ValueOffset + 0xC * AddedProperties.size();
+		bin.Position = m.ValueOffset + 0xC * (u64)AddedProperties.size();
 		for (int i = 0; i < m.ValueCount; i++)
 		{
 			if (m.type == ValueType::int32)

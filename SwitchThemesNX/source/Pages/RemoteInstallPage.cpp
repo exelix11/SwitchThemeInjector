@@ -8,6 +8,7 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #endif
+#include "../SwitchTools/PayloadReboot.hpp"
 
 using namespace std;
 
@@ -45,6 +46,7 @@ void RemoteInstallPage::Render(int X, int Y)
 		}
 		PAGE_RESET_FOCUS;
 		ImGui::TextWrapped("Keep the menu focus on this page or requests won't be executed");
+		ImGui::Checkbox("Automatically install and reboot", &AutoInstall);
 	}
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
@@ -204,7 +206,7 @@ void RemoteInstallPage::Update()
 {
 	if (entry)
 	{
-		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A))
+		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A) || AutoInstall)
 		{
 			string overrideStr = "";
 			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
@@ -213,6 +215,15 @@ void RemoteInstallPage::Update()
 			delete entry;
 			entry = 0;
 			StopSocketing();
+			
+			if (AutoInstall)
+			{
+				if (PayloadReboot::Init())
+					PayloadReboot::Reboot();
+				else
+					Dialog("Couldn't initialize reboot to payload !");
+			}
+			
 			return;
 		}
 		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
@@ -221,6 +232,14 @@ void RemoteInstallPage::Update()
 			entry = 0;			
 			StopSocketing();
 			return;			
+		}
+	}
+	else 
+	{
+		if (KeyPressed(GLFW_GAMEPAD_BUTTON_CROSS))
+		{
+			AutoInstall = true;
+			StartSocketing();
 		}
 	}
 	

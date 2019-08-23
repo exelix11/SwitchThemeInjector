@@ -61,20 +61,42 @@ static void extractBlock(const unsigned char* src, int x, int y,
 	}
 }
 
+extern "C" char* stbi_failure_reason();
+static string LastError = "";
+
+const std::string& DDSConv::GetError()
+{
+	return LastError;
+}
+
+static void failWithError(const std::string &msg) 
+{
+	LastError = "Image error: " + msg;
+	LOGf("%s", LastError.c_str());
+}
+
 vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int ExpectedW, int ExpectedH)
 {
+	LastError = "";
+
 	if ((ExpectedW % 4) || (ExpectedH % 4))
 	{
-		LOGf("Image size must be a multiple of 4");
+		failWithError("Image size must be a multiple of 4");
 		return {};
 	}
 
 	int w, h, n;
 	u8* data = SOIL_load_image_from_memory(imgData.data(), imgData.size(), &w, &h, &n, 4);
 
+	if (!data) 
+	{
+		failWithError(stbi_failure_reason());
+		return {};
+	}
+
 	if (w != ExpectedW || h != ExpectedH)
 	{
-		LOGf("Wrong image size");
+		failWithError("Wrong image size");
 		return {};
 	}
 

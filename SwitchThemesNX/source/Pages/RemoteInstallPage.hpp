@@ -40,4 +40,6 @@ class RemoteInstallPage : public IPage
 		std::string lblConfirm;
 		ThemeEntry *entry = 0;
 		std::string BtnStart;
+
+		bool AutoInstall = false;
 };

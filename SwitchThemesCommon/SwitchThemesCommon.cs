@@ -111,9 +111,10 @@ namespace SwitchThemes.Common
 			return (w, h);
 		}
 
-		private static (UInt32, UInt32) GetJpgSize(byte[] data)
+		private static (UInt32, UInt32, bool) GetJpgInfo(byte[] data) //width, height, progressive
 		{
 			UInt32 w = 0, h = 0;
+			bool Progressive = false;
 			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
 			{
 				bin.ByteOrder = ByteOrder.BigEndian;
@@ -123,17 +124,23 @@ namespace SwitchThemes.Common
 					while ((marker = bin.ReadByte()) != 0xFF) ;
 					while ((marker = bin.ReadByte()) == 0xFF) ;
 
-					if (marker != 0xC0 && marker != 0xC2) continue;
-					
-					bin.ReadByte();
-					bin.ReadByte();
-					bin.ReadByte();
+					if (marker == 0xC0)
+					{
 
-					h = bin.ReadUInt16();
-					w = bin.ReadUInt16();
+						bin.ReadByte();
+						bin.ReadByte();
+						bin.ReadByte();
+
+						h = bin.ReadUInt16();
+						w = bin.ReadUInt16();
+					}
+					if (marker == 0xC2)
+					{
+						Progressive = true;
+					}
 				}
 			}
-			return (w, h);
+			return (w, h, Progressive);
 		}
 
 		public void AddMainBg(byte[] data)
@@ -150,7 +157,11 @@ namespace SwitchThemes.Common
 			else if (data.Matches(0,new byte[] { 0xFF, 0xD8, 0xFF }))
 			{
 				ext = "jpg";
-				(UInt32 w, UInt32 h) = GetJpgSize(data);
+				(UInt32 w, UInt32 h, bool IsProgressive) = GetJpgInfo(data);
+
+				if (IsProgressive)
+					throw new Exception("Progressive JPG images are not currently supported, check the encoding settings in your image editor");
+
 				if (w != 1280 || h != 720)
 					throw new Exception("The background image must be 1280x720.");
 			}
