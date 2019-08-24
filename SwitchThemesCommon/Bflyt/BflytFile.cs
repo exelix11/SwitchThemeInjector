@@ -49,7 +49,6 @@ namespace SwitchThemes.Common.Bflyt
 			}
 
 			public readonly string name;
-			public Int32 length;
 			public byte[] data;
 
 			public byte[] GetData() => data;
@@ -57,15 +56,13 @@ namespace SwitchThemes.Common.Bflyt
 			public BasePane(string _name, int len)
 			{
 				name = _name;
-				length = len;
-				data = new byte[length - 8];
+				data = new byte[len - 8];
 			}
 
 			//used for PropertyEditablePane, data is not cloned so it can be changed from the other classs
 			public BasePane(BasePane basePane)
 			{
 				name = basePane.name;
-				length = basePane.length;
 				data = basePane.data;
 				if (name != "usd1")
 					UserData = basePane.UserData;
@@ -74,7 +71,7 @@ namespace SwitchThemes.Common.Bflyt
 			public BasePane(string _name, BinaryDataReader bin)
 			{
 				name = _name;
-				length = bin.ReadInt32();
+				var length = bin.ReadInt32();
 				data = bin.ReadBytes(length - 8);
 			}
 
@@ -82,7 +79,6 @@ namespace SwitchThemes.Common.Bflyt
 			{
 				name = _name;
 				data = _data;
-				length = data.Length + 8;
 			}
 
 			protected virtual void ApplyChanges(BinaryDataWriter bin) { }
@@ -95,12 +91,14 @@ namespace SwitchThemes.Common.Bflyt
 					b.ByteOrder = bin.ByteOrder;
 					ApplyChanges(b);
 					if (b.BaseStream.Length != 0)
+					{
+						//bin.Align(4);
 						data = mem.ToArray();
+					}
 				}
 
 				bin.Write(name, BinaryStringFormat.NoPrefixOrTermination);
-				length = data.Length + 8;
-				bin.Write(length);
+				bin.Write((UInt32)(data.Length + 8));
 				bin.Write(data);
 				if (UserData != null)
 					UserData.WritePane(bin);

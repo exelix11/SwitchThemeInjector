@@ -45,6 +45,7 @@ namespace SwitchThemes.Common.Bflyt
 
 		public List<EditableProperty> Properties { get; set; }
 		public EditableProperty FindName(string name) => Properties.Where(x => x.Name == name).FirstOrDefault();
+		public int UnknownPropertiesCount { get; internal set; }
 
 		void LoadProperties()
 		{
@@ -64,7 +65,10 @@ namespace SwitchThemes.Common.Bflyt
 				dataReader.ReadByte(); //padding ?
 
 				if (!(dataType == 1 || dataType == 2))
+				{
+					UnknownPropertiesCount++;
 					continue;
+				}
 
 				var pos = dataReader.Position;
 				dataReader.Position = EntryOffset + NameOffset;
@@ -128,7 +132,7 @@ namespace SwitchThemes.Common.Bflyt
 			AddNewProperties();
 
 			bin.ByteOrder = order;
-			bin.Write((ushort)(Properties.Count + AddedProperties.Count));
+			bin.Write((ushort)(Properties.Count + AddedProperties.Count + UnknownPropertiesCount));
 			bin.Write((ushort)0);
 			bin.Write(new byte[0xC * AddedProperties.Count]);
 			bin.Write(data, 4, data.Length - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct

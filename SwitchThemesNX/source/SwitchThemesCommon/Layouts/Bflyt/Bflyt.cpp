@@ -34,12 +34,12 @@ void TextureSection::ApplyChanges(Buffer &dataWriter)
 	{
 		u32 off = dataWriter.Position;
 		dataWriter.Write(Textures[i], Buffer::BinaryString::NullTerminated);
-		dataWriter.WriteAlign(4);
 		u32 endPos = dataWriter.Position;
 		dataWriter.Position = 4 + i * 4;
 		dataWriter.Write(off - 4);
 		dataWriter.Position = endPos;
 	}
+	dataWriter.WriteAlign(4);
 }
 
 MaterialsSection::MaterialsSection(u32 version) : BasePane("mat1", 8), Version(version) {}
@@ -103,7 +103,7 @@ BflytFile::BflytFile(const vector<u8>& file)
 		else if (name == "grp1")
 			Panes.emplace_back(new Grp1Pane(bin, Version));
 		else if (name == "pan1" || name == "prt1" || name == "wnd1" || name == "bnd1")
-			Panes.emplace_back(new Pan1Pane(bin, bin.ByteOrder));
+			Panes.emplace_back(new Pan1Pane(bin, bin.ByteOrder, name));
 		else 
 			Panes.emplace_back(new BasePane(name,bin));
 
@@ -126,6 +126,7 @@ BflytFile::~BflytFile()
 	Panes.clear();
 }
 
+//TODO make this return nullptr
 shared_ptr<TextureSection> BflytFile::GetTexSection()
 {
 	for (auto ptr : Panes)
@@ -153,12 +154,14 @@ vector<u8> BflytFile::SaveFile()
 	Buffer bin;
 	bin.ByteOrder = Endianness::LittleEndian;
 	bin.Write("FLYT");
-	bin.Write((u8)0xFF);
-	bin.Write((u8)0xFE); //Little endian
+	bin.Write((u16)0xFEFF);
 	bin.Write((u16)0x14); //Header size
 	bin.Write((u32)Version);
-	bin.Write((s32)0);
-	bin.Write((u16)Panes.size());
+	bin.Write((u32)0);
+	u16 PaneCount = 0;
+	for (const auto& pane : Panes)
+		PaneCount += pane->UserData ? 2 : 1;
+	bin.Write(PaneCount);
 	bin.Write((u16)0); //padding
 	for (auto p : Panes)
 		p->WritePane(bin);

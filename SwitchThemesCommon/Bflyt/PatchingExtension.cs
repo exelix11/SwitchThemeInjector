@@ -175,7 +175,7 @@ namespace SwitchThemes.Common.Bflyt
 			return patchedSomething;
 		}
 
-		static int AddBgMat(this BflytFile f, string TexName)
+		static ushort AddBgMat(this BflytFile f, string TexName)
 		{
 			var MatSect = f.GetMat;
 			#region AddTextures
@@ -206,7 +206,7 @@ namespace SwitchThemes.Common.Bflyt
 				}
 			}
 			#endregion
-			return MatSect.Materials.Count - 1;
+			return (ushort)(MatSect.Materials.Count - 1);
 		}
 
 		static bool AddBgPanel(this BflytFile f, int index, string TexName, string Pic1Name)
@@ -278,25 +278,14 @@ namespace SwitchThemes.Common.Bflyt
 					if (i < target) target = i;
 					if (patch.DirectPatchPane)
 					{
-						int m = f.AddBgMat(patch.MaintextureName);
-						using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(f.Panes[i].data)))
-						{
-							bin.ByteOrder = ByteOrder.LittleEndian;
-							bin.BaseStream.Position = 0x64 - 8;
-							bin.Write((UInt16)m);
-							f.Panes[i].data = ((MemoryStream)bin.BaseStream).ToArray();
-						}
+						ushort m = f.AddBgMat(patch.MaintextureName);
+						var p = f.Panes[i] as Pic1Pane;
+						p.MaterialIndex = m;
 					}
 					else if (!patch.NoRemovePanel)
 					{
-						using (BinaryDataWriter bin = new BinaryDataWriter(new MemoryStream(f.Panes[i].data)))
-						{
-							bin.ByteOrder = ByteOrder.LittleEndian;
-							bin.BaseStream.Position = 0x24;
-							bin.Write(5000f);
-							bin.Write(60000f);
-							f.Panes[i].data = ((MemoryStream)bin.BaseStream).ToArray();
-						}
+						var p = f.Panes[i] as Pan1Pane;
+						p.Position = new Vector3(5000, 60000, 0);
 					}
 				}
 			}

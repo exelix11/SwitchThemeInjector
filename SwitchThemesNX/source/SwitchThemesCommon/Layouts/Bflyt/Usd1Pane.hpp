@@ -51,7 +51,7 @@ namespace Panes
 
 		void ApplyChanges(Buffer& bin) override
 		{
-			bin.Write((u16)(Properties.size() + AddedProperties.size()));
+			bin.Write((u16)(Properties.size() + AddedProperties.size() + UnknownPropertiesCount));
 			bin.Write((u16)0);
 			for (size_t i = 0; i < 3 * AddedProperties.size(); i++) bin.Write((u32)0);
 			bin.Write(data, 4, data.size() - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
@@ -91,7 +91,8 @@ namespace Panes
 		}
 	private:
 		std::vector<EditableProperty> AddedProperties;
-		
+		size_t UnknownPropertiesCount = 0;
+
 		void LoadProperties()
 		{
 			Buffer dataReader(data);
@@ -109,7 +110,10 @@ namespace Panes
 				dataReader.readUInt8(); //padding ?
 
 				if (!(dataType == 1 || dataType == 2))
+				{
+					UnknownPropertiesCount++;
 					continue;
+				}
 
 				auto pos = dataReader.Position;
 				dataReader.Position = EntryOffset + NameOffset;

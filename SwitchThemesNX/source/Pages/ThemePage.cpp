@@ -90,16 +90,16 @@ void ThemesPage::Render(int X, int Y)
 	ImGui::PushFont(font25);
 
 	if (DisplayEntries.size() == 0)
-	{
 		ImGui::TextWrapped(NoThemesLbl.c_str());
-		goto QUIT_RENDERING;
-	}
-
-	ImGui::SetCursorPosY(570);
-	ImGui::Text(lblCommands.c_str());
 
 	ImGui::SetCursorPosY(600);
 	Utils::ImGuiRightString(lblPage);
+	
+	if (DisplayEntries.size() == 0)
+		goto QUIT_RENDERING;
+
+	ImGui::SetCursorPosY(570);
+	ImGui::Text(lblCommands.c_str());
 
 	{
 		Utils::ImGuiSetupPage(this, X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
@@ -175,6 +175,7 @@ int ThemesPage::PageItemsCount()
 	int menuCount = CurrentFiles.size() - pageNum * LimitLoad;
 	if (menuCount > LimitLoad)
 		menuCount = LimitLoad;
+	if (menuCount < 0) return 0;
 	return menuCount;
 }
 
@@ -201,9 +202,6 @@ void ThemesPage::SelectCurrent()
 
 void ThemesPage::Update()
 {
-	if (DisplayEntries.size() == 0)
-		Parent->PageLeaveFocus(this);
-
 	int menuCount = PageItemsCount();	
 	
 	if (NAV_LEFT)
@@ -218,7 +216,6 @@ void ThemesPage::Update()
 	
 	if (menuCount <= 0)
 		return;
-	
 
 	if (NAV_UP && menuIndex <= 0)
 	{

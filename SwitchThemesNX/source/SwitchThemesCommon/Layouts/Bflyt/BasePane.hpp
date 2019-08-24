@@ -43,17 +43,19 @@ namespace Panes
 		std::vector<std::shared_ptr<BasePane>> Children;
 
 		const std::string name;
-		s32 length = 0;
 		std::vector<u8> data;
 
 		std::string PaneName = ""; //This is optional
 
-		BasePane(const std::string& _name, u32 len) : name(_name), length(len), data(len - 8) {}
+		BasePane(const std::string& _name, u32 len) : name(_name), data(len - 8)
+		{
+
+		}
 
 		//BasePane(const BasePane& ref);
 		BasePane(const std::string& _name, Buffer& reader) : name(_name)
 		{
-			length = reader.readUInt32();
+			auto length = reader.readUInt32();
 			data = reader.readBytes(length - 8);
 		}
 
@@ -65,10 +67,12 @@ namespace Panes
 			bin.ByteOrder = writer.ByteOrder;
 			ApplyChanges(bin);
 			if (bin.Length() != 0)
+			{
 				data = bin.getBuffer();
-			
+			}
+
 			writer.WriteFixedLengthString(name, 4);
-			writer.Write(length);
+			writer.Write(u32(data.size() + 8));
 			writer.Write(data);
 			if (UserData)
 				UserData->WritePane(writer);
