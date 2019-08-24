@@ -12,7 +12,7 @@ using namespace Panes;
 bool BflytPatcher::ClearUVData(const std::string& name)
 {
 	auto paneNames = lyt.GetPaneNames();
-	int index = Utils::IndexOf(paneNames, name);
+	size_t index = Utils::IndexOf(paneNames, name);
 	if (index < 0 || Panes[index]->name != "pic1") return false;
 
 	auto e = dynamic_pointer_cast<Pic1Pane>(Panes[index]);
@@ -29,7 +29,7 @@ bool BflytPatcher::ClearUVData(const std::string& name)
 bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 {
 	auto names = GetPaneNames();
-	for (int i = 0; i < Patches.size(); i++)
+	for (size_t i = 0; i < Patches.size(); i++)
 	{
 		int index = Utils::IndexOf(names, Patches[i].PaneName);
 		if (index == -1)
@@ -165,7 +165,7 @@ bool BflytPatcher::PatchTextureName(const std::string& original, const std::stri
 	auto texSection = lyt.GetTexSection();
 	if (texSection == nullptr)
 		throw "this layout doesn't have any texture section (?)";
-	for (int i = 0; i < texSection->Textures.size(); i++)
+	for (size_t i = 0; i < texSection->Textures.size(); i++)
 	{
 		if (texSection->Textures[i] == original)
 		{
@@ -193,7 +193,7 @@ int BflytPatcher::AddBgMat(const std::string& texName)
 		Buffer bin;
 		bin.ByteOrder = Endianness::LittleEndian;
 		bin.Write("P_Custm", Buffer::BinaryString::NullTerminated);
-		for (int i = 0; i < 0x14; i++)
+		for (size_t i = 0; i < 0x14; i++)
 			bin.Write((u8)0);
 		bin.Write((s32)0x15);
 		bin.Write((s32)0x8040200);
@@ -201,11 +201,11 @@ int BflytPatcher::AddBgMat(const std::string& texName)
 		bin.Write((u32)0xFFFFFFFF);
 		bin.Write((u16)texIndex);
 		bin.Write((u16)0x0);
-		for (int i = 0; i < 0xC; i++)
+		for (size_t i = 0; i < 0xC; i++)
 			bin.Write((u8)0);
 		bin.Write((float)1);
 		bin.Write((float)1);
-		for (int i = 0; i < 0x10; i++)
+		for (size_t i = 0; i < 0x10; i++)
 			bin.Write((u8)0);
 		MatSect->Materials.push_back(BflytMaterial{ bin.getBuffer() , lyt.Version, bin.ByteOrder });
 	}
@@ -257,7 +257,7 @@ bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::
 bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 {
 	//Detect patch
-	for (int i = 0; i < Panes.size(); i++)
+	for (size_t i = 0; i < Panes.size(); i++)
 	{
 		if (Panes[i]->name != "pic1") continue;
 		auto p = dynamic_pointer_cast<Pic1Pane>(Panes[i]);
@@ -270,8 +270,8 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 		}
 	}
 	//Find and remove target panes
-	s32 target = INT32_MAX;
-	for (int i = 0; i < Panes.size() - 1; i++)
+	size_t target = SIZE_MAX;
+	for (size_t i = 0; i < Panes.size() - 1; i++)
 	{
 		string name = Panes[i]->PaneName;
 		if (name != "" && Utils::IndexOf(patch.targetPanels, name) != -1)
@@ -297,7 +297,7 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 			}
 		}
 	}
-	if (target == INT32_MAX)
+	if (target == SIZE_MAX)
 		return false;
 
 	if (!patch.DirectPatchPane)

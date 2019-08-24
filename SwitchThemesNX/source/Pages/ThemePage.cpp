@@ -59,7 +59,7 @@ void ThemesPage::SetPage(int num)
 		delete i;
 	DisplayEntries.clear();
 	
-	int baseIndex = num * LimitLoad;
+	size_t baseIndex = num * LimitLoad;
 	if (num < 0 || baseIndex >= CurrentFiles.size())  
 	{
 		lblPage = (CurrentDir + " - Empty");
@@ -162,7 +162,6 @@ void ThemesPage::Render(int X, int Y)
 			}
 		}
 
-	QUIT_RENDERING_FROMCHILD:
 		Utils::ImGuiSetWindowScrollable();
 		Utils::ImGuiCloseWin();
 	}

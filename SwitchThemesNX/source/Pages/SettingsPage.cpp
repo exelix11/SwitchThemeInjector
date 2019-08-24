@@ -23,7 +23,7 @@ lblInstalled("Currently installed themes number: 0")
 void SettingsPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupWin(Name.c_str(), X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
-	ImGui::SetWindowSize(ImVec2(SCR_W - X, SCR_H - Y - 70));
+	ImGui::SetWindowSize(ImVec2(SCR_W - (float)X, SCR_H - (float)Y - 70));
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
@@ -54,7 +54,7 @@ void SettingsPage::Render(int X, int Y)
 	IsLayoutBlockingLeft = GImGui->NavId == ImGui::GetCurrentWindow()->GetID("Cycle");
 
 	ImGui::Text(lblInstalled.c_str());
-	ImGui::PushStyleColor(ImGuiCol_Button, 0x6B70000ff);
+	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
 	if (ImGui::Button("Remove all"))
 	{
 		ClearThemeShuffle();

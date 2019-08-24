@@ -127,7 +127,7 @@ void PushPageBlocking(IUIControlObj* page)
 			break;
 		}
 
-		_sleep(1 / 30.0 * 1000);
+		PlatformSleep(1 / 30.0f * 1000);
 	}
 }
 
@@ -207,7 +207,7 @@ static void MainLoop()
 		if (doPopPage)
 			_PopPage();
 
-		_sleep(1 / 30.0 * 1000);
+		PlatformSleep(1 / 30.0f * 1000);
 	}
 }
 

@@ -254,7 +254,6 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderTextWrapped({ pos.x + 2, pos.y + name_size.y + 2 }, lblLine1.c_str(), 0, EntryW - 5);
 	ImGui::PopFont();
 	
-QUIT_RENDER:
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
 	return pressed && Utils::ItemNotDragging() ? UserAction::Install : UserAction::None;
 }
@@ -377,7 +376,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			//On 5.x some custom applet bg use common.szs
 			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
 			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
-			if ((themeInfo.Target == "home" && SData.files.count("common.json")) && Settings::UseCommon || DoPatchCommonBG)
+			if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || DoPatchCommonBG)
 			{
 				//common.szs patching code
 				

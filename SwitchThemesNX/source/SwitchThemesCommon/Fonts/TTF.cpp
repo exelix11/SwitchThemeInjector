@@ -87,7 +87,7 @@ vector<u8> SwitchThemesCommon::TTF::ConvertToBFTTF(const vector<u8> &Data)
 
 	Out.Write(BeSize ^ Magic);
 
-	for (int i = 0; i < Data.size() / 4; i++)
+	for (size_t i = 0; i < Data.size() / 4; i++)
 		Out.Write(In.readUInt32() ^ Magic);
 
 	return Out.getBuffer();

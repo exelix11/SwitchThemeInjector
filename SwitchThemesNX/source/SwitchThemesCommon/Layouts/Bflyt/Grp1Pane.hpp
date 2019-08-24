@@ -29,7 +29,7 @@ namespace Panes
 			if (Version <= 0x05020000)
 				bin.readUInt16();
 			auto pos = bin.Position;
-			for (u64 i = 0; i < NodeCount; i++)
+			for (size_t i = 0; i < NodeCount; i++)
 			{
 				bin.Position = pos + i * 24;
 				Panes.push_back(bin.readStr_Fixed(24));
