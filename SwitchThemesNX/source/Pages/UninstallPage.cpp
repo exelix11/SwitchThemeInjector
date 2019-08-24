@@ -16,7 +16,7 @@ void UninstallPage::Render(int X, int Y)
 
 	ImGui::TextWrapped(lblText.c_str());
 
-	ImGui::PushStyleColor(ImGuiCol_Button, 0x6B70000ff);
+	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
 	if (ImGui::Button("Uninstall"))
 	{
 		PushFunction([]() {

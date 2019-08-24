@@ -9,7 +9,6 @@
 #include <switch.h>
 #define ASSET(_str) "romfs:/" _str
 #define SD_PREFIX "sdmc:"
-#define _sleep(x) usleep(x * 1000)
 #endif
 
 #define LOGf(...) printf(__VA_ARGS__)
@@ -45,3 +44,4 @@ void PlatformExit();
 void PlatformAfterInit();
 void PlatformGetInputs();
 void PlatformImguiBinds();
+void PlatformSleep(float time);

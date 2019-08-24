@@ -4,6 +4,7 @@
 #include <string>
 #include "../../BinaryReadWrite/Buffer.hpp"
 #include "../../MyTypes.h"
+#include <memory>
 
 namespace Panes 
 {

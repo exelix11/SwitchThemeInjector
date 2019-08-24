@@ -76,7 +76,7 @@ unsigned int SOIL_direct_load_DDS(
 		int loading_as_cubemap );
 unsigned int SOIL_direct_load_DDS_from_memory(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		unsigned int reuse_texture_ID,
 		int flags,
 		int loading_as_cubemap );
@@ -202,7 +202,7 @@ unsigned int
 	SOIL_load_OGL_texture_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		int force_channels,
 		unsigned int reuse_texture_ID,
 		unsigned int flags
@@ -733,7 +733,7 @@ unsigned int
 	SOIL_load_OGL_single_cubemap_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		const char face_order[6],
 		int force_channels,
 		unsigned int reuse_texture_ID,
@@ -1434,7 +1434,7 @@ unsigned char*
 	SOIL_load_image_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		int *width, int *height, int *channels,
 		int force_channels
 	)
@@ -1520,7 +1520,7 @@ const char*
 
 unsigned int SOIL_direct_load_DDS_from_memory(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		unsigned int reuse_texture_ID,
 		int flags,
 		int loading_as_cubemap )
@@ -1539,7 +1539,6 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 	unsigned int flag;
 	unsigned int cf_target, ogl_target_start, ogl_target_end;
 	unsigned int opengl_texture_type;
-	int i;
 	/*	1st off, does the filename even exist?	*/
 	if( NULL == buffer )
 	{
@@ -1673,7 +1672,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 			/*	compressed DDS, MIPmap size calculation is block based	*/
 			shift_offset = 2;
 		}
-		for( i = 1; i <= mipmaps; ++ i )
+		for(int i = 1; i <= mipmaps; ++ i )
 		{
 			int w, h;
 			w = width >> (shift_offset + i);
@@ -1715,7 +1714,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 			{
 				/*	and remember, DXT uncompressed uses BGR(A),
 					so swap to RGB(A) for ALL MIPmap levels	*/
-				for( i = 0; i < DDS_full_size; i += block_size )
+				for(unsigned i = 0; i < DDS_full_size; i += block_size )
 				{
 					unsigned char temp = DDS_data[i];
 					DDS_data[i] = DDS_data[i+2];
@@ -1733,7 +1732,7 @@ unsigned int SOIL_direct_load_DDS_from_memory(
 					DDS_main_size, DDS_data );
 			}
 			/*	upload the mipmaps, if we have them	*/
-			for( i = 1; i <= mipmaps; ++i )
+			for(int i = 1; i <= mipmaps; ++i )
 			{
 				int w, h, mip_size;
 				w = width >> i;

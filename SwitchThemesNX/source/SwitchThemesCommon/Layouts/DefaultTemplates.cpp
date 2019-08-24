@@ -5,7 +5,7 @@ using namespace std;
 
 bool LayoutPatch::IsCompatible(const SARC::SarcData &sarc)
 {
-	for (int i = 0; i < Files.size(); i++)
+	for (size_t i = 0; i < Files.size(); i++)
 	{
 		if (!sarc.files.count(Files[i].FileName)) return false;
 		//For now this should be enough.

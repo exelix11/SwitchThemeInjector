@@ -29,7 +29,7 @@ PaiTagEntry::PaiTagEntry(Buffer& bin, std::string TagName)
 	auto KeyFrameCount = bin.readUInt16();
 	bin.readUInt16(); //Padding
 	bin.Position = tagStart + bin.readUInt32(); //offset to first keyframe
-	for (int i = 0; i < KeyFrameCount; i++)
+	for (size_t i = 0; i < KeyFrameCount; i++)
 		KeyFrames.emplace_back(bin, DataType);
 	if (TagName == "FLEU")
 	{
@@ -47,7 +47,7 @@ void PaiTagEntry::Write(Buffer& bin, std::string TagName)
 	bin.Write((u16)KeyFrames.size());
 	bin.Write((u16)0);
 	bin.Write((u32)bin.Position - tagStart + 4);
-	for (int i = 0; i < KeyFrames.size(); i++)
+	for (size_t i = 0; i < KeyFrames.size(); i++)
 	{
 		bin.Write(KeyFrames[i].Frame);
 		if (DataType == 2)
@@ -80,9 +80,9 @@ PaiTag::PaiTag(Buffer& bin, u8 TargetType)
 	TagType = bin.readStr(4);
 	auto entryCount = bin.readUInt32();
 	vector<u32> EntryOffsets;
-	for (int i = 0; i < entryCount; i++)
+	for (size_t i = 0; i < entryCount; i++)
 		EntryOffsets.push_back(bin.readUInt32());
-	for (int i = 0; i < entryCount; i++)
+	for (size_t i = 0; i < entryCount; i++)
 	{
 		bin.Position = EntryOffsets[i] + sectionStart;
 		Entries.emplace_back(bin, TagType);
@@ -97,9 +97,9 @@ void PaiTag::Write(Buffer& bin, u8 TargetType)
 	bin.Write(TagType, Buffer::BinaryString::NoPrefixOrTermination);
 	bin.Write((u32)Entries.size());
 	auto EntryTable = bin.Position;
-	for (int i = 0; i < Entries.size(); i++)
+	for (size_t i = 0; i < Entries.size(); i++)
 		bin.Write((u32)0);
-	for (int i = 0; i < Entries.size(); i++)
+	for (size_t i = 0; i < Entries.size(); i++)
 	{
 		auto oldpos = bin.Position;
 		bin.Position = EntryTable + i * 4;
@@ -118,11 +118,11 @@ PaiEntry::PaiEntry(Buffer& bin)
 	Target = (AnimationTarget)bin.readUInt8();
 	bin.readUInt16(); //padding
 	vector<u32> TagOffsets;
-	for (int i = 0; i < tagCount; i++)
+	for (size_t i = 0; i < tagCount; i++)
 		TagOffsets.push_back(bin.readUInt32());
 	if (tagCount == 0) return;
 	UnkwnownData = bin.readBytes((int)(TagOffsets[0] + SectionStart - bin.Position));
-	for (int i = 0; i < tagCount; i++)
+	for (size_t i = 0; i < tagCount; i++)
 	{
 		bin.Position = TagOffsets[i] + SectionStart;
 		Tags.emplace_back(bin, (u8)Target);
@@ -137,10 +137,10 @@ void PaiEntry::Write(Buffer& bin)
 	bin.Write((u8)Target);
 	bin.Write((u16)0);
 	auto tagTable = bin.Position;
-	for (int i = 0; i < Tags.size(); i++)
+	for (size_t i = 0; i < Tags.size(); i++)
 		bin.Write((u32)0);
 	bin.Write(UnkwnownData);
-	for (int i = 0; i < Tags.size(); i++)
+	for (size_t i = 0; i < Tags.size(); i++)
 	{
 		auto oldPos = (u32)bin.Position;
 		bin.Position = tagTable + i * 4;
@@ -186,7 +186,7 @@ void Pat1Section::ParseData(Endianness bo)
 	Unk_EndOfHeader = bin.readBytes((int)animName - (int)bin.Position);
 	bin.Position = animName;
 	Name = bin.readStr_NullTerm();
-	for (int i = 0; i < groupCount; i++)
+	for (size_t i = 0; i < groupCount; i++)
 	{
 		bin.Position = groupNames + i * groupNameLen;
 		Groups.push_back(bin.readStr_Fixed(groupNameLen));
@@ -222,7 +222,7 @@ void Pat1Section::BuildData(Endianness byteOrder)
 	bin.Position = UpdateOffsetsPos + 4; //Group name table
 	bin.Write((u32)oldPos + 8);
 	bin.Position = oldPos;
-	for (int i = 0; i < Groups.size(); i++)
+	for (size_t i = 0; i < Groups.size(); i++)
 		bin.WriteFixedLengthString(Groups[i], groupNameLen);
 	Data = bin.getBuffer();
 }
@@ -248,15 +248,15 @@ void Pai1Section::ParseData(Endianness bo)
 	{
 		auto texTableStart = bin.Position;
 		vector<u32> offsets;
-		for (int i = 0; i < texCount; i++)
+		for (size_t i = 0; i < texCount; i++)
 			offsets.push_back(bin.readUInt32());
-		for (int i = 0; i < texCount; i++)
+		for (size_t i = 0; i < texCount; i++)
 		{
 			bin.Position = texTableStart + offsets[i];
 			Textures.push_back(bin.readStr_NullTerm());
 		}
 	}
-	for (int i = 0; i < entryCount; i++)
+	for (size_t i = 0; i < entryCount; i++)
 	{
 		bin.Position = entryTable + i * 4;
 		bin.Position = bin.readUInt32() - 8;
@@ -279,10 +279,10 @@ void Pai1Section::BuildData(Endianness bo)
 	{
 		auto texTableStart = bin.Position;
 
-		for (int i = 0; i < Textures.size(); i++)
+		for (size_t i = 0; i < Textures.size(); i++)
 			bin.Write((u32)0);
 
-		for (int i = 0; i < Textures.size(); i++)
+		for (size_t i = 0; i < Textures.size(); i++)
 		{
 			auto texPos = bin.Position;
 			bin.Write(Textures[i], Buffer::BinaryString::NullTerminated);
@@ -299,10 +299,10 @@ void Pai1Section::BuildData(Endianness bo)
 	bin.Position = updateOffsets;
 	bin.Write((u32)EntryTableStart + 8);
 	bin.Position = EntryTableStart;
-	for (int i = 0; i < Entries.size(); i++)
+	for (size_t i = 0; i < Entries.size(); i++)
 		bin.Write((u32)0);
 
-	for (int i = 0; i < Entries.size(); i++)
+	for (size_t i = 0; i < Entries.size(); i++)
 	{
 		auto oldpos = bin.Position;
 		bin.Position = EntryTableStart + 4 * i;
@@ -339,7 +339,7 @@ vector<u8> Bflan::WriteFile()
 	bin.Write((u16)Sections.size());
 	bin.Write((u16)0);
 
-	for (int i = 0; i < Sections.size(); i++)
+	for (size_t i = 0; i < Sections.size(); i++)
 		Sections[i]->Write(bin);
 
 	bin.Position = 0xC;
@@ -363,7 +363,7 @@ void Bflan::ParseFile(Buffer& bin)
 	auto sectionCount = bin.readUInt16();
 	bin.readUInt16(); //padding ?
 
-	for (int i = 0; i < sectionCount; i++)
+	for (size_t i = 0; i < sectionCount; i++)
 	{
 		string sectionName = bin.readStr(4);
 		s32 sectionSize = bin.readInt32(); //this includes the first 8 bytes we read here

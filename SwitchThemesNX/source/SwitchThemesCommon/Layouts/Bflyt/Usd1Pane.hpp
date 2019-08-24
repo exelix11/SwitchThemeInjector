@@ -22,7 +22,7 @@ namespace Panes
 		struct EditableProperty
 		{
 			std::string Name;
-			u64 ValueOffset;
+			size_t ValueOffset;
 			u16 ValueCount;
 			ValueType type;
 
@@ -53,13 +53,13 @@ namespace Panes
 		{
 			bin.Write((u16)(Properties.size() + AddedProperties.size()));
 			bin.Write((u16)0);
-			for (int i = 0; i < 3 * AddedProperties.size(); i++) bin.Write((u32)0);
+			for (size_t i = 0; i < 3 * AddedProperties.size(); i++) bin.Write((u32)0);
 			bin.Write(data, 4, data.size() - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
 			for (const auto& m : Properties)
 			{
 				if (m.type != ValueType::int32 && m.type != ValueType::single) continue;
-				bin.Position = m.ValueOffset + 0xC * (u64)AddedProperties.size();
-				for (int i = 0; i < m.ValueCount; i++)
+				bin.Position = m.ValueOffset + 0xC * AddedProperties.size();
+				for (size_t i = 0; i < m.ValueCount; i++)
 				{
 					if (m.type == ValueType::int32)
 						bin.Write(stoi(m.value[i]));
@@ -67,10 +67,10 @@ namespace Panes
 						bin.Write(stof(m.value[i]));
 				}
 			}
-			for (int i = 0; i < AddedProperties.size(); i++)
+			for (size_t i = 0; i < AddedProperties.size(); i++)
 			{
 				bin.Position = bin.Length();
-				u32 DataOffset = (u32)bin.Position;
+				u32 DataOffset = bin.Position;
 				for (int j = 0; j < AddedProperties[i].ValueCount; j++)
 					if (AddedProperties[i].type == ValueType::int32)
 						bin.Write(stoi(AddedProperties[i].value[j]));

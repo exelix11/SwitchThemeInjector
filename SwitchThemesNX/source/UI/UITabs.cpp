@@ -39,8 +39,8 @@ void TabRenderer::Render(int X, int Y)
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0,0.5 });
-	int BaseLabelY = TopRect.w + 15;
-	ImGui::SetCursorPos({ TopLine.x + 4, (float)BaseLabelY });
+	float BaseLabelY = TopRect.w + 15;
+	ImGui::SetCursorPos({ TopLine.x + 4, BaseLabelY });
 	int count = 0;
 	static int selectedIndex;
 	for (const IPage *page : Pages)
@@ -87,7 +87,7 @@ void TabRenderer::Render(int X, int Y)
 		SetFocused(selectedIndex);
 
 	if (CurrentControl)
-		CurrentControl->Render(SideRect.z + 14, TopRect.w + 14);
+		CurrentControl->Render((int)SideRect.z + 14, (int)TopRect.w + 14);
 }
 
 TabRenderer::TabRenderer() :

@@ -56,7 +56,7 @@ static void PopFirst()
 static void AddValue(const string& str, LoadedImage img)
 {
 	ImagePool.emplace_back(str, img);
-	LOGf("Pushing %s size %d\n", str.c_str(), ImagePool.size());
+	LOGf("Pushing %s size %lu\n", str.c_str(), ImagePool.size());
 	if (ImagePool.size() > MaxCachedImages)
 		PopFirst();
 }

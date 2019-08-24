@@ -5,6 +5,7 @@
 #include "../../BinaryReadWrite/Buffer.hpp"
 #include "../../MyTypes.h"
 #include "../Patches.hpp"
+#include <memory>
 #include "BasePane.hpp"
 #include "BflytMaterial.hpp"
 
@@ -40,11 +41,11 @@ namespace Panes
 namespace Utils 
 {
 	template <typename T>
-	static inline int IndexOf(const std::vector<T>& v, const T& s)
+	static inline size_t IndexOf(const std::vector<T>& v, const T& s)
 	{
-		for (int i = 0; i < v.size(); i++)
+		for (size_t i = 0; i < v.size(); i++)
 			if (v[i] == s) return i;
-		return -1;
+		return SIZE_MAX;
 	}
 }
 
@@ -71,8 +72,8 @@ public:
 	std::shared_ptr<Panes::Grp1Pane> RootGroup = nullptr;
 
 	void RemovePane(Panes::PanePtr& pane);
-	void AddPane(int offsetInChildren, Panes::PanePtr& Pane, std::vector<Panes::PanePtr>& pane);
-	void MovePane(Panes::PanePtr& pane, Panes::PanePtr& NewParent, int childOffset);
+	void AddPane(size_t offsetInChildren, Panes::PanePtr& Pane, std::vector<Panes::PanePtr>& pane);
+	void MovePane(Panes::PanePtr& pane, Panes::PanePtr& NewParent, size_t childOffset);
 
 	void RebuildParentingData();
 private:

@@ -115,7 +115,7 @@ namespace Utils
 
 	static inline bool PageLeaveFocusInput(bool AllowLeft = true)
 	{
-		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || NAV_LEFT && AllowLeft;
+		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || (NAV_LEFT && AllowLeft);
 	}
 
 	static inline void ImGuiSelectItem(bool isFocused = true, ImGuiID ID = 0)
