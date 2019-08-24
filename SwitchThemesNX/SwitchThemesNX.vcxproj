@@ -34,7 +34,14 @@
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflan.hpp" />
-    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BasePane.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Grp1Pane.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pan1Pane.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pic1Pane.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\MyTypes.h" />
@@ -84,8 +91,9 @@
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp" />
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt.cpp" />
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\BflytMaterial.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\NXTheme.cpp" />

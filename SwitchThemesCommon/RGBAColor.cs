@@ -60,6 +60,15 @@ namespace SwitchThemes.Common
 			R = r; G = g; B = b; A = a;
 		}
 
+		public RGBAColor(string LeByteString)
+		{
+			uint Col = Convert.ToUInt32(LeByteString, 16);
+			R = (byte)(Col & 0xFF);
+			G = (byte)((Col >> 8) & 0xFF);
+			B = (byte)((Col >> 16) & 0xFF);
+			A = (byte)((Col >> 24) & 0xFF);
+		}
+
 		public override string ToString() => A == 255 ? $"{R};{G};{B}" : $"{R};{G};{B};{A}";
 
 #if LYTEDITOR

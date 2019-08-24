@@ -46,6 +46,9 @@
     <Filter Include="SwitchThemesCommon\Btnx\DDSConv">
       <UniqueIdentifier>{bd0674db-f5fa-4069-94ef-21925bd13823}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SwitchThemesCommon\Layouts\Bflyt">
+      <UniqueIdentifier>{9e3ec0c5-5373-4d74-a93d-8e9316a66c12}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -129,9 +132,6 @@
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp">
       <Filter>SwitchThemesCommon\Fonts</Filter>
     </ClInclude>
-    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt.hpp">
-      <Filter>SwitchThemesCommon\Layouts</Filter>
-    </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClInclude>
@@ -190,6 +190,30 @@
     </ClInclude>
     <ClInclude Include="Libs\SOIL\stb_image_aug.h">
       <Filter>Libs\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pan1Pane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pic1Pane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Grp1Pane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BasePane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -274,9 +298,6 @@
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp">
       <Filter>SwitchThemesCommon\Fonts</Filter>
     </ClCompile>
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\BflytMaterial.cpp">
-      <Filter>SwitchThemesCommon\Layouts</Filter>
-    </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
@@ -284,9 +305,6 @@
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp">
-      <Filter>SwitchThemesCommon\Layouts</Filter>
-    </ClCompile>
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt.cpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\SarcLib\Sarc.cpp">
@@ -326,6 +344,15 @@
     </ClCompile>
     <ClCompile Include="Libs\SOIL\stb_image_aug.c">
       <Filter>Libs\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
