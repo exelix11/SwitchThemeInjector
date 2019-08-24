@@ -15,7 +15,7 @@ namespace SwitchThemes.Common
 {
 	public static class SwitchThemesCommon
 	{
-		public const string CoreVer = "4.2";
+		public const string CoreVer = "4.3";
 		public const int NxThemeFormatVersion = 8;
 
 		const string LoadFileText =
