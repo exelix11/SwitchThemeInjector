@@ -5,6 +5,8 @@
 #include "Layouts/Bflan.hpp"
 #include "NXTheme.hpp"
 #include <algorithm>
+#include "Layouts/Bflyt/Bflyt.hpp"
+#include "Layouts/Bflyt/BflytPatcher.hpp"
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -56,7 +58,7 @@ void SzsPatcher::SaveBntx()
 	bntx = nullptr;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchAnimations(const std::vector<AnimFilePatch>& files)
+bool SzsPatcher::PatchAnimations(const std::vector<AnimFilePatch>& files)
 {
 	u32 TargetVersion = 0;
 	for (const auto& p : files)
@@ -77,29 +79,30 @@ BflytFile::PatchResult SzsPatcher::PatchAnimations(const std::vector<AnimFilePat
 		sarc.files[p.FileName] = bflan->WriteFile();
 		delete bflan;
 	}
-	return BflytFile::PatchResult::OK;
+	return true;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
+bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
 {
 	if (!sarc.files.count(p.FileName))
-		return BflytFile::PatchResult::Fail;
-	BflytFile target(sarc.files[p.FileName]);
+		return false;
+	BflytFile _target(sarc.files[p.FileName]);
+	BflytPatcher target(_target);
 	target.ApplyMaterialsPatch(p.Materials); //Ignore result for 8.0 less strict patching
 	auto res = target.ApplyLayoutPatch(p.Patches);
-	if (res != BflytFile::PatchResult::OK)
+	if (res != true)
 		return res;
 	if (EnableAnimations)
 	{
 		res = target.AddGroupNames(p.AddGroups);
-		if (res != BflytFile::PatchResult::OK)
+		if (res != true)
 			return res;
 	}
-	sarc.files[p.FileName] = target.SaveFile();
-	return BflytFile::PatchResult::OK;
+	sarc.files[p.FileName] = _target.SaveFile();
+	return true;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, bool Fix8x)
+bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, bool Fix8x)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
@@ -122,10 +125,10 @@ BflytFile::PatchResult SzsPatcher::PatchLayouts(const LayoutPatch& patch, const 
 	for (auto p : Files)
 	{
 		auto res = PatchSingleLayout(p);
-		if (res != BflytFile::PatchResult::OK)
+		if (res != true)
 			return res;
 	}
-	return BflytFile::PatchResult::OK;
+	return true;
 }
 
 static bool StrEndsWith(const std::string &str, const std::string &suffix)
@@ -139,42 +142,45 @@ static bool StrStartsWith(const std::string &str, const std::string &prefix)
 	return str.find(prefix, 0) == 0;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchMainBG(const vector<u8> &DDS)
+bool SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 {
 	PatchTemplate templ = DetectSarc();
 
 	//Patch BG layouts
-	BflytFile MainFile(sarc.files[templ.MainLayoutName]);
-	auto res = MainFile.PatchBgLayout(templ);
-	if (res == BflytFile::PatchResult::Fail || res == BflytFile::PatchResult::CorruptedFile) return res;
+	BflytFile _MainFile(sarc.files[templ.MainLayoutName]);
+	BflytPatcher MainFile(_MainFile);
 	
-	sarc.files[templ.MainLayoutName] = MainFile.SaveFile();
+	auto res = MainFile.PatchBgLayout(templ);
+	if (!res) return res;
+	
+	sarc.files[templ.MainLayoutName] = _MainFile.SaveFile();
 	for (const auto& t : sarc.files)
 	{
 		auto& f = t.first;
 		if (!StrEndsWith(f, ".bflyt") || !StrStartsWith(f, "blyt/") || f == templ.MainLayoutName) continue;
-		BflytFile curTarget(sarc.files[f]);
+		BflytFile _curTarget(sarc.files[f]);
+		BflytPatcher curTarget(_curTarget);
 		if (curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace))
-			sarc.files[f] = curTarget.SaveFile();
+			sarc.files[f] = _curTarget.SaveFile();
 	}	
 
 	//Patch bntx
 	QuickBntx* q = OpenBntx();
 	if (q->Rlt.size() != 0x80)
 	{
-		return BflytFile::PatchResult::CorruptedFile;
+		return false;
 	}
 	auto dds = DDSEncoder::LoadDDS(DDS);
 	q->ReplaceTex(templ.MaintextureName, dds);
 
-	return BflytFile::PatchResult::OK;
+	return true;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, u32 ChannelData)
+bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, u32 ChannelData)
 {
 	QuickBntx* q = OpenBntx();
 	if (q->Rlt.size() != 0x80)
-		return BflytFile::PatchResult::CorruptedFile;
+		return false;
 
 	try
 	{
@@ -185,12 +191,12 @@ BflytFile::PatchResult SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const
 	}
 	catch (...)
 	{
-		return BflytFile::PatchResult::Fail;
+		return false;
 	}
-	return BflytFile::PatchResult::OK;
+	return true;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName)
+bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName)
 {
 	auto patch = DetectSarc();
 	string nxthemeTarget = "";
@@ -198,36 +204,38 @@ BflytFile::PatchResult SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, c
 	{
 		auto it = find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(),
 			[&patch](const pair<string, string>& v) { return v.second == patch.szsName;	});
-		if (it == ThemeTargetToFileName.end()) return BflytFile::PatchResult::Fail;
+		if (it == ThemeTargetToFileName.end()) return false;
 		nxthemeTarget = it->first;
 	}
 
 	if (!Patches::textureReplacement::NxNameToList.count(nxthemeTarget))
-		return BflytFile::PatchResult::Fail;
+		return false;
 
 	auto& list = Patches::textureReplacement::NxNameToList[nxthemeTarget];
 	auto it = find_if(list.begin(), list.end(),
 		[&texName](const TextureReplacement& t) {return t.NxThemeName == texName; });
 	if (it == list.end()) 
-		return BflytFile::PatchResult::Fail;
+		return false;
 
 	auto res = PatchSingleLayout(it->patch);
-	if (res != BflytFile::PatchResult::OK) return res;
+	if (res != true) return res;
 
 	PatchBntxTexture(DDS, it->BntxName, it->NewColorFlags);
 
-	BflytFile curTarget{ sarc.files[it->FileName] };
-	curTarget.ClearUVData(it->PaneName);
-	sarc.files[it->FileName] = curTarget.SaveFile();
+	BflytFile _curTarget{ sarc.files[it->FileName] };
+	BflytPatcher curTarget(_curTarget);
 
-	return BflytFile::PatchResult::OK;
+	curTarget.ClearUVData(it->PaneName);
+	sarc.files[it->FileName] = _curTarget.SaveFile();
+
+	return true;
 }
 
-BflytFile::PatchResult SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexAttribPatch> &patches)
+bool SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexAttribPatch> &patches)
 {
 	QuickBntx *q = OpenBntx();
 	if (q->Rlt.size() != 0x80)
-		return BflytFile::PatchResult::CorruptedFile;
+		return false;
 
 	try
 	{
@@ -239,9 +247,9 @@ BflytFile::PatchResult SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexA
 	}
 	catch (...)
 	{
-		return BflytFile::PatchResult::Fail;
+		return false;
 	}
-	return BflytFile::PatchResult::OK;
+	return true;
 }
 
 

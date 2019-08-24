@@ -53,16 +53,6 @@ namespace SwitchThemes.Common.Bflyt
 			}
 		}
 
-		public override void WritePane(BinaryDataWriter bin)
-		{
-			MemoryStream mem = new MemoryStream();
-			BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
-			dataWriter.ByteOrder = bin.ByteOrder;
-			ApplyChanges(dataWriter);
-			data = mem.ToArray();
-			base.WritePane(bin);
-		}
-
 		protected override void ApplyChanges(BinaryDataWriter bin)
 		{
 			if (Version >= 0x05020000)

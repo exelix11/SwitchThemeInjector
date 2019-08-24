@@ -85,8 +85,19 @@ namespace SwitchThemes.Common.Bflyt
 				length = data.Length + 8;
 			}
 
-			public virtual void WritePane(BinaryDataWriter bin)
+			protected virtual void ApplyChanges(BinaryDataWriter bin) { }
+
+			public void WritePane(BinaryDataWriter bin)
 			{
+				var mem = new MemoryStream();
+				using (BinaryDataWriter b = new BinaryDataWriter(mem))
+				{
+					b.ByteOrder = bin.ByteOrder;
+					ApplyChanges(b);
+					if (b.BaseStream.Length != 0)
+						data = mem.ToArray();
+				}
+
 				bin.Write(name, BinaryStringFormat.NoPrefixOrTermination);
 				length = data.Length + 8;
 				bin.Write(length);
@@ -105,8 +116,6 @@ namespace SwitchThemes.Common.Bflyt
 					res.UserData = (Usd1Pane)UserData.Clone();
 				return res;
 			}
-
-			protected virtual void ApplyChanges(BinaryDataWriter bin) { }
 		}
 
 		public class CusRectangle
@@ -142,11 +151,8 @@ namespace SwitchThemes.Common.Bflyt
 
 			public TextureSection() : base("txl1", 8) { }
 
-			public override void WritePane(BinaryDataWriter bin)
+			protected override void ApplyChanges(BinaryDataWriter dataWriter)
 			{
-				var newData = new MemoryStream();
-				BinaryDataWriter dataWriter = new BinaryDataWriter(newData);
-				dataWriter.ByteOrder = bin.ByteOrder;
 				dataWriter.Write((Int16)Textures.Count);
 				dataWriter.Write((Int16)0); //padding
 				dataWriter.Write(new int[Textures.Count]);
@@ -161,8 +167,6 @@ namespace SwitchThemes.Common.Bflyt
 				}
 				while (dataWriter.BaseStream.Position % 4 != 0)
 					dataWriter.Write((byte)0);
-				data = newData.ToArray();
-				base.WritePane(bin);
 			}
 		}
 
@@ -188,25 +192,20 @@ namespace SwitchThemes.Common.Bflyt
 
 			public MaterialsSection() : base("mat1", 8) { }
 
-			public override void WritePane(BinaryDataWriter bin)
+			protected override void ApplyChanges(BinaryDataWriter dataWriter)
 			{
-				var newData = new MemoryStream();
-				BinaryDataWriter dataWriter = new BinaryDataWriter(newData);
-				dataWriter.ByteOrder = bin.ByteOrder;
 				dataWriter.Write((Int16)Materials.Count);
 				dataWriter.Write((Int16)0); //padding
 				dataWriter.Write(new int[Materials.Count]);
 				for (int i = 0; i < Materials.Count; i++)
 				{
 					uint off = (uint)dataWriter.Position;
-					dataWriter.Write(Materials[i].Write(version, bin.ByteOrder));
+					dataWriter.Write(Materials[i].Write(version, dataWriter.ByteOrder));
 					uint endPos = (uint)dataWriter.Position;
 					dataWriter.Position = 4 + i * 4;
 					dataWriter.Write(off + 8);
 					dataWriter.Position = endPos;
 				}
-				data = newData.ToArray();
-				base.WritePane(bin);
 			}
 		}
 
@@ -353,7 +352,7 @@ namespace SwitchThemes.Common.Bflyt
 			return paneIndex;
 		}
 
-		public void AddPane(int offsetInChilren, BasePane Parent, params BasePane[] pane)
+		public void AddPane(int offsetInChildren, BasePane Parent, params BasePane[] pane)
 		{
 			string childStarter = pane[0] is Grp1Pane ? "grs1" : "pas1";
 			string childCloser = pane[0] is Grp1Pane ? "gre1" : "pae1";
@@ -371,7 +370,7 @@ namespace SwitchThemes.Common.Bflyt
 			}
 
 			pane[0].Parent = Parent;
-			if (offsetInChilren <= 0 || offsetInChilren >= Parent.Children.Count)
+			if (offsetInChildren <= 0 || offsetInChildren >= Parent.Children.Count)
 			{
 				Parent.Children.AddRange(pane);
 				Panes.InsertRange(parentIndex + 2, pane);
@@ -384,14 +383,14 @@ namespace SwitchThemes.Common.Bflyt
 				{
 					i = FindPaneEnd(i) + 1;
 					childCount++;
-					if (childCount == offsetInChilren)
+					if (childCount == offsetInChildren)
 					{
 						actualInsertOffset = i;
 						break;
 					}
 				}
 
-				Parent.Children.InsertRange(offsetInChilren, pane);
+				Parent.Children.InsertRange(offsetInChildren, pane);
 				Panes.InsertRange(actualInsertOffset, pane);
 			}
 			RebuildParentingData();
@@ -482,8 +481,8 @@ namespace SwitchThemes.Common.Bflyt
 					continue;
 				}
 				if (!(Panes[i] is Grp1Pane)) break;
-				((Grp1Pane)Panes[i]).Parent = curRoot;
-				curRoot.Children.Add((Grp1Pane)Panes[i]);
+				Panes[i].Parent = curRoot;
+				curRoot.Children.Add(Panes[i]);
 			}
 			if (curRoot != RootGroup)
 				throw new Exception("Unexpected pane data ending: one or more group sections are not closed by the end of the file");
@@ -499,10 +498,13 @@ namespace SwitchThemes.Common.Bflyt
 					return new Txt1Pane(pane, FileByteOrder);
 				case "grp1":
 					return new Grp1Pane(pane, FileByteOrder, Version);
-				default:
-					if (pane.data.Length < 0x4C || pane.name == "grp1" || pane.name == "cnt1")
-						return pane;
+				case "pan1":
+				case "prt1":
+				case "wnd1":
+				case "bnd1":
 					return new Pan1Pane(pane, FileByteOrder);
+				default:
+					return pane;
 			}
 		}
 

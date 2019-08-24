@@ -257,18 +257,6 @@ namespace SwitchThemes.Common.Bflyt
 			bin.Write(Size);
 		}
 
-		public override void WritePane(BinaryDataWriter bin)
-		{
-			using (var mem = new MemoryStream())
-			{
-				BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
-				dataWriter.ByteOrder = bin.ByteOrder;
-				ApplyChanges(dataWriter);
-				data = mem.ToArray();
-			}
-			base.WritePane(bin);
-		}
-
 		public override BasePane Clone()
 		{
 			return new Pan1Pane(base.Clone(),order);

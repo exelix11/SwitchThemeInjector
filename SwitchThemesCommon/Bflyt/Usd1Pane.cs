@@ -123,12 +123,10 @@ namespace SwitchThemes.Common.Bflyt
 					throw new Exception("You can't remove existing properties");
 		}
 
-		public void ApplyChanges()
+		protected override void ApplyChanges(BinaryDataWriter bin)
 		{
 			AddNewProperties();
 
-			MemoryStream mem = new MemoryStream();
-			BinaryDataWriter bin = new BinaryDataWriter(mem);
 			bin.ByteOrder = order;
 			bin.Write((ushort)(Properties.Count + AddedProperties.Count));
 			bin.Write((ushort)0);
@@ -169,16 +167,9 @@ namespace SwitchThemes.Common.Bflyt
 				bin.Write((byte)0);
 				OriginalProperties.Add(AddedProperties[i].Name);
 			}
-			data = mem.ToArray();
 
 			Properties.AddRange(AddedProperties);
 			AddedProperties.Clear();
-		}
-
-		public override void WritePane(BinaryDataWriter bin)
-		{
-			ApplyChanges();
-			base.WritePane(bin);
 		}
 
 		public override BasePane Clone() => new Usd1Pane(this);

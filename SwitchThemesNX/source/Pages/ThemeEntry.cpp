@@ -261,8 +261,7 @@ QUIT_RENDER:
 
 static bool PatchBG(SzsPatcher &Patcher, const vector<u8> &data, const string &SzsName)
 {
-	auto pResult = Patcher.PatchMainBG(data);
-	if (pResult != BflytFile::PatchResult::OK)
+	if (!Patcher.PatchMainBG(data))
 	{
 		Dialog("PatchBntx failed for " + SzsName + "\nThe theme was not installed");
 		return false;
@@ -279,16 +278,14 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 		return false;
 	}
 	Patcher.SetPatchAnimations(Settings::UseAnimations);
-	auto res = Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home");
-	if (res != BflytFile::PatchResult::OK)
+	if (!Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home"))
 	{
 		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
 	}
 	if (Settings::UseAnimations)
 	{
-		res = Patcher.PatchAnimations(patch.Anims);
-		if (res != BflytFile::PatchResult::OK)
+		if (!Patcher.PatchAnimations(patch.Anims))
 		{
 			Dialog("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
 			return false;				
@@ -460,7 +457,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
 					for (const TextureReplacement& p : list)
 					{
-						auto pResult = BflytFile::PatchResult::Fail;
+						auto pResult = false;
 						if (SData.files.count(p.NxThemeName + ".dds"))
 							pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
 						else if (SData.files.count(p.NxThemeName + ".png"))
@@ -476,7 +473,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 						}
 						else continue;
 
-						if (pResult != BflytFile::PatchResult::OK)
+						if (!pResult)
 							Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 						else
 							SkipSaveActualFile = false;
@@ -489,8 +486,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				if (themeInfo.Target == "home" && SData.files.count("album.dds"))
 				{
 					SkipSaveActualFile = false;
-					auto pResult = Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000);
-					if (pResult != BflytFile::PatchResult::OK)
+					if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
 						Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 				}
 			}

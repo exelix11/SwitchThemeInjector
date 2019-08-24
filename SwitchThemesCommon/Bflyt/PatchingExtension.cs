@@ -12,7 +12,7 @@ namespace SwitchThemes.Common.Bflyt
 	public static class BflytExten
 	{
 		public static string[] GetPaneNames(this BflytFile f) =>
-			f.Panes.Select(x => (x as INamedPane)?.PaneName).ToArray();
+			f.Panes.Select(x => (x as INamedPane)?.PaneName ?? "").ToArray();
 
 		public static bool ClearUVData(this BflytFile f, string name)
 		{
@@ -42,8 +42,7 @@ namespace SwitchThemes.Common.Bflyt
 				if (index == -1)
 					return false;
 				var p = Patches[i];
-				var e = new Pan1Pane(f.Panes[index], f.FileByteOrder);
-				f.Panes[index] = e;
+				var e = f.Panes[index] as Pan1Pane;
 				if (p.Visible != null)
 					e.Visible = p.Visible.Value;
 				#region ChangeTransform
@@ -89,13 +88,13 @@ namespace SwitchThemes.Common.Bflyt
                 {
 					var ee = e as Pic1Pane;
                     if (p.ColorTL != null)
-                        ee.ColorTopLeft = ByteStringLEToColor(p.ColorTL);
+                        ee.ColorTopLeft = new RGBAColor(p.ColorTL);
                     if (p.ColorTR != null)
-                        ee.ColorTopRight = ByteStringLEToColor(p.ColorTR);
+                        ee.ColorTopRight = new RGBAColor(p.ColorTR);
                     if (p.ColorBL != null)
-                        ee.ColorBottomLeft = ByteStringLEToColor(p.ColorBL);
+                        ee.ColorBottomLeft = new RGBAColor(p.ColorBL);
                     if (p.ColorBR != null)
-                        ee.ColorBottomRight = ByteStringLEToColor(p.ColorBR);
+                        ee.ColorBottomRight = new RGBAColor(p.ColorBR);
                 }
                 #endregion
 				#region usdPane
@@ -110,7 +109,7 @@ namespace SwitchThemes.Common.Bflyt
 						if (v != null && v.ValueCount == patch.PropValues.Length && (int)v.type == patch.type)
 							v.value = patch.PropValues;
 					}
-					usd.ApplyChanges();
+					//usd.ApplyChanges();
 				}
 				#endregion
 			}
@@ -127,18 +126,11 @@ namespace SwitchThemes.Common.Bflyt
 				var target = mats.Materials.Where(x => x.Name == p.MaterialName).First();
 				if (target == null) continue; //Less strict patching
 				if (p.ForegroundColor != null)
-					target.ForegroundColor = ByteStringLEToColor(p.ForegroundColor);
+					target.ForegroundColor = new RGBAColor(p.ForegroundColor);
 				if (p.BackgroundColor != null)
-					target.BackgroundColor = ByteStringLEToColor(p.BackgroundColor);
+					target.BackgroundColor = new RGBAColor(p.BackgroundColor);
 			}
 			return true;
-		}
-
-		static RGBAColor ByteStringLEToColor(string col)
-		{
-			uint Col = Convert.ToUInt32(col, 16);
-			return new RGBAColor((byte)(Col & 0xFF), (byte)((Col >> 8) & 0xFF), (byte)((Col >> 16) & 0xFF), (byte)((Col >> 24) & 0xFF));
-			//((uint)(col.R | col.G << 8 | col.B << 16 | col.A << 24))
 		}
 
 		public static bool AddGroupNames(this BflytFile f, ExtraGroup[] Groups)
