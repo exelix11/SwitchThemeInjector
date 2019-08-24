@@ -13,7 +13,7 @@ bool BflytPatcher::ClearUVData(const std::string& name)
 {
 	auto paneNames = lyt.GetPaneNames();
 	size_t index = Utils::IndexOf(paneNames, name);
-	if (index < 0 || Panes[index]->name != "pic1") return false;
+	if (index == SIZE_MAX || Panes[index]->name != "pic1") return false;
 
 	auto e = dynamic_pointer_cast<Pic1Pane>(Panes[index]);
 	for (auto& uv : e->UvCoords)
@@ -32,7 +32,7 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 	for (size_t i = 0; i < Patches.size(); i++)
 	{
 		int index = Utils::IndexOf(names, Patches[i].PaneName);
-		if (index == -1)
+		if (index == SIZE_MAX)
 			//return false;
 			continue;
 		//The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares
@@ -109,6 +109,7 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 
 bool BflytPatcher::ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches)
 {
+	if (Patches.size() == 0) return true;
 	auto mats = lyt.GetMatSection();
 	if (!mats) return false;
 	for (const auto& p : Patches)
@@ -176,14 +177,14 @@ bool BflytPatcher::PatchTextureName(const std::string& original, const std::stri
 	return patchedSomething;
 }
 
-int BflytPatcher::AddBgMat(const std::string& texName)
+u16 BflytPatcher::AddBgMat(const std::string& texName)
 {
 	auto MatSect = lyt.GetMatSection();
 	//Add texture
 	auto texSection = lyt.GetTexSection();
 	if (!MatSect || !texSection) return false;
 	int texIndex = Utils::IndexOf(texSection->Textures, texName);
-	if (texIndex == -1)
+	if (texIndex == SIZE_MAX)
 	{
 		texIndex = texSection->Textures.size();
 		texSection->Textures.push_back(texName);
@@ -209,7 +210,7 @@ int BflytPatcher::AddBgMat(const std::string& texName)
 			bin.Write((u8)0);
 		MatSect->Materials.push_back(BflytMaterial{ bin.getBuffer() , lyt.Version, bin.ByteOrder });
 	}
-	return MatSect->Materials.size() - 1;
+	return u16(MatSect->Materials.size() - 1);
 }
 
 bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::string& Pic1Name)
@@ -274,26 +275,21 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 	for (size_t i = 0; i < Panes.size() - 1; i++)
 	{
 		string name = Panes[i]->PaneName;
-		if (name != "" && Utils::IndexOf(patch.targetPanels, name) != -1)
+		if (name != "" && Utils::IndexOf(patch.targetPanels, name) != SIZE_MAX)
 		{
 			if (i < target) target = i;
 			if (patch.DirectPatchPane)
 			{
-				int m = AddBgMat(patch.MaintextureName);
-				Buffer bin(Panes[i]->data);
-				bin.ByteOrder = Endianness::LittleEndian;
-				bin.Position = 0x64 - 8;
-				bin.Write((u16)m);
-				Panes[i]->data = move(bin.getBuffer());
+				auto m = AddBgMat(patch.MaintextureName);
+				if (Panes[i]->name != "pic1") throw "Expected a picture pane !";
+				auto p = dynamic_pointer_cast<Pic1Pane>(Panes[i]);
+				p->MaterialIndex = m;
 			}
 			else if (!patch.NoRemovePanel)
 			{
-				Buffer bin(Panes[i]->data);
-				bin.ByteOrder = Endianness::LittleEndian;
-				bin.Position = 0x24;
-				bin.Write((float)5000.0);
-				bin.Write((float)60000.0);
-				Panes[i]->data = bin.getBuffer();
+				auto p = dynamic_pointer_cast<Pan1Pane>(Panes[i]);
+				p->Position.X = 5000;
+				p->Position.Y = 60000;
 			}
 		}
 	}

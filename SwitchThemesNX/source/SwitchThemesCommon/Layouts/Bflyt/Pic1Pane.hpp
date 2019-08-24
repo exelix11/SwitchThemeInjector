@@ -59,7 +59,7 @@ namespace Panes
 			ColorTopRight = RGBAColor::Read(buf);
 			ColorBottomLeft = RGBAColor::Read(buf);
 			ColorBottomRight = RGBAColor::Read(buf);
-			buf.readUInt16(); //material index
+			MaterialIndex = buf.readUInt16(); //material index
 			int uvCount = buf.readUInt8();
 			buf.readUInt8(); //padding
 			for (int i = 0; i < uvCount; i++)

@@ -22,7 +22,7 @@ public:
 
 	bool PatchTextureName(const std::string& original, const std::string& _new);
 
-	int AddBgMat(const std::string& texName);
+	u16 AddBgMat(const std::string& texName);
 
 	bool AddBgPanel(int index, const std::string &TexName, const std::string &Pic1Name);
 	

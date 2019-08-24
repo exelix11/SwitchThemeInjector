@@ -513,6 +513,11 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 		Dialog("Error while installing this theme: " + err);	
 		return false;	
 	}
+	catch (const exception& ex)
+	{
+		Dialog("Error while installing this theme: " + string(ex.what()));
+		return false;
+	}
 	catch (...)
 	{
 		Dialog("Exception while installing this theme.");	
