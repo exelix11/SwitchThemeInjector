@@ -218,7 +218,7 @@ bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& 
 		return false;
 
 	auto res = PatchSingleLayout(it->patch);
-	if (res != true) return res;
+	if (!res) return res;
 
 	PatchBntxTexture(DDS, it->BntxName, it->NewColorFlags);
 
