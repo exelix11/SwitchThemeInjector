@@ -101,6 +101,9 @@ namespace SwitchThemes.Common
 		public PanePatch[] Patches;
 		public ExtraGroup[] AddGroups = null;
 		public MaterialPatch[] Materials = null;
+		//Note: these properties change the panes order and are not used by the differ, they must be manually set in a json
+		public string[] PushBackPanes = null;
+		public string[] PullFrontPanes = null;
 	}
 
 	public class ExtraGroup

@@ -66,4 +66,8 @@ void PlatformImguiBinds()
 	else io.MouseDown[0] = false;
 }
 
+void PlatformSleep(float time)
+{
+	usleep(time * 1000);
+}
 #endif

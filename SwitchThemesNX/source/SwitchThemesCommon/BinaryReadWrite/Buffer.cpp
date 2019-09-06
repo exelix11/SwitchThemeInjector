@@ -8,7 +8,7 @@ Buffer::Buffer()  {}
 Buffer::Buffer(const std::vector<unsigned char> &_buffer) :
     buffer(_buffer) {}
 
-long long unsigned int Buffer::Length() { return buffer.size(); }
+size_t Buffer::Length() { return buffer.size(); }
 
 void Buffer::setBuffer(std::vector<unsigned char> &_buffer)  {
     buffer = _buffer;
@@ -26,12 +26,12 @@ std::string Buffer::byteStr(bool LE) const  {
     byteStr << std::hex << std::setfill('0');
 
     if (LE == true) {
-        for (unsigned long long i = 0; i < buffer.size(); ++i)
-            byteStr << std::setw(2) << (unsigned short)buffer[i] << " ";
+        for (size_t i = 0; i < buffer.size(); ++i)
+            byteStr << std::setw(2) << buffer[i] << " ";
     } else {
-        unsigned long long size = buffer.size();
-        for (unsigned long long i = 0; i < size; ++i)
-            byteStr << std::setw(2) << (unsigned short)buffer[size - i - 1] << " ";
+		size_t size = buffer.size();
+        for (size_t i = 0; i < size; ++i)
+            byteStr << std::setw(2) << buffer[size - i - 1] << " ";
     }
 
     return byteStr.str();
@@ -54,7 +54,7 @@ template <class T> inline void Buffer::writeBytes(const T &val, bool LE) {
 
     if (LE == true) {
         for (unsigned int i = 0, mask = 0; i < size; ++i, mask += 8)
-			putByte(val >> mask);
+			putByte((val >> mask) & 0xFF);
     } else {
         unsigned const char *array = reinterpret_cast<unsigned const char*>(&val);
         for (unsigned int i = 0; i < size; ++i)
@@ -67,7 +67,7 @@ void Buffer::WriteFixedLengthString(const std::string& str, unsigned int maxLen)
 	if (str.size() > maxLen)
 		throw "The input string is longer than the max allowed lenght";
 	Write(str, BinaryString::NoPrefixOrTermination);
-	for (int i = str.size(); i < maxLen; i++)
+	for (size_t i = str.size(); i < maxLen; i++)
 		Write((unsigned char)0);
 }
 
@@ -86,7 +86,7 @@ void Buffer::WriteAlign(int val)
 
 void Buffer::WriteU32Array(const std::vector<unsigned int>& arr)
 {
-	for (int i = 0; i < arr.size(); i++)
+	for (size_t i = 0; i < arr.size(); i++)
 		Write(arr[i]);
 }
 
@@ -244,10 +244,10 @@ bool Buffer::readBool()  {
     return readBytes<bool>();
 }
 
-std::string Buffer::readStr_Fixed(unsigned long long len) 
+std::string Buffer::readStr_Fixed(size_t len) 
 {
 	auto data = readBytes(len);
-	int i = 0;
+	size_t i = 0;
 	for (; i < len && data[i]; i++);
 	return std::string(data.begin(), data.begin() + i);
 }
@@ -258,18 +258,18 @@ std::string Buffer::readStr_U16Prefix()
 	return readStr(len);
 }
 
-std::string Buffer::readStr(unsigned long long len)  {
+std::string Buffer::readStr(size_t len)  {
     if (Position + len > buffer.size())
         throw std::out_of_range("Buffer out of range (provided length greater than buffer size)");
     std::string result(buffer.begin() + Position, buffer.begin() + Position + len);
     Position += len;
     return result;
 }
-std::string Buffer::readStr_NullTerm(int maxLen) 
+std::string Buffer::readStr_NullTerm(size_t maxLen)
 {
 	std::vector<char> buf;
 	char c = readInt8();
-	int charCount = 0;
+	size_t charCount = 0;
 	while (c != 0 && charCount < maxLen)
 	{
 		buf.push_back(c);

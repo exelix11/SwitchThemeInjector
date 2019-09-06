@@ -7,7 +7,7 @@ using Syroot.BinaryData;
 using System.Linq;
 using System.ComponentModel;
 
-namespace SwitchThemes.Common
+namespace SwitchThemes.Common.Bflan
 {
 	public class BflanSection
 	{
@@ -411,7 +411,7 @@ namespace SwitchThemes.Common
 		public override string ToString() => "[Pai1 section]";
 	}
 
-	public class Bflan
+	public class BflanFile
 	{
 		public ByteOrder byteOrder { get; set; }
 		public uint Version { get; set; }
@@ -423,9 +423,9 @@ namespace SwitchThemes.Common
 		[Browsable(false)]
 		public Pai1Section paiData => Sections.Where(x => x is Pai1Section).FirstOrDefault() as Pai1Section;
 
-		public Bflan() { }
+		public BflanFile() { }
 
-		public Bflan(byte[] data) => ParseFile(new MemoryStream(data));
+		public BflanFile(byte[] data) => ParseFile(new MemoryStream(data));
 
 		public byte[] WriteFile()
 		{

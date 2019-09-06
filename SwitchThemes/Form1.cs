@@ -442,7 +442,8 @@ namespace SwitchThemes
 					MessageBox.Show("There is nothing to patch");
 					return;
 				}
-				if (MessageBox.Show("Are you sure you want to continue without selecting a background?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+
+				if (MessageBox.Show("Are you sure you want to continue without selecting a background image ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
 			else if (!File.Exists(tbImageFile.Text))
@@ -460,44 +461,17 @@ namespace SwitchThemes
 
 			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
 
-			var res = BflytFile.PatchResult.OK;
-			if (tbImageFile.Text.Trim() != "")
+			var res = true;
+			if (tbBntxFile.Text.Trim() != "")
 			{
 				if (!BgImageCheck(true)) return;
 
-				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
-				if (res == BflytFile.PatchResult.Fail)
+				res = Patcher.PatchMainBG(File.ReadAllBytes(tbBntxFile.Text));
+				if (!res)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 					return;
-				}
-				else if (res == BflytFile.PatchResult.CorruptedFile)
-				{
-					MessageBox.Show("This file has been already patched with another tool and is not compatible, you should get an unmodified layout.");
-					return;
-				}						
-			}
-
-			if (LayoutPatchList.SelectedIndex != 0)
-			{
-				Patcher.EnableAnimations = !UseAnim.Checked;
-				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
-				if (layoutres == BflytFile.PatchResult.Fail)
-				{
-					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-					return;
-				}
-				else if (layoutres == BflytFile.PatchResult.CorruptedFile)
-				{
-					MessageBox.Show("A layout in this SZS is missing a pane required for the selected layout patch, you are probably using an already patched SZS");
-					return;
-				}
-				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
-				if (layoutres != BflytFile.PatchResult.OK)
-				{
-					MessageBox.Show("Error while patching the animations!");
-					return;
-				}
+				}					
 			}
 
 			if (targetPatch.NXThemeName == "home")
@@ -509,7 +483,11 @@ namespace SwitchThemes
 					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
 						return;
 					HomeAppletIcons[n.NxThemeName] = path;
-					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName);
+					if (!Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName))
+					{
+						MessageBox.Show($"Failed applet icon patch for {n.NxThemeName}");
+						return;
+					}
 				}
 			}
 			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
@@ -519,16 +497,30 @@ namespace SwitchThemes
 				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
 			}
 
+			if (LayoutPatchList.SelectedIndex != 0)
+			{
+				Patcher.EnableAnimations = !UseAnim.Checked;
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
+				if (!layoutres)
+				{
+					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+					return;
+				}
+				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
+				if (!layoutres)
+				{
+					MessageBox.Show("Error while patching the animations !");
+					return;
+				}
+			}
+
 			CommonSzs = Patcher.GetFinalSarc();
 			var sarc = SARC.PackN(CommonSzs);
 			
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
 
-			if (res == BflytFile.PatchResult.AlreadyPatched)
-				MessageBox.Show("Done, This file has already been patched before.\r\nIf you have issues try with an unmodified file");
-			else
-				MessageBox.Show("Done");
+			MessageBox.Show("Done");
 		}
 
 		[Obsolete("NXTheme Installer now can directly preview .DDS files")]

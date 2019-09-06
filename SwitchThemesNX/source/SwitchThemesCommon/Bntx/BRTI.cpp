@@ -41,20 +41,20 @@ BRTI::BRTI(Buffer &Reader)
 
 	ExtraBrtiData = Reader.readBytes((int)(BRTILength1 - (Reader.Position - startPos)));
 
-	Reader.Position = NameAddress;
+	Reader.Position = (size_t)NameAddress;
 
 	_readonly_name = Reader.readStr_U16Prefix();
 
 	vector<u64> MipOffsets;
 
-	Reader.Position = PtrsAddress;
+	Reader.Position = (size_t)PtrsAddress;
 
-	long BaseOffset = Reader.readInt64();
+	u64 BaseOffset = Reader.readInt64();
 
 	for (int Mip = 1; Mip < MipmapCount; Mip++)
 		throw "mipmaps are not supported";
 
-	Reader.Position = BaseOffset;
+	Reader.Position = (size_t)BaseOffset;
 
 	Data = Reader.readBytes(DataLength);
 }

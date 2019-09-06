@@ -95,6 +95,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1 = ("Invalid theme");
 		CanInstall = false;
 	}
+	NXThemeVer = themeInfo.Version;
 	if (themeInfo.Version > 8)
 	{
 		lblLine2 = ("New version, update the installer !");
@@ -256,15 +257,13 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderTextWrapped({ pos.x + 2, pos.y + name_size.y + 2 }, lblLine1.c_str(), 0, EntryW - 5);
 	ImGui::PopFont();
 	
-QUIT_RENDER:
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
 	return pressed && Utils::ItemNotDragging() ? UserAction::Install : UserAction::None;
 }
 
 static bool PatchBG(SzsPatcher &Patcher, const vector<u8> &data, const string &SzsName)
 {
-	auto pResult = Patcher.PatchMainBG(data);
-	if (pResult != BflytFile::PatchResult::OK)
+	if (!Patcher.PatchMainBG(data))
 	{
 		Dialog("PatchBntx failed for " + SzsName + "\nThe theme was not installed");
 		return false;
@@ -281,16 +280,14 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 		return false;
 	}
 	Patcher.SetPatchAnimations(Settings::UseAnimations);
-	auto res = Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home");
-	if (res != BflytFile::PatchResult::OK)
+	if (!Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home"))
 	{
 		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
 	}
 	if (Settings::UseAnimations)
 	{
-		res = Patcher.PatchAnimations(patch.Anims);
-		if (res != BflytFile::PatchResult::OK)
+		if (!Patcher.PatchAnimations(patch.Anims))
 		{
 			Dialog("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
 			return false;				
@@ -382,7 +379,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			//On 5.x some custom applet bg use common.szs
 			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
 			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
-			if ((themeInfo.Target == "home" && SData.files.count("common.json")) && Settings::UseCommon || DoPatchCommonBG)
+			if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || DoPatchCommonBG)
 			{
 				//common.szs patching code
 				
@@ -435,17 +432,62 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			}
 
 			if (!SkipSaveActualFile)
-			{		
+			{
 				if (patch.FirmName == "")
 				{
 					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 					return false;
-				}				
+				}
 				if (NxThemeGetBgImage().size() != 0)
 					if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 						return false;
 			}
-								
+
+			//Applet icons patching
+			if (Settings::UseIcons)
+			{
+				if (NXThemeVer >= 8) {
+					//New applet texture patching method
+					if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
+					{
+						auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
+						for (const TextureReplacement& p : list)
+						{
+							auto pResult = false;
+							if (SData.files.count(p.NxThemeName + ".dds"))
+								pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
+							else if (SData.files.count(p.NxThemeName + ".png"))
+							{
+								auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
+								if (dds.size() != 0)
+									pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
+								else
+								{
+									Dialog("Couldn't load the icon image for " + p.NxThemeName);
+									continue;
+								}
+							}
+							else continue;
+
+							if (!pResult)
+								Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+							else
+								SkipSaveActualFile = false;
+						}
+					}
+				}
+				else
+				{
+					//Old album.szs patching to avoid breaking old themes
+					if (themeInfo.Target == "home" && SData.files.count("album.dds"))
+					{
+						SkipSaveActualFile = false;
+						if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
+							Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+					}
+				}
+			}
+
 			if (SData.files.count("layout.json"))
 			{
 				SkipSaveActualFile = false;
@@ -455,48 +497,6 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 			}
 
-			if (ParseNXThemeFile(SData).Version >= 8) {
-				//New applet texture patching method
-				if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
-				{
-					auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
-					for (const TextureReplacement& p : list)
-					{
-						auto pResult = BflytFile::PatchResult::Fail;
-						if (SData.files.count(p.NxThemeName + ".dds"))
-							pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
-						else if (SData.files.count(p.NxThemeName + ".png"))
-						{
-							auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
-							if (dds.size() != 0)
-								pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
-							else
-							{
-								Dialog("Couldn't load the icon image for " + p.NxThemeName);
-								continue;
-							}
-						}
-						else continue;
-
-						if (pResult != BflytFile::PatchResult::OK)
-							Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-						else
-							SkipSaveActualFile = false;
-					}
-				}
-			}
-			else
-			{
-				//Old album.szs patching to avoid breaking old themes
-				if (themeInfo.Target == "home" && SData.files.count("album.dds"))
-				{
-					SkipSaveActualFile = false;
-					auto pResult = Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000);
-					if (pResult != BflytFile::PatchResult::OK)
-						Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-				}
-			}
-			
 			if (!SkipSaveActualFile)
 			{
 				if (TitleId == "0100000000001000" && homeDirOverride != "")
@@ -519,6 +519,11 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 	{
 		Dialog("Error while installing this theme: " + err);	
 		return false;	
+	}
+	catch (const exception& ex)
+	{
+		Dialog("Error while installing this theme: " + string(ex.what()));
+		return false;
 	}
 	catch (...)
 	{

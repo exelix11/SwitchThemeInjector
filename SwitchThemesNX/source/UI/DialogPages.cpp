@@ -60,7 +60,7 @@ YesNoPage::YesNoPage(const string &msg, bool *outRes): text(msg)
 
 void YesNoPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupWin("YesNoPage", 20, 20, ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+	Utils::ImGuiSetupWin("YesNoPage", 20, 20, (ImGuiWindowFlags_NoDecoration & ~ImGuiWindowFlags_NoScrollbar) | ImGuiWindowFlags_NoMove);
 	ImGui::SetWindowFocus();
 	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30 });
 	ImGui::PushFont(font30);

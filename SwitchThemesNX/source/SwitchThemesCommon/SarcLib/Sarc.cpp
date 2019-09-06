@@ -27,7 +27,7 @@ public:
 		chunkSize = br.readUInt16();
 		nodeCount = br.readUInt16();
 		hashMultiplier = br.readUInt32();
-		for (int i = 0; i < nodeCount; i++)
+		for (size_t i = 0; i < nodeCount; i++)
 		{
 			Node node;
 			node.Hash = br.readUInt32();
@@ -69,7 +69,7 @@ public:
 u32 SARC::NameHash(const string &name)
 {
 	u32 result = 0;
-	for (int i = 0; i < name.length(); i++)
+	for (size_t i = 0; i < name.length(); i++)
 	{
 		result = name[i] + result * 0x00000065;
 	}
@@ -85,7 +85,7 @@ bool FormatMatches(const vector<u8> &f, int startIndex, const string &header)
 {
 	auto strLen = header.length();
 	if (f.size() < strLen + startIndex) return false;
-	for (int i = 0; i < strLen; i++)
+	for (size_t i = 0; i < strLen; i++)
 	{
 		if (f[i + startIndex] != header[i]) return false;
 	}
@@ -216,7 +216,7 @@ SARC::PackedSarc SARC::Pack(SARC::SarcData &data, s32 _align)
 		bw.Write(data.files[f]);
 		OrderedKeys.push_back(f);
 	}
-	for (int i = 0; i < offsetToUpdate.size(); i++)
+	for (size_t i = 0; i < offsetToUpdate.size(); i++)
 	{
 		bw.Position = offsetToUpdate[i];
 		if (!data.HashOnly)

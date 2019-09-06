@@ -50,4 +50,5 @@ class ThemeEntry
 		std::string lblLine2;
 		
 		bool NXThemeHasPreview = false;
+		int NXThemeVer = -1;
 };

@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/Bntx/DDSConv source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
+SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Layouts/Bflyt source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/Bntx/DDSConv source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
 DATA		:=	data
 INCLUDES	:=	include Libs
 EXEFS_SRC	:=	exefs_src
@@ -46,12 +46,12 @@ APP_VERSION := 2.0.1
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS	:=	-Wall -O2 -ffunction-sections \
+CFLAGS	:=	-O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 
-CXXFLAGS	:= $(CFLAGS) -fno-rtti -std=gnu++17 -fpermissive
+CXXFLAGS	:= $(CFLAGS) -std=gnu++17 -fpermissive
 
 ASFLAGS	:=	 -g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs

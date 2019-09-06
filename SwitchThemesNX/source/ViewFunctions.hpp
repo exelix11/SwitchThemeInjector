@@ -34,19 +34,19 @@ namespace Utils
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
 		ImGui::Begin(name, 0, flags);
-		ImGui::SetWindowPos(ImVec2(x, y));
+		ImGui::SetWindowPos(ImVec2((float)x, (float)y));
 	}
 
 	static inline void ImGuiSetupPage(const char *name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGuiSetupWin(name, x, y, flags);
-		ImGui::SetWindowSize(ImVec2(SCR_W - x, SCR_H - y));
+		ImGui::SetWindowSize(ImVec2(SCR_W - (float)x, SCR_H - (float)y));
 	}
 
 	static inline void ImGuiSetupPage(const IPage* page, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGuiSetupWin(page->Name.c_str(), x, y, flags);
-		ImGui::SetWindowSize(ImVec2(SCR_W - x, SCR_H - y));
+		ImGui::SetWindowSize(ImVec2(SCR_W - (float)x, SCR_H - (float)y));
 	}
 
 	static inline void ImGuiCloseWin()
@@ -97,7 +97,7 @@ namespace Utils
 		}
 		ImGui::SetCursorPosX((win / 2 - TotX / 2) - (buttons.size() - 1) * style.FramePadding.x * 2);
 		int res = -1;
-		for (int i = 0; i < buttons.size(); i++)
+		for (size_t i = 0; i < buttons.size(); i++)
 		{
 			if (ImGui::Button(buttons[i].c_str()))
 				res = i;
@@ -115,7 +115,7 @@ namespace Utils
 
 	static inline bool PageLeaveFocusInput(bool AllowLeft = true)
 	{
-		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || NAV_LEFT && AllowLeft;
+		return KeyPressed(GLFW_GAMEPAD_BUTTON_B) || (NAV_LEFT && AllowLeft);
 	}
 
 	static inline void ImGuiSelectItem(bool isFocused = true, ImGuiID ID = 0)
