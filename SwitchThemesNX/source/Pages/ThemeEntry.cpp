@@ -95,6 +95,7 @@ void ThemeEntry::ParseNxTheme()
 		lblLine1 = ("Invalid theme");
 		CanInstall = false;
 	}
+	NXThemeVer = themeInfo.Version;
 	if (themeInfo.Version > 8)
 	{
 		lblLine2 = ("New version, update the installer !");
@@ -429,17 +430,62 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			}
 
 			if (!SkipSaveActualFile)
-			{		
+			{
 				if (patch.FirmName == "")
 				{
 					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 					return false;
-				}				
+				}
 				if (NxThemeGetBgImage().size() != 0)
 					if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 						return false;
 			}
-								
+
+			//Applet icons patching
+			if (Settings::UseIcons)
+			{
+				if (NXThemeVer >= 8) {
+					//New applet texture patching method
+					if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
+					{
+						auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
+						for (const TextureReplacement& p : list)
+						{
+							auto pResult = false;
+							if (SData.files.count(p.NxThemeName + ".dds"))
+								pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
+							else if (SData.files.count(p.NxThemeName + ".png"))
+							{
+								auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
+								if (dds.size() != 0)
+									pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
+								else
+								{
+									Dialog("Couldn't load the icon image for " + p.NxThemeName);
+									continue;
+								}
+							}
+							else continue;
+
+							if (!pResult)
+								Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+							else
+								SkipSaveActualFile = false;
+						}
+					}
+				}
+				else
+				{
+					//Old album.szs patching to avoid breaking old themes
+					if (themeInfo.Target == "home" && SData.files.count("album.dds"))
+					{
+						SkipSaveActualFile = false;
+						if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
+							Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+					}
+				}
+			}
+
 			if (SData.files.count("layout.json"))
 			{
 				SkipSaveActualFile = false;
@@ -449,47 +495,6 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					return false;
 			}
 
-			if (ParseNXThemeFile(SData).Version >= 8) {
-				//New applet texture patching method
-				if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
-				{
-					auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
-					for (const TextureReplacement& p : list)
-					{
-						auto pResult = false;
-						if (SData.files.count(p.NxThemeName + ".dds"))
-							pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
-						else if (SData.files.count(p.NxThemeName + ".png"))
-						{
-							auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
-							if (dds.size() != 0)
-								pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
-							else
-							{
-								Dialog("Couldn't load the icon image for " + p.NxThemeName);
-								continue;
-							}
-						}
-						else continue;
-
-						if (!pResult)
-							Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-						else
-							SkipSaveActualFile = false;
-					}
-				}
-			}
-			else
-			{
-				//Old album.szs patching to avoid breaking old themes
-				if (themeInfo.Target == "home" && SData.files.count("album.dds"))
-				{
-					SkipSaveActualFile = false;
-					if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
-						Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
-				}
-			}
-			
 			if (!SkipSaveActualFile)
 			{
 				if (TitleId == "0100000000001000" && homeDirOverride != "")
