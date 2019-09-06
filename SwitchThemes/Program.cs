@@ -129,19 +129,6 @@ namespace SwitchThemes
 						Console.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 						return false;
 					}
-				}				
-
-				if (Layout != null)
-				{
-					Patcher.EnableAnimations = true;
-					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
-					var layoutres = Patcher.PatchLayouts(l, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
-					if (!layoutres)
-					{
-						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-						return false;
-					}
-					layoutres = Patcher.PatchAnimations(l.Anims);
 				}
 
 				void ProcessAppletIcons(List<TextureReplacement> l)
@@ -158,6 +145,19 @@ namespace SwitchThemes
 
 				if (TextureReplacement.NxNameToList.ContainsKey(targetPatch.NXThemeName))
 					ProcessAppletIcons(TextureReplacement.NxNameToList[targetPatch.NXThemeName]);
+
+				if (Layout != null)
+				{
+					Patcher.EnableAnimations = true;
+					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
+					var layoutres = Patcher.PatchLayouts(l, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
+					if (!layoutres)
+					{
+						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+						return false;
+					}
+					layoutres = Patcher.PatchAnimations(l.Anims);
+				}
 
 				CommonSzs = Patcher.GetFinalSarc();
 				var sarc = SARC.PackN(CommonSzs);

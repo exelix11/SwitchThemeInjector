@@ -473,23 +473,6 @@ namespace SwitchThemes
 				}					
 			}
 
-			if (LayoutPatchList.SelectedIndex != 0)
-			{
-				Patcher.EnableAnimations = !UseAnim.Checked;
-				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
-				if (!layoutres)
-				{
-					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-					return;
-				}
-				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
-				if (!layoutres)
-				{
-					MessageBox.Show("Error while patching the animations !");
-					return;
-				}
-			}
-
 			if (targetPatch.NXThemeName == "home")
 			{
 				foreach (var n in TextureReplacement.NxNameToList[targetPatch.NXThemeName])
@@ -507,6 +490,23 @@ namespace SwitchThemes
 				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
 					return;
 				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
+			}
+
+			if (LayoutPatchList.SelectedIndex != 0)
+			{
+				Patcher.EnableAnimations = !UseAnim.Checked;
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
+				if (!layoutres)
+				{
+					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+					return;
+				}
+				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
+				if (!layoutres)
+				{
+					MessageBox.Show("Error while patching the animations !");
+					return;
+				}
 			}
 
 			CommonSzs = Patcher.GetFinalSarc();

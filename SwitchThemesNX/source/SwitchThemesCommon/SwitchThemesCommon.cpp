@@ -11,7 +11,7 @@
 using namespace std;
 using namespace SwitchThemesCommon;
 
-const string SwitchThemesCommon::CoreVer = "4.2 (C++)";
+const string SwitchThemesCommon::CoreVer = "4.3 (C++)";
 
 string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& templates) 
 {
