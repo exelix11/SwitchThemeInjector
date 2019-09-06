@@ -442,7 +442,7 @@ namespace SwitchThemes
 					MessageBox.Show("There is nothing to patch");
 					return;
 				}
-				if (MessageBox.Show("Are you sure you want to continue without selecting a bntx ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				if (MessageBox.Show("Are you sure you want to continue without selecting a background image ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
 			else if (!File.Exists(tbBntxFile.Text))
@@ -482,7 +482,11 @@ namespace SwitchThemes
 					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
 						return;
 					HomeAppletIcons[n.NxThemeName] = path;
-					Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName);
+					if (!Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName))
+					{
+						MessageBox.Show($"Failed applet icon patch for {n.NxThemeName}");
+						return;
+					}
 				}
 			}
 			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)

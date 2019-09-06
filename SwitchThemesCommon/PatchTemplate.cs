@@ -279,7 +279,6 @@ namespace SwitchThemes.Common
 				new PanePatch { PaneName = "N_00", Position = new NullableVector3(0,0,0) },
 				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56), Position = new NullableVector3(0,10,0),
 				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
-				new PanePatch { PaneName = "P_Stick", Visible = false },
 				new PanePatch { PaneName = "N_02", Visible = false },
 				new PanePatch { PaneName = "N_01", Visible = false },
 				new PanePatch { PaneName = "P_Pict_01", Visible = false },
