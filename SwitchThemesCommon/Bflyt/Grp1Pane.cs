@@ -14,9 +14,11 @@ namespace SwitchThemes.Common.Bflyt
 	{
 		public string GroupName { get; set; }
 
+#if LYTEDITOR
 		[Editor(@"System.Windows.Forms.Design.StringCollectionEditor," +
 	  "System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
 	 typeof(System.Drawing.Design.UITypeEditor))]
+#endif
 		public List<string> Panes { get; set; } = new List<string>();
 
 		public uint Version;

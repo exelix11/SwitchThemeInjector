@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ExtensionMethods;
 using SARCExt;
 using SwitchThemes.Common;
@@ -25,8 +24,7 @@ namespace SwitchThemes.Common
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
 			if (!ScrambledEquals<string>(original.Files.Keys, edited.Files.Keys))
 			{
-				MessageBox.Show("The provided archives don't have the same files");
-				return null;
+				throw new Exception("The provided archives don't have the same files");
 			}
 
 			bool hasAtLeastAnExtraGroup = false; //Used to detect if animations are properly implemented
@@ -126,8 +124,7 @@ namespace SwitchThemes.Common
 			}
 			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
 			{
-				MessageBox.Show("Couldn't find any difference");
-				return null; 
+				throw new Exception("Couldn't find any difference");
 			}
 
 			List<AnimFilePatch> AnimPatches = new List<AnimFilePatch>();
@@ -138,12 +135,14 @@ namespace SwitchThemes.Common
 				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
 			}
 			if (AnimPatches.Count == 0) AnimPatches = null;
-			else if (!hasAtLeastAnExtraGroup) MessageBox.Show("This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations");
+			else if (!hasAtLeastAnExtraGroup) throw new Exception("This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations");
+
+			var targetPatch = SzsPatcher.DetectSarc(original, DefaultTemplates.templates);
 
 			return new LayoutPatch()
 			{
-				//TODO: PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
-				PatchName = "diffPatch",
+				PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
+				TargetName = targetPatch?.szsName,
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),

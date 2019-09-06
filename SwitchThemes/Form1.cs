@@ -191,9 +191,16 @@ namespace SwitchThemes
 			};
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
-			var res = LayoutDiff.Diff(originalSzs, CommonSzs);
-			if (res == null) return;
-			res.TargetName = targetPatch?.szsName;
+			LayoutPatch res = null;
+			try
+			{
+				res = LayoutDiff.Diff(originalSzs, CommonSzs);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.Message);
+				return;
+			}
 
 			//if (targetPatch == null || targetPatch.NXThemeName == "home")
 			//if (MessageBox.Show(
@@ -462,11 +469,11 @@ namespace SwitchThemes
 			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
 
 			var res = true;
-			if (tbBntxFile.Text.Trim() != "")
+			if (tbImageFile.Text.Trim() != "")
 			{
 				if (!BgImageCheck(true)) return;
 
-				res = Patcher.PatchMainBG(File.ReadAllBytes(tbBntxFile.Text));
+				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
 				if (!res)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
