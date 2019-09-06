@@ -28,8 +28,8 @@ public:
 
     std::string byteStr(bool LE = true) const ;
 
-	unsigned long long Length();
-	unsigned long long Position = 0;
+	size_t Length();
+	size_t Position = 0;
     /************************** Writing ***************************/
 
     template <class T> inline void writeBytes(const T &val, bool LE = true);
@@ -78,9 +78,9 @@ public:
     template <class T> inline T readBytes(bool LE = true);
 
     bool               readBool() ;
-	std::string		   readStr_Fixed(unsigned long long len);
-    std::string        readStr(unsigned long long len);
-    std::string        readStr_NullTerm(int maxLen = INT32_MAX);
+	std::string		   readStr_Fixed(size_t len);
+    std::string        readStr(size_t len);
+    std::string        readStr_NullTerm(size_t maxLen = SIZE_MAX);
 	std::string        readStr_U16Prefix();
 
     char               readInt8() ;

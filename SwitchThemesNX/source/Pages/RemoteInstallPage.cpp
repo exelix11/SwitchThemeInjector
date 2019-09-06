@@ -153,7 +153,7 @@ void RemoteInstallPage::SocketUpdate()
 		}
 		else
 		{			
-			if (strncmp(buf, "theme", 5) != 0)
+			if (strncmp((char*)buf, "theme", 5) != 0)
 			{
 				DialogError("(Unexpected data received.)");
 				StopSocketing();

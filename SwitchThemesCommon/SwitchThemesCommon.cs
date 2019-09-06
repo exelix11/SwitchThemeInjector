@@ -1,4 +1,6 @@
 ﻿using SwitchThemes.Common.Bntxx;
+using SwitchThemes.Common.Bflyt;
+using SwitchThemes.Common.Bflan;
 using SwitchThemes.Common.Serializers;
 using Syroot.BinaryData;
 using System;
@@ -13,7 +15,7 @@ namespace SwitchThemes.Common
 {
 	public static class SwitchThemesCommon
 	{
-		public const string CoreVer = "4.2";
+		public const string CoreVer = "4.3";
 		public const int NxThemeFormatVersion = 8;
 
 		const string LoadFileText =
@@ -212,6 +214,7 @@ namespace SwitchThemes.Common
 		private IEnumerable<PatchTemplate> templates;
 
 		public bool EnableAnimations = true;
+		public bool EnablePaneOrderMod = true;
 
 		public SzsPatcher(SarcData s, IEnumerable<PatchTemplate> t)
 		{
@@ -239,18 +242,18 @@ namespace SwitchThemes.Common
 			return sarc;
 		}
 
-		public BflytFile.PatchResult PatchAnimations(AnimFilePatch[] files)
+		public bool PatchAnimations(AnimFilePatch[] files)
 		{
-			if (files == null) return BflytFile.PatchResult.OK;
+			if (files == null) return true;
 			uint TargetVersion = 0;
 			foreach (var p in files)
 			{
 				if (!sarc.Files.ContainsKey(p.FileName))
-					continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+					continue; //return bool.Fail; Don't be so strict as older firmwares may not have all the animations (?)
 
 				if (TargetVersion == 0)
 				{
-					Bflan b = new Bflan(sarc.Files[p.FileName]);
+					BflanFile b = new BflanFile(sarc.Files[p.FileName]);
 					TargetVersion = b.Version;
 				}
 
@@ -259,30 +262,28 @@ namespace SwitchThemes.Common
 				n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
 				sarc.Files[p.FileName] = n.WriteFile();
 			}
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
-		private BflytFile.PatchResult PatchSingleLayout(LayoutFilePatch p)
+		private bool PatchSingleLayout(LayoutFilePatch p)
 		{
-			if (p == null || p.FileName == null) return BflytFile.PatchResult.OK;
+			if (p == null || p.FileName == null) return true;
 			if (!sarc.Files.ContainsKey(p.FileName))
-				return BflytFile.PatchResult.Fail;
+				return false;
 			var target = new BflytFile(sarc.Files[p.FileName]);
 			target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
 			var res = target.ApplyLayoutPatch(p.Patches);
-			if (res != BflytFile.PatchResult.OK)
-				return res;
+			if (!res) return res;
 			if (EnableAnimations)
 			{
 				res = target.AddGroupNames(p.AddGroups);
-				if (res != BflytFile.PatchResult.OK)
-					return res;
+				if (!res) return res;
 			}
 			sarc.Files[p.FileName] = target.SaveFile();
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
-		public BflytFile.PatchResult PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
+		public bool PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
 				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
@@ -303,35 +304,32 @@ namespace SwitchThemes.Common
 			foreach (var p in Files)
 			{
 				var res = PatchSingleLayout(p);
-				if (res != BflytFile.PatchResult.OK)
-					return res;
+				if (!res) return res;
 			}
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
-		public BflytFile.PatchResult PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
+		public bool PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
 		{
 			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
-			{
-				return BflytFile.PatchResult.CorruptedFile;
-			}
+				return false;
 			q.ReplaceTex(texName, DDS);
 			if (TexFlag != 0xFFFFFFFF)
 				q.FindTex(texName).ChannelTypes = (int)TexFlag;
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
-		public BflytFile.PatchResult PatchAppletIcon(byte[] DDS, string name)
+		public bool PatchAppletIcon(byte[] DDS, string name)
 		{
 			var patch = DetectSarc();
 			if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
-				return BflytFile.PatchResult.Fail;
+				return false;
 
 			var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
 
 			var res = PatchSingleLayout(target.patch);
-			if (res != BflytFile.PatchResult.OK) return res;
+			if (!res) return res;
 
 			PatchBntxTexture(DDS, target.BntxName, target.NewColorFlags);
 
@@ -339,16 +337,16 @@ namespace SwitchThemes.Common
 			curTarget.ClearUVData(target.PaneName);
 			sarc.Files[target.FileName] = curTarget.SaveFile();
 
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
 
-		public BflytFile.PatchResult PatchMainBG(byte[] DDS)
+		public bool PatchMainBG(byte[] DDS)
 		{
 			return PatchMainBG(DDSEncoder.LoadDDS(DDS));
 		}
 
-		public BflytFile.PatchResult PatchMainBG(DDSEncoder.DDSLoadResult DDS)
+		public bool PatchMainBG(DDSEncoder.DDSLoadResult DDS)
 		{
 			var template = DetectSarc();
 			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
@@ -356,8 +354,7 @@ namespace SwitchThemes.Common
 			//PatchBGLayouts
 			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
 			var res = MainFile.PatchBgLayout(template);
-			if (res == BflytFile.PatchResult.CorruptedFile || res == BflytFile.PatchResult.Fail)
-				return res;
+			if (!res) return res;
 
 			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
 			var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
@@ -371,21 +368,17 @@ namespace SwitchThemes.Common
 			//PatchBGBntx
 			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
-			{
-				return BflytFile.PatchResult.CorruptedFile;
-			}
+				return false;
 			q.ReplaceTex(template.MaintextureName, DDS);
 			DDS = null;
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
-		public BflytFile.PatchResult PatchBntxTextureAttribs(params Tuple<string, UInt32>[] patches)
+		public bool PatchBntxTextureAttribs(params Tuple<string, UInt32>[] patches)
 		{
 			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
-			{
-				return BflytFile.PatchResult.CorruptedFile;
-			}
+				return false;
 			try
 			{
 				foreach (var patch in patches)
@@ -396,9 +389,9 @@ namespace SwitchThemes.Common
 			}
 			catch
 			{
-				return BflytFile.PatchResult.Fail;
+				return false;
 			}
-			return BflytFile.PatchResult.OK;
+			return true;
 		}
 
 		public PatchTemplate DetectSarc()

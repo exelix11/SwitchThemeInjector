@@ -23,15 +23,15 @@ s32 pow2_round_up(s32 x)
 
 s32 Log2(s32 v)
 {
-	s32 r = 0xFFFF - v >> 31 & 0x10;
+	s32 r = ((0xFFFF - v) >> 31) & 0x10;
 	v >>= r;
-	s32 shift = 0xFF - v >> 31 & 0x8;
+	s32 shift = ((0xFF - v) >> 31) & 0x8;
 	v >>= shift;
 	r |= shift;
-	shift = 0xF - v >> 31 & 0x4;
+	shift = ((0xF - v) >> 31) & 0x4;
 	v >>= shift;
 	r |= shift;
-	shift = 0x3 - v >> 31 & 0x2;
+	shift = ((0x3 - v) >> 31) & 0x2;
 	v >>= shift;
 	r |= shift;
 	r |= (v >> 1);

@@ -235,7 +235,7 @@ unsigned int
 	SOIL_load_OGL_texture_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		int force_channels,
 		unsigned int reuse_texture_ID,
 		unsigned int flags
@@ -294,7 +294,7 @@ unsigned int
 	SOIL_load_OGL_single_cubemap_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		const char face_order[6],
 		int force_channels,
 		unsigned int reuse_texture_ID,
@@ -385,7 +385,7 @@ unsigned char*
 	SOIL_load_image_from_memory
 	(
 		const unsigned char *const buffer,
-		int buffer_length,
+		size_t buffer_length,
 		int *width, int *height, int *channels,
 		int force_channels
 	);

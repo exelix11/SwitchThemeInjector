@@ -78,4 +78,8 @@ void PlatformImguiBinds()
 void PlatformInit() {}
 void PlatformExit() {}
 
+void PlatformSleep(float time)
+{
+	_sleep((unsigned long)time);
+}
 #endif

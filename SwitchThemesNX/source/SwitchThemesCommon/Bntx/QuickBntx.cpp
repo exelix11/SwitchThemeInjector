@@ -25,15 +25,15 @@ QuickBntx::QuickBntx(Buffer &Reader)
 	s64 DictAddress = Reader.readInt64();
 	u32 StrDictLength = Reader.readUInt32();
 
-	Reader.Position = InfoPtrsAddress;
+	Reader.Position = (size_t)InfoPtrsAddress;
 	auto FirstBrti = (int)Reader.readInt64();
 	Reader.Position = 0;
 	Head = Reader.readBytes(FirstBrti);
 
 	for (u32 Index = 0; Index < TexturesCount; Index++)
 	{
-		Reader.Position = InfoPtrsAddress + Index * 8;
-		Reader.Position = Reader.readInt64();
+		Reader.Position = (size_t)InfoPtrsAddress + Index * 8;
+		Reader.Position = (size_t)Reader.readInt64();
 
 		Textures.push_back(Bntxx::BRTI(Reader));
 	}
@@ -73,11 +73,11 @@ vector<u8> QuickBntx::Write()
 	bin.Position = 0x18;
 	bin.Write((u32)rltPos);
 	bin.Write((u32)bin.Length());
-	bin.Position = TexDataPositions[0] - 8;
+	bin.Position = (size_t)TexDataPositions[0] - 8;
 	bin.Write((long long int)(rltPos - (TexDataPositions[0] - 0x10)));
 	for (u32 i = 0; i < TexPositions.size(); i++)
 	{
-		bin.Position = TexPositions[i] + 0x2A0;
+		bin.Position = (size_t)TexPositions[i] + 0x2A0;
 		bin.Write((long long int)TexDataPositions[i]);
 	}
 	bin.Position = rltPos + 4;

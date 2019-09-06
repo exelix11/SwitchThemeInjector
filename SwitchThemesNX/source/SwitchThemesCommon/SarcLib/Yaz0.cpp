@@ -102,11 +102,11 @@ vector<u8> Yaz0::Compress(vector<u8> &Data, int level, int reserved1, int reserv
 				int maxnum = 0x111;
 				if (length - Offs < maxnum) maxnum = length - Offs;
 				//Use a smaller amount of u8s back to decrease time
-				int maxback = maxBackLevel;//0x1000;
+				size_t maxback = maxBackLevel;//0x1000;
 				if (Offs < maxback) maxback = Offs;
-				maxback = (int)dataptr - maxback;
+				maxback = (size_t)dataptr - maxback;
 				int tmpnr;
-				while (maxback <= (int)ptr)
+				while ((size_t)maxback <= (size_t)ptr)
 				{
 					if (*(u16*)ptr == *(u16*)dataptr && ptr[2] == dataptr[2])
 					{
