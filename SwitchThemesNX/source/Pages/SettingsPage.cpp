@@ -57,7 +57,7 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
 	if (ImGui::Button("Remove all"))
 	{
-		ClearThemeShuffle();
+		shuffle::ClearThemeShuffle();
 		LoadShuffleState();
 		Dialog("Theme shuffle deleted");
 	}
@@ -70,7 +70,7 @@ void SettingsPage::Render(int X, int Y)
 
 void SettingsPage::LoadShuffleState()
 {
-	lblInstalled = ("Currently installed themes number: " + to_string(GetShuffleCount()));
+	lblInstalled = ("Currently installed themes number: " + to_string(shuffle::GetShuffleCount()));
 	FILE *index = fopen(SD_PREFIX "/themes/shuffle/index.db", "r");
 	if (index)
 	{

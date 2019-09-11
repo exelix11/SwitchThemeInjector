@@ -194,7 +194,7 @@ void RemoteInstallPage::SocketUpdate()
 #else
 	if (filesystem::exists("F:/RemoteFile.bin"))
 	{
-		data = OpenFile("F:/RemoteFile.bin");
+		data = fs::OpenFile("F:/RemoteFile.bin");
 		ThemeSize = data.size();
 		entry = new ThemeEntry(data);
 		StopSocketing();
@@ -210,7 +210,7 @@ void RemoteInstallPage::Update()
 		{
 			string overrideStr = "";
 			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
-				overrideStr = MakeThemeShuffleDir();
+				overrideStr = shuffle::MakeThemeShuffleDir();
 			entry->InstallTheme(true,overrideStr);
 			delete entry;
 			entry = 0;

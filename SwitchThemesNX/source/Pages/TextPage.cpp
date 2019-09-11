@@ -61,7 +61,7 @@ void CreditsPage::Render(int X, int Y)
 	ImGui::SameLine();
 	if (ImGui::Button("Show licenses"))
 	{
-		auto f = OpenFile(ASSET("licenses.txt"));
+		auto f = fs::OpenFile(ASSET("licenses.txt"));
 		Dialog(string((char*)f.data(), f.size()));
 	}
 

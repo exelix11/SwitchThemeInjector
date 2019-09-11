@@ -248,7 +248,7 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 // Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
 static void CheckCFWDir()
 {
-	auto f = SearchCfwFolders();
+	auto f = fs::SearchCfwFolders();
 	if (f.size() != 1)
 		PushPage(new CfwSelectPage(f));
 }
@@ -328,7 +328,7 @@ int main(int argc, char **argv)
 
 	SetupSysVer();
 	DisplayLoading("Loading theme list...");
-	bool ThemesFolderExists = CheckThemesFolder();
+	bool ThemesFolderExists = fs::CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
 
 	if (
@@ -356,7 +356,7 @@ int main(int argc, char **argv)
 		if (!ThemesFolderExists)
 			ShowFirstTimeHelp(true);
 		
-		auto ThemeFiles = GetThemeFiles();
+		auto ThemeFiles = fs::GetThemeFiles();
 		
 		ThemesPage *p = new ThemesPage(ThemeFiles);
 		t->AddPage(p);

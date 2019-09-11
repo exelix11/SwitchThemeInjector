@@ -37,7 +37,7 @@ void NcaDumpPage::Render(int X, int Y)
 			if (!YesNoPage::Ask(
 				"To install custom themes you need to extract the home menu first, this process may take several minutes, don't let your console go to sleep mode and don't press the home button.\n"
 				"Do you want to continue ?")) return;
-			RemoveSystemDataDir();
+			fs::RemoveSystemDataDir();
 			if (ExtractHomeMenu())
 				Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
 		});
@@ -79,7 +79,7 @@ void NcaDumpPage::CheckHomeMenuVer()
 		else goto ASK_DUMP;
 	}
 	else if (NXTheme_FirmMajor >= 7) goto ASK_DUMP;
-	else WriteHomeDumpVer();
+	else fs::WriteHomeDumpVer();
 	return;
 	
 ASK_DUMP:
@@ -87,7 +87,7 @@ ASK_DUMP:
 		return;
 	
 DUMP_HOMEMENU:
-	RemoveSystemDataDir();
+	fs::RemoveSystemDataDir();
 	ExtractHomeMenu();
 }
 
