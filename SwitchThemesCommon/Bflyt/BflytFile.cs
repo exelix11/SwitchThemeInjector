@@ -21,10 +21,28 @@ namespace SwitchThemes.Common.Bflyt
 {
 	public class BflytFile
 	{
-		public BasePane this[int index]
+		public IEnumerable<BasePane> EnumeratePanes() => EnumeratePanes(RootPanes);
+
+		public IEnumerable<BasePane> EnumeratePanes(BasePane source) => EnumeratePanes(new List<BasePane>() { source });
+
+		public IEnumerable<BasePane> EnumeratePanes(List<BasePane> source)
 		{
-			get => Panes[index];
-			set => Panes[index] = value;
+			var ToProcess = new Queue<BasePane>(RootPanes);
+
+			while (ToProcess.Count > 0)
+			{
+				BasePane item = ToProcess.Dequeue();
+				yield return item;
+				foreach (var c in item.Children)
+					ToProcess.Enqueue(c);
+			}
+		}
+
+		public BasePane FindPane(Func<BasePane, bool> condition) => EnumeratePanes().Where(condition).FirstOrDefault();
+
+		public BasePane this[string name]
+		{
+			get => FindPane(x => (x as INamedPane).PaneName == name);
 		}
 
 		public interface INamedPane
@@ -56,15 +74,6 @@ namespace SwitchThemes.Common.Bflyt
 			{
 				name = _name;
 				data = new byte[len - 8];
-			}
-
-			//used for PropertyEditablePane, data is not cloned so it can be changed from the other classs
-			public BasePane(BasePane basePane)
-			{
-				name = basePane.name;
-				data = basePane.data;
-				if (name != "usd1")
-					UserData = basePane.UserData;
 			}
 
 			public BasePane(string _name, BinaryDataReader bin)
@@ -112,19 +121,6 @@ namespace SwitchThemes.Common.Bflyt
 				if (name != "usd1" && UserData != null)
 					res.UserData = (Usd1Pane)UserData.Clone();
 				return res;
-			}
-		}
-
-		public class CusRectangle
-		{
-			public int x, y, width, height, scaleX, scaleY;
-
-			public CusRectangle(int _x, int _y, int _width, int _height)
-			{
-				x = _x;
-				y = _y;
-				width = _width;
-				height = _height;
 			}
 		}
 
@@ -206,13 +202,40 @@ namespace SwitchThemes.Common.Bflyt
 			}
 		}
 
-		public BasePane RootPane;
-		public Grp1Pane RootGroup { get; set; }
-		public List<BasePane> Panes = new List<BasePane>();
+		public List<BasePane> RootPanes = new List<BasePane>();
+		public Pan1Pane ElementsRoot => FindPane(x => x is Pan1Pane) as Pan1Pane;
+		public Grp1Pane RootGroup => RootPanes.Find(x => x is Grp1Pane) as Grp1Pane;
+
 		public UInt32 Version;
+
+		private List<BasePane> WritePaneListForBinary()
+		{
+			List<BasePane> res = new List<BasePane>();
+			void RecursivePushPane(BasePane p)
+			{
+				res.Add(p);
+				if (p.Children.Count != 0)
+				{
+					string childStarter = p is Grp1Pane ? "grs1" : "pas1";
+					string childCloser = p is Grp1Pane ? "gre1" : "pae1";
+
+					res.Add(new BasePane(childStarter, 8));
+					foreach (var c in p.Children)
+						RecursivePushPane(c);
+					res.Add(new BasePane(childCloser, 8));
+				}
+			}
+
+			foreach (var r in RootPanes)
+				RecursivePushPane(r);
+
+			return res;
+		}
 
 		public byte[] SaveFile()
 		{
+			var Panes = WritePaneListForBinary();
+
 			var res = new MemoryStream();
 			BinaryDataWriter bin = new BinaryDataWriter(res);
 			bin.ByteOrder = FileByteOrder;
@@ -238,30 +261,37 @@ namespace SwitchThemes.Common.Bflyt
 
 		public TextureSection GetTex
 		{
-			get
-			{
-				var res = (TextureSection)Panes.Find(x => x is TextureSection); ;
-				if (res == null)
-				{
-					res = new TextureSection();
-					Panes.Insert(2, res);
-				}
-				return res;
-			}
+			get => RootPanes.Find(x => x is TextureSection) as TextureSection;
+		}
+
+		public void AddTexturesSection()
+		{
+			if (GetTex != null) throw new Exception("A textures section already exists");
+			//the textures section is often after a fnl1 section
+			var fnt = RootPanes.Find(x => x.name == "fnl1");
+			if (fnt != null)
+				RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, new TextureSection());
+			else RootPanes.Insert(0, new TextureSection());
 		}
 
 		public MaterialsSection GetMat
 		{
-			get
+			get => RootPanes.Find(x => x is MaterialsSection) as MaterialsSection;
+		}
+
+		public void AddMaterialsSection()
+		{
+			if (GetMat != null) throw new Exception("A materials section already exists");
+			//the materials section is often after the txl1 section
+			var tex = GetTex;
+			if (tex == null)
 			{
-				var res = (MaterialsSection)Panes.Find(x => x is MaterialsSection);
-				if (res == null)
-				{
-					res = new MaterialsSection();
-					Panes.Insert(3, res);
-				}
-				return res;
+				var fnt = RootPanes.Find(x => x.name == "fnl1");
+				if (fnt != null)
+					RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, new TextureSection());
+				else RootPanes.Insert(0, new TextureSection());
 			}
+			else RootPanes.Insert(RootPanes.IndexOf(tex) + 1, new TextureSection());
 		}
 
 		public BflytFile(byte[] data) : this(new MemoryStream(data)) { }
@@ -284,227 +314,75 @@ namespace SwitchThemes.Common.Bflyt
 			var sectionCount = bin.ReadUInt16();
 			bin.ReadUInt16(); //padding
 
+			BasePane lastPane = null;
+			Stack<BasePane> currentRoot = new Stack<BasePane>();
+			void PushPane(BasePane p)
+			{
+				if (p.name == "pas1" || p.name == "grs1")
+					currentRoot.Push(lastPane);
+				else if (p.name == "pae1" || p.name == "gre1")
+					currentRoot.Pop();
+				else if (currentRoot.Count == 0)
+					RootPanes.Add(p);
+				else
+				{
+					p.Parent = currentRoot.Peek();
+					currentRoot.Peek().Children.Add(p);
+				}
+
+				lastPane = p;
+			}
+
 			for (int i = 0; i < sectionCount; i++)
 			{
 				string name = bin.ReadString(4);
 				switch (name)
 				{
 					case "txl1":
-						Panes.Add(new TextureSection(bin));
+						PushPane(new TextureSection(bin));
 						break;
 					case "mat1":
-						Panes.Add(new MaterialsSection(bin, Version));
+						PushPane(new MaterialsSection(bin, Version));
 						break;
 					case "usd1":
-						Panes.Last().UserData = new Usd1Pane(bin);
+						lastPane.UserData = new Usd1Pane(bin);
+						break;
+					case "pic1":
+						PushPane(new Pic1Pane(bin));
+						break;
+					case "txt1":
+						PushPane(new Txt1Pane(bin));
+						break;
+					case "grp1":
+						PushPane(new Grp1Pane(bin, Version));
+						break;
+					case "pan1":	case "prt1":
+					case "wnd1":	case "bnd1":
+						PushPane(new Pan1Pane(bin, name));
 						break;
 					default:
-						var pane = new BasePane(name, bin);
-						Panes.Add(DetectProperPaneClass(pane));
+						PushPane(new BasePane(name, bin));
 						break;
 				}
 			}
-
-			RebuildParentingData();
 		}
 
 		public void RemovePane(BasePane pane)
 		{
-			int paneIndex = Panes.IndexOf(pane);
-			int end = FindPaneEnd(paneIndex);
-
-			Panes.RemoveRange(paneIndex, end - paneIndex + 1);
-
-			if (pane.Parent != null)
-				pane.Parent.Children.Remove(pane);
-			RebuildParentingData();
+			pane.Parent.Children.Remove(pane);
 		}
 
-		int FindPaneEnd(int paneIndex)
+		public void AddPane(int offset, BasePane Parent, BasePane pane)
 		{
-			var pane = Panes[paneIndex];
-
-			string childStarter = pane is Grp1Pane ? "grs1" : "pas1";
-			string childCloser = pane is Grp1Pane ? "gre1" : "pae1";
-
-			if (Panes[paneIndex + 1].name == childStarter)
-			{
-				int ChildLevel = 0;
-				int i;
-				for (i = paneIndex + 2; i < Panes.Count; i++)
-				{
-					if (Panes[i].name == childCloser)
-					{
-						if (ChildLevel == 0)
-						{
-							break;
-						}
-						ChildLevel--;
-					}
-					if (Panes[i].name == childStarter)
-						ChildLevel++;
-				}
-				return i;
-			}
-			return paneIndex;
+			if (offset < 0) offset = 0;
+			if (offset > Parent.Children.Count) offset = Parent.Children.Count;
+			Parent.Children.Insert(offset, pane);
 		}
 
-		public void AddPane(int offsetInChildren, BasePane Parent, params BasePane[] pane)
+		public void MovePane(BasePane pane, BasePane NewParent, int offset)
 		{
-			string childStarter = pane[0] is Grp1Pane ? "grs1" : "pas1";
-			string childCloser = pane[0] is Grp1Pane ? "gre1" : "pae1";
-
-			if (pane.Length > 1 && (pane[1].name != childStarter || pane[0].Parent == pane[2].Parent))
-				throw new Exception("The BasePane array must be a single pane, optionally with children already in the proper structure");
-
-			if (Parent == null) Parent = RootPane;
-			int parentIndex = Panes.IndexOf(Parent);
-			if (Panes.Count <= parentIndex + 1 || Panes[parentIndex + 1].name != childStarter)
-			{
-				if (Parent.Children.Count != 0) throw new Exception("Inconsistend data !");
-				Panes.Insert(parentIndex + 1, new BasePane(childStarter, 8));
-				Panes.Insert(parentIndex + 2, new BasePane(childCloser, 8));
-			}
-
-			pane[0].Parent = Parent;
-			if (offsetInChildren <= 0 || offsetInChildren >= Parent.Children.Count)
-			{
-				Parent.Children.AddRange(pane);
-				Panes.InsertRange(parentIndex + 2, pane);
-			}
-			else
-			{
-				int actualInsertOffset = 0;
-				int childCount = 0;
-				for (int i = parentIndex + 2; ; i++)
-				{
-					i = FindPaneEnd(i) + 1;
-					childCount++;
-					if (childCount == offsetInChildren)
-					{
-						actualInsertOffset = i;
-						break;
-					}
-				}
-
-				Parent.Children.InsertRange(offsetInChildren, pane);
-				Panes.InsertRange(actualInsertOffset, pane);
-			}
-			RebuildParentingData();
+			RemovePane(pane);
+			AddPane(offset, NewParent, pane);
 		}
-
-		public void MovePane(BasePane pane, BasePane NewParent, int childOffset)
-		{
-			if (childOffset < 0)
-				childOffset = 0;
-			if (childOffset > NewParent.Children.Count)
-				childOffset = NewParent.Children.Count;
-
-			int parentIndex = Panes.IndexOf(NewParent);
-			if (parentIndex == -1) throw new Exception("No parent !");
-
-			int paneIndex = Panes.IndexOf(pane);
-
-			int paneCount = FindPaneEnd(paneIndex) - paneIndex + 1;
-
-			List<BasePane> tmpForCopy = new List<BasePane>();
-			for (int i = paneIndex; i < paneIndex + paneCount; i++)
-				tmpForCopy.Add(Panes[i]);
-
-			Panes.RemoveRange(paneIndex, paneCount);
-
-			AddPane(childOffset, NewParent, tmpForCopy.ToArray());
-
-			//RebuildParentingData(); called by AddPane
-		}
-
-		void RebuildParentingData()
-		{
-			RebuildGroupingData();
-			BasePane CurrentRoot = null;
-			int RootIndex = -1;
-			for (int i = 0; i < Panes.Count; i++)
-			{
-				if (Panes[i] is Pan1Pane && ((Pan1Pane)Panes[i]).PaneName == "RootPane")
-				{
-					CurrentRoot = Panes[i];
-					RootIndex = i;
-					break;
-				}
-			}
-			this.RootPane = CurrentRoot ?? throw new Exception("Couldn't find the root pane");
-			RootPane.Children.Clear();
-			RootPane.Parent = null;
-			for (int i = RootIndex + 1; i < Panes.Count; i++)
-			{
-				if (Panes[i].name == "pas1")
-				{
-					CurrentRoot = Panes[i - 1];
-					CurrentRoot.Children.Clear();
-					continue;
-				}
-				if (Panes[i].name == "pae1")
-				{
-					CurrentRoot = CurrentRoot.Parent;
-					if (CurrentRoot == null) return;
-					continue;
-				}
-				Panes[i].Parent = CurrentRoot;
-				CurrentRoot.Children.Add(Panes[i]);
-			}
-			if (CurrentRoot != null)
-				throw new Exception("Unexpected pane data ending: one or more children sections are not closed by the end of the file");
-		}
-
-		void RebuildGroupingData()
-		{
-			int rootGroupIndex = Panes.FindIndex(x => x.name == "grp1");
-			var curRoot = Panes[rootGroupIndex] as Grp1Pane;
-			RootGroup = curRoot;
-			curRoot.Parent = null;
-			curRoot.Children.Clear();
-			for (int i = rootGroupIndex + 1; i < Panes.Count; i++)
-			{
-				if (Panes[i].name == "grs1")
-				{
-					curRoot = (Grp1Pane)Panes[i - 1];
-					curRoot.Children.Clear();
-					continue;
-				}
-				else if (Panes[i].name == "gre1")
-				{
-					curRoot = (Grp1Pane)curRoot.Parent;
-					if (curRoot == null) return;
-					continue;
-				}
-				if (!(Panes[i] is Grp1Pane)) break;
-				Panes[i].Parent = curRoot;
-				curRoot.Children.Add(Panes[i]);
-			}
-			if (curRoot != RootGroup)
-				throw new Exception("Unexpected pane data ending: one or more group sections are not closed by the end of the file");
-		}
-
-		BasePane DetectProperPaneClass(BasePane pane)
-		{
-			switch (pane.name)
-			{
-				case "pic1":
-					return new Pic1Pane(pane, FileByteOrder);
-				case "txt1":
-					return new Txt1Pane(pane, FileByteOrder);
-				case "grp1":
-					return new Grp1Pane(pane, FileByteOrder, Version);
-				case "pan1":
-				case "prt1":
-				case "wnd1":
-				case "bnd1":
-					return new Pan1Pane(pane, FileByteOrder);
-				default:
-					return pane;
-			}
-		}
-
-		public string[] GetGroupNames() => Panes.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).GroupName).ToArray();
 	}
 }

@@ -9,6 +9,21 @@ using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace SwitchThemes.Common.Bflyt
 {
+#if LYTEDITOR
+	public class CusRectangle
+	{
+		public int x, y, width, height, scaleX, scaleY;
+
+		public CusRectangle(int _x, int _y, int _width, int _height)
+		{
+			x = _x;
+			y = _y;
+			width = _width;
+			height = _height;
+		}
+	}
+#endif
+
 	public class Pan1Pane : BasePane, INamedPane
 	{
 #if LYTEDITOR
@@ -118,7 +133,7 @@ namespace SwitchThemes.Common.Bflyt
 		public byte Alpha { get; set; } = 255;
 		public byte Unknown1;
 		public string PaneName { get; set; }
-		public readonly string UserInfo;
+		public string UserInfo { get; internal set; }
 		public Vector3 Position { get; set; }
 		public Vector3 Rotation { get; set; }
 		public Vector2 Scale { get; set; } = new Vector2(1, 1);
@@ -204,9 +219,20 @@ namespace SwitchThemes.Common.Bflyt
 			Visible = true;
 		}
 
-		public Pan1Pane(BasePane p, ByteOrder _order) : base(p)
+		public Pan1Pane(byte[] data, string name, ByteOrder b) : base(name, data)
 		{
-			order = _order;
+			order = b;
+			ParseData();
+		}
+
+		public Pan1Pane(BinaryDataReader bin, string name) : base(name, bin)
+		{
+			order = bin.ByteOrder;
+			ParseData();
+		}
+
+		private void ParseData()
+		{
 			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
 			dataReader.ByteOrder = order;
 
@@ -258,9 +284,7 @@ namespace SwitchThemes.Common.Bflyt
 			bin.Write(Size);
 		}
 
-		public override BasePane Clone()
-		{
-			return new Pan1Pane(base.Clone(),order);
-		}
+		public override BasePane Clone() =>
+			new Pan1Pane(base.Clone().data, name, order);
 	}
 }

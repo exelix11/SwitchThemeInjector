@@ -11,16 +11,9 @@ namespace SwitchThemes.Common.Bflyt
 {
 	public static class BflytExten
 	{
-		public static string[] GetPaneNames(this BflytFile f) =>
-			f.Panes.Select(x => (x as INamedPane)?.PaneName ?? "").ToArray();
-
 		public static bool ClearUVData(this BflytFile f, string name)
 		{
-			var PaneNames = f.GetPaneNames();
-			int index = Array.IndexOf(PaneNames, name);
-			if (index < 0) return false;
-
-			var e = f.Panes[index] as Pic1Pane;
+			var e = f[name] as Pic1Pane;
 			if (e == null) return false;
 			for (int i = 0; i < e.UVCoords.Length; i++)
 			{
@@ -35,17 +28,10 @@ namespace SwitchThemes.Common.Bflyt
 
 		public static bool ApplyLayoutPatch(this BflytFile f, PanePatch[] Patches)
 		{
-			string[] paneNames = f.GetPaneNames();
 			for (int i = 0; i < Patches.Length; i++)
 			{
-				int index = Array.IndexOf(paneNames, Patches[i].PaneName);
-				if (index == -1)
-					//return false;
-					continue;
-					//The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares
-
 				var p = Patches[i];
-				var e = f.Panes[index] as Pan1Pane;
+				var e = f[Patches[i].PaneName] as Pan1Pane;
 				if (p.Visible != null)
 					e.Visible = p.Visible.Value;
 				#region ChangeTransform
@@ -139,25 +125,18 @@ namespace SwitchThemes.Common.Bflyt
 		public static bool AddGroupNames(this BflytFile f, ExtraGroup[] Groups)
 		{
 			if (Groups == null || Groups.Length == 0) return true;
-			var PaneNames = f.GetPaneNames();
-			var GroupNames = f.GetGroupNames();
+			var PanesWithNames = f.EnumeratePanes().Where(x => x is INamedPane).Cast<INamedPane>();
+			var GroupNames = PanesWithNames.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).name).ToArray();
+			var PaneNames = PanesWithNames.Where(x => !(x is Grp1Pane)).Select(x => x.PaneName);
 
-			int rootGroupIndex = f.Panes.FindLastIndex(x => x.name == "gre1"); //find last group child list and append our groups there (aka at the end of RootGroup)
-			if (rootGroupIndex == -1)
-			{
-				rootGroupIndex = f.Panes.FindIndex(x => x.name == "grp1");
-				if (rootGroupIndex == -1)
-					return false;
-				f.Panes.Insert(rootGroupIndex + 1, new BasePane("gre1", 8));
-				f.Panes.Insert(rootGroupIndex + 1, new BasePane("grs1", 8));
-				rootGroupIndex += 2;
-			}
+			if (f.RootGroup == null)
+				return false;
 
 			foreach (var g in Groups)
 			{
-				if (GroupNames.ContainsStr(g.GroupName)) continue;
-				foreach (var s in g.Panes) if (!PaneNames.ContainsStr(s)) return false;
-				f.Panes.Insert(rootGroupIndex, new Grp1Pane(f.Version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
+				if (GroupNames.Contains(g.GroupName)) continue;
+				foreach (var s in g.Panes) if (!PaneNames.Contains(s)) return false;
+				f.RootGroup.Children.Add(new Grp1Pane(f.Version) { GroupName = g.GroupName, Panes = g.Panes.ToList() });
 			}
 
 			return true;
@@ -212,7 +191,7 @@ namespace SwitchThemes.Common.Bflyt
 			return (ushort)(MatSect.Materials.Count - 1);
 		}
 
-		static bool AddBgPanel(this BflytFile f, int index, string TexName, string Pic1Name)
+		static private bool AddBgPanel(this BflytFile f, BasePane target, string TexName, string Pic1Name)
 		{
 			#region add picture
 			if (Pic1Name.Length > 0x18)
@@ -248,55 +227,68 @@ namespace SwitchThemes.Common.Bflyt
 				bin.Write(1f);
 				bin.Write(1f);
 				bin.Write(1f);
-				BgPanel.data = strm.ToArray();
 			}
 			#endregion
-			f.Panes.Insert(index, new Pic1Pane(BgPanel, f.FileByteOrder));
+			BasePane p = new BasePane("pic1", 8);
+			p.data = strm.ToArray(); 
+			target.Parent.Children.Insert(target.Parent.Children.IndexOf(target),p);
 			return true;
 		}
 
 		public static bool PatchBgLayout(this BflytFile f, PatchTemplate patch)
 		{
 			#region DetectPatch
-			for (int i = 0; i < f.Panes.Count; i++)
+			if (f[patch.PatchIdentifier] == null) return true;
 			{
-				var p = f.Panes[i] as Pic1Pane;
-				if (p == null) continue;
-				if (p.PaneName == patch.PatchIdentifier) return true;
-				if (p.PaneName == "3x3lxBG") //Fix old layout
+				var p = f["3x3lxBG"];
+				if (p != null)
 				{
-					f.Panes.Remove(p);
+					f.RemovePane(p);
 					f.GetTex.Textures[0] = "White1x1^r";
 					f.GetMat.Materials.RemoveAt(1);
 				}
 			}
 			#endregion
 			#region FindAndRemoveTargetBgPanels
-			int target = int.MaxValue;
-			for (int i = 0; i < f.Panes.Count - 1; i++)
+			BasePane target = null;
+			foreach (var t in patch.targetPanels)
 			{
-				string name = (f.Panes[i] as INamedPane)?.PaneName;
-				if (name != null && patch.targetPanels.Contains(name))
+				var p = f[t];
+				if (p == null) continue;
+				if (target == null) target = p;
+				if (patch.DirectPatchPane)
 				{
-					if (i < target) target = i;
-					if (patch.DirectPatchPane)
-					{
-						ushort m = f.AddBgMat(patch.MaintextureName);
-						var p = f.Panes[i] as Pic1Pane;
-						p.MaterialIndex = m;
-					}
-					else if (!patch.NoRemovePanel)
-					{
-						var p = f.Panes[i] as Pan1Pane;
-						p.Position = new Vector3(5000, 60000, 0);
-					}
+					ushort m = f.AddBgMat(patch.MaintextureName);
+					var pe = p as Pic1Pane;
+					pe.MaterialIndex = m;
+				}
+				else if (!patch.NoRemovePanel)
+				{
+					var pe = p as Pan1Pane;
+					pe.Position = new Vector3(5000, 60000, 0);
 				}
 			}
-			if (target == int.MaxValue) return false;
+			if (target == null) return false;
 			#endregion
 			if (!patch.DirectPatchPane)
 				return f.AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
 			else return true;
+		}
+
+		public static bool PanePullToFront(this BflytFile f, string paneName)
+		{
+			var target = f[paneName];
+			if (target == null) return false;
+			f.MovePane(target, target.Parent, 0);
+			return true;
+		}
+
+		public static bool PanePushBack(this BflytFile f, string paneName)
+		{
+			var target = f[paneName];
+			if (target == null) return false;
+			f.MovePane(target, target.Parent, target.Parent.Children.Count);
+			return true;
 		}
 	}
 }

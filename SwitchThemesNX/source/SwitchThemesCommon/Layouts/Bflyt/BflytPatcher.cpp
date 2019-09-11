@@ -215,7 +215,6 @@ u16 BflytPatcher::AddBgMat(const std::string& texName)
 
 bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::string& Pic1Name)
 {
-	//Add pitcture
 	if (Pic1Name.length() > 0x18)
 		throw runtime_error("Pic1Name should not be longer than 24 chars");
 	auto BgPanel = new BasePane("pic1", 0x8);

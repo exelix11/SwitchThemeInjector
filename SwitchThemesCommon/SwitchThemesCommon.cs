@@ -276,9 +276,17 @@ namespace SwitchThemes.Common
 			if (!res) return res;
 			if (EnableAnimations)
 			{
-				res = target.AddGroupNames(p.AddGroups);
+				//res = target.AddGroupNames(p.AddGroups);
 				if (!res) return res;
 			}
+
+			if (p.PullFrontPanes != null)
+				foreach (var n in p.PullFrontPanes)
+					target.PanePullToFront(n);
+			if (p.PushBackPanes != null)
+				foreach (var n in p.PushBackPanes)
+					target.PanePushBack(n);
+
 			sarc.Files[p.FileName] = target.SaveFile();
 			return true;
 		}
