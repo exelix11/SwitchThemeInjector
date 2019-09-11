@@ -229,7 +229,7 @@ string fs::GetParentDir(const string &path)
 }
 
 #ifdef __SWITCH__
-std::string fs::GetNcaPath(u64 tid)
+string GetNcaPath(u64 tid)
 {
 	char path[FS_MAX_PATH] = {0};
 	auto rc = lrInitialize();		
@@ -328,4 +328,3 @@ void shuffle::ClearThemeShuffle()
 	RecursiveDeleteFolder(SD_PREFIX "/themes/shuffle/");
 	rmdir(SD_PREFIX "/themes/shuffle/");	
 }
-

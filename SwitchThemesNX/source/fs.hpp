@@ -23,9 +23,7 @@ namespace fs {
 	void CreateFsMitmStructure(const std::string& tid);
 	void CreateRomfsDir(const std::string& tid);
 	void CreateThemeStructure(const std::string& tid);
-
-	bool CheckForArchiveBit(const std::string& path);
-
+	
 	std::string GetFileName(const std::string& path);
 	std::string GetPath(const std::string& path);
 	std::string GetParentDir(const std::string& path);

@@ -5,7 +5,7 @@ using namespace std;
 QuickBntx::QuickBntx(Buffer &Reader)
 {
 	if (Reader.readStr(4) != "BNTX")
-		throw "Wrong magic";
+		throw runtime_error("Wrong magic");
 
 	Reader.readInt32();
 	s32 DataLength = Reader.readInt32();
@@ -17,7 +17,7 @@ QuickBntx::QuickBntx(Buffer &Reader)
 	s32 FileLength = Reader.readInt32();
 
 	if (Reader.readStr(4) != "NX  ")
-		throw "Wrong magic";
+		throw runtime_error("Wrong magic");
 
 	u32 TexturesCount = Reader.readUInt32();
 	s64 InfoPtrsAddress = Reader.readInt64();
@@ -96,7 +96,7 @@ void QuickBntx::ReplaceTex(const string &name, const DDSEncoder::DDSLoadResult &
 {
 	auto target = FindTex(name);
 	if (!target)
-		throw "Couldn't find texture";
+		throw runtime_error("Couldn't find texture");
 	auto encoded = DDSEncoder::EncodeTex(tex);
 	target->Data = encoded.Data;
 	target->TextureType = (s32)Bntxx::TextureType::Image2D;

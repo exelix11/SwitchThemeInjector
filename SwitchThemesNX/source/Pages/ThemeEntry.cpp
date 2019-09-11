@@ -510,24 +510,9 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 		if (ShowLoading)
 			Dialog("Done, restart the console to see the changes");
 	}
-	catch (const char * err)
-	{
-		Dialog("Error while installing this theme: " + string(err));
-		return false;
-	}
-	catch (const string &err)
-	{
-		Dialog("Error while installing this theme: " + err);	
-		return false;	
-	}
 	catch (const exception& ex)
 	{
 		Dialog("Error while installing this theme: " + string(ex.what()));
-		return false;
-	}
-	catch (...)
-	{
-		Dialog("Exception while installing this theme.");	
 		return false;
 	}
 	return true;

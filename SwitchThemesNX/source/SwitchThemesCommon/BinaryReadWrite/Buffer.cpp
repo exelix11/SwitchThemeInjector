@@ -65,7 +65,7 @@ template <class T> inline void Buffer::writeBytes(const T &val, bool LE) {
 void Buffer::WriteFixedLengthString(const std::string& str, unsigned int maxLen) 
 {
 	if (str.size() > maxLen)
-		throw "The input string is longer than the max allowed lenght";
+		throw std::out_of_range("The input string is longer than the max allowed lenght");
 	Write(str, BinaryString::NoPrefixOrTermination);
 	for (size_t i = str.size(); i < maxLen; i++)
 		Write((unsigned char)0);
