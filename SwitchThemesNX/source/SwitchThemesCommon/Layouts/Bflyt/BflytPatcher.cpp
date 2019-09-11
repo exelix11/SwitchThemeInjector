@@ -165,7 +165,7 @@ bool BflytPatcher::PatchTextureName(const std::string& original, const std::stri
 	bool patchedSomething = false;
 	auto texSection = lyt.GetTexSection();
 	if (texSection == nullptr)
-		throw "this layout doesn't have any texture section (?)";
+		throw runtime_error("this layout doesn't have any texture section (?)");
 	for (size_t i = 0; i < texSection->Textures.size(); i++)
 	{
 		if (texSection->Textures[i] == original)
@@ -217,7 +217,7 @@ bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::
 {
 	//Add pitcture
 	if (Pic1Name.length() > 0x18)
-		throw "Pic1Name should not be longer than 24 chars";
+		throw runtime_error("Pic1Name should not be longer than 24 chars");
 	auto BgPanel = new BasePane("pic1", 0x8);
 	Panes.emplace(Panes.begin() + index, BgPanel);
 	int TexIndex = AddBgMat(TexName);
@@ -281,7 +281,7 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 			if (patch.DirectPatchPane)
 			{
 				auto m = AddBgMat(patch.MaintextureName);
-				if (Panes[i]->name != "pic1") throw "Expected a picture pane !";
+				if (Panes[i]->name != "pic1") throw runtime_error("Expected a picture pane !");
 				auto p = dynamic_pointer_cast<Pic1Pane>(Panes[i]);
 				p->MaterialIndex = m;
 			}

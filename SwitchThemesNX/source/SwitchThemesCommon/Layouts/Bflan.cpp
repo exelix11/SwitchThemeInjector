@@ -1,4 +1,5 @@
 #include "Bflan.hpp"
+#include <stdexcept>
 
 using namespace std;
 
@@ -16,7 +17,7 @@ KeyFrame::KeyFrame(Buffer& bin, u16 DataType)
 		Value = (float)bin.readInt16();
 		Blend = (float)bin.readInt16();
 	}
-	else throw "Unexpected data type for keyframe";
+	else throw runtime_error("Unexpected data type for keyframe");
 }
 
 PaiTagEntry::PaiTagEntry() {}
@@ -60,7 +61,7 @@ void PaiTagEntry::Write(Buffer& bin, std::string TagName)
 			bin.Write((u16)KeyFrames[i].Value);
 			bin.Write((u16)KeyFrames[i].Blend);
 		}
-		else throw "Unexpected data type for KeyFrame";
+		else throw runtime_error("Unexpected data type for KeyFrame");
 	}
 	if (TagName == "FLEU")
 	{
@@ -158,7 +159,7 @@ TypeName(_name), Data(data)
 void BflanSection::BuildData(Endianness byteOrder) {}
 void BflanSection::Write(Buffer& bin) 
 {
-	if (TypeName.size() != 4) throw "unexpected type len";
+	if (TypeName.size() != 4) throw runtime_error("unexpected type len");
 	BuildData(bin.ByteOrder);
 	bin.Write(TypeName, Buffer::BinaryString::NoPrefixOrTermination);
 	bin.Write((u32)Data.size() + 8);
@@ -177,7 +178,7 @@ void Pat1Section::ParseData(Endianness bo)
 	bin.ByteOrder = bo;
 	AnimationOrder = bin.readUInt16();
 	auto groupCount = bin.readUInt16();
-	if (groupCount != 1) throw "File with unexpected group count";
+	if (groupCount != 1) throw runtime_error("File with unexpected group count");
 	auto animName = bin.readUInt32() - 8; //all offsets are shifted by 8 cause this byte block doesn't include the section name and size
 	auto groupNames = bin.readUInt32() - 8;
 	Unk_StartOfFile = bin.readUInt16();
@@ -350,14 +351,14 @@ vector<u8> Bflan::WriteFile()
 void Bflan::ParseFile(Buffer& bin) 
 {
 	if (bin.readStr(4) != "FLAN")
-		throw "Wrong bflan magic";
+		throw runtime_error("Wrong bflan magic");
 	u8 BOM = bin.readUInt8();
 	if (BOM == 0xFF) byteOrder = Endianness::LittleEndian;
 	else if (BOM == 0xFE) byteOrder = Endianness::BigEndian;
-	else throw "Unexpected BFLAN BOM";
+	else throw runtime_error("Unexpected BFLAN BOM");
 	bin.ByteOrder = byteOrder;
 	bin.readUInt8(); //Second byte of the byte order mask
-	if (bin.readUInt16() != 0x14) throw "Unexpected bflan header size";
+	if (bin.readUInt16() != 0x14) throw runtime_error("Unexpected bflan header size");
 	Version = bin.readUInt32();
 	bin.readUInt32(); //FileSize
 	auto sectionCount = bin.readUInt16();
@@ -374,7 +375,7 @@ void Bflan::ParseFile(Buffer& bin)
 		else if (sectionName == "pai1")
 			Sections.push_back((BflanSection*) new Pai1Section(sectionData, bin.ByteOrder));
 		else
-			throw "unexpected section";
+			throw runtime_error("unexpected section");
 	}
 }
 

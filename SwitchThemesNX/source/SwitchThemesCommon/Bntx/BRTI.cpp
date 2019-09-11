@@ -7,7 +7,7 @@ BRTI::BRTI(Buffer &Reader)
 {
 	auto startPos = Reader.Position;
 	if (Reader.readStr(4) != "BRTI")
-		throw "Wrong magic";
+		throw runtime_error("Wrong magic");
 
 	BRTILength0 = Reader.readInt32();
 	BRTILength1 = Reader.readInt64();
@@ -52,7 +52,7 @@ BRTI::BRTI(Buffer &Reader)
 	u64 BaseOffset = Reader.readInt64();
 
 	for (int Mip = 1; Mip < MipmapCount; Mip++)
-		throw "mipmaps are not supported";
+		throw runtime_error("mipmaps are not supported");
 
 	Reader.Position = (size_t)BaseOffset;
 

@@ -82,7 +82,7 @@ BflytFile::BflytFile(const vector<u8>& file)
 {
 	Buffer bin(file);
 	bin.ByteOrder = Endianness::LittleEndian;
-	if (bin.readStr(4) != "FLYT") throw "Wrong signature";
+	if (bin.readStr(4) != "FLYT") throw runtime_error("Wrong signature");
 	bin.readUInt16(); //BOM
 	bin.readUInt16(); //HeaderSize
 	Version = bin.readUInt32();

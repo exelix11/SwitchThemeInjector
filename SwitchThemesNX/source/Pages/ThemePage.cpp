@@ -36,7 +36,7 @@ void ThemesPage::SetDir(const string &dir)
 	CurrentFiles.clear();
 	for (auto f : ThemeFiles)
 	{
-		if (GetPath(f) == CurrentDir)
+		if (fs::GetPath(f) == CurrentDir)
 			CurrentFiles.push_back(f);
 	}
 	
@@ -144,7 +144,7 @@ void ThemesPage::Render(int X, int Y)
 									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
 									{
 										DisplayLoading("Installing to shuffle...");
-										e->InstallTheme(false, MakeThemeShuffleDir());
+										e->InstallTheme(false, shuffle::MakeThemeShuffleDir());
 									}
 									else
 										e->InstallTheme();
@@ -209,7 +209,7 @@ void ThemesPage::Update()
 	if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 	{
 		if (CurrentDir != SD_PREFIX "/themes/")
-			SetDir(GetParentDir(CurrentDir));
+			SetDir(fs::GetParentDir(CurrentDir));
 		else 
 			Parent->PageLeaveFocus(this);
 	}
@@ -262,7 +262,7 @@ void ThemesPage::Update()
 	{
 		string shuffleDir = "";
 		if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
-			shuffleDir = MakeThemeShuffleDir();
+			shuffleDir = shuffle::MakeThemeShuffleDir();
 		for (string file : SelectedFiles)
 		{
 			DisplayLoading("Installing " + file + "...");

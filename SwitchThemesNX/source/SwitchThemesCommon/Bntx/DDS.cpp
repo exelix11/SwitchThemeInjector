@@ -139,7 +139,7 @@ DDSEncoder::DDSLoadResult DDSEncoder::LoadDDS(const vector<u8> &inb)
 		Format[i] = inb[i + 0x54];
 
 	if (!EncoderTable.count(Format))
-		throw "Unsupported format : only DXT1 and DXT4 encodings are supported for DDS";
+		throw runtime_error("Unsupported format : only DXT1 and DXT4 encodings are supported for DDS");
 
 	s32 bpp = EncoderTable.at(Format).bpp;
 

@@ -7,6 +7,7 @@
 #include "lockpick/KeyCollection.hpp"
 
 using namespace std;
+using namespace fs;
 
 inline void CopyFile(const std::string &Src, const std::string &Dst)
 {
