@@ -311,7 +311,7 @@ static void SetupSysVer()
 		ThemeTargetToName = ThemeTargetToName6X;
 		ThemeTargetToFileName = ThemeTargetToFileName6X;
 	}
-	NXTheme_FirmMajor = firmware.major;
+	HOS_FirmMajor = firmware.major;
 	SystemVer = to_string(firmware.major) + "." + to_string(firmware.minor) + "." + to_string(firmware.micro);
 }
 

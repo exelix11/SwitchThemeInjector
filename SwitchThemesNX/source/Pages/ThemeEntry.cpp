@@ -96,7 +96,7 @@ void ThemeEntry::ParseNxTheme()
 		CanInstall = false;
 	}
 	NXThemeVer = themeInfo.Version;
-	if (themeInfo.Version > 8)
+	if (themeInfo.Version > SwitchThemesCommon::NXThemeVer)
 	{
 		lblLine2 = ("New version, update the installer !");
 		CanInstall = false;
@@ -280,7 +280,7 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 		return false;
 	}
 	Patcher.SetPatchAnimations(Settings::UseAnimations);
-	if (!Patcher.PatchLayouts(patch, PartName, NXTheme_FirmMajor >= 8 && PartName == "home"))
+	if (!Patcher.PatchLayouts(patch, PartName, HOS_FirmMajor >= 8 && PartName == "home"))
 	{
 		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
@@ -318,14 +318,15 @@ static inline vector<u8> SarcPack(SARC::SarcData &data)
 }
 
 //Uses blocking functions, only callable from Update()
-bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride) 
+bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 {
 	if (!CanInstall)
 	{
 		Dialog("Can't install this theme, check that it hasn't been corrupted and that you are using an updated version of this installer");
 		return false;
 	}
-	try {
+	try 
+	{
 		if (IsFont())
 		{
 			if (homeDirOverride != "")
@@ -333,10 +334,10 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				DialogBlocking("Can't install a font to theme shuffle.");
 				return false;
 			}
-			
+
 			if (ShowLoading)
 				DisplayLoading("Installing font...");
-			
+
 			fs::CreateFsMitmStructure("0100000000000811");
 			fs::CreateRomfsDir("0100000000000811");
 			fs::WriteFile(CfwFolder + "/titles/0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
@@ -352,12 +353,12 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			fs::CreateThemeStructure(patch.TitleId);
 			string szsPath;
 			if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
-				szsPath	= homeDirOverride + patch.szsName;
-			else 
-				szsPath	= CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
+				szsPath = homeDirOverride + patch.szsName;
+			else
+				szsPath = CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
 			fs::WriteFile(szsPath, file);
 		}
-		else 
+		else
 		{
 			auto themeInfo = ParseNXThemeFile(SData);
 			string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
@@ -367,41 +368,38 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					goto CONTINUE_INSTALL;
 				if (themeInfo.Target == "psl" && ExtractPlayerSelectMenu())
 					goto CONTINUE_INSTALL;
-				
+
 				MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);
 				return false;
 			}
 		CONTINUE_INSTALL:
-			
+
 			if (ShowLoading)
 				DisplayLoading("Installing...");
-						
-			//On 5.x some custom applet bg use common.szs
-			bool DoPatchCommonBG = NXTheme_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
-			bool SkipSaveActualFile = false; //If the bg gets patched don't save the ResidentMenu file later
-			if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || DoPatchCommonBG)
+
+			//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout
+			//On <= 5.0 apply the background image for the applets
+			bool ShouldPatchBGInCommon = HOS_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
+			if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || ShouldPatchBGInCommon)
 			{
-				//common.szs patching code
-				
 				string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
 				if (!filesystem::exists(CommonSzs))
 				{
 					MissingFileErrorDialog("common.szs");
 					return false;
 				}
-				
+
 				SARC::SarcData sarc;
 				if (!SarcOpen(CommonSzs, &sarc)) return false;
 				SzsPatcher Patcher(sarc);
-				
-				if (DoPatchCommonBG)
+
+				if (ShouldPatchBGInCommon)
 				{
-					SkipSaveActualFile = true; //Do not save resident if the bg has been applied to common
 					if (NxThemeGetBgImage().size() != 0)
 						if (!PatchBG(Patcher, NxThemeGetBgImage(), CommonSzs))
 							return false;
 				}
-				
+
 				if (SData.files.count("common.json") && themeInfo.Target == "home" && Settings::UseCommon)
 				{
 					auto JsonBinary = SData.files["common.json"];
@@ -409,16 +407,18 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					if (!PatchLayout(Patcher, JSON, "common.szs"))
 						return false;
 				}
-				
+
 				if (homeDirOverride != "")
 					fs::WriteFile(homeDirOverride + "common.szs", SarcPack(Patcher.GetFinalSarc()));
-				else 
+				else
 				{
 					fs::CreateThemeStructure("0100000000001000");
 					fs::WriteFile(CfwFolder + "/titles/0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
 				}
 			}
-			
+
+			//Actual file patching code 
+			bool FileHasBeenPatched = false;
 			SARC::SarcData sarc;
 			if (!SarcOpen(BaseSzs, &sarc)) return false;
 			SzsPatcher Patcher(sarc);
@@ -431,7 +431,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				SzsName = patch.szsName;
 			}
 
-			if (!SkipSaveActualFile)
+			if (!ShouldPatchBGInCommon)
 			{
 				if (patch.FirmName == "")
 				{
@@ -441,7 +441,26 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				if (NxThemeGetBgImage().size() != 0)
 					if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 						return false;
+					else FileHasBeenPatched = true;
 			}
+
+			/*
+				The layout patching step has been moved after the custom user icons (and furutre home menu components)
+				to let layouts edit the built-in patches that are applied to the panes. To avoid breaking old layouts
+				patches from pre 9 nxthemes will still be applied first
+			*/
+#define APPLY_LAYOUT_PATCH do { \
+if (SData.files.count("layout.json"))\
+	{\
+		auto JsonBinary = SData.files["layout.json"];\
+		string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());\
+		if (!PatchLayout(Patcher, JSON, themeInfo.Target))	return false;\
+		FileHasBeenPatched = true;\
+	} \
+} while (0)
+
+			if (NXThemeVer <= 8)
+				APPLY_LAYOUT_PATCH;
 
 			//Applet icons patching
 			if (Settings::UseIcons)
@@ -450,8 +469,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					//New applet texture patching method
 					if (Settings::UseIcons && Patches::textureReplacement::NxNameToList.count(themeInfo.Target))
 					{
-						auto& list = Patches::textureReplacement::NxNameToList[themeInfo.Target];
-						for (const TextureReplacement& p : list)
+						for (const TextureReplacement& p : Patches::textureReplacement::NxNameToList[themeInfo.Target])
 						{
 							auto pResult = false;
 							if (SData.files.count(p.NxThemeName + ".dds"))
@@ -472,7 +490,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 							if (!pResult)
 								Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 							else
-								SkipSaveActualFile = false;
+								FileHasBeenPatched = true;
 						}
 					}
 				}
@@ -481,23 +499,17 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 					//Old album.szs patching to avoid breaking old themes
 					if (themeInfo.Target == "home" && SData.files.count("album.dds"))
 					{
-						SkipSaveActualFile = false;
+						FileHasBeenPatched = true;
 						if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
 							Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 					}
 				}
 			}
 
-			if (SData.files.count("layout.json"))
-			{
-				SkipSaveActualFile = false;
-				auto JsonBinary = SData.files["layout.json"];
-				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
-				if (!PatchLayout(Patcher, JSON, themeInfo.Target))
-					return false;
-			}
+			if (NXThemeVer >= 9)
+				APPLY_LAYOUT_PATCH;
 
-			if (!SkipSaveActualFile)
+			if (FileHasBeenPatched)
 			{
 				if (TitleId == "0100000000001000" && homeDirOverride != "")
 					fs::WriteFile(homeDirOverride + SzsName, SarcPack(Patcher.GetFinalSarc()));
@@ -507,13 +519,14 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				}
 			}
 		}
-		if (ShowLoading)
-			Dialog("Done, restart the console to see the changes");
 	}
 	catch (const exception& ex)
 	{
 		Dialog("Error while installing this theme: " + string(ex.what()));
 		return false;
 	}
+FINISHED:
+	if (ShowLoading)
+		Dialog("Done, restart the console to see the changes");
 	return true;
 }

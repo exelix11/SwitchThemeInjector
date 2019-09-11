@@ -16,7 +16,7 @@ namespace SwitchThemes.Common
 	public static class SwitchThemesCommon
 	{
 		public const string CoreVer = "4.3";
-		public const int NxThemeFormatVersion = 8;
+		public const int NxThemeFormatVersion = 9;
 
 		const string LoadFileText =
 			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
