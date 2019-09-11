@@ -21,16 +21,8 @@ namespace SwitchThemes
 			InitializeComponent();
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		public static string DoRemoteInstall(string Ip, byte[] theme)
 		{
-			if (textBox1.Text.Trim() == "")
-			{
-				MessageBox.Show("Enter a valid address");
-				return;
-			}
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "theme files (*.nxtheme,*.szs)|*.nxtheme;*.szs"};
-			if (opn.ShowDialog() != DialogResult.OK) return;
-			byte[] theme = System.IO.File.ReadAllBytes(opn.FileName);
 			var mem = new MemoryStream();
 			BinaryDataWriter bin = new BinaryDataWriter(mem, UTF8Encoding.ASCII);
 			bin.Write("theme", BinaryStringFormat.NoPrefixOrTermination);
@@ -44,7 +36,7 @@ namespace SwitchThemes
 
 				var arr = mem.ToArray();
 
-				sock.Connect(textBox1.Text, 5000);
+				sock.Connect(Ip, 5000);
 
 				if (sock.Connected)
 				{
@@ -52,18 +44,35 @@ namespace SwitchThemes
 
 					byte[] by = new byte[2];
 					if (sock.Receive(by, SocketFlags.None) != 2)
-						MessageBox.Show("Didn't receive confirmation from switch :(");
+						return "Didn't receive confirmation from switch :(";
 
 					sock.Close();
 
 				}
 				else
-					MessageBox.Show("Socket didn't connect");
+					return "Socket didn't connect";
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("There was an error: " + ex.ToString());
+				return "There was an error: " + ex.ToString();
 			}
+			return null;
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+			if (textBox1.Text.Trim() == "")
+			{
+				MessageBox.Show("Enter a valid address");
+				return;
+			}
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "theme files (*.nxtheme,*.szs)|*.nxtheme;*.szs"};
+			if (opn.ShowDialog() != DialogResult.OK) return;
+			byte[] theme = System.IO.File.ReadAllBytes(opn.FileName);
+
+			string res = DoRemoteInstall(textBox1.Text, theme);
+			if (res != null)
+				MessageBox.Show(res);
 		}
 	}
 }

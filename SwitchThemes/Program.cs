@@ -44,15 +44,19 @@ namespace SwitchThemes
 					ArgsHandled = NXThemeFromArgs(args);
 				else if (args[0].ToLower() == "szs")
 					ArgsHandled = SZSFromArgs(args);
+				else if (args[0].ToLower() == "install")
+					ArgsHandled = RemoteInstallFromArgs(args);
 				else if (args[0].ToLower() == "help")
 				{
 					ArgsHandled = true;
 					Console.WriteLine(
-						"Switch themes Injector V " + SwitchThemesCommon.CoreVer +" by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
-						"Usage: SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
-						"instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n"+
-						"Only the image and out file are needed.\r\n" +
-						"To patch SZS files: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n");
+						"Switch themes Injector V " + SwitchThemesCommon.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
+						"Command line usage:\r\n" +
+						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
+						" instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n" +
+						" Only the image and out file are needed.\r\n" +
+						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
+						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n");
 					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => x.NxThemeName).ToArray()));
 					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => x.NxThemeName).ToArray()));
 					if (IsMono)
@@ -72,6 +76,23 @@ namespace SwitchThemes
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new Form1());
+		}
+
+		static bool RemoteInstallFromArgs(string[] args)
+		{
+			if (args.Length != 3)
+			{
+				Console.WriteLine("Error: Wrong number of arguments.");
+				return false;
+			}
+
+			string Ip = args[1];
+			byte[] Theme = File.ReadAllBytes(args[2]);
+
+			var res = RemoteInstallForm.DoRemoteInstall(Ip, Theme);
+			Console.WriteLine(res == null ? "Done !" : res);
+
+			return true;
 		}
 
 		static bool SZSFromArgs(string[] args)
