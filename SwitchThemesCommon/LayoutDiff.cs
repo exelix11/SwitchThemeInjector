@@ -23,36 +23,36 @@ namespace SwitchThemes.Common
 		{
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
 			if (!ScrambledEquals<string>(original.Files.Keys, edited.Files.Keys))
-			{
 				throw new Exception("The provided archives don't have the same files");
-			}
 
 			bool hasAtLeastAnExtraGroup = false; //Used to detect if animations are properly implemented
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflyt")))
 			{
 				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
-				BflytFile or = new BflytFile(original.Files[f]);
-				BflytFile ed = new BflytFile(edited.Files[f]);
-				string[] orPaneNames = GetPaneNames(or);
-				string[] edPaneNames = GetPaneNames(ed);
-				List<PanePatch> curFile = new List<PanePatch>();
-				for (int i = 0; i < edPaneNames.Length; i++)
-				{
-					if (edPaneNames[i] == null || !(ed[i] is Pan1Pane) || IgnorePaneList.Contains(ed[i].name)) continue;
-					var j = Array.IndexOf(orPaneNames, edPaneNames[i]);
-					if (j == -1) continue;
+				BflytFile _or = new BflytFile(original.Files[f]);
+				BflytFile _ed = new BflytFile(edited.Files[f]);
 
-					PanePatch curPatch = new PanePatch() { PaneName = edPaneNames[i] };
-					curPatch.UsdPatches = MakeUsdPatch(or[j].UserData, ed[i].UserData);
-					if (ed[i].data.SequenceEqual(or[j].data))
+				var ed = _ed.EnumeratePanes().GetEnumerator();
+
+				List<PanePatch> curFile = new List<PanePatch>();
+				foreach (var orpane_ in _or.EnumeratePanes())
+				{
+					if (!ed.MoveNext()) throw new Exception($"{f} doesn't contain the same pane count");
+					if (!(orpane_ is Pan1Pane) || IgnorePaneList.Contains(orpane_.name)) continue;
+					var edPan = (Pan1Pane)ed.Current;
+					var orPan = (Pan1Pane)orpane_;
+					if (orPan.name != edPan.name) throw new Exception($"{f} : {orPan.name} doesn't match with {edPan.name}");
+					if (orPan.PaneName != edPan.PaneName) throw new Exception($"{f} : {orPan.PaneName} doesn't match with {edPan.PaneName}");
+					
+					PanePatch curPatch = new PanePatch() { PaneName = edPan.name };
+					curPatch.UsdPatches = MakeUsdPatch(edPan.UserData, orPan.UserData);
+					if (edPan.data.SequenceEqual(orPan.data))
 					{
-						if (curPatch.UsdPatches == null) continue;
-						curFile.Add(curPatch);
+						if (curPatch.UsdPatches != null)
+							curFile.Add(curPatch);
 						continue;
 					}
 
-					var orPan = (Pan1Pane)(or[j]);
-					var edPan = (Pan1Pane)(ed[i]);
 					if (!VecEqual(edPan.Position, orPan.Position))
 						curPatch.Position = ToNullVec(edPan.Position);
 					if (!VecEqual(edPan.Rotation, orPan.Rotation))
@@ -90,10 +90,10 @@ namespace SwitchThemes.Common
 				}
 
 				List<ExtraGroup> extraGroups = new List<ExtraGroup>();
-				string[] ogPanes = or.GetGroupNames();
-				foreach (var p_ in ed.Panes.Where(x => x is Grp1Pane))
+				string[] ogPanes = _or.EnumeratePanes(_or.RootGroup).Select(x => ((Grp1Pane)x).name).ToArray();
+				var edPanes = _ed.EnumeratePanes(_ed.RootGroup).Cast<Grp1Pane>();
+				foreach (var p in edPanes)
 				{
-					var p = ((Grp1Pane)p_);
 					if (ogPanes.Contains(p.GroupName)) continue;
 					extraGroups.Add(new ExtraGroup() { GroupName = p.GroupName, Panes = p.Panes.ToArray() });
 					hasAtLeastAnExtraGroup = true;
@@ -101,10 +101,10 @@ namespace SwitchThemes.Common
 				if (extraGroups.Count == 0) extraGroups = null;
 
 				List<MaterialPatch> materials = new List<MaterialPatch>();
-				if (ed.GetMat != null && or.GetMat != null)
-				{					
-					var edMat = ed.GetMat;
-					foreach (var orM in or.GetMat.Materials)
+				if (_ed.GetMat != null && _or.GetMat != null)
+				{
+					var edMat = _ed.GetMat;
+					foreach (var orM in _or.GetMat.Materials)
 					{
 						var edM = edMat.Materials.Where(x => x.Name == orM.Name).FirstOrDefault();
 						if (edM == null) continue;
@@ -183,35 +183,6 @@ namespace SwitchThemes.Common
 		static NullableVector3 ToNullVec(Vector3 v) => new NullableVector3() { X = v.X, Y = v.Y, Z = v.Z };
 		static bool VecEqual(Vector2 v, Vector2 v1) => v.X == v1.X && v.Y == v1.Y;
 		static NullableVector2 ToNullVec(Vector2 v) => new NullableVector2() { X = v.X, Y = v.Y };
-
-		static string[] GetPaneNames(BflytFile layout)
-		{
-			string TryGetPaneName(BasePane p)
-			{
-				if (p.data.Length < 0x18 + 4) return null;
-				BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(p.data), Encoding.ASCII, false);
-				dataReader.ByteOrder = layout.FileByteOrder;
-				dataReader.ReadInt32(); //Unknown
-				string PaneName = "";
-				for (int i = 0; i < 0x18; i++)
-				{
-					var c = dataReader.ReadChar();
-					if (c == 0) break;
-					PaneName += c;
-				}
-				return PaneName;
-			}
-
-			List<string> str = new List<string>();
-			foreach (var p in layout.Panes)
-			{
-				string res = null;
-				if (!IgnorePaneList.Contains(p.name))
-					res = TryGetPaneName(p);
-				str.Add(res);
-			}
-			return str.ToArray();
-		}
 
 		public static bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
 		{

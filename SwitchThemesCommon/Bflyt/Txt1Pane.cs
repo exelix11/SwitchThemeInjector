@@ -100,35 +100,45 @@ namespace SwitchThemes.Common.Bflyt
 
 		public Txt1Pane(ByteOrder b) : base("txt1", b, 0xA4) { }
 
-		public Txt1Pane(BasePane p, ByteOrder b) : base(p, b)
+		public Txt1Pane(byte[] data, ByteOrder b) : base(data, "txt1", b)
+		{
+			ParseData();
+		}
+
+		public Txt1Pane(BinaryDataReader bin) : base(bin, "txt1")
         {
-            BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-            dataReader.ByteOrder = b;
-            dataReader.Position = 0x54 - 8;
-            TextLength = dataReader.ReadUInt16();
-            RestrictedTextLength = dataReader.ReadUInt16();
-            MaterialIndex = dataReader.ReadUInt16();
-            FontIndex = dataReader.ReadUInt16();
+			ParseData();
+        }
+
+		private void ParseData()
+		{
+			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
+			dataReader.ByteOrder = order;
+			dataReader.Position = 0x54 - 8;
+			TextLength = dataReader.ReadUInt16();
+			RestrictedTextLength = dataReader.ReadUInt16();
+			MaterialIndex = dataReader.ReadUInt16();
+			FontIndex = dataReader.ReadUInt16();
 			TextAlign = dataReader.ReadByte();
 			LineAlignment = (LineAlign)dataReader.ReadByte();
 			flags = dataReader.ReadByte();
 			dataReader.ReadByte(); //padding
 			ItalicTilt = dataReader.ReadSingle();
-            uint TextOffset = dataReader.ReadUInt32();
-            FontTopColor = dataReader.ReadColorRGBA();
-            FontBottomColor = dataReader.ReadColorRGBA();
-            FontXYSize = dataReader.ReadVector2();
-            CharacterSpace = dataReader.ReadSingle();
-            LineSpace = dataReader.ReadSingle();
+			uint TextOffset = dataReader.ReadUInt32();
+			FontTopColor = dataReader.ReadColorRGBA();
+			FontBottomColor = dataReader.ReadColorRGBA();
+			FontXYSize = dataReader.ReadVector2();
+			CharacterSpace = dataReader.ReadSingle();
+			LineSpace = dataReader.ReadSingle();
 			uint TbNameOffset = dataReader.ReadUInt32();
-            ShadowXY = dataReader.ReadSingles(2);
-            ShadowXYSize = dataReader.ReadSingles(2);
-            ShadowTopColor = dataReader.ReadColorRGBA();
-            ShadowBottomColor = dataReader.ReadColorRGBA();
-            ShadowItalic = dataReader.ReadSingle();
+			ShadowXY = dataReader.ReadSingles(2);
+			ShadowXYSize = dataReader.ReadSingles(2);
+			ShadowTopColor = dataReader.ReadColorRGBA();
+			ShadowBottomColor = dataReader.ReadColorRGBA();
+			ShadowItalic = dataReader.ReadSingle();
 			dataReader.Position = TextOffset - 8;
 			Text = dataReader.ReadString(BinaryStringFormat.ZeroTerminated, Encoding.Unicode);
-        }
+		}
 
         protected override void ApplyChanges(BinaryDataWriter bin)
         {
@@ -156,9 +166,7 @@ namespace SwitchThemes.Common.Bflyt
             bin.Write(ShadowItalic);
         }
 
-		public override BasePane Clone()
-		{
-			return new Txt1Pane(base.Clone(), order);
-		}
+		public override BasePane Clone() =>
+			new Txt1Pane(base.Clone().GetData(), order);
 	}
 }

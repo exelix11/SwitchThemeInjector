@@ -127,6 +127,10 @@ static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
 			mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"] : "";
 			p.Materials.push_back(mat);
 		}
+	if (filePatch.count("PushBackPanes"))
+		p.PushBackPanes = filePatch["PushBackPanes"].get<vector<string>>();
+	if (filePatch.count("PullFrontPanes"))
+		p.PullFrontPanes = filePatch["PullFrontPanes"].get<vector<string>>();
 
 	return p;
 }

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+#if LYTEDITOR
+using System.ComponentModel;
+using System.Drawing.Design;
+using System.Globalization;
+#endif
 
 //This class is used to avoid having to link with System.Drawing when compiling for platforms that don't need to provide editor UIs like the web injector
 //define LYTEDITOR to enable support for Drawing.Color

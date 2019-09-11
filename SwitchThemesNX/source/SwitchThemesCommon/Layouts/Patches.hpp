@@ -73,6 +73,9 @@ struct LayoutFilePatch
 	std::vector<PanePatch> Patches;
 	std::vector<ExtraGroup> AddGroups;
 	std::vector<MaterialPatch> Materials;
+
+	std::vector<std::string> PushBackPanes;
+	std::vector<std::string> PullFrontPanes;
 };
 
 struct AnimFilePatch

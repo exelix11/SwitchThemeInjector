@@ -31,10 +31,20 @@ namespace SwitchThemes.Common.Bflyt
 
 		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68) {	}
 
-		public Pic1Pane(BasePane p, ByteOrder b) : base(p, b)
+		public Pic1Pane(byte[] data, ByteOrder b) : base(data,"pic1",b)
+		{
+			ParseData();
+		}
+
+		public Pic1Pane(BinaryDataReader bin) : base(bin, "pic1")
+		{
+			ParseData();
+		}
+
+		private void ParseData()
 		{
 			BinaryDataReader dataReader = new BinaryDataReader(new MemoryStream(data));
-			dataReader.ByteOrder = b;
+			dataReader.ByteOrder = order;
 			dataReader.Position = 0x54 - 8;
 			ColorTopLeft = dataReader.ReadColorRGBA();
 			ColorTopRight = dataReader.ReadColorRGBA();
@@ -75,9 +85,7 @@ namespace SwitchThemes.Common.Bflyt
 			}
 		}
 
-		public override BasePane Clone()
-		{
-			return new Pic1Pane(base.Clone(),order);
-		}
+		public override BasePane Clone() =>
+			new Pic1Pane(base.Clone().data,order);
 	}
 }

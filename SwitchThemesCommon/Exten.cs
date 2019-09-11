@@ -56,13 +56,6 @@ namespace ExtensionMethods
 			return true;
 		}
 
-		public static bool ContainsStr(this string[] arr, string t)
-		{
-			for (int i = 0; i < arr.Length; i++)
-				if (arr[i] == t) return true;
-			return false;
-		}
-
 		public static void WriteFixedLenString(this BinaryDataWriter bin, string s, int max)
 		{
 			if (s.Length > max) throw new Exception("The string is longer than the field");

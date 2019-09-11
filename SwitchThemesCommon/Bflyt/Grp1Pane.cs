@@ -10,9 +10,10 @@ using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace SwitchThemes.Common.Bflyt
 {
-	public class Grp1Pane : BasePane
+	public class Grp1Pane : BasePane, INamedPane
 	{
 		public string GroupName { get; set; }
+		public string PaneName => GroupName;
 
 #if LYTEDITOR
 		[Editor(@"System.Windows.Forms.Design.StringCollectionEditor," +
@@ -30,10 +31,10 @@ namespace SwitchThemes.Common.Bflyt
 			Version = ver;
 		}
 
-		public Grp1Pane(BasePane p, ByteOrder b, uint version) : base(p)
+		public Grp1Pane(BinaryDataReader src, uint version) : base("grp1", src)
 		{
 			BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data));
-			bin.ByteOrder = b;
+			bin.ByteOrder = src.ByteOrder;
 			Version = version;
 			UInt16 NodeCount = 0;
 			if (version >= 0x05020000) //3dskit docs say this should be > but files from mario maker for wii u use 34 bytes for names with version 5.2
