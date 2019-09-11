@@ -24,7 +24,7 @@ ThemeEntry::ThemeEntry(const string &fileName)
 	FileName = fileName;
 	if (filesystem::is_directory(fileName))
 	{
-		lblFname = (GetFileName(FileName));
+		lblFname = (fs::GetFileName(FileName));
 		lblLine1 = (FileName);
 		lblLine2 = ("Folder");
 		CanInstall = false;
@@ -32,7 +32,7 @@ ThemeEntry::ThemeEntry(const string &fileName)
 	}
 	else
 	{
-		file = OpenFile(FileName);
+		file = fs::OpenFile(FileName);
 		ParseTheme();
 	}
 }
@@ -83,7 +83,7 @@ void ThemeEntry::ParseFont()
 	auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
 	CanInstall = fontName != "";
 	lblFname = (CanInstall ? fontName : "Invalid font :(");
-	lblLine1 = (GetFileName(FileName));
+	lblLine1 = (fs::GetFileName(FileName));
 }
 
 void ThemeEntry::ParseNxTheme()
@@ -169,7 +169,7 @@ void ThemeEntry::ParseLegacyTheme()
 	}
 	else
 	{
-		lblFname = (GetFileName(FileName));
+		lblFname = (fs::GetFileName(FileName));
 		lblLine1 = (FileName);		
 	}
 	auto patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
@@ -304,7 +304,7 @@ void MissingFileErrorDialog(const string &name)
 
 static inline bool SarcOpen(const string &path, SARC::SarcData *out)
 {
-	auto f = OpenFile(path);
+	auto f = fs::OpenFile(path);
 	if (f.size() == 0) return false;
 	f = Yaz0::Decompress(f);
 	*out = SARC::Unpack(f);
@@ -337,25 +337,25 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			if (ShowLoading)
 				DisplayLoading("Installing font...");
 			
-			CreateFsMitmStructure("0100000000000811");
-			CreateRomfsDir("0100000000000811");
-			WriteFile(CfwFolder + "/titles/0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
-			CreateFsMitmStructure("0100000000000039");
-			CreateRomfsDir("0100000000000039");
-			WriteFile(CfwFolder + "/titles/0100000000000039/romfs/dummy.bin", {0x70,0x61,0x70,0x65,0x20,0x53,0x61,0x74,0x61,0x6E,0x20,0x41,0x6C,0x65,0x70,0x70,0x65,0x21});
+			fs::CreateFsMitmStructure("0100000000000811");
+			fs::CreateRomfsDir("0100000000000811");
+			fs::WriteFile(CfwFolder + "/titles/0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
+			fs::CreateFsMitmStructure("0100000000000039");
+			fs::CreateRomfsDir("0100000000000039");
+			fs::WriteFile(CfwFolder + "/titles/0100000000000039/romfs/dummy.bin", {0x70,0x61,0x70,0x65,0x20,0x53,0x61,0x74,0x61,0x6E,0x20,0x41,0x6C,0x65,0x70,0x70,0x65,0x21});
 		}
 		else if (LegacyTheme())
 		{
 			if (ShowLoading)
 				DisplayLoading("Installing...");
 			PatchTemplate patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
-			CreateThemeStructure(patch.TitleId);
+			fs::CreateThemeStructure(patch.TitleId);
 			string szsPath;
 			if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
 				szsPath	= homeDirOverride + patch.szsName;
 			else 
 				szsPath	= CfwFolder + "/titles/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
-			WriteFile(szsPath, file);
+			fs::WriteFile(szsPath, file);
 		}
 		else 
 		{
@@ -411,11 +411,11 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 				}
 				
 				if (homeDirOverride != "")
-					WriteFile(homeDirOverride + "common.szs", SarcPack(Patcher.GetFinalSarc()));
+					fs::WriteFile(homeDirOverride + "common.szs", SarcPack(Patcher.GetFinalSarc()));
 				else 
 				{
-					CreateThemeStructure("0100000000001000");
-					WriteFile(CfwFolder + "/titles/0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
+					fs::CreateThemeStructure("0100000000001000");
+					fs::WriteFile(CfwFolder + "/titles/0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
 				}
 			}
 			
@@ -500,10 +500,10 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string &homeDirOverride)
 			if (!SkipSaveActualFile)
 			{
 				if (TitleId == "0100000000001000" && homeDirOverride != "")
-					WriteFile(homeDirOverride + SzsName, SarcPack(Patcher.GetFinalSarc()));
+					fs::WriteFile(homeDirOverride + SzsName, SarcPack(Patcher.GetFinalSarc()));
 				else {
-					CreateThemeStructure(TitleId);
-					WriteFile(CfwFolder + "/titles/" + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
+					fs::CreateThemeStructure(TitleId);
+					fs::WriteFile(CfwFolder + "/titles/" + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
 				}
 			}
 		}

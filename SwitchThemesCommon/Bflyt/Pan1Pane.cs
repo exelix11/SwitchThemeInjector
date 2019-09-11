@@ -11,6 +11,7 @@ namespace SwitchThemes.Common.Bflyt
 {
 	public class Pan1Pane : BasePane, INamedPane
 	{
+#if LYTEDITOR
 		public CusRectangle transformedRect
 		{
 			get
@@ -51,7 +52,7 @@ namespace SwitchThemes.Common.Bflyt
 
 		//This is not an actual property, it's just to hide it from the view
 		public bool ViewInEditor { get; set; } = true;
-
+#endif
 		public bool ParentVisibility
 		{
 			get

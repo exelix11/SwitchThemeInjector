@@ -24,7 +24,7 @@ class RebootPage : public IPage
 		{
 			Name = "Reboot to payload";
 			
-			auto v = SearchCfwFolders();
+			auto v = fs::SearchCfwFolders();
 			bool hasAtmos = false;
 			if (std::find(v.begin(), v.end(), SD_PREFIX "/atmosphere") != v.end())
 			{

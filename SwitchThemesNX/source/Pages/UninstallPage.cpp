@@ -24,13 +24,13 @@ void UninstallPage::Render(int X, int Y)
 			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER] && gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
 			{
 				DisplayLoading("Clearing LayeredFS dir...");
-				UninstallTheme(true);
+				fs::UninstallTheme(true);
 				Dialog("Done, the layeredFS dir of the home menu was removed, restart your console to see the changes");
 			}
 			else
 			{
 				DisplayLoading("Loading...");
-				UninstallTheme(false);
+				fs::UninstallTheme(false);
 				Dialog("Done, all the installed themes have been removed, restart your console to see the changes");
 			}
 		});
