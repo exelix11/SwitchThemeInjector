@@ -6,9 +6,9 @@
 #include "SwitchThemesCommon.hpp"
 
 #ifdef  __SWITCH__
-int NXTheme_FirmMajor = -1;
+int HOS_FirmMajor = -1;
 #else
-int NXTheme_FirmMajor = 8; //For code running on pc emulate 8.x firm to match the injector
+int HOS_FirmMajor = 8; //For code running on pc emulate 8.x firm to match the injector
 #endif //  __SWITCH__
 
 std::unordered_map<std::string,std::string> ThemeTargetToName {};

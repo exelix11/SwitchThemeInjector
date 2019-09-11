@@ -12,6 +12,7 @@ using namespace std;
 using namespace SwitchThemesCommon;
 
 const string SwitchThemesCommon::CoreVer = "4.3 (C++)";
+const int SwitchThemesCommon::NXThemeVer = 9; //NxThemeFormatVersion
 
 string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& templates) 
 {

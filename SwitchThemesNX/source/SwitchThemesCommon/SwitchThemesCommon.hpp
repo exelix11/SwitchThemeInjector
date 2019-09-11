@@ -11,6 +11,7 @@
 namespace SwitchThemesCommon {
 	
 	extern const std::string CoreVer;
+	extern const int NXThemeVer;
 
 	struct BntxTexAttribPatch
 	{
