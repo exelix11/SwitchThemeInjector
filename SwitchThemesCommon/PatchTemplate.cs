@@ -276,9 +276,12 @@ namespace SwitchThemes.Common
 			FileName = "blyt/RdtBtnPvr.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "N_00", Position = new NullableVector3(0,0,0) },
-				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56), Position = new NullableVector3(0,10,0),
-				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
+				/*Patch only one position value to allow layouts to move around the picture freely
+				  new PanePatch { PaneName = "N_00", Position = new NullableVector3(0,0,0) },
+				  Original values : N_00 is at -22; -13. P_Pict_00 is at 28;
+				*/			
+				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56), Position = new NullableVector3(22,13,0),
+					UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
 				new PanePatch { PaneName = "N_02", Visible = false },
 				new PanePatch { PaneName = "N_01", Visible = false },
 				new PanePatch { PaneName = "P_Pict_01", Visible = false },
