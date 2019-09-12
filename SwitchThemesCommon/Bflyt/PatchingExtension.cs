@@ -125,12 +125,11 @@ namespace SwitchThemes.Common.Bflyt
 		public static bool AddGroupNames(this BflytFile f, ExtraGroup[] Groups)
 		{
 			if (Groups == null || Groups.Length == 0) return true;
+			if (f.RootGroup == null) return false;
+
 			var PanesWithNames = f.EnumeratePanes().Where(x => x is INamedPane).Cast<INamedPane>();
 			var GroupNames = PanesWithNames.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).name).ToArray();
 			var PaneNames = PanesWithNames.Where(x => !(x is Grp1Pane)).Select(x => x.PaneName);
-
-			if (f.RootGroup == null)
-				return false;
 
 			foreach (var g in Groups)
 			{
@@ -146,6 +145,7 @@ namespace SwitchThemes.Common.Bflyt
 		{
 			bool patchedSomething = false;
 			var texSection = f.GetTex;
+			if (texSection == null) return false;
 			for (int i = 0; i < texSection.Textures.Count; i++)
 			{
 				if (texSection.Textures[i] == original)
@@ -159,9 +159,9 @@ namespace SwitchThemes.Common.Bflyt
 
 		static ushort AddBgMat(this BflytFile f, string TexName)
 		{
-			var MatSect = f.GetMat;
+			var MatSect = f.GetMaterialsSection();
 			#region AddTextures
-			var texSection = f.GetTex;
+			var texSection = f.GetTexturesSection();
 			if (!texSection.Textures.Contains(TexName))
 				texSection.Textures.Add(TexName);
 			int texIndex = texSection.Textures.IndexOf(TexName);

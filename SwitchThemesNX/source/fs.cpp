@@ -234,16 +234,16 @@ string GetNcaPath(u64 tid)
 	char path[FS_MAX_PATH] = {0};
 	auto rc = lrInitialize();		
 	if (R_FAILED(rc))
-		ErrorFatal((string)"lrInitialize : " + to_string(rc));
+		DialogBlocking((string)"lrInitialize : " + to_string(rc));
 	
 	LrLocationResolver res;
 	rc = lrOpenLocationResolver(FsStorageId_NandSystem ,&res);
 	if (R_FAILED(rc))
-		ErrorFatal((string)"lrOpenLocationResolver :" + to_string(rc));
+		DialogBlocking((string)"lrOpenLocationResolver :" + to_string(rc));
 	
 	rc = lrLrResolveProgramPath(&res, tid, path);
 	if (R_FAILED(rc))
-		ErrorFatal((string)"lrLrResolveDataPath : "+ to_string(rc));
+		DialogBlocking((string)"lrLrResolveDataPath : "+ to_string(rc));
 	
 	std::string result(path);
 	result.erase(0, ((std::string)"@SystemContent://").length());

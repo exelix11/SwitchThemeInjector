@@ -12,7 +12,6 @@ extern std::string SystemVer;
 
 void PushPage(IUIControlObj* page);
 void PopPage();
-void ErrorFatal(const std::string &msg);
 void Dialog(const std::string &msg);
 
 //These functions can only be called during the update function as they need to draw outside of the main loop

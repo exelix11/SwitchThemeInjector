@@ -11,11 +11,10 @@ using namespace Panes;
 
 bool BflytPatcher::ClearUVData(const std::string& name)
 {
-	auto paneNames = lyt.GetPaneNames();
-	size_t index = Utils::IndexOf(paneNames, name);
-	if (index == SIZE_MAX || Panes[index]->name != "pic1") return false;
+	auto target = lyt[name];
+	if (!target || target->name != "pic1") return false;
 
-	auto e = dynamic_pointer_cast<Pic1Pane>(Panes[index]);
+	auto e = dynamic_pointer_cast<Pic1Pane>(target);
 	for (auto& uv : e->UvCoords)
 	{
 		uv.TopLeft = { 0,0 };
@@ -28,17 +27,16 @@ bool BflytPatcher::ClearUVData(const std::string& name)
 
 bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 {
-	auto names = GetPaneNames();
 	for (size_t i = 0; i < Patches.size(); i++)
 	{
-		int index = Utils::IndexOf(names, Patches[i].PaneName);
-		if (index == SIZE_MAX)
+		auto target = lyt[Patches[i].PaneName];
+		if (!target)
 			//return false;
 			continue;
 		//The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares
 
 		auto p = Patches[i];
-		auto e = dynamic_pointer_cast<Pan1Pane>(Panes[index]);
+		auto e = dynamic_pointer_cast<Pan1Pane>(target);
 
 		if (p.ApplyFlags & (u32)PanePatch::Flags::Visible)
 			e->SetVisible(p.Visible);
@@ -89,9 +87,9 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 				ee->ColorBottomRight = RGBAColor(p.ColorBR);
 		}
 
-		if ((p.ApplyFlags & (u32)PanePatch::Flags::Usd1) && Panes[index]->UserData)
+		if ((p.ApplyFlags & (u32)PanePatch::Flags::Usd1) && target->UserData)
 		{
-			auto usd = dynamic_cast<Usd1Pane*>(Panes[index]->UserData.get());
+			auto usd = dynamic_cast<Usd1Pane*>(target->UserData.get());
 			for (const auto& patch : p.UsdPatches)
 			{
 				auto v = usd->FindName(patch.PropName);
@@ -127,35 +125,30 @@ bool BflytPatcher::ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches
 bool BflytPatcher::AddGroupNames(const std::vector<ExtraGroup>& Groups)
 {
 	if (Groups.size() == 0) return true;
-	auto PaneNames = GetPaneNames();
-	auto GroupNames = GetGroupNames();
+	if (!lyt.GetRootGroup()) return false;
 
-	auto rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(),	[](PanePtr i) { return i->name == "gre1"; });
-	if (rootGroupIndex == Panes.rend())
-	{
-		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](PanePtr i) { return i->name == "grp1"; });
-		if (rootGroupIndex == Panes.rend())
-			return false;
-		Panes.emplace(rootGroupIndex.base(), new BasePane("gre1", 8));
-		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](PanePtr i) { return i->name == "grp1"; });
-		Panes.emplace(rootGroupIndex.base(), new BasePane("grs1", 8));
-	}
-
-	for (const auto &g : Groups)
-	{
-		rootGroupIndex = find_if(Panes.rbegin(), Panes.rend(), [](PanePtr i) { return i->name == "gre1"; }); //Not sure if after inserting the iterator is still valid
-
-		if (find(GroupNames.begin(), GroupNames.end(), g.GroupName) != GroupNames.end()) continue;
-		for (const auto& s : g.Panes)
+	vector<string> groupNames;
+	vector<string> paneNames;
+	//Populate list of group and pane names
+	lyt.FindPane([&groupNames, &paneNames](PanePtr cur)
 		{
-			if (find(PaneNames.begin(), PaneNames.end(), s) == PaneNames.end()) 
-				return false;
-		}
+			if (cur->PaneName == "") return false;
+			if (cur->name == "grp1")
+				groupNames.push_back(dynamic_pointer_cast<Grp1Pane>(cur)->GroupName);
+			else
+				paneNames.push_back(cur->PaneName);
+			return false;
+		});
 
-		auto grp = new Grp1Pane(lyt.Version);
-		grp->GroupName = g.GroupName;
-		grp->Panes = g.Panes;
-		Panes.emplace(rootGroupIndex.base() - 1, grp);
+	for (const auto& g : Groups)
+	{
+		if (Utils::IndexOf(groupNames, g.GroupName) != SIZE_MAX) continue;
+		for (const auto& s : g.Panes)
+			if (Utils::IndexOf(paneNames, s) == SIZE_MAX) return false;
+		auto toAdd = new Grp1Pane(lyt.Version);
+		toAdd->GroupName = g.GroupName;
+		toAdd->Panes = g.Panes;
+		lyt.GetRootGroup()->Children.emplace_back(toAdd);
 	}
 	return true;
 }
@@ -213,12 +206,11 @@ u16 BflytPatcher::AddBgMat(const std::string& texName)
 	return u16(MatSect->Materials.size() - 1);
 }
 
-bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::string& Pic1Name)
+bool BflytPatcher::AddBgPanel(PanePtr target, const std::string& TexName, const std::string& Pic1Name)
 {
 	if (Pic1Name.length() > 0x18)
 		throw runtime_error("Pic1Name should not be longer than 24 chars");
-	auto BgPanel = new BasePane("pic1", 0x8);
-	Panes.emplace(Panes.begin() + index, BgPanel);
+	auto BgPane = new BasePane("pic1", 0x8);
 	int TexIndex = AddBgMat(TexName);
 	{
 		Buffer bin;
@@ -249,50 +241,44 @@ bool BflytPatcher::AddBgPanel(int index, const std::string& TexName, const std::
 		bin.Write((float)1);
 		bin.Write((float)1);
 		bin.Write((float)1);
-		BgPanel->data = bin.getBuffer();
+		BgPane->data = bin.getBuffer();
 	}
+	auto& targetCList = target->Parent->Children;
+	targetCList.emplace(targetCList.begin() + Utils::IndexOf(targetCList, target), BgPane);
 	return true;
 }
 
 bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 {
 	//Detect patch
-	for (size_t i = 0; i < Panes.size(); i++)
+	if (lyt[patch.PatchIdentifier]) return true;
+	if (lyt["3x3lxBG"])
 	{
-		if (Panes[i]->name != "pic1") continue;
-		auto p = dynamic_pointer_cast<Pic1Pane>(Panes[i]);
-		if (p->PaneName == patch.PatchIdentifier) return true;
-		if (p->PaneName == "3x3lxBG") //Fix old layout
-		{
-			Panes.erase(Panes.begin() + i);
-			lyt.GetTexSection()->Textures[0] = "White1x1^r";
-			lyt.GetMatSection()->Materials.erase(lyt.GetMatSection()->Materials.begin() + 1);
-		}
+		lyt.RemovePane(lyt["3x3lxBG"]);
+		lyt.GetTexSection()->Textures[0] = "White1x1^r";
+		lyt.GetMatSection()->Materials.erase(lyt.GetMatSection()->Materials.begin() + 1);
 	}
 	//Find and remove target panes
-	size_t target = SIZE_MAX;
-	for (size_t i = 0; i < Panes.size() - 1; i++)
+	PanePtr target = nullptr;
+	for (const auto& tname : patch.targetPanels)
 	{
-		string name = Panes[i]->PaneName;
-		if (name != "" && Utils::IndexOf(patch.targetPanels, name) != SIZE_MAX)
+		auto p = lyt[tname];
+		if (!p) continue;
+		if (!target) target = p;
+		if (patch.DirectPatchPane)
 		{
-			if (i < target) target = i;
-			if (patch.DirectPatchPane)
-			{
-				auto m = AddBgMat(patch.MaintextureName);
-				if (Panes[i]->name != "pic1") throw runtime_error("Expected a picture pane !");
-				auto p = dynamic_pointer_cast<Pic1Pane>(Panes[i]);
-				p->MaterialIndex = m;
-			}
-			else if (!patch.NoRemovePanel)
-			{
-				auto p = dynamic_pointer_cast<Pan1Pane>(Panes[i]);
-				p->Position.X = 5000;
-				p->Position.Y = 60000;
-			}
+			auto m = AddBgMat(patch.MaintextureName);
+			if (p->name != "pic1") throw runtime_error("Expected a picture pane !");
+			dynamic_pointer_cast<Pic1Pane>(p)->MaterialIndex = m;
+		}
+		else if (!patch.NoRemovePanel)
+		{
+			auto t = dynamic_pointer_cast<Pan1Pane>(p);
+			t->Position.X = 5000;
+			t->Position.Y = 60000;
 		}
 	}
-	if (target == SIZE_MAX)
+	if (!target)
 		return false;
 
 	if (!patch.DirectPatchPane)

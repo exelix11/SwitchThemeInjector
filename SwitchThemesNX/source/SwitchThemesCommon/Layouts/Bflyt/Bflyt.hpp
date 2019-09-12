@@ -2,12 +2,15 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include "../../BinaryReadWrite/Buffer.hpp"
 #include "../../MyTypes.h"
 #include "../Patches.hpp"
 #include <memory>
 #include "BasePane.hpp"
 #include "BflytMaterial.hpp"
+#include <queue>
+#include <functional>
 
 namespace Panes
 {
@@ -52,30 +55,78 @@ namespace Utils
 class BflytFile 
 {
 public:
+	//Maybe make this stl-comatible ?
+	class Iterator : public std::iterator<std::forward_iterator_tag,Panes::PanePtr, Panes::PanePtr, const Panes::PanePtr*, Panes::PanePtr&>
+	{
+	public:
+		Iterator(BflytFile *file, std::vector<Panes::PanePtr>&& root) : _file(file) 
+		{
+			for (auto& p : root)
+				it.push(p);
+			Step();
+		}
+
+		Iterator(BflytFile *file, std::vector<Panes::PanePtr>& root) : _file(file)
+		{
+			for (auto& p : root)
+				it.push(p);
+			Step();
+		}
+
+		Panes::PanePtr operator *() const
+		{
+			if (!Cur)
+				throw std::runtime_error("The end of the sequence has been reached");
+			return Cur;
+		}
+
+		Iterator& operator ++()	{ Step(); return *this; }
+		bool operator==(const Iterator& other) const { return this->_file == other._file && this->Cur == other.Cur; }
+		bool operator!=(const Iterator& other) const { return this->_file != other._file || this->Cur != other.Cur; }
+	private:
+
+		void Step()
+		{
+			if (it.size() == 0)
+				Cur = nullptr;
+			else {
+				Cur = it.front();
+				it.pop();
+				for (auto ptr : Cur->Children)
+					it.push(ptr);
+			}
+		}
+
+		BflytFile *_file;
+		std::queue<Panes::PanePtr> it;
+		Panes::PanePtr Cur = nullptr;
+	};
+
+	Iterator PanesBegin() { return Iterator(this, RootPanes); }
+	Iterator PanesEnd() { return Iterator(this, {}); }
+
 	BflytFile(const std::vector<u8>& file);
 	~BflytFile();
 	std::vector<u8> SaveFile();
 
 	u32 Version;
 
+	std::vector<Panes::PanePtr> RootPanes;
+
 	std::shared_ptr<Panes::TextureSection> GetTexSection();
 	std::shared_ptr<Panes::MaterialsSection> GetMatSection();
+	Panes::PanePtr GetRootElement();
+	std::shared_ptr<Panes::Grp1Pane> GetRootGroup();
 
-	Panes::PanePtr& operator[] (int index);
-	std::vector<Panes::PanePtr> Panes;
-	int FindPaneEnd(int paneIndex);
-
-	std::vector<std::string> GetPaneNames();
-	std::vector<std::string> GetGroupNames();
+	Panes::PanePtr operator[] (const std::string &name);
 	
-	Panes::PanePtr RootPane = nullptr;
-	std::shared_ptr<Panes::Grp1Pane> RootGroup = nullptr;
+	void RemovePane(Panes::PanePtr pane);
+	void AddPane(size_t offset, Panes::PanePtr Pane, Panes::PanePtr pane);
+	void MovePane(Panes::PanePtr pane, Panes::PanePtr NewParent, size_t offset);
 
-	void RemovePane(Panes::PanePtr& pane);
-	void AddPane(size_t offsetInChildren, Panes::PanePtr& Pane, std::vector<Panes::PanePtr>& pane);
-	void MovePane(Panes::PanePtr& pane, Panes::PanePtr& NewParent, size_t childOffset);
-
-	void RebuildParentingData();
+	Panes::PanePtr FindPane(std::function<bool(Panes::PanePtr)> fun);
+	Panes::PanePtr FindRoot(const std::string& type);
 private:
-	void RebuildGroupingData();
+	int FindRootIndex(const std::string& type);
+	std::vector<Panes::PanePtr> WritePaneListForBinary();
 };
