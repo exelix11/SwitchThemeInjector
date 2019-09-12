@@ -42,7 +42,7 @@ namespace SwitchThemes.Common.Bflyt
 
 		public BasePane this[string name]
 		{
-			get => FindPane(x => (x as INamedPane).PaneName == name);
+			get => FindPane(x => (x as INamedPane)?.PaneName == name);
 		}
 
 		public interface INamedPane
@@ -259,19 +259,22 @@ namespace SwitchThemes.Common.Bflyt
 			return res.ToArray();
 		}
 
+		//Getters will not add the section if it's missing
 		public TextureSection GetTex
 		{
 			get => RootPanes.Find(x => x is TextureSection) as TextureSection;
 		}
 
-		public void AddTexturesSection()
+		public TextureSection GetTexturesSection()
 		{
-			if (GetTex != null) throw new Exception("A textures section already exists");
+			if (GetTex != null) return GetTex;
 			//the textures section is often after a fnl1 section
+			var res = new TextureSection();
 			var fnt = RootPanes.Find(x => x.name == "fnl1");
 			if (fnt != null)
-				RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, new TextureSection());
-			else RootPanes.Insert(0, new TextureSection());
+				RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, res);
+			else RootPanes.Insert(1, res);
+			return res;
 		}
 
 		public MaterialsSection GetMat
@@ -279,19 +282,21 @@ namespace SwitchThemes.Common.Bflyt
 			get => RootPanes.Find(x => x is MaterialsSection) as MaterialsSection;
 		}
 
-		public void AddMaterialsSection()
+		public MaterialsSection GetMaterialsSection()
 		{
-			if (GetMat != null) throw new Exception("A materials section already exists");
+			if (GetMat != null) return GetMat;
 			//the materials section is often after the txl1 section
+			var res = new MaterialsSection();
 			var tex = GetTex;
 			if (tex == null)
 			{
 				var fnt = RootPanes.Find(x => x.name == "fnl1");
 				if (fnt != null)
-					RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, new TextureSection());
-				else RootPanes.Insert(0, new TextureSection());
+					RootPanes.Insert(RootPanes.IndexOf(fnt) + 1, res);
+				else RootPanes.Insert(1, res);
 			}
-			else RootPanes.Insert(RootPanes.IndexOf(tex) + 1, new TextureSection());
+			else RootPanes.Insert(RootPanes.IndexOf(tex) + 1, res);
+			return res;
 		}
 
 		public BflytFile(byte[] data) : this(new MemoryStream(data)) { }

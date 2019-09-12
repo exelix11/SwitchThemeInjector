@@ -67,7 +67,7 @@ static void _PopPage()
 	views.pop();
 	if (views.size() == 0)
 	{
-		ErrorFatal("Can't pop last page");
+		Dialog("Error: Can't pop last page");
 		return;
 	}
 	ViewObj = views.top();
@@ -129,11 +129,6 @@ void PushPageBlocking(IUIControlObj* page)
 
 		PlatformSleep(1 / 30.0f * 1000);
 	}
-}
-
-void ErrorFatal(const string &msg)
-{
-	PushPage(new LoadingOverlay(msg));
 }
 
 void Dialog(const string &msg)
@@ -294,7 +289,7 @@ static void SetupSysVer()
 	auto res = setsysGetFirmwareVersion(&firmware);
 	if (R_FAILED(res))
 	{
-		ErrorFatal("Could not get sys ver res=" + to_string(res));
+		DialogBlocking("Could not get sys ver res=" + to_string(res));
 		return;
 		setsysExit();
 	}

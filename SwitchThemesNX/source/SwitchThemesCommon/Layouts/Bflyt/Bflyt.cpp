@@ -5,6 +5,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <stack>
 
 using namespace std;
 using namespace Panes;
@@ -73,9 +74,31 @@ void MaterialsSection::ApplyChanges(Buffer & dataWriter)
 	}
 }
 
-PanePtr& BflytFile::operator[] (int index)
+Panes::PanePtr BflytFile::operator[] (const string &name)
 {
-	return Panes[index];
+	return FindPane([name](Panes::PanePtr p) {return p->PaneName == name; });
+}
+
+Panes::PanePtr BflytFile::FindPane(std::function<bool(Panes::PanePtr)> fun)
+{
+	auto&& b = find_if(PanesBegin(), PanesEnd(), fun);
+	if (b == PanesEnd())
+		return nullptr;
+	else return *b;
+}
+
+int BflytFile::FindRootIndex(const string& type)
+{
+	for (size_t i = 0; i < RootPanes.size(); i++)
+		if (RootPanes[i]->name == type)
+			return (int)i;
+	return -1;
+}
+
+Panes::PanePtr BflytFile::FindRoot(const string& type)
+{
+	int index = FindRootIndex(type);
+	return index < 0 ? nullptr : RootPanes[index];
 }
 
 BflytFile::BflytFile(const vector<u8>& file) 
@@ -89,23 +112,45 @@ BflytFile::BflytFile(const vector<u8>& file)
 	bin.readUInt32(); //File size
 	u16 sectionCount = bin.readUInt16();
 	bin.readUInt16(); //padding
+
+	Panes::PanePtr lastPane = nullptr;
+	stack<Panes::PanePtr> currentRoot;
+	auto&& PushPane = [&lastPane, &currentRoot, this](Panes::BasePane* ptr) {
+		auto&& x = Panes::PanePtr(ptr);
+		if (x->name == "pas1" || x->name == "grs1") 
+			currentRoot.push(lastPane); 
+		else if (x->name == "pae1" || x->name == "gre1")
+			currentRoot.pop(); 
+		else if (currentRoot.size() == 0)
+			RootPanes.push_back(x);
+		else 
+		{ 
+			x->Parent = currentRoot.top(); 
+			currentRoot.top()->Children.push_back(x); 
+		} 
+		lastPane = x; 
+	};
+
 	for (size_t i = 0; i < sectionCount; i++)
 	{
 		string name = bin.readStr(4);
 		if (name == "txl1")
-			Panes.emplace_back(new TextureSection(bin));
+			PushPane(new TextureSection(bin));
 		else if (name == "mat1")
-			Panes.emplace_back(new MaterialsSection(bin, Version));
+			PushPane(new MaterialsSection(bin, Version));
 		else if (name == "pic1")
-			Panes.emplace_back(new Pic1Pane(bin, bin.ByteOrder));
-		else if (name == "usd1")
-			Panes[Panes.size() - 1]->UserData = make_unique<Usd1Pane>(bin);
+			PushPane(new Pic1Pane(bin, bin.ByteOrder));
+		else if (name == "usd1") {
+			if (!lastPane)
+				throw runtime_error("Misplaced user data section");
+			lastPane->UserData = make_unique<Usd1Pane>(bin);
+		}
 		else if (name == "grp1")
-			Panes.emplace_back(new Grp1Pane(bin, Version));
+			PushPane(new Grp1Pane(bin, Version));
 		else if (name == "pan1" || name == "prt1" || name == "wnd1" || name == "bnd1")
-			Panes.emplace_back(new Pan1Pane(bin, bin.ByteOrder, name));
+			PushPane(new Pan1Pane(bin, bin.ByteOrder, name));
 		else 
-			Panes.emplace_back(new BasePane(name,bin));
+			PushPane(new BasePane(name,bin));
 
 		//if (i == sectionCount - 1 && bin.Position != bin.Length()) //load sections missing in the section count (my old bflyt patch)
 		//{
@@ -123,34 +168,86 @@ BflytFile::BflytFile(const vector<u8>& file)
 
 BflytFile::~BflytFile() 
 {
-	Panes.clear();
+	RootPanes.clear();
 }
 
 //TODO make this return nullptr
 shared_ptr<TextureSection> BflytFile::GetTexSection()
 {
-	for (auto ptr : Panes)
+	auto p = FindRoot("txl1");
+	if (!p)
 	{
-		if (ptr->name == "txl1")
-			return dynamic_pointer_cast<TextureSection>(ptr);
+		p = PanePtr(new TextureSection());
+		int t = FindRootIndex("fnl1");
+		if (t >= 0)
+			RootPanes.insert(RootPanes.begin() + t + 1, p);
+		else
+			RootPanes.insert(RootPanes.begin() + 1, p);
 	}
-	Panes.emplace(Panes.begin() + 2, new TextureSection());
-	return dynamic_pointer_cast<TextureSection>(Panes[2]);
+	return dynamic_pointer_cast<TextureSection>(p);
 }
 
 shared_ptr<MaterialsSection> BflytFile::GetMatSection()
 {
-	for (auto ptr : Panes)
+	auto p = FindRoot("mat1");
+	if (!p)
 	{
-		if (ptr->name == "mat1")
-			return dynamic_pointer_cast<MaterialsSection>(ptr);
+		p = PanePtr(new MaterialsSection(Version));
+		int t = FindRootIndex("txl1");
+		if (t >= 0)
+			RootPanes.insert(RootPanes.begin() + t + 1, p);
+		else
+		{
+			t = FindRootIndex("fnl1");
+			if (t >= 0)
+				RootPanes.insert(RootPanes.begin() + t + 1, p);
+			else
+				RootPanes.insert(RootPanes.begin() + 1, p);
+		}
 	}
-	Panes.emplace(Panes.begin() + 3, new MaterialsSection(Version));
-	return dynamic_pointer_cast<MaterialsSection>(Panes[3]);
+	return dynamic_pointer_cast<MaterialsSection>(p);
+}
+
+Panes::PanePtr BflytFile::GetRootElement()
+{
+	return FindRoot("pan1");
+}
+
+shared_ptr<Grp1Pane> BflytFile::GetRootGroup()
+{
+	auto p = FindRoot("grp1");
+	if (!p) return nullptr;
+	return dynamic_pointer_cast<Grp1Pane>(p);
+}
+
+vector<PanePtr> BflytFile::WritePaneListForBinary()
+{
+	vector<PanePtr> res;
+	stack<PanePtr> ToProc;
+	//It's a stack so we reverse the child panes order
+	for (auto&& p = RootPanes.rbegin(); p != RootPanes.rend(); p++)
+		ToProc.push(*p);
+
+	while (ToProc.size() > 0)
+	{
+		auto c = ToProc.top();
+		ToProc.pop();
+		res.push_back(c);
+		if (c->Children.size() != 0)
+		{
+			ToProc.emplace(new BasePane(c->name == "grp1" ? "gre1" : "pae1", 8));
+			for (auto&& p = c->Children.rbegin(); p != c->Children.rend(); p++)
+				ToProc.push(*p);
+			res.emplace_back(new BasePane(c->name == "grp1" ? "grs1" : "pas1", 8));
+		}
+	}
+	return res;
 }
 
 vector<u8> BflytFile::SaveFile() 
 {
+	auto&& Panes = WritePaneListForBinary();
+
 	Buffer bin;
 	bin.ByteOrder = Endianness::LittleEndian;
 	bin.Write("FLYT");
@@ -172,201 +269,21 @@ vector<u8> BflytFile::SaveFile()
 	return bin.getBuffer();
 }
 
-vector<string> BflytFile::GetPaneNames()
+void BflytFile::RemovePane(PanePtr pane)
 {
-	vector<string> names;
-	for (size_t i = 0; i < Panes.size(); i++)
-		names.push_back(Panes[i]->PaneName);
-	return names;
+	auto& c = pane->Parent->Children;
+	c.erase(std::remove(c.begin(), c.end(), pane), c.end());
 }
 
-vector<string> BflytFile::GetGroupNames()
+void BflytFile::AddPane(size_t offset, PanePtr Parent, PanePtr pane)
 {
-	vector<string> names;
-	for (size_t i = 0; i < Panes.size(); i++)
-		if (Panes[i]->name == "grp1")
-			names.push_back(dynamic_pointer_cast<Grp1Pane>(Panes[i])->GroupName);
-	return names;
+	if (offset > Parent->Children.size())
+		offset = Parent->Children.size();
+	Parent->Children.insert(Parent->Children.begin() + offset, pane);
 }
 
-int BflytFile::FindPaneEnd(int paneIndex)
+void BflytFile::MovePane(PanePtr pane, PanePtr NewParent, size_t offset)
 {
-	auto pane = Panes[paneIndex];
-
-	string childStarter = pane->name == "grp1" ? "grs1" : "pas1";
-	string childCloser = pane->name == "grp1" ? "gre1" : "pae1";
-
-	if (Panes[paneIndex + 1]->name == childStarter)
-	{
-		int childLevel = 0;
-		size_t i;
-		for (i = paneIndex + 2; i < Panes.size(); i++)
-		{
-			if (Panes[i]->name == childCloser)
-			{
-				if (childLevel == 0)
-					break;
-				childLevel--;
-			}
-			if (Panes[i]->name == childStarter)
-				childLevel++;
-		}
-		return (int)i;
-	}
-	return paneIndex;
-}
-
-void BflytFile::RebuildParentingData()
-{
-	RebuildGroupingData();
-	PanePtr CurrentRoot = nullptr;
-	int RootIndex = -1;
-	for (size_t i = 0; i < Panes.size(); i++)
-		if (Panes[i]->name == "RootPane")
-		{
-			CurrentRoot = Panes[i];
-			RootIndex = i;
-			break;
-		}
-	if (!CurrentRoot) throw("Couldn't find the root pane");
-	RootPane = CurrentRoot;
-	RootPane->Children.clear();
-	RootPane->Parent = nullptr;
-	for (size_t i = RootIndex + 1; i < Panes.size(); i++)
-	{
-		if (Panes[i]->name == "pas1")
-		{
-			CurrentRoot = Panes[i - 1];
-			CurrentRoot->Children.clear();
-			continue;
-		}
-		if (Panes[i]->name == "pae1")
-		{
-			CurrentRoot = CurrentRoot->Parent;
-			if (CurrentRoot == nullptr) return;
-			continue;
-		}
-		Panes[i]->Parent = CurrentRoot;
-		CurrentRoot->Children.push_back(Panes[i]);
-	}
-	if (!CurrentRoot)
-		throw("Unexpected pane data ending: one or more children sections are not closed by the end of the file");
-}
-
-void BflytFile::RebuildGroupingData() 
-{
-	RootGroup = nullptr;
-	int rootGroupIndex = -1;
-	for (size_t i = 0; i < Panes.size(); i++)
-		if (Panes[i]->name == "grp1")
-		{
-			rootGroupIndex = i;
-			break;
-		}
-	if (rootGroupIndex == -1) return;
-	auto curRoot = dynamic_pointer_cast<Grp1Pane>(Panes[rootGroupIndex]);
-	RootGroup = curRoot;
-	curRoot->Parent = nullptr;
-	curRoot->Children.clear();
-	for (size_t i = rootGroupIndex + 1; i < Panes.size(); i++)
-	{
-		if (Panes[i]->name == "grs1")
-		{
-			curRoot = dynamic_pointer_cast<Grp1Pane>(Panes[i - 1]);
-			curRoot->Children.clear();
-			continue;
-		}
-		else if (Panes[i]->name == "gre1")
-		{
-			curRoot = dynamic_pointer_cast<Grp1Pane>(curRoot->Parent);
-			if (curRoot == nullptr) return;
-			continue;
-		}
-		if (Panes[i]->name != "grp1") break;
-		Panes[i]->Parent = curRoot;
-		curRoot->Children.push_back(Panes[i]);
-	}
-	if (curRoot != RootGroup)
-		throw("Unexpected pane data ending: one or more group sections are not closed by the end of the file");
-}
-
-void BflytFile::RemovePane(PanePtr& pane)
-{
-	size_t PaneIndex = Utils::IndexOf(Panes, pane);
-	size_t end = FindPaneEnd(PaneIndex);
-
-	Panes.erase(Panes.begin() + PaneIndex, Panes.begin() + end);
-
-	if (pane->Parent)
-	{
-		auto &PChildList = pane->Parent->Children;
-		PChildList.erase(remove(PChildList.begin(), PChildList.end(), pane), PChildList.end());
-	}
-	RebuildParentingData();
-}
-
-void BflytFile::AddPane(size_t offsetInChildren, PanePtr& Parent, vector<PanePtr>& pane)
-{
-	string childStarter = pane[0]->name == "grp1" ? "grs1" : "pas1";
-	string childCloser = pane[0]->name == "grp1" ? "gre1" : "pae1";
-
-	if (pane.size() > 1 && (pane[1]->name != childStarter || pane[0]->Parent == pane[2]->Parent))
-		throw("The BasePane array must be a single pane, optionally with children already in the proper structure");
-
-	if (!Parent) Parent = RootPane;
-	size_t parentIndex = Utils::IndexOf(Panes, Parent);
-	if (parentIndex == SIZE_MAX) throw("Parent not found");
-	if (Panes.size() <= parentIndex + 1 || Panes[parentIndex + 1]->name != childStarter)
-	{
-		if (Parent->Children.size() != 0) throw("Inconsistend data !");
-		Panes.emplace(Panes.begin() + parentIndex + 1, new BasePane(childStarter, 8));
-		Panes.emplace(Panes.begin() + parentIndex + 2, new BasePane(childCloser, 8));
-	}
-
-	pane[0]->Parent = Parent;
-	if (offsetInChildren <= 0 || offsetInChildren >= Parent->Children.size())
-	{
-		Parent->Children.insert(Parent->Children.end(), pane.begin(), pane.end());
-		Panes.insert(Panes.begin() + parentIndex + 2, pane.begin(), pane.end());
-	}
-	else 
-	{
-		int actualInserOffset = 0;
-		int childCount = 0;
-		for (int i = parentIndex + 2; ; i++)
-		{
-			i = FindPaneEnd(i) + 1;
-			childCount++;
-			if (childCount == offsetInChildren) 
-			{
-				actualInserOffset = i;
-				break;
-			}
-		}
-
-		Parent->Children.insert(Parent->Children.end(), pane.begin(), pane.end());
-		Panes.insert(Panes.begin() + actualInserOffset, pane.begin(), pane.end());
-	}
-	RebuildParentingData();
-}
-
-void BflytFile::MovePane(PanePtr& pane, PanePtr& NewParent, size_t childOffset)
-{
-	if (childOffset > NewParent->Children.size())
-		childOffset = NewParent->Children.size();
-
-	int parentIndex = Utils::IndexOf(Panes, NewParent);
-	if (parentIndex == -1) throw("No parent !");
-
-	int paneIndex = Utils::IndexOf(Panes, pane);
-
-	int paneCount = FindPaneEnd(paneIndex) - paneIndex + 1;
-
-	vector<PanePtr> tmpForCopy;
-	for (int i = paneIndex; i < paneIndex + paneCount; i++)
-		tmpForCopy.push_back(Panes[i]);
-
-	Panes.erase(Panes.begin() + paneIndex, Panes.begin() + paneCount);
-
-	AddPane(childOffset, NewParent, tmpForCopy);
+	RemovePane(pane);
+	AddPane(offset, NewParent, pane);
 }
