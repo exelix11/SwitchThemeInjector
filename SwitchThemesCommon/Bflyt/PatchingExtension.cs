@@ -196,7 +196,6 @@ namespace SwitchThemes.Common.Bflyt
 			#region add picture
 			if (Pic1Name.Length > 0x18)
 				throw new Exception("Pic1Name should not be longer than 24 chars");
-			var BgPanel = new BasePane("pic1", 0x8);
 			var strm = new MemoryStream();
 			using (BinaryDataWriter bin = new BinaryDataWriter(strm))
 			{
@@ -238,7 +237,7 @@ namespace SwitchThemes.Common.Bflyt
 		public static bool PatchBgLayout(this BflytFile f, PatchTemplate patch)
 		{
 			#region DetectPatch
-			if (f[patch.PatchIdentifier] == null) return true;
+			if (f[patch.PatchIdentifier] != null) return true;
 			{
 				var p = f["3x3lxBG"];
 				if (p != null)

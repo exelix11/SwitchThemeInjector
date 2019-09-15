@@ -27,7 +27,7 @@ namespace SwitchThemes.Common.Bflyt
 
 		public IEnumerable<BasePane> EnumeratePanes(List<BasePane> source)
 		{
-			var ToProcess = new Queue<BasePane>(RootPanes);
+			var ToProcess = new Queue<BasePane>(source);
 
 			while (ToProcess.Count > 0)
 			{

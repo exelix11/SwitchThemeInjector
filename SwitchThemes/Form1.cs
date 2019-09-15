@@ -194,7 +194,10 @@ namespace SwitchThemes
 			LayoutPatch res = null;
 			try
 			{
-				res = LayoutDiff.Diff(originalSzs, CommonSzs);
+				string msg;
+				(res, msg) = LayoutDiff.Diff(originalSzs, CommonSzs);
+				if (msg != null)
+					MessageBox.Show(msg);
 			}
 			catch (Exception ex)
 			{
