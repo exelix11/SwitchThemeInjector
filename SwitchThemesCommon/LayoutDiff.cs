@@ -19,7 +19,7 @@ namespace SwitchThemes.Common
 	{
 		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1", "cnt1" };
 
-		public static LayoutPatch Diff(SarcData original, SarcData edited)
+		public static (LayoutPatch,string) Diff(SarcData original, SarcData edited)
 		{
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
 			if (!ScrambledEquals<string>(original.Files.Keys, edited.Files.Keys))
@@ -44,7 +44,7 @@ namespace SwitchThemes.Common
 					if (orPan.name != edPan.name) throw new Exception($"{f} : {orPan.name} doesn't match with {edPan.name}");
 					if (orPan.PaneName != edPan.PaneName) throw new Exception($"{f} : {orPan.PaneName} doesn't match with {edPan.PaneName}");
 					
-					PanePatch curPatch = new PanePatch() { PaneName = edPan.name };
+					PanePatch curPatch = new PanePatch() { PaneName = edPan.PaneName };
 					curPatch.UsdPatches = MakeUsdPatch(edPan.UserData, orPan.UserData);
 					if (edPan.data.SequenceEqual(orPan.data))
 					{
@@ -90,7 +90,7 @@ namespace SwitchThemes.Common
 				}
 
 				List<ExtraGroup> extraGroups = new List<ExtraGroup>();
-				string[] ogPanes = _or.EnumeratePanes(_or.RootGroup).Select(x => ((Grp1Pane)x).name).ToArray();
+				string[] ogPanes = _or.EnumeratePanes(_or.RootGroup).Select(x => ((Grp1Pane)x).GroupName).ToArray();
 				var edPanes = _ed.EnumeratePanes(_ed.RootGroup).Cast<Grp1Pane>();
 				foreach (var p in edPanes)
 				{
@@ -127,6 +127,8 @@ namespace SwitchThemes.Common
 				throw new Exception("Couldn't find any difference");
 			}
 
+			string Message = null;
+
 			List<AnimFilePatch> AnimPatches = new List<AnimFilePatch>();
 			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
 			{
@@ -135,11 +137,12 @@ namespace SwitchThemes.Common
 				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
 			}
 			if (AnimPatches.Count == 0) AnimPatches = null;
-			else if (!hasAtLeastAnExtraGroup) throw new Exception("This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations");
+			else if (!hasAtLeastAnExtraGroup)
+				Message = "This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations";
 
 			var targetPatch = SzsPatcher.DetectSarc(original, DefaultTemplates.templates);
 
-			return new LayoutPatch()
+			return (new LayoutPatch()
 			{
 				PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
 				TargetName = targetPatch?.szsName,
@@ -147,7 +150,7 @@ namespace SwitchThemes.Common
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
 				Ready8X = true
-			};
+			}, Message);
 		}
 
 		static List<UsdPatch> MakeUsdPatch(Usd1Pane or, Usd1Pane ed)

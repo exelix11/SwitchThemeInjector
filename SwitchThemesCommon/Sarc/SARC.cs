@@ -121,7 +121,15 @@ namespace SARCExt
 			bw.Write((UInt16)data.Files.Keys.Count);
 			bw.Write((UInt32)0x00000065);
 			List<uint> offsetToUpdate = new List<uint>();
-			foreach (string k in data.Files.Keys)
+
+			//Names must be sorted by hash
+			string[] SortedNames = null;
+			if (data.HashOnly)
+				SortedNames = data.Files.Keys.OrderBy(x => StringHashToUint(x)).ToArray();
+			else
+				SortedNames = data.Files.Keys.OrderBy(x => NameHash(x)).ToArray();
+
+			foreach (string k in SortedNames)
 			{
 				if (data.HashOnly)
 					bw.Write(StringHashToUint(k));
@@ -136,7 +144,7 @@ namespace SARCExt
 			bw.Write((UInt16)0x8);
 			bw.Write((UInt16)0);
 			List<uint> StringOffsets = new List<uint>();
-			foreach (string k in data.Files.Keys)
+			foreach (string k in SortedNames)
 			{
 				StringOffsets.Add((uint)bw.BaseStream.Position);
 				bw.Write(k, BinaryStringFormat.ZeroTerminated);
@@ -144,7 +152,7 @@ namespace SARCExt
 			}
 			bw.Align(0x1000); //TODO: check if works in odyssey
 			List<uint> FileOffsets = new List<uint>();
-			foreach (string k in data.Files.Keys)
+			foreach (string k in SortedNames)
 			{
 				bw.Align((int)GuessFileAlignment(data.Files[k]));
 				FileOffsets.Add((uint)bw.BaseStream.Position);
