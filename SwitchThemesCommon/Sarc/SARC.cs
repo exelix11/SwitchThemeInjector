@@ -166,7 +166,7 @@ namespace SARCExt
 				else
 					bw.Write((UInt32)0);
 				bw.Write((UInt32)(FileOffsets[i] - FileOffsets[0]));
-				bw.Write((UInt32)(FileOffsets[i] + data.Files.Values.ToArray()[i].Length - FileOffsets[0]));
+				bw.Write((UInt32)(FileOffsets[i] + data.Files[SortedNames[i]].Length - FileOffsets[0]));
 			}
 			bw.BaseStream.Position = 0x08;
 			bw.Write((uint)bw.BaseStream.Length);
