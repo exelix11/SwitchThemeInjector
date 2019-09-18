@@ -276,7 +276,7 @@ namespace SwitchThemes.Common
 			if (!res) return res;
 			if (EnableAnimations)
 			{
-				//res = target.AddGroupNames(p.AddGroups);
+				res = target.AddGroupNames(p.AddGroups);
 				if (!res) return res;
 			}
 
