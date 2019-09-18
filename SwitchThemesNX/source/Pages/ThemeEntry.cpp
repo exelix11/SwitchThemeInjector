@@ -320,8 +320,9 @@ static inline vector<u8> SarcPack(SARC::SarcData &data)
 
 static bool ExefsCompatAsk(const string& SzsName)
 {
-	if (PatchMng::CanInstallTheme(SzsName))
+	if (!PatchMng::CanInstallTheme(SzsName))
 		return YesNoPage::Ask(PatchMng::InstallWarnStr);
+	return true;
 }
 
 //Uses blocking functions, only callable from Update()

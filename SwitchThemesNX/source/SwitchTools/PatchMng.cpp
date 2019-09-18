@@ -18,7 +18,7 @@ const char* PatchMng::WarningStr =
 	"this can happen because one of the following reasons:\n"
 	" - Your CFW doesn't support ips patches, currently only Atmosphere and ReiNX do.\n"
 	" - You're running a newer firmware, in this case check for updated.\n"
-	"   - This version of the installer supports up to " LastSupportedVerSTR "\n"
+	"     - This version of the installer supports up to " LastSupportedVerSTR "\n"
 	" - The patches directory on the sd card couldn't be written or read\n\n"
 	"As the patches won't be loaded by your CFW some themes may crash, you will be warned when installing a theme that's known to cause issues";
 
@@ -29,7 +29,7 @@ const char* PatchMng::InstallWarnStr =
 
 static const unordered_map<string, SystemVersion> PartsRequiringPatch = 
 {
-	{"entrance.szs", {9,0,0} }
+	{"Entrance.szs", {9,0,0} }
 };
 
 static bool HasLatestPatches = false;
@@ -90,8 +90,6 @@ static bool ExtractPatches()
 
 bool PatchMng::EnsureInstalled()
 {
-	return false;
-
 	if (HOSVer.major < 9) return true;
 	auto&& outDir = GetExefsPatchesPath();
 	if (outDir == "") return false;
