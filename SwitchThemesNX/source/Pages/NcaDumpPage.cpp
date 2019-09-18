@@ -4,6 +4,7 @@
 #include "../SwitchTools/hactool.hpp"
 #include <filesystem>
 #include "../Platform/Platform.hpp"
+#include "../SwitchThemesCommon/NXTheme.hpp"
 
 using namespace std;
 
@@ -55,7 +56,6 @@ void NcaDumpPage::Update()
 	}
 }
 
-extern int HOS_FirmMajor;
 void NcaDumpPage::CheckHomeMenuVer()
 {
 	if (!filesystem::exists(SD_PREFIX "/themes/systemData/ResidentMenu.szs"))
@@ -78,7 +78,7 @@ void NcaDumpPage::CheckHomeMenuVer()
 		}
 		else goto ASK_DUMP;
 	}
-	else if (HOS_FirmMajor >= 7) goto ASK_DUMP;
+	else if (HOSVer.major >= 7) goto ASK_DUMP;
 	else fs::WriteHomeDumpVer();
 	return;
 	

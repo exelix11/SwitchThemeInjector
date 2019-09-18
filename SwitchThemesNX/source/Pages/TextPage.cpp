@@ -8,13 +8,20 @@ TextPage::TextPage(const std::string& title, const std::string& text) :
 	Text(text)
 {
 	Name = title;
+	c_str = Text.c_str();
+}
+
+TextPage::TextPage(const char* title, const char* text) 
+{
+	Name = title;
+	c_str = text;
 }
 
 void TextPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupPage(this, X, Y);
-	ImGui::PushFont(font30);
-	ImGui::TextWrapped(Text.c_str());
+	ImGui::PushFont(font25);
+	ImGui::TextWrapped(c_str);
 	ImGui::PopFont();
 	Utils::ImGuiSetWindowScrollable();
 	Utils::ImGuiCloseWin();
@@ -24,7 +31,6 @@ void TextPage::Update()
 {
 	Parent->PageLeaveFocus(this);
 }
-
 
 CreditsPage::CreditsPage() :
 	creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +

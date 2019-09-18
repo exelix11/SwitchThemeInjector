@@ -3,7 +3,15 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
-#ifdef __SWITCH__
+
+#if WIN32
+#include <io.h>
+#include <direct.h>
+#include "Platform\Windows\dirent.h"
+#define mkdir(x,y) _mkdir(x)
+#define rmdir(x) _rmdir(x)
+#else
+#include <unistd.h>
 #include <dirent.h>
 #include <switch.h>
 #endif

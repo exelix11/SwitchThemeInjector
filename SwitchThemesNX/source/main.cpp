@@ -25,6 +25,8 @@
 #include "Pages/SettingsPage.hpp"
 #include "Pages/RebootPage.cpp"
 
+#include "SwitchTools/PatchMng.hpp"
+
 //#define DEBUG
 using namespace std;
 
@@ -67,7 +69,7 @@ static void _PopPage()
 	views.pop();
 	if (views.size() == 0)
 	{
-		Dialog("Error: Can't pop last page");
+		//Dialog("Error: Can't pop last page");
 		return;
 	}
 	ViewObj = views.top();
@@ -103,7 +105,7 @@ void PushPageBlocking(IUIControlObj* page)
 	}
 
 	PushPage(page);
-	while (AppMainLoop())
+	while (AppMainLoop() && ViewObj)
 	{
 		PlatformGetInputs();
 		ImguiBindController();
@@ -177,7 +179,7 @@ static void calcFPS()
 
 static void MainLoop()
 {
-	while (AppMainLoop())
+	while (AppMainLoop() && ViewObj)
 	{
 		PlatformGetInputs();
 		ImguiBindController();
@@ -234,7 +236,7 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 "(Please note that some features such as custom Settings page are available only on >= 6.X firmwares)");
 	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files. These work just like SZS files but they can be freely shared and most importantly installed on every firmware.");
 	Dialog("Custom themes are custom SZS files that replace some files of the home menu, these files are firmware-dependent, which means that if you update your firmware while having a custom theme installed your console may not boot anymore until you manually remove the custom theme.\n\n"
-"To remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the '0100000000001000' and '0100000000001013' folder in 'SDcard/<your cfw folder>/titles'.\n\n"
+"To remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/titles'.\n\n"
 "Custom themes CANNOT brick your console because they're installed only on the SDcard");
 	if (WelcomeScr)
 		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
@@ -245,7 +247,7 @@ static void CheckCFWDir()
 {
 	auto f = fs::SearchCfwFolders();
 	if (f.size() != 1)
-		PushPage(new CfwSelectPage(f));
+		PushPageBlocking(new CfwSelectPage(f));
 }
 
 static vector<string> GetArgsInstallList(int argc, char**argv)
@@ -289,14 +291,16 @@ static void SetupSysVer()
 	auto res = setsysGetFirmwareVersion(&firmware);
 	if (R_FAILED(res))
 	{
+		setsysExit();
 		DialogBlocking("Could not get sys ver res=" + to_string(res));
 		return;
-		setsysExit();
 	}
+	HOSVer = { firmware.major,firmware.minor,firmware.micro };
+	setsysExit();
 #else 
-	struct { u32 major, minor, micro; } firmware = { 8,0,1 };
+	HOSVer = { 9,0,0 };
 #endif
-	if (firmware.major <= 5)
+	if (HOSVer.major <= 5)
 	{
 		ThemeTargetToName = ThemeTargetToName5X;
 		ThemeTargetToFileName = ThemeTargetToFileName6X; //The file names are the same
@@ -306,8 +310,7 @@ static void SetupSysVer()
 		ThemeTargetToName = ThemeTargetToName6X;
 		ThemeTargetToFileName = ThemeTargetToFileName6X;
 	}
-	HOS_FirmMajor = firmware.major;
-	SystemVer = to_string(firmware.major) + "." + to_string(firmware.minor) + "." + to_string(firmware.micro);
+	SystemVer = to_string(HOSVer.major) + "." + to_string(HOSVer.minor) + "." + to_string(HOSVer.micro);
 }
 
 int main(int argc, char **argv)
@@ -326,6 +329,8 @@ int main(int argc, char **argv)
 	bool ThemesFolderExists = fs::CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
 
+	CheckCFWDir();
+
 	if (
 #ifdef __SWITCH__
 		envHasArgv() &&
@@ -337,7 +342,6 @@ int main(int argc, char **argv)
 			goto APP_QUIT;
 		
 		PushPage(new ExternalInstallPage(paths));	
-		CheckCFWDir();		
 		MainLoop();
 		
 		goto APP_QUIT;
@@ -351,8 +355,14 @@ int main(int argc, char **argv)
 		if (!ThemesFolderExists)
 			ShowFirstTimeHelp(true);
 		
+		TextPage* PatchFailedWarning = nullptr;
+		if (!PatchMng::EnsureInstalled())
+		{
+			PatchFailedWarning = new TextPage("Warning", PatchMng::WarningStr);
+			t->AddPage(PatchFailedWarning);
+		}
+
 		auto ThemeFiles = fs::GetThemeFiles();
-		
 		ThemesPage *p = new ThemesPage(ThemeFiles);
 		t->AddPage(p);
 		UninstallPage *up = new UninstallPage();
@@ -370,10 +380,10 @@ int main(int argc, char **argv)
 		QuitPage *q = new QuitPage();
 		t->AddPage(q);
 		
-		CheckCFWDir();
-		
 		MainLoop();
 		
+		if (PatchFailedWarning)
+			delete PatchFailedWarning;
 		delete p;
 		delete up;
 		delete dp;

@@ -9,6 +9,7 @@
 #include "../SwitchThemesCommon/Bntx/DDSconv/DDSConv.hpp"
 
 #include "SettingsPage.hpp"
+#include "../SwitchTools/PatchMng.hpp"
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -280,7 +281,7 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 		return false;
 	}
 	Patcher.SetPatchAnimations(Settings::UseAnimations);
-	if (!Patcher.PatchLayouts(patch, PartName, HOS_FirmMajor >= 8 && PartName == "home"))
+	if (!Patcher.PatchLayouts(patch, PartName, HOSVer.major >= 8 && PartName == "home"))
 	{
 		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
@@ -317,6 +318,12 @@ static inline vector<u8> SarcPack(SARC::SarcData &data)
 	return Yaz0::Compress(packed.data, 3, packed.align);
 }
 
+static bool ExefsCompatAsk(const string& SzsName)
+{
+	if (PatchMng::CanInstallTheme(SzsName))
+		return YesNoPage::Ask(PatchMng::InstallWarnStr);
+}
+
 //Uses blocking functions, only callable from Update()
 bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 {
@@ -350,6 +357,10 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 			if (ShowLoading)
 				DisplayLoading("Installing...");
 			PatchTemplate patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
+
+			if (!ExefsCompatAsk(patch.szsName))
+					return false;
+
 			fs::CreateThemeStructure(patch.TitleId);
 			string szsPath;
 			if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
@@ -361,6 +372,10 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 		else
 		{
 			auto themeInfo = ParseNXThemeFile(SData);
+			
+			if (!ExefsCompatAsk(ThemeTargetToFileName[themeInfo.Target]))
+				return false;
+
 			string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
 			if (!filesystem::exists(BaseSzs))
 			{
@@ -379,7 +394,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 
 			//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout
 			//On <= 5.0 apply the background image for the applets
-			bool ShouldPatchBGInCommon = HOS_FirmMajor <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
+			bool ShouldPatchBGInCommon = HOSVer.major <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
 			if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || ShouldPatchBGInCommon)
 			{
 				string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
