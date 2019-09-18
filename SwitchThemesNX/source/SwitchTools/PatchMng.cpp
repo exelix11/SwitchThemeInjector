@@ -12,18 +12,20 @@ static const u32 PatchSetVer = 1;
 #define LastSupportedVerSTR "9.0.0"
 static const SystemVersion LastSupportedVer = { 9,0,0 };
 
+#define ThemePatchesDir "NxThemesInstaller/"
+
 const char* PatchMng::WarningStr =
 	"Since 9.0 some parts of the home menu require a custom code patch (exefs patch) to run properly,"
 	"if you're seeing this screen it means that these patches weren't applied correctly,"
 	"this can happen because one of the following reasons:\n"
 	" - Your CFW doesn't support ips patches, currently only Atmosphere and ReiNX do.\n"
-	" - You're running a newer firmware, in this case check for updated.\n"
+	" - You're running a newer firmware, in this case check for updates.\n"
 	"     - This version of the installer supports up to " LastSupportedVerSTR "\n"
 	" - The patches directory on the sd card couldn't be written or read\n\n"
 	"As the patches won't be loaded by your CFW some themes may crash, you will be warned when installing a theme that's known to cause issues";
 
 const char* PatchMng::InstallWarnStr = 
-	"The theme you're trying to install is known to not work without an home menu patch and you don't seem to have a compatible one installed,"
+	"The theme you're trying to install is known to crash without an home menu patch and you don't seem to have a compatible one installed,"
 	"it may work but it's possible that it will crash on boot. Do you want to continue ?\n\n"
 	"In case of crash on boot you can delete the theme by manually removing the 0100000000001000 folder from /<your cfw>/titles on your sd card";
 
@@ -32,7 +34,7 @@ static const unordered_map<string, SystemVersion> PartsRequiringPatch =
 	{"Entrance.szs", {9,0,0} }
 };
 
-static bool HasLatestPatches = false;
+static bool HasLatestPatches = true;
 
 static string GetExefsPatchesPath()
 {
@@ -57,7 +59,7 @@ bool PatchMng::CanInstallTheme(const string& FileName)
 
 void PatchMng::RemoveAll()
 {
-	fs::RecursiveDeleteFolder(GetExefsPatchesPath() + "NxThemesInstaller/");
+	fs::RecursiveDeleteFolder(GetExefsPatchesPath() + ThemePatchesDir);
 	HasLatestPatches = false;
 }
 
@@ -66,7 +68,7 @@ static bool ExtractPatches()
 	auto&& p = GetExefsPatchesPath();
 
 	mkdir(p.c_str(), ACCESSPERMS);
-	p += "NxThemesInstaller/";
+	p += ThemePatchesDir;
 	mkdir(p.c_str(), ACCESSPERMS);
 
 	try {
@@ -84,7 +86,6 @@ static bool ExtractPatches()
 	fprintf(f, "%u", PatchSetVer);
 	fclose(f);
 
-	HasLatestPatches = true;
 	return true;
 }
 
@@ -92,23 +93,27 @@ bool PatchMng::EnsureInstalled()
 {
 	if (HOSVer.major < 9) return true;
 	auto&& outDir = GetExefsPatchesPath();
-	if (outDir == "") return false;
+	if (outDir == "")
+	{
+		HasLatestPatches = false;
+		return false;
+	}
 
-	FILE* f = fopen((outDir + "ver.txt").c_str(), "r");
+	FILE* f = fopen((outDir + ThemePatchesDir "ver.txt").c_str(), "r");
 	if (!f)
-		return ExtractPatches();
+		HasLatestPatches = ExtractPatches();
+	else {
+		u32 CurVer = 0;
+		fscanf(f, "%u", &CurVer);
+		fclose(f);
 
-	u32 CurVer = 0;
-	fscanf(f, "%u", &CurVer);
-	fclose(f);
-
-	if (CurVer < PatchSetVer)
-		return ExtractPatches();
+		if (CurVer < PatchSetVer)
+			HasLatestPatches = ExtractPatches();
+	}
 
 	if (HOSVer.IsGreater(LastSupportedVer))
-		return false;
+		HasLatestPatches = false;
 
-	HasLatestPatches = true;
-	return true;
+	return HasLatestPatches;
 }
 
