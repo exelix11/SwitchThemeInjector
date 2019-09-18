@@ -187,7 +187,10 @@ namespace SwitchThemes
 				File.WriteAllBytes(Output, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 				GC.Collect();
 
-				Console.WriteLine("Done");
+				if (Patcher.PatchTemplate.RequiresCodePatch)
+					Console.WriteLine("The file has been patched successfully but due to memory limitations this szs requires an extra code patch to be applied to the home menu, if you use NXThemesInstaller to install this it will be done automatically, otherwise you need to manually copy the patches from https://github.com/exelix11/SwitchThemeInjector/tree/master/SwitchThemesNX/romfs to the exefs patches directory of your cfw");
+				else
+					Console.WriteLine("Done");
 			}
 			catch (Exception ex)
 			{

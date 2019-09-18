@@ -15,7 +15,31 @@ struct ThemeFileManifest
 	std::string Target;
 };
 
-extern int HOS_FirmMajor;
+struct SystemVersion { 
+	u32 major, minor, micro;
+	bool IsGreater(const SystemVersion& other) const 
+	{
+		if (major > other.major)
+			return true;
+		else if (major < other.major)
+			return false;
+		else
+		{
+			if (minor > other.minor)
+				return true;
+			else if (minor < other.minor)
+				return false;
+			else return micro > other.micro;
+		}
+	}
+	bool IsEqual(const SystemVersion& other) const
+	{
+		return other.major == major && other.minor == minor && other.micro == micro;
+	}
+};
+
+extern SystemVersion HOSVer;
+
 extern std::unordered_map<std::string,std::string> ThemeTargetToName;
 extern std::unordered_map<std::string,std::string> ThemeTargetToFileName;
 

@@ -11,12 +11,14 @@ class TextPage : public IPage
 {
 	public:
 		TextPage(const std::string &title, const std::string &text);	
-		
+		TextPage(const char* title, const char* text);
+
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
 	
 		std::string Text;
+		const char* c_str;
 };
 
 class CreditsPage : public IPage

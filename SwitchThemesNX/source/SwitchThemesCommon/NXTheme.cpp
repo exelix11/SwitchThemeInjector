@@ -5,11 +5,7 @@
 #include "Layouts/json.hpp"
 #include "SwitchThemesCommon.hpp"
 
-#ifdef  __SWITCH__
-int HOS_FirmMajor = -1;
-#else
-int HOS_FirmMajor = 8; //For code running on pc emulate 8.x firm to match the injector
-#endif //  __SWITCH__
+SystemVersion HOSVer = { 0,0,0 };
 
 std::unordered_map<std::string,std::string> ThemeTargetToName {};
 std::unordered_map<std::string,std::string> ThemeTargetToFileName {};

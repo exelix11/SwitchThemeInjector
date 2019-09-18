@@ -330,7 +330,7 @@ namespace SwitchThemes.Common
 
 		public bool PatchAppletIcon(byte[] DDS, string name)
 		{
-			var patch = DetectSarc();
+			var patch = PatchTemplate;
 			if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
 				return false;
 
@@ -356,7 +356,7 @@ namespace SwitchThemes.Common
 
 		public bool PatchMainBG(DDSEncoder.DDSLoadResult DDS)
 		{
-			var template = DetectSarc();
+			var template = PatchTemplate;
 			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
 
 			//PatchBGLayouts
@@ -402,9 +402,15 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
-		public PatchTemplate DetectSarc()
+		private PatchTemplate _patch = null;
+		public PatchTemplate PatchTemplate
 		{
-			return DetectSarc(sarc, templates);
+			get
+			{
+				if (_patch != null) return _patch;
+				_patch = DetectSarc(sarc, templates);
+				return _patch;
+			}
 		}
 
 		public static PatchTemplate DetectSarc(SarcData sarc, IEnumerable<PatchTemplate> Templates)

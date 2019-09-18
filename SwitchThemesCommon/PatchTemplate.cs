@@ -75,6 +75,8 @@ namespace SwitchThemes.Common
 		//public bool ReplaceTarget = false;
 		//public PatchTemplate[] UnpatchTargets;
 
+		public bool RequiresCodePatch = false;
+
 #if WIN
 #if DEBUG
 		public static void BuildTemplateFile()
@@ -120,15 +122,26 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1A64^t",
 				NXThemeName = "home"
 			},
-			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "all firmwares",
+			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.X",
 				FnameIdentifier = new string[] {  @"blyt/EntBtnResumeSystemApplet.bflyt"},
-				FnameNotIdentifier = new string[] { } ,
+				FnameNotIdentifier = new string[] { @"blyt/PageindicatorAlarm.bflyt" } ,
 				MainLayoutName =@"blyt/EntMain.bflyt",
 				MaintextureName = "White1x1^s",
 				PatchIdentifier = "exelixLK",
 				targetPanels = new string[] { "P_BgL", "P_BgR" },
 				SecondaryTexReplace ="White1x1^r",
 				NXThemeName = "lock"
+			},
+			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "9.0",
+				FnameIdentifier = new string[] {  @"blyt/PageindicatorAlarm.bflyt" },
+				FnameNotIdentifier = new string[] { } ,
+				MainLayoutName =@"blyt/EntMain.bflyt",
+				MaintextureName = "White1x1^s",
+				PatchIdentifier = "exelixLK",
+				targetPanels = new string[] { "P_BgL", "P_BgR" },
+				SecondaryTexReplace ="White1x1^r",
+				NXThemeName = "lock",
+				RequiresCodePatch = true,
 			},
 			new PatchTemplate() { TemplateName = "user page" , szsName = "MyPage.szs", TitleId = "0100000000001013",  FirmName = "all firmwares",
 				FnameIdentifier = new string[] { @"blyt/MypUserIconMini.bflyt",@"blyt/BgNav_Root.bflyt" },

@@ -530,7 +530,10 @@ namespace SwitchThemes
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
 
-			MessageBox.Show("Done");
+			if (Patcher.PatchTemplate.RequiresCodePatch)
+				MessageBox.Show("The file has been patched successfully but due to memory limitations this szs requires an extra code patch to be applied to the home menu, if you use NXThemesInstaller to install this it will be done automatically, otherwise you need to manually copy the patches from https://github.com/exelix11/SwitchThemeInjector/tree/master/SwitchThemesNX/romfs to the exefs patches directory of your cfw");
+			else
+				MessageBox.Show("Done");
 		}
 
 		[Obsolete("NXTheme Installer now can directly preview .DDS files")]

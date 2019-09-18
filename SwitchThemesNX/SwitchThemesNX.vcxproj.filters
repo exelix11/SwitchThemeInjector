@@ -215,6 +215,9 @@
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.hpp">
       <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClInclude>
+    <ClInclude Include="source\SwitchTools\PatchMng.hpp">
+      <Filter>SwitchTools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -353,6 +356,9 @@
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp">
       <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchTools\PatchMng.cpp">
+      <Filter>SwitchTools</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,14 +1,6 @@
 #include "fs.hpp"
 #include "Platform\Platform.hpp"
-#if WIN32
-	#include <io.h>
-	#include <direct.h>
-	#include "Platform\Windows\dirent.h"
-	#define mkdir(x,y) _mkdir(x)
-	#define rmdir(x) _rmdir(x)
-#else
-	#include <unistd.h>
-#endif
+
 #include <filesystem>
 #include "ViewFunctions.hpp"
 #include <sys/stat.h>
