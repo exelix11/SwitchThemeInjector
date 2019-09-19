@@ -21,8 +21,14 @@ bool NAV_DOWN;
 bool NAV_LEFT;
 bool NAV_RIGHT;
 
+bool UseLowMemory = false;
+
 void PlatformInit() 
 {
+	AppletType at = appletGetAppletType();
+	if (at != AppletType_Application && at != AppletType_SystemApplication)
+		UseLowMemory = true;
+
 	romfsInit();
 	socketInitializeDefault();
 #ifdef __NXLINK_ENABLE__

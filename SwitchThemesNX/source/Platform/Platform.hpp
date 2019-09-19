@@ -23,6 +23,9 @@ extern bool NAV_DOWN;
 extern bool NAV_LEFT;
 extern bool NAV_RIGHT;
 
+//Used when running in applet mode on switch
+extern bool UseLowMemory;
+
 static inline bool KeyPressed(int glfwKey)
 {
 	return gamepad.buttons[glfwKey] && !OldGamepad.buttons[glfwKey];

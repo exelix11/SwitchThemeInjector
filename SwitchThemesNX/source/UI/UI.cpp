@@ -38,7 +38,6 @@ void Utils::ImGuiDragWithLastElement()
 
 using namespace std;
 
-const int MaxCachedImages = 8;
 vector<pair<string, LoadedImage>> ImagePool;
 
 static auto HasString(const string& str) 
@@ -57,6 +56,8 @@ static void AddValue(const string& str, LoadedImage img)
 {
 	ImagePool.emplace_back(str, img);
 	LOGf("Pushing %s size %lu\n", str.c_str(), ImagePool.size());
+
+	int MaxCachedImages = UseLowMemory ? 3 : 7;
 	if (ImagePool.size() > MaxCachedImages)
 		PopFirst();
 }

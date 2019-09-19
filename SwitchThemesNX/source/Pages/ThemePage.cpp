@@ -7,14 +7,15 @@
 
 using namespace std;
 
-static constexpr int LimitLoad = 25;
-
 ThemesPage::ThemesPage(const std::vector<std::string> &files) : 
 lblPage(""),
 NoThemesLbl(
 	"There's nothing here, copy your themes in the themes folder on your sd and try again.\n"
 	"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue if you use a mac or sd corruption if you use exfat, you can find more about those on google or ask for support on discord.")
 {
+	if (UseLowMemory)
+		LimitLoad = 15;
+
 	Name = "Themes";
 	ThemeFiles = files;
 	lblCommands = CommandsTextNormal;
@@ -67,7 +68,9 @@ void ThemesPage::SetPage(int num)
 		return;
 	}
 	
-	//DisplayLoading("Loading...");
+	if (CurrentFiles.size() > 10)
+		DisplayLoading("Loading...");
+	
 	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > LimitLoad) imax = LimitLoad;
 	for (int i = 0; i < imax; i++)
