@@ -51,7 +51,7 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName6X
 	{"apps","All apps menu"},
 	{"set","Settings applet"},
 	{"news","News applet" },
-	{"opt","Options menu" },
+	//{"opt","Options menu" },
 	{"psl","Player selection" },
 };
 

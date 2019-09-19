@@ -117,7 +117,7 @@ void ThemeEntry::ParseNxTheme()
 	{
 		string targetStr = ThemeTargetToName[themeInfo.Target];
 		if (NXThemeHasPreview)
-			targetStr += " - press L for preview";
+			targetStr += " - press X for preview";
 		lblLine2 = (targetStr);
 	}
 	
@@ -238,7 +238,7 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderNavHighlight(bb, id);
 	RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 	
-	if (NXThemeHasPreview && (hovered || held) && gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER])
+	if (NXThemeHasPreview && (hovered || held) && gamepad.buttons[GLFW_GAMEPAD_BUTTON_X])
 	{
 		auto Preview = NXGetPreview();
 		if (Preview)

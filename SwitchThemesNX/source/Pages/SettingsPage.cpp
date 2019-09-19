@@ -12,7 +12,7 @@ namespace Settings {
 
 SettingsPage::SettingsPage() : 
 lblGuide( "Theme shuffle is implemented as a custom sysmodule, get it from:\nhttps://git.io/fhtY8 \n"
-"To install a theme in the shuffle list press R while pressing A or + in the theme install page"),
+"To install a theme in the shuffle list press - while pressing A or + in the theme install page"),
 lblInstalled("Currently installed themes number: 0")
 {
 	Name = "Settings";
@@ -39,7 +39,7 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::NewLine();
 
 	ImGui::PushFont(font30);
-	ImGui::Text("Theme shuffle settings (BETA)");
+	ImGui::Text("Theme shuffle settings (Unstable, not recommended)");
 	ImGui::PopFont();
 
 	ImGui::TextWrapped(lblGuide.c_str());

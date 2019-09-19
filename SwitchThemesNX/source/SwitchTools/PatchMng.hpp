@@ -3,9 +3,9 @@
 
 namespace PatchMng
 {
-	extern const char* WarningStr;
 	extern const char* InstallWarnStr;
 	void RemoveAll();
-	bool EnsureInstalled();
+	//returns an error message
+	const char* EnsureInstalled();
 	bool CanInstallTheme(const std::string& FileName);
 };

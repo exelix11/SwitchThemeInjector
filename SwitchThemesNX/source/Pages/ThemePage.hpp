@@ -43,6 +43,6 @@ class ThemesPage : public IPage
 		
 		std::string NoThemesLbl;
 		
-		const std::string CommandsTextNormal = "A: Install theme  Y: Multiselect";
-		const std::string CommandsTextSelected = "A: Add/Remove to selection  X: Clear selection  `+`: Install selected";
+		const std::string CommandsTextNormal = "A: Install theme  Y: Multiselect  L/R: Previous/Next page";
+		const std::string CommandsTextSelected = "A: Add/Remove to selection  Y: Clear selection  `+`: Install selected";
 };
