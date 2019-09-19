@@ -262,12 +262,12 @@ namespace SwitchThemes
 			if (Layout != null && File.Exists(Layout))
 				layout = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
 
-			if (Image != null && !Image.EndsWith(".dds"))
-			{
-				if (Form1.ImageToDDS(Image, Path.GetTempPath()))
-					Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
-				else return false;
-			}
+			//if (Image != null && !Image.EndsWith(".dds"))
+			//{
+			//	if (Form1.ImageToDDS(Image, Path.GetTempPath()))
+			//		Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
+			//	else return false;
+			//}
 
 			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
 			void PopulateAppletIcons(List<TextureReplacement> l)
@@ -275,8 +275,8 @@ namespace SwitchThemes
 				foreach (var a in l)
 				{
 					string path = GetArg(a.NxThemeName);
-					if (path == null || (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path)))
-						continue;
+					//if (path == null || (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path)))
+					//	continue;
 					AppletIcons.Add(a.NxThemeName, path);
 				}
 			}
