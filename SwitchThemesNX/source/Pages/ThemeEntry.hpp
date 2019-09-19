@@ -39,7 +39,7 @@ class ThemeEntry
 		void ParseFont();		
 		LoadedImage NXGetPreview();
 
-		std::vector<u8> NxThemeGetBgImage();
+		const std::vector<u8>& NxThemeGetBgImage();
 		
 		std::vector<u8> file;		
 		SARC::SarcData SData;
@@ -51,4 +51,7 @@ class ThemeEntry
 		
 		bool NXThemeHasPreview = false;
 		int NXThemeVer = -1;
+
+		//Used to return by reference for the background image
+		const static std::vector<u8> _emtptyVec;
 };

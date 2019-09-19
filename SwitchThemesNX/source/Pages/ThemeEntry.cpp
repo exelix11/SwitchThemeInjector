@@ -135,7 +135,8 @@ void ThemeEntry::ParseNxTheme()
 	lblLine1 = (l1);
 }
 
-vector<u8> ThemeEntry::NxThemeGetBgImage()
+const std::vector<u8> ThemeEntry::_emtptyVec = {};
+const vector<u8>& ThemeEntry::NxThemeGetBgImage()
 {
 	if (!NXThemeHasPreview || !CanInstall) return {};
 	if (SData.files.count("image.dds"))
@@ -155,10 +156,10 @@ vector<u8> ThemeEntry::NxThemeGetBgImage()
 			NXThemeHasPreview = false;
 			CanInstall = false;
 			lblLine2 = DDSConv::GetError();
-			return {};
+			return  ThemeEntry::_emtptyVec;
 		}
 	}
-	return {};
+	return ThemeEntry::_emtptyVec;
 }
 
 void ThemeEntry::ParseLegacyTheme()
@@ -185,7 +186,7 @@ void ThemeEntry::ParseLegacyTheme()
 LoadedImage ThemeEntry::NXGetPreview()
 {
 	if (!NXThemeHasPreview) return 0;
-	auto image = NxThemeGetBgImage();
+	auto& image = NxThemeGetBgImage();
 	if (image.size() == 0) return 0;
 	auto Preview = ImageCache::LoadDDS(image, FileName);
 	if (!Preview)

@@ -227,9 +227,9 @@ class QuitPage : public IPage
 void ShowFirstTimeHelp(bool WelcomeScr)
 {	
 //these are shown from the last to the first
-	Dialog("You can find some themes on the /r/NXThemes subreddit and in the Qcean Discord server (invite: CUnHJgb) where you can also ask for support. \n"
+	Dialog("You can find some themes on the /r/NXThemes subreddit and in the Qcean Discord server (invite: CUnHJgb) where you can also ask for support. \n\n"
 "To make your own themes download the windows app at: https://git.io/fpxAS\n"
-"Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/\n"
+"Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/v2\n"
 "\n"
 "That's all, have fun with custom themes :)");
 	Dialog("Altough .nxtheme files can be INSTALLED on every firmware you still have to uninstall any theme before updating, this is because the nxtheme gets converted to an SZS when it's installed.\nAfter the update you will be able to reinstall all your themes in .nxtheme format usually without any compatibility issue.\n"
