@@ -67,7 +67,7 @@ void ThemesPage::SetPage(int num)
 		return;
 	}
 	
-	DisplayLoading("Loading...");
+	//DisplayLoading("Loading...");
 	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > LimitLoad) imax = LimitLoad;
 	for (int i = 0; i < imax; i++)
@@ -104,7 +104,7 @@ void ThemesPage::Render(int X, int Y)
 	{
 		Utils::ImGuiSetupPage(this, X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
-		if (ResetScroll)
+		if (ResetScroll || ImGui::GetCurrentWindow()->Appearing)
 		{
 			setNewMenuIndex = menuIndex;
 			ImGui::NavMoveRequestCancel();
