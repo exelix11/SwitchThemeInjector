@@ -18,7 +18,7 @@ RemoteInstallPage::~RemoteInstallPage()
 }
 
 RemoteInstallPage::RemoteInstallPage() : 
-BtnStart("Start remote install"),
+BtnStart("Start remote install###InstallBtn"),
 lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'"),
 lblConfirm("Press A to install, B to cancel.")
 {
@@ -111,7 +111,7 @@ void RemoteInstallPage::StartSocketing()
 	sock = 66;
 	const char* hostname = "F:\remoteFile.bin";
 #endif
-	BtnStart = ("IP: " + string(hostname) + " - Press to stop");
+	BtnStart = ("IP: " + string(hostname) + " - Press to stop###InstallBtn");
 }
 
 void RemoteInstallPage::StopSocketing()
@@ -125,7 +125,7 @@ void RemoteInstallPage::StopSocketing()
 	curSock = -1;
 	ThemeSize = 0;
 	sock = -1;
-	BtnStart = ("Start remote install");
+	BtnStart = ("Start remote install###InstallBtn");
 }
 
 void RemoteInstallPage::DialogError(const std::string &msg)

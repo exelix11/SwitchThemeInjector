@@ -191,7 +191,7 @@ LoadedImage ThemeEntry::NXGetPreview()
 	if (!Preview)
 	{
 		NXThemeHasPreview = false;
-		Dialog("Failed to load the preview image");
+		DialogBlocking("Failed to load the preview image");
 	}
 	return Preview;
 }
@@ -266,7 +266,7 @@ static bool PatchBG(SzsPatcher &Patcher, const vector<u8> &data, const string &S
 {
 	if (!Patcher.PatchMainBG(data))
 	{
-		Dialog("PatchBntx failed for " + SzsName + "\nThe theme was not installed");
+		DialogBlocking("PatchBntx failed for " + SzsName + "\nThe theme was not installed");
 		return false;
 	}
 	return true;
@@ -277,20 +277,20 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 	auto patch = Patches::LoadLayout(JSON);
 	if (!patch.IsCompatible(Patcher.GetSarc()))
 	{
-		Dialog("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
+		DialogBlocking("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
 		return false;
 	}
 	Patcher.SetPatchAnimations(Settings::UseAnimations);
 	if (!Patcher.PatchLayouts(patch, PartName, HOSVer.major >= 8 && PartName == "home"))
 	{
-		Dialog("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
+		DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 		return false;				
 	}
 	if (Settings::UseAnimations)
 	{
 		if (!Patcher.PatchAnimations(patch.Anims))
 		{
-			Dialog("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
+			DialogBlocking("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
 			return false;				
 		}
 	}
@@ -299,7 +299,7 @@ static bool PatchLayout(SzsPatcher& Patcher, const string &JSON, const string &P
 
 void MissingFileErrorDialog(const string &name)
 {
-	Dialog(	"Can't install this theme because the original " + name + " is missing from systemData.\n"
+	DialogBlocking(	"Can't install this theme because the original " + name + " is missing from systemData.\n"
 			"To install theme packs (.nxtheme files) you need to dump the home menu romfs following the guide in the \"Extract home menu\" tab");
 }
 
@@ -330,7 +330,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 {
 	if (!CanInstall)
 	{
-		Dialog("Can't install this theme, check that it hasn't been corrupted and that you are using an updated version of this installer");
+		DialogBlocking("Can't install this theme, check that it hasn't been corrupted and that you are using an updated version of this installer");
 		return false;
 	}
 	try 
@@ -451,7 +451,7 @@ bool ThemeEntry::InstallTheme(bool ShowLoading, const string& homeDirOverride)
 			{
 				if (patch.FirmName == "")
 				{
-					Dialog("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
+					DialogBlocking("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 					return false;
 				}
 				if (NxThemeGetBgImage().size() != 0)
@@ -497,14 +497,14 @@ if (SData.files.count("layout.json"))\
 									pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
 								else
 								{
-									Dialog("Couldn't load the icon image for " + p.NxThemeName);
+									DialogBlocking("Couldn't load the icon image for " + p.NxThemeName);
 									continue;
 								}
 							}
 							else continue;
 
 							if (!pResult)
-								Dialog(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+								DialogBlocking(p.NxThemeName + " icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 							else
 								FileHasBeenPatched = true;
 						}
@@ -517,7 +517,7 @@ if (SData.files.count("layout.json"))\
 					{
 						FileHasBeenPatched = true;
 						if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
-							Dialog("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
+							DialogBlocking("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 					}
 				}
 			}
@@ -538,11 +538,11 @@ if (SData.files.count("layout.json"))\
 	}
 	catch (const exception& ex)
 	{
-		Dialog("Error while installing this theme: " + string(ex.what()));
+		DialogBlocking("Error while installing this theme: " + string(ex.what()));
 		return false;
 	}
 FINISHED:
 	if (ShowLoading)
-		Dialog("Done, restart the console to see the changes");
+		DialogBlocking("Done, restart the console to see the changes");
 	return true;
 }
