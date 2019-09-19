@@ -167,7 +167,7 @@ namespace SwitchThemes.Common
 				if (w != 1280 || h != 720)
 					throw new Exception("The background image must be 1280x720.");
 			}
-			else throw new Exception("Invalid image format");
+			else throw new Exception("Invalid image format: The background image can only be a DDS or JPG image");
 			AddFile("image." + ext, data);
 		}
 
@@ -202,7 +202,7 @@ namespace SwitchThemes.Common
 				if (w != item.W || h != item.H)
 					throw new Exception("The applet image must be 64x56.");
 			}
-			else throw new Exception("Invalid image format");
+			else throw new Exception("Invalid image format: Applet icons can only be DDS or PNG images");
 			AddFile(name + ext, data);
 		}
 	}
