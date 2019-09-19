@@ -298,7 +298,7 @@ static void SetupSysVer()
 	HOSVer = { firmware.major,firmware.minor,firmware.micro };
 	setsysExit();
 #else 
-	HOSVer = { 9,1,0 };
+	HOSVer = { 9,0,0 };
 #endif
 	if (HOSVer.major <= 5)
 	{
@@ -326,11 +326,11 @@ int main(int argc, char **argv)
 
 	SetupSysVer();
 	DisplayLoading("Loading system info...");
+	
 	bool ThemesFolderExists = fs::CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
-	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
-
 	CheckCFWDir();
+	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
 
 	if (
 #ifdef __SWITCH__
