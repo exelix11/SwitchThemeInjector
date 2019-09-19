@@ -325,9 +325,10 @@ int main(int argc, char **argv)
 	PlatformAfterInit();
 
 	SetupSysVer();
-	DisplayLoading("Loading theme list...");
+	DisplayLoading("Loading system info...");
 	bool ThemesFolderExists = fs::CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
+	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
 
 	CheckCFWDir();
 
@@ -340,14 +341,13 @@ int main(int argc, char **argv)
 		auto paths = GetArgsInstallList(argc,argv);
 		if (paths.size() == 0)
 			goto APP_QUIT;
-		
+
 		PushPage(new ExternalInstallPage(paths));	
 		MainLoop();
 		
 		goto APP_QUIT;
 	}	
 
-	
 	{
 		TabRenderer *t = new TabRenderer();
 		PushPage(t);
@@ -356,12 +356,13 @@ int main(int argc, char **argv)
 			ShowFirstTimeHelp(true);
 		
 		TextPage* PatchFailedWarning = nullptr;
-		if (!PatchMng::EnsureInstalled())
+		if (PatchErrorMsg)
 		{
-			PatchFailedWarning = new TextPage("Warning", PatchMng::WarningStr);
+			PatchFailedWarning = new TextPage("Warning", PatchErrorMsg);
 			t->AddPage(PatchFailedWarning);
 		}
 
+		DisplayLoading("Loading theme list...");
 		auto ThemeFiles = fs::GetThemeFiles();
 		ThemesPage *p = new ThemesPage(ThemeFiles);
 		t->AddPage(p);

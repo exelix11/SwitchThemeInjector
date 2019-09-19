@@ -141,7 +141,7 @@ void ThemesPage::Render(int X, int Y)
 							{
 								if (SelectedFiles.size() == 0)
 								{
-									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
+									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_GUIDE])
 									{
 										DisplayLoading("Installing to shuffle...");
 										e->InstallTheme(false, shuffle::MakeThemeShuffleDir());
@@ -217,7 +217,7 @@ void ThemesPage::Update()
 	if (menuCount <= 0)
 		return;
 
-	if (NAV_UP && menuIndex <= 0)
+	if ((NAV_UP && menuIndex <= 0) || KeyPressed(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
 	{
 		if (pageNum > 0)
 		{
@@ -237,7 +237,7 @@ void ThemesPage::Update()
 			ResetScroll = true;
 		}
 	}
-	else if (NAV_DOWN && menuIndex >= PageItemsCount() - 1)
+	else if ((NAV_DOWN && menuIndex >= PageItemsCount() - 1) || KeyPressed(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
 	{
 		if (pageCount > pageNum + 1)
 			SetPage(pageNum + 1);
@@ -249,19 +249,19 @@ void ThemesPage::Update()
 			ResetScroll = true;
 		}
 	}
-	else if ((KeyPressed(GLFW_GAMEPAD_BUTTON_Y)) && menuIndex >= 0)
+	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_Y))
 	{
-		SelectCurrent();
-	}
-	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_X))
-	{
-		SelectedFiles.clear();
-		lblCommands = CommandsTextNormal;
+		if (SelectedFiles.size() == 0 && menuIndex >= 0)
+			SelectCurrent();
+		else {
+			SelectedFiles.clear();
+			lblCommands = CommandsTextNormal;
+		}
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{
 		string shuffleDir = "";
-		if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])
+		if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_GUIDE])
 			shuffleDir = shuffle::MakeThemeShuffleDir();
 		for (string file : SelectedFiles)
 		{

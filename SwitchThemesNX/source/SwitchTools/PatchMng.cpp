@@ -14,15 +14,13 @@ static const SystemVersion LastSupportedVer = { 9,0,0 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
-const char* PatchMng::WarningStr =
-	"Since 9.0 some parts of the home menu require a custom code patch (exefs patch) to run properly,"
-	"if you're seeing this screen it means that these patches weren't applied correctly,"
-	"this can happen because one of the following reasons:\n"
-	" - Your CFW doesn't support ips patches, currently only Atmosphere and ReiNX do.\n"
-	" - You're running a newer firmware, in this case check for updates.\n"
-	"     - This version of the installer supports up to " LastSupportedVerSTR "\n"
-	" - The patches directory on the sd card couldn't be written or read\n\n"
-	"As the patches won't be loaded by your CFW some themes may crash, you will be warned when installing a theme that's known to cause issues";
+#define WarnIntro "Since 9.0 some parts of the home menu require a custom code patch (exefs patch) to run properly.\n"
+#define WarnOutro "\n\nWithout the correct patches some themes may crash, you will be warned when installing a theme that's known to cause issues"
+const char* WarningCFW = WarnIntro "Unfortunately your cfw doesn't seem to suppot ips patches for titles." WarnOutro;
+const char* WarningFWVer = 
+	WarnIntro "You're running a newer firmware version that may be not supported by this installer (This build supports up to " LastSupportedVerSTR ").\n"
+			  "If the home menu was updated it's likely that the built-in patches won't work, if that's the case you should check for updates" WarnOutro;
+const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
 
 const char* PatchMng::InstallWarnStr = 
 	"The theme you're trying to install is known to crash without an home menu patch and you don't seem to have a compatible one installed,"
@@ -89,14 +87,14 @@ static bool ExtractPatches()
 	return true;
 }
 
-bool PatchMng::EnsureInstalled()
+const char* PatchMng::EnsureInstalled()
 {
-	if (HOSVer.major < 9) return true;
+	if (HOSVer.major < 9) return nullptr;
 	auto&& outDir = GetExefsPatchesPath();
 	if (outDir == "")
 	{
 		HasLatestPatches = false;
-		return false;
+		return WarningCFW;
 	}
 
 	FILE* f = fopen((outDir + ThemePatchesDir "ver.txt").c_str(), "r");
@@ -110,10 +108,14 @@ bool PatchMng::EnsureInstalled()
 		if (CurVer < PatchSetVer)
 			HasLatestPatches = ExtractPatches();
 	}
+	if (!HasLatestPatches)
+		return WarningSDFail;
 
-	if (HOSVer.IsGreater(LastSupportedVer))
+	if (HOSVer.IsGreater(LastSupportedVer)) {
 		HasLatestPatches = false;
+		return WarningFWVer;
+	}
 
-	return HasLatestPatches;
+	return nullptr;
 }
 
