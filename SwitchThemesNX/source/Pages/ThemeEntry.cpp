@@ -138,7 +138,7 @@ void ThemeEntry::ParseNxTheme()
 const std::vector<u8> ThemeEntry::_emtptyVec = {};
 const vector<u8>& ThemeEntry::NxThemeGetBgImage()
 {
-	if (!NXThemeHasPreview || !CanInstall) return {};
+	if (!NXThemeHasPreview || !CanInstall) return ThemeEntry::_emtptyVec;
 	if (SData.files.count("image.dds"))
 		return SData.files["image.dds"];
 	else if (SData.files.count("image.jpg"))
