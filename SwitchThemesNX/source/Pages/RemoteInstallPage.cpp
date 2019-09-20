@@ -208,10 +208,10 @@ void RemoteInstallPage::Update()
 	{
 		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A) || AutoInstall)
 		{
-			string overrideStr = "";
-			if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
-				overrideStr = shuffle::MakeThemeShuffleDir();
-			entry->InstallTheme(true,overrideStr);
+			//string overrideStr = "";
+			//if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
+			//	overrideStr = shuffle::MakeThemeShuffleDir();
+			entry->InstallTheme(!AutoInstall,"");
 			delete entry;
 			entry = 0;
 			StopSocketing();

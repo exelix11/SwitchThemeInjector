@@ -21,8 +21,6 @@ namespace SwitchThemes
 	{
 		PatchTemplate targetPatch;
 		SarcData CommonSzs = null;
-		
-		readonly string LoadFileText = "";
 
 		bool Advanced = false;
 
@@ -60,9 +58,6 @@ namespace SwitchThemes
 			HomeMenuPartBox.Items.AddRange(HomeMenuParts.Keys.ToArray());
 			HomeMenuPartBox.SelectedIndex = 0;
 			HomeMenuPartBox_SelectedIndexChanged(null, null);
-
-			LoadFileText = SwitchThemesCommon.GeneratePatchListString(Templates);
-			tbPatches.Text += LoadFileText;
 
 			HomeAppletIcoButtonsInit();
 		}
@@ -422,7 +417,7 @@ namespace SwitchThemes
 
 		public static bool IcontoDDS(ref string FilePath)
 		{
-			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT4", true); //Somehow it outputs a DXT4 image (?)
+			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT4", true);
 			if (res)
 			{
 				FilePath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(FilePath) + ".dds");
@@ -682,24 +677,6 @@ namespace SwitchThemes
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => LayoutPreview(LayoutPatchList.SelectedItem as LayoutPatch);
 		private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e) => LayoutPreview(AllLayoutsBox.SelectedItem as LayoutPatch);
-
-		private void ImageToDDSBtn_Click(object sender, EventArgs e)
-		{
-			OpenFileDialog opn = new OpenFileDialog()
-			{
-				Multiselect = true,
-				Title = "Select one or more images",
-				Filter = "Common image files|*.png;*.jpg;*.jpeg;*.bmp|All files|*.*"
-			};
-			if (opn.ShowDialog() != DialogResult.OK)
-				return;
-			foreach (var f in opn.FileNames)
-			{
-				if (!ImageToDDS(f, Path.GetDirectoryName(f)))
-					return;
-			}
-			MessageBox.Show("Done!");
-		}
 
 		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{

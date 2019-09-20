@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,7 +14,10 @@ namespace SwitchThemes
 {
 	static class Program
 	{
-	
+		[DllImport("kernel32.dll")]
+		static extern bool AttachConsole(int dwProcessId);
+		private const int ATTACH_PARENT_PROCESS = -1;
+
 		/// <summary>
 		/// Punto di ingresso principale dell'applicazione.
 		/// </summary>
@@ -40,15 +44,16 @@ namespace SwitchThemes
 			bool ArgsHandled = false;
 			if (args != null && args.Length != 0)
 			{
+				if (!IsMono) AttachConsole(ATTACH_PARENT_PROCESS);
+
 				if (args[0].ToLower() == "buildnx")
-					ArgsHandled = NXThemeFromArgs(args);
+					NXThemeFromArgs(args);
 				else if (args[0].ToLower() == "szs")
-					ArgsHandled = SZSFromArgs(args);
+					SZSFromArgs(args);
 				else if (args[0].ToLower() == "install")
-					ArgsHandled = RemoteInstallFromArgs(args);
+					RemoteInstallFromArgs(args);
 				else if (args[0].ToLower() == "help")
 				{
-					ArgsHandled = true;
 					Console.WriteLine(
 						"Switch themes Injector V " + SwitchThemesCommon.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
 						"Command line usage:\r\n" +
@@ -57,11 +62,13 @@ namespace SwitchThemes
 						" Only the image and out file are needed.\r\n" +
 						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
 						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n");
-					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => x.NxThemeName).ToArray()));
-					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => x.NxThemeName).ToArray()));
+					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
+					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
 					if (IsMono)
 						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
 				}
+
+				ArgsHandled = true;
 			}
 
 			if (ArgsHandled)
@@ -194,7 +201,7 @@ namespace SwitchThemes
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("ERROR: " + ex.Message);
+				Console.WriteLine("Error: " + ex.Message);
 			}
 
 			return true;
@@ -262,21 +269,12 @@ namespace SwitchThemes
 			if (Layout != null && File.Exists(Layout))
 				layout = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
 
-			//if (Image != null && !Image.EndsWith(".dds"))
-			//{
-			//	if (Form1.ImageToDDS(Image, Path.GetTempPath()))
-			//		Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
-			//	else return false;
-			//}
-
 			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
 			void PopulateAppletIcons(List<TextureReplacement> l)
 			{
 				foreach (var a in l)
 				{
 					string path = GetArg(a.NxThemeName);
-					//if (path == null || (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path)))
-					//	continue;
 					AppletIcons.Add(a.NxThemeName, path);
 				}
 			}
@@ -300,10 +298,11 @@ namespace SwitchThemes
 						builder.AddAppletIcon(i.Key, File.ReadAllBytes(i.Value));
 
 				File.WriteAllBytes(Output, builder.GetNxtheme());
+				Console.WriteLine("Done !");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("ERROR: " + ex.Message);
+				Console.WriteLine("Error: " + ex.Message);
 				return false;
 			}
 
