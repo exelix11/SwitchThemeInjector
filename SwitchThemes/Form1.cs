@@ -14,8 +14,6 @@ using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Bntxx;
 using Syroot.BinaryData;
-using Pfim;
-using System.Drawing.Imaging;
 
 namespace SwitchThemes
 {
@@ -204,12 +202,6 @@ namespace SwitchThemes
 				MessageBox.Show(ex.Message);
 				return;
 			}
-
-			//if (targetPatch == null || targetPatch.NXThemeName == "home")
-			//if (MessageBox.Show(
-			//	"Do you want to patch the applet buttons color property in the bntx ? This allow you to properly change their color via a layout, select no if you did not edit them.\r\n" +
-			//	"This feature is only for the home menu.", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
-			//	res.PatchAppletColorAttrib = true;
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
@@ -536,45 +528,6 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
-		[Obsolete("NXTheme Installer now can directly preview .DDS files")]
-		public static byte[] GenerateDDSPreview(string path)
-		{
-			try
-			{
-				var image = Pfim.Pfim.FromFile(path);
-				PixelFormat format;
-				switch (image.Format)
-				{
-					case Pfim.ImageFormat.Rgb24:
-						format = PixelFormat.Format24bppRgb;
-						break;
-
-					case Pfim.ImageFormat.Rgba32:
-						format = PixelFormat.Format32bppArgb;
-						break;
-
-					default:
-						throw new Exception("Format not recognized");
-				}
-
-				unsafe
-				{
-					fixed (byte* p = image.Data)
-					{
-						var bitmap = new Bitmap(image.Width, image.Height, image.Stride, format, (IntPtr)p);
-						var mem = new MemoryStream();
-						bitmap.Save(mem, System.Drawing.Imaging.ImageFormat.Jpeg);
-						return mem.ToArray();
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show($"Failed to generate preview image for {path}:\n{ex.ToString()}");
-				return null;
-			}
-		}
-
 		private void materialRaisedButton8_Click(object sender, EventArgs e)
 		{
 			if (CommonSzs == null || targetPatch == null)
@@ -593,10 +546,6 @@ namespace SwitchThemes
 			var info = ThemeInputInfo.Ask();
 			if (info == null)
 				return;
-
-			//byte[] preview = null;
-			//if (info.Item3)
-				//preview = GenerateDDSPreview(tbImageFile.Text);
 
 			LayoutPatch layout = null;
 			if (LayoutPatchList.SelectedIndex != 0)
@@ -645,9 +594,6 @@ namespace SwitchThemes
 			if (info == null)
 				return;
 
-			//byte[] preview = null;
-			//if (info.Item3 && tbImageFile.Text.Trim() != "")
-			//	preview = GenerateDDSPreview(tbImageFile.Text);
 			string target = HomeMenuParts[HomeMenuPartBox.Text];
 
 			if (target == "home")
@@ -755,11 +701,6 @@ namespace SwitchThemes
 			MessageBox.Show("Done!");
 		}
 
-		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
-			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/");
-		private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
-			System.Diagnostics.Process.Start(@"https://exelix11.github.io/SwitchThemeInjector/autotheme.html");
-
 		private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			MessageBox.Show(".nxtheme files are a new file format for custom themes, they work pretty much like SZS files but they are legal to share and work on every firmware. To install .nxtheme files you need to download the NXThemes Installer on your console");
@@ -848,19 +789,13 @@ namespace SwitchThemes
 			lblCustomLock.Text = "Custom home icon: " + LockCustomIcon;
 		}
 
-		private void btnAlbumIcoHelp_Click(object sender, EventArgs e)
-		{
+		private void btnAlbumIcoHelp_Click(object sender, EventArgs e) =>
 			MessageBox.Show("These images will replace the applet icons in the home menu. Use only 64x56 PNG images, colors are not allowed: they should be white on a transparent background.\r\nIf you know what you're doing: DDS is supported as well.");
-		}
 
-		private void button1_Click(object sender, EventArgs e)
-		{
+		private void button1_Click(object sender, EventArgs e) =>
 			MessageBox.Show("This is a custom layout that is applied to the common.szs file, if unsure leave it empty. This is not the main layout");
-		}
 
-		private void Button7_Click(object sender, EventArgs e)
-		{
+		private void Button7_Click(object sender, EventArgs e) =>
 			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 PNG images, colors are supported.\r\nIf you know what you're doing: DDS is supported as well.");
-		}
 	}
 }
