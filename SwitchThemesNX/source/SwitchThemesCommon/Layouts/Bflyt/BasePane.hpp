@@ -1,3 +1,4 @@
+
 #pragma once
 #include <iostream>
 #include <vector>
@@ -6,7 +7,7 @@
 #include "../../MyTypes.h"
 #include <memory>
 
-namespace Panes 
+namespace Panes
 {
 	static inline Vector3 ReadVec3(Buffer& buf)
 	{
@@ -29,7 +30,7 @@ namespace Panes
 	{
 		bin.Write(_x.X); bin.Write(_x.Y); bin.Write(_x.Z);
 	}
-	
+
 	static inline void WriteVec2(Buffer& bin, Vector2 _x)
 	{
 		bin.Write(_x.X); bin.Write(_x.Y);
@@ -39,7 +40,7 @@ namespace Panes
 	{
 	public:
 		std::unique_ptr<BasePane> UserData;
-		std::shared_ptr<BasePane> Parent;
+		std::weak_ptr<BasePane> Parent;
 		std::vector<std::shared_ptr<BasePane>> Children;
 
 		const std::string name;
@@ -49,7 +50,6 @@ namespace Panes
 
 		BasePane(const std::string& _name, u32 len) : name(_name), data(len - 8)
 		{
-
 		}
 
 		//BasePane(const BasePane& ref);
