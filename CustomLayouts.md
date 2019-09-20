@@ -72,13 +72,17 @@ If a theme uses a layout you like you can easily extract it with the injector:\
 3) An error will pop up as it's not an szs theme but the data will be loaded in the advanced tab
 4) In the advanced tab you should see a file called layout.json, right click it and press extract
 
-## My changes weren't included in the json !!!
-The layout patcher doesn't support all the properties of bflyt panes, this is to avoid compatibility issues in the future, the following are supported:
+## Supported properties
+The layout patcher doesn't support all the properties of bflyt files, this is to avoid compatibility issues in the future, if you changed values not included in the following list they won't be detected by the differ :
 - `Position`
 - `Rotation`
 - `Scale`
 - `Size`
 - `Visible`
+- `OriginX`
+- `OriginY`
+- `ParentOriginX`
+- `ParentOriginY`
 
 Only for picture panes (pic1) :
 - `ColorTL` : Top left vertex color 
@@ -86,5 +90,9 @@ Only for picture panes (pic1) :
 - `ColorBL` : Bottom left vertex color 
 - `ColorBR` : Bottom right vertex color 
 
+In addition, it's possible to change the order of panes via the `PushBackPanes` and `PullFrontPanes` Properties in the `LayoutFilePatch` json object (Aka the one that contains the `FileName` property) 
+These two properties aren't supported by the differ and must be manually added, they're simple string arrays with the names of the panes to move. The panes won't be moved out of their parent.
+
 For usd1 (user data) panes only float and int properties are supported.\
-Bflan animations are fully supported.
+Bflan animations are fully supported.\
+For materials only the `ForegroundColor` and `BackgroundColor` properties are supported
