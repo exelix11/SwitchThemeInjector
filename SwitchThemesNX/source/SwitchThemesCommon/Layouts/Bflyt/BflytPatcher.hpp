@@ -27,6 +27,11 @@ public:
 	bool AddBgPanel(Panes::PanePtr target, const std::string &TexName, const std::string &Pic1Name);
 	
 	bool PatchBgLayout(const PatchTemplate& patch);	
+
+	bool PanePullToFront(const std::string& paneName);
+
+	bool PanePushBack(const std::string& paneName);
+
 private:
 	BflytFile& lyt;
 };

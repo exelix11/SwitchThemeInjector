@@ -285,3 +285,19 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 		return AddBgPanel(target, patch.MaintextureName, patch.PatchIdentifier);
 	else return true;
 }
+
+bool BflytPatcher::PanePullToFront(const std::string& paneName)
+{
+	auto target = lyt[paneName];
+	if (!target) return false;
+	lyt.MovePane(target, target->Parent, 0);
+	return true;
+}
+
+bool BflytPatcher::PanePushBack(const std::string& paneName)
+{
+	auto target = lyt[paneName];
+	if (!target) return false;
+	lyt.MovePane(target, target->Parent, target->Parent->Children.size());
+	return true;
+}

@@ -99,6 +99,12 @@ bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
 		if (res != true)
 			return res;
 	}
+
+	for (const auto& n : p.PullFrontPanes)
+		target.PanePullToFront(n);
+	for (const auto& n : p.PushBackPanes)
+		target.PanePushBack(n);
+
 	sarc.files[p.FileName] = _target.SaveFile();
 	return true;
 }

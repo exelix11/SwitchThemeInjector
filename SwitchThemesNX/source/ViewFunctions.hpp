@@ -7,7 +7,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "UI/imgui/imgui_internal.h"
 
-const std::string VersionString = "Ver. 2.1 BETA";
+const std::string VersionString = "Ver. 2.1 BETA 3";
 extern std::string SystemVer;
 
 void PushPage(IUIControlObj* page);

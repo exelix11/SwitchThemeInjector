@@ -91,7 +91,9 @@ Only for picture panes (pic1) :
 - `ColorBR` : Bottom right vertex color 
 
 In addition, it's possible to change the order of panes via the `PushBackPanes` and `PullFrontPanes` Properties in the `LayoutFilePatch` json object (Aka the one that contains the `FileName` property) 
-These two properties aren't supported by the differ and must be manually added, they're simple string arrays with the names of the panes to move. The panes won't be moved out of their parent.
+These two properties aren't supported by the differ and must be manually added, they're simple string arrays with the names of the panes to move. The panes won't be moved out of their parent.\
+Note that layouts are rendered top to bottom, this means that `PullFrontPanes` will move the panes to the start of the list and so they will be rendered behind, the name was chosen to match the action in the layout editor.\
+
 
 For usd1 (user data) panes only float and int properties are supported.\
 Bflan animations are fully supported.\
