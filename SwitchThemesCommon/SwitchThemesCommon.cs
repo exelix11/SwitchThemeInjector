@@ -18,28 +18,6 @@ namespace SwitchThemes.Common
 		public const string CoreVer = "4.3";
 		public const int NxThemeFormatVersion = 10;
 
-		const string LoadFileText =
-			"For SZS these are the patches available in this version: (This doesn't affect nxthemes)" +
-			"{0} \r\n";
-
-		public static string GeneratePatchListString(IEnumerable<PatchTemplate> Templates)
-		{
-			var sortedTemplates = Templates.OrderBy(x => x.FirmName).Reverse();
-
-			string curSection = "";
-			string FileList = "";
-			foreach (var p in sortedTemplates)
-			{
-				if (curSection != p.FirmName)
-				{
-					curSection = p.FirmName;
-					FileList += $"\r\nFor {curSection}: \r\n";
-				}
-				FileList += $"  - {p.TemplateName} : the file is called {p.szsName} from title {p.TitleId}\r\n";
-			}
-			return string.Format(LoadFileText, FileList);
-		}
-
 		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
 			{"home","ResidentMenu.szs"},
 			{"lock","Entrance.szs"},

@@ -45,7 +45,6 @@
 			this.materialLabel15 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbImageFile2 = new System.Windows.Forms.TextBox();
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
-			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
 			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
 			this.btnApplet6 = new System.Windows.Forms.Button();
@@ -143,7 +142,6 @@
 			this.NXThemePage.Controls.Add(this.materialLabel15);
 			this.NXThemePage.Controls.Add(this.tbImageFile2);
 			this.NXThemePage.Controls.Add(this.materialLabel11);
-			this.NXThemePage.Controls.Add(this.ImageToDDSBtn);
 			this.NXThemePage.Controls.Add(this.materialLabel8);
 			this.NXThemePage.Controls.Add(this.grpHomeExtra);
 			this.NXThemePage.Controls.Add(this.grpLockExtra);
@@ -337,24 +335,6 @@
 			this.materialLabel11.Size = new System.Drawing.Size(63, 19);
 			this.materialLabel11.TabIndex = 11;
 			this.materialLabel11.Text = "Image: ";
-			// 
-			// ImageToDDSBtn
-			// 
-			this.ImageToDDSBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.ImageToDDSBtn.AutoSize = true;
-			this.ImageToDDSBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ImageToDDSBtn.Depth = 0;
-			this.ImageToDDSBtn.Icon = null;
-			this.ImageToDDSBtn.Location = new System.Drawing.Point(3, 285);
-			this.ImageToDDSBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.ImageToDDSBtn.Name = "ImageToDDSBtn";
-			this.ImageToDDSBtn.Primary = true;
-			this.ImageToDDSBtn.Size = new System.Drawing.Size(111, 36);
-			this.ImageToDDSBtn.TabIndex = 8;
-			this.ImageToDDSBtn.Text = "Open images";
-			this.ImageToDDSBtn.UseVisualStyleBackColor = true;
-			this.ImageToDDSBtn.Visible = false;
-			this.ImageToDDSBtn.Click += new System.EventHandler(this.ImageToDDSBtn_Click);
 			// 
 			// materialLabel8
 			// 
@@ -1159,7 +1139,6 @@
 		private MaterialSkin.Controls.MaterialLabel materialLabel7;
 		private System.Windows.Forms.TabPage NXThemePage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel8;
-		private MaterialSkin.Controls.MaterialRaisedButton ImageToDDSBtn;
 		private MaterialSkin.Controls.MaterialLabel materialLabel3;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton8;
 		private System.Windows.Forms.LinkLabel linkLabel5;
