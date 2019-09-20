@@ -140,9 +140,6 @@ A: Delete the '0100000000001000' and '0100000000001013' folders in 'SDcard:/&lt;
     <value>Warning: when changing layouts you should always use an SZS with the original layout
 (bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
   </data>
-  <data name="materialLabel10.Text" xml:space="preserve">
-    <value>The NCA extraction method using the injector has been deprecated, since version 1.3 NXThemes installer can extract the needed files automatically. Every guide that still requires the "Extract nca" or lockpick methods is outdated</value>
-  </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

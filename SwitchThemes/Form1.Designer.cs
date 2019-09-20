@@ -33,18 +33,6 @@
 			this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
 			this.NXThemePage = new System.Windows.Forms.TabPage();
 			this.materialFlatButton2 = new MaterialSkin.Controls.MaterialFlatButton();
-			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
-			this.btnApplet6 = new System.Windows.Forms.Button();
-			this.btnApplet5 = new System.Windows.Forms.Button();
-			this.btnApplet4 = new System.Windows.Forms.Button();
-			this.btnApplet3 = new System.Windows.Forms.Button();
-			this.btnApplet2 = new System.Windows.Forms.Button();
-			this.button1 = new System.Windows.Forms.Button();
-			this.btnAlbumIcoHelp = new System.Windows.Forms.Button();
-			this.btnApplet1 = new System.Windows.Forms.Button();
-			this.lblAppletIcons = new MaterialSkin.Controls.MaterialLabel();
-			this.btnOpenCustomLayout = new System.Windows.Forms.Button();
-			this.lblCustomCommonLyt = new MaterialSkin.Controls.MaterialLabel();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
 			this.AllLayoutsBox = new System.Windows.Forms.ComboBox();
 			this.materialLabel9 = new MaterialSkin.Controls.MaterialLabel();
@@ -59,6 +47,18 @@
 			this.materialLabel11 = new MaterialSkin.Controls.MaterialLabel();
 			this.ImageToDDSBtn = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel8 = new MaterialSkin.Controls.MaterialLabel();
+			this.grpHomeExtra = new System.Windows.Forms.GroupBox();
+			this.btnApplet6 = new System.Windows.Forms.Button();
+			this.btnApplet5 = new System.Windows.Forms.Button();
+			this.btnApplet4 = new System.Windows.Forms.Button();
+			this.btnApplet3 = new System.Windows.Forms.Button();
+			this.btnApplet2 = new System.Windows.Forms.Button();
+			this.button1 = new System.Windows.Forms.Button();
+			this.btnAlbumIcoHelp = new System.Windows.Forms.Button();
+			this.btnApplet1 = new System.Windows.Forms.Button();
+			this.lblAppletIcons = new MaterialSkin.Controls.MaterialLabel();
+			this.btnOpenCustomLayout = new System.Windows.Forms.Button();
+			this.lblCustomCommonLyt = new MaterialSkin.Controls.MaterialLabel();
 			this.grpLockExtra = new System.Windows.Forms.GroupBox();
 			this.button7 = new System.Windows.Forms.Button();
 			this.btnCustomLock = new System.Windows.Forms.Button();
@@ -82,16 +82,6 @@
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialLabel17 = new MaterialSkin.Controls.MaterialLabel();
-			this.NCADumpPage = new System.Windows.Forms.TabPage();
-			this.NCARunBtn = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.SdCardTb = new System.Windows.Forms.TextBox();
-			this.SdCardBtn = new MaterialSkin.Controls.MaterialFlatButton();
-			this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
-			this.keyFileTb = new System.Windows.Forms.TextBox();
-			this.KeyFileBtn = new MaterialSkin.Controls.MaterialFlatButton();
-			this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
-			this.linkLabel4 = new System.Windows.Forms.LinkLabel();
-			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
 			this.AdvancedPage = new System.Windows.Forms.TabPage();
 			this.AdvPanel = new System.Windows.Forms.Panel();
 			this.materialRaisedButton7 = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -115,7 +105,6 @@
 			this.grpLockExtra.SuspendLayout();
 			this.PatchListPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
-			this.NCADumpPage.SuspendLayout();
 			this.AdvancedPage.SuspendLayout();
 			this.AdvPanel.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
@@ -129,7 +118,6 @@
 			this.materialTabControl1.Controls.Add(this.NXThemePage);
 			this.materialTabControl1.Controls.Add(this.PatchListPage);
 			this.materialTabControl1.Controls.Add(this.InjectPage);
-			this.materialTabControl1.Controls.Add(this.NCADumpPage);
 			this.materialTabControl1.Controls.Add(this.AdvancedPage);
 			this.materialTabControl1.Depth = 0;
 			this.materialTabControl1.Location = new System.Drawing.Point(-1, 95);
@@ -185,161 +173,6 @@
 			this.materialFlatButton2.Text = "...";
 			this.materialFlatButton2.UseVisualStyleBackColor = true;
 			this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton1_Click);
-			// 
-			// grpHomeExtra
-			// 
-			this.grpHomeExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.grpHomeExtra.Controls.Add(this.btnApplet6);
-			this.grpHomeExtra.Controls.Add(this.btnApplet5);
-			this.grpHomeExtra.Controls.Add(this.btnApplet4);
-			this.grpHomeExtra.Controls.Add(this.btnApplet3);
-			this.grpHomeExtra.Controls.Add(this.btnApplet2);
-			this.grpHomeExtra.Controls.Add(this.button1);
-			this.grpHomeExtra.Controls.Add(this.btnAlbumIcoHelp);
-			this.grpHomeExtra.Controls.Add(this.btnApplet1);
-			this.grpHomeExtra.Controls.Add(this.lblAppletIcons);
-			this.grpHomeExtra.Controls.Add(this.btnOpenCustomLayout);
-			this.grpHomeExtra.Controls.Add(this.lblCustomCommonLyt);
-			this.grpHomeExtra.ForeColor = System.Drawing.Color.White;
-			this.grpHomeExtra.Location = new System.Drawing.Point(5, 209);
-			this.grpHomeExtra.Name = "grpHomeExtra";
-			this.grpHomeExtra.Size = new System.Drawing.Size(630, 70);
-			this.grpHomeExtra.TabIndex = 25;
-			this.grpHomeExtra.TabStop = false;
-			this.grpHomeExtra.Text = "Home menu optional settings";
-			this.grpHomeExtra.Visible = false;
-			// 
-			// btnApplet6
-			// 
-			this.btnApplet6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet6.Location = new System.Drawing.Point(535, 41);
-			this.btnApplet6.Name = "btnApplet6";
-			this.btnApplet6.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet6.TabIndex = 23;
-			this.btnApplet6.Text = "Power";
-			this.btnApplet6.UseVisualStyleBackColor = true;
-			// 
-			// btnApplet5
-			// 
-			this.btnApplet5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet5.Location = new System.Drawing.Point(467, 41);
-			this.btnApplet5.Name = "btnApplet5";
-			this.btnApplet5.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet5.TabIndex = 22;
-			this.btnApplet5.Text = "Settings";
-			this.btnApplet5.UseVisualStyleBackColor = true;
-			// 
-			// btnApplet4
-			// 
-			this.btnApplet4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet4.Location = new System.Drawing.Point(400, 41);
-			this.btnApplet4.Name = "btnApplet4";
-			this.btnApplet4.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet4.TabIndex = 21;
-			this.btnApplet4.Text = "Controller";
-			this.btnApplet4.UseVisualStyleBackColor = true;
-			// 
-			// btnApplet3
-			// 
-			this.btnApplet3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet3.Location = new System.Drawing.Point(332, 41);
-			this.btnApplet3.Name = "btnApplet3";
-			this.btnApplet3.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet3.TabIndex = 20;
-			this.btnApplet3.Text = "Shop";
-			this.btnApplet3.UseVisualStyleBackColor = true;
-			// 
-			// btnApplet2
-			// 
-			this.btnApplet2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet2.Location = new System.Drawing.Point(264, 41);
-			this.btnApplet2.Name = "btnApplet2";
-			this.btnApplet2.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet2.TabIndex = 19;
-			this.btnApplet2.Text = "News";
-			this.btnApplet2.UseVisualStyleBackColor = true;
-			// 
-			// button1
-			// 
-			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button1.Location = new System.Drawing.Point(605, 12);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(19, 23);
-			this.button1.TabIndex = 18;
-			this.button1.Text = "?";
-			this.button1.UseVisualStyleBackColor = true;
-			this.button1.Click += new System.EventHandler(this.button1_Click);
-			// 
-			// btnAlbumIcoHelp
-			// 
-			this.btnAlbumIcoHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnAlbumIcoHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnAlbumIcoHelp.Location = new System.Drawing.Point(605, 41);
-			this.btnAlbumIcoHelp.Name = "btnAlbumIcoHelp";
-			this.btnAlbumIcoHelp.Size = new System.Drawing.Size(19, 23);
-			this.btnAlbumIcoHelp.TabIndex = 17;
-			this.btnAlbumIcoHelp.Text = "?";
-			this.btnAlbumIcoHelp.UseVisualStyleBackColor = true;
-			this.btnAlbumIcoHelp.Click += new System.EventHandler(this.btnAlbumIcoHelp_Click);
-			// 
-			// btnApplet1
-			// 
-			this.btnApplet1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnApplet1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnApplet1.Location = new System.Drawing.Point(195, 41);
-			this.btnApplet1.Name = "btnApplet1";
-			this.btnApplet1.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet1.TabIndex = 16;
-			this.btnApplet1.Text = "Album";
-			this.btnApplet1.UseVisualStyleBackColor = true;
-			// 
-			// lblAppletIcons
-			// 
-			this.lblAppletIcons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblAppletIcons.Depth = 0;
-			this.lblAppletIcons.Font = new System.Drawing.Font("Roboto", 11F);
-			this.lblAppletIcons.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.lblAppletIcons.Location = new System.Drawing.Point(6, 43);
-			this.lblAppletIcons.MouseState = MaterialSkin.MouseState.HOVER;
-			this.lblAppletIcons.Name = "lblAppletIcons";
-			this.lblAppletIcons.Size = new System.Drawing.Size(163, 19);
-			this.lblAppletIcons.TabIndex = 15;
-			this.lblAppletIcons.Text = "Custom applet icons:";
-			// 
-			// btnOpenCustomLayout
-			// 
-			this.btnOpenCustomLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOpenCustomLayout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.btnOpenCustomLayout.Location = new System.Drawing.Point(566, 12);
-			this.btnOpenCustomLayout.Name = "btnOpenCustomLayout";
-			this.btnOpenCustomLayout.Size = new System.Drawing.Size(33, 23);
-			this.btnOpenCustomLayout.TabIndex = 14;
-			this.btnOpenCustomLayout.Text = "...";
-			this.btnOpenCustomLayout.UseVisualStyleBackColor = true;
-			this.btnOpenCustomLayout.Click += new System.EventHandler(this.btnOpenCustomLayout_Click);
-			// 
-			// lblCustomCommonLyt
-			// 
-			this.lblCustomCommonLyt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.lblCustomCommonLyt.Depth = 0;
-			this.lblCustomCommonLyt.Font = new System.Drawing.Font("Roboto", 11F);
-			this.lblCustomCommonLyt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.lblCustomCommonLyt.Location = new System.Drawing.Point(6, 16);
-			this.lblCustomCommonLyt.MouseState = MaterialSkin.MouseState.HOVER;
-			this.lblCustomCommonLyt.Name = "lblCustomCommonLyt";
-			this.lblCustomCommonLyt.Size = new System.Drawing.Size(554, 19);
-			this.lblCustomCommonLyt.TabIndex = 12;
-			this.lblCustomCommonLyt.Text = "Custom common layout: Not set";
 			// 
 			// linkLabel2
 			// 
@@ -537,6 +370,161 @@
 			this.materialLabel8.TabIndex = 7;
 			this.materialLabel8.Text = "Use this page to create NXTheme files (You don\'t need to open an SZS for this)";
 			this.materialLabel8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// grpHomeExtra
+			// 
+			this.grpHomeExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.grpHomeExtra.Controls.Add(this.btnApplet6);
+			this.grpHomeExtra.Controls.Add(this.btnApplet5);
+			this.grpHomeExtra.Controls.Add(this.btnApplet4);
+			this.grpHomeExtra.Controls.Add(this.btnApplet3);
+			this.grpHomeExtra.Controls.Add(this.btnApplet2);
+			this.grpHomeExtra.Controls.Add(this.button1);
+			this.grpHomeExtra.Controls.Add(this.btnAlbumIcoHelp);
+			this.grpHomeExtra.Controls.Add(this.btnApplet1);
+			this.grpHomeExtra.Controls.Add(this.lblAppletIcons);
+			this.grpHomeExtra.Controls.Add(this.btnOpenCustomLayout);
+			this.grpHomeExtra.Controls.Add(this.lblCustomCommonLyt);
+			this.grpHomeExtra.ForeColor = System.Drawing.Color.White;
+			this.grpHomeExtra.Location = new System.Drawing.Point(5, 209);
+			this.grpHomeExtra.Name = "grpHomeExtra";
+			this.grpHomeExtra.Size = new System.Drawing.Size(630, 70);
+			this.grpHomeExtra.TabIndex = 25;
+			this.grpHomeExtra.TabStop = false;
+			this.grpHomeExtra.Text = "Home menu optional settings";
+			this.grpHomeExtra.Visible = false;
+			// 
+			// btnApplet6
+			// 
+			this.btnApplet6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet6.Location = new System.Drawing.Point(535, 41);
+			this.btnApplet6.Name = "btnApplet6";
+			this.btnApplet6.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet6.TabIndex = 23;
+			this.btnApplet6.Text = "Power";
+			this.btnApplet6.UseVisualStyleBackColor = true;
+			// 
+			// btnApplet5
+			// 
+			this.btnApplet5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet5.Location = new System.Drawing.Point(467, 41);
+			this.btnApplet5.Name = "btnApplet5";
+			this.btnApplet5.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet5.TabIndex = 22;
+			this.btnApplet5.Text = "Settings";
+			this.btnApplet5.UseVisualStyleBackColor = true;
+			// 
+			// btnApplet4
+			// 
+			this.btnApplet4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet4.Location = new System.Drawing.Point(400, 41);
+			this.btnApplet4.Name = "btnApplet4";
+			this.btnApplet4.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet4.TabIndex = 21;
+			this.btnApplet4.Text = "Controller";
+			this.btnApplet4.UseVisualStyleBackColor = true;
+			// 
+			// btnApplet3
+			// 
+			this.btnApplet3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet3.Location = new System.Drawing.Point(332, 41);
+			this.btnApplet3.Name = "btnApplet3";
+			this.btnApplet3.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet3.TabIndex = 20;
+			this.btnApplet3.Text = "Shop";
+			this.btnApplet3.UseVisualStyleBackColor = true;
+			// 
+			// btnApplet2
+			// 
+			this.btnApplet2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet2.Location = new System.Drawing.Point(264, 41);
+			this.btnApplet2.Name = "btnApplet2";
+			this.btnApplet2.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet2.TabIndex = 19;
+			this.btnApplet2.Text = "News";
+			this.btnApplet2.UseVisualStyleBackColor = true;
+			// 
+			// button1
+			// 
+			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.button1.Location = new System.Drawing.Point(605, 12);
+			this.button1.Name = "button1";
+			this.button1.Size = new System.Drawing.Size(19, 23);
+			this.button1.TabIndex = 18;
+			this.button1.Text = "?";
+			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.button1_Click);
+			// 
+			// btnAlbumIcoHelp
+			// 
+			this.btnAlbumIcoHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnAlbumIcoHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnAlbumIcoHelp.Location = new System.Drawing.Point(605, 41);
+			this.btnAlbumIcoHelp.Name = "btnAlbumIcoHelp";
+			this.btnAlbumIcoHelp.Size = new System.Drawing.Size(19, 23);
+			this.btnAlbumIcoHelp.TabIndex = 17;
+			this.btnAlbumIcoHelp.Text = "?";
+			this.btnAlbumIcoHelp.UseVisualStyleBackColor = true;
+			this.btnAlbumIcoHelp.Click += new System.EventHandler(this.btnAlbumIcoHelp_Click);
+			// 
+			// btnApplet1
+			// 
+			this.btnApplet1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnApplet1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnApplet1.Location = new System.Drawing.Point(195, 41);
+			this.btnApplet1.Name = "btnApplet1";
+			this.btnApplet1.Size = new System.Drawing.Size(64, 23);
+			this.btnApplet1.TabIndex = 16;
+			this.btnApplet1.Text = "Album";
+			this.btnApplet1.UseVisualStyleBackColor = true;
+			// 
+			// lblAppletIcons
+			// 
+			this.lblAppletIcons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblAppletIcons.Depth = 0;
+			this.lblAppletIcons.Font = new System.Drawing.Font("Roboto", 11F);
+			this.lblAppletIcons.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.lblAppletIcons.Location = new System.Drawing.Point(6, 43);
+			this.lblAppletIcons.MouseState = MaterialSkin.MouseState.HOVER;
+			this.lblAppletIcons.Name = "lblAppletIcons";
+			this.lblAppletIcons.Size = new System.Drawing.Size(163, 19);
+			this.lblAppletIcons.TabIndex = 15;
+			this.lblAppletIcons.Text = "Custom applet icons:";
+			// 
+			// btnOpenCustomLayout
+			// 
+			this.btnOpenCustomLayout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.btnOpenCustomLayout.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.btnOpenCustomLayout.Location = new System.Drawing.Point(566, 12);
+			this.btnOpenCustomLayout.Name = "btnOpenCustomLayout";
+			this.btnOpenCustomLayout.Size = new System.Drawing.Size(33, 23);
+			this.btnOpenCustomLayout.TabIndex = 14;
+			this.btnOpenCustomLayout.Text = "...";
+			this.btnOpenCustomLayout.UseVisualStyleBackColor = true;
+			this.btnOpenCustomLayout.Click += new System.EventHandler(this.btnOpenCustomLayout_Click);
+			// 
+			// lblCustomCommonLyt
+			// 
+			this.lblCustomCommonLyt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.lblCustomCommonLyt.Depth = 0;
+			this.lblCustomCommonLyt.Font = new System.Drawing.Font("Roboto", 11F);
+			this.lblCustomCommonLyt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.lblCustomCommonLyt.Location = new System.Drawing.Point(6, 16);
+			this.lblCustomCommonLyt.MouseState = MaterialSkin.MouseState.HOVER;
+			this.lblCustomCommonLyt.Name = "lblCustomCommonLyt";
+			this.lblCustomCommonLyt.Size = new System.Drawing.Size(554, 19);
+			this.lblCustomCommonLyt.TabIndex = 12;
+			this.lblCustomCommonLyt.Text = "Custom common layout: Not set";
 			// 
 			// grpLockExtra
 			// 
@@ -855,8 +843,8 @@
 			this.materialLabel3.Name = "materialLabel3";
 			this.materialLabel3.Size = new System.Drawing.Size(475, 57);
 			this.materialLabel3.TabIndex = 13;
-			this.materialLabel3.Text = "To install themes copy them to the themes folder on your SD card and use the NXThe" +
-    "mes Installer homebrew.";
+			this.materialLabel3.Text = "To install themes copy them to the themes folder on your SD card and use the NXTh" +
+    "emes Installer homebrew.";
 			// 
 			// materialLabel17
 			// 
@@ -872,159 +860,6 @@
 			this.materialLabel17.TabIndex = 25;
 			this.materialLabel17.Text = "To avoid crashes use 720p images (1280x720 pixels)";
 			this.materialLabel17.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			// 
-			// NCADumpPage
-			// 
-			this.NCADumpPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.NCADumpPage.Controls.Add(this.NCARunBtn);
-			this.NCADumpPage.Controls.Add(this.SdCardTb);
-			this.NCADumpPage.Controls.Add(this.SdCardBtn);
-			this.NCADumpPage.Controls.Add(this.materialLabel14);
-			this.NCADumpPage.Controls.Add(this.keyFileTb);
-			this.NCADumpPage.Controls.Add(this.KeyFileBtn);
-			this.NCADumpPage.Controls.Add(this.materialLabel13);
-			this.NCADumpPage.Controls.Add(this.linkLabel4);
-			this.NCADumpPage.Controls.Add(this.materialLabel10);
-			this.NCADumpPage.Location = new System.Drawing.Point(4, 22);
-			this.NCADumpPage.Name = "NCADumpPage";
-			this.NCADumpPage.Padding = new System.Windows.Forms.Padding(3);
-			this.NCADumpPage.Size = new System.Drawing.Size(638, 331);
-			this.NCADumpPage.TabIndex = 5;
-			this.NCADumpPage.Text = "Extract NCA";
-			// 
-			// NCARunBtn
-			// 
-			this.NCARunBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.NCARunBtn.AutoSize = true;
-			this.NCARunBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.NCARunBtn.Depth = 0;
-			this.NCARunBtn.Icon = null;
-			this.NCARunBtn.Location = new System.Drawing.Point(586, 274);
-			this.NCARunBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.NCARunBtn.Name = "NCARunBtn";
-			this.NCARunBtn.Primary = true;
-			this.NCARunBtn.Size = new System.Drawing.Size(48, 36);
-			this.NCARunBtn.TabIndex = 28;
-			this.NCARunBtn.Text = "RUN";
-			this.NCARunBtn.UseVisualStyleBackColor = true;
-			this.NCARunBtn.Visible = false;
-			this.NCARunBtn.Click += new System.EventHandler(this.NCARunBtn_Click);
-			// 
-			// SdCardTb
-			// 
-			this.SdCardTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.SdCardTb.Location = new System.Drawing.Point(146, 134);
-			this.SdCardTb.Name = "SdCardTb";
-			this.SdCardTb.Size = new System.Drawing.Size(445, 20);
-			this.SdCardTb.TabIndex = 24;
-			this.SdCardTb.Visible = false;
-			// 
-			// SdCardBtn
-			// 
-			this.SdCardBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.SdCardBtn.AutoSize = true;
-			this.SdCardBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.SdCardBtn.Depth = 0;
-			this.SdCardBtn.ForeColor = System.Drawing.Color.White;
-			this.SdCardBtn.Icon = null;
-			this.SdCardBtn.Location = new System.Drawing.Point(598, 125);
-			this.SdCardBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-			this.SdCardBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.SdCardBtn.Name = "SdCardBtn";
-			this.SdCardBtn.Primary = false;
-			this.SdCardBtn.Size = new System.Drawing.Size(32, 36);
-			this.SdCardBtn.TabIndex = 26;
-			this.SdCardBtn.Text = "...";
-			this.SdCardBtn.UseVisualStyleBackColor = true;
-			this.SdCardBtn.Visible = false;
-			this.SdCardBtn.Click += new System.EventHandler(this.OutputBtn_Click);
-			// 
-			// materialLabel14
-			// 
-			this.materialLabel14.Depth = 0;
-			this.materialLabel14.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel14.Location = new System.Drawing.Point(9, 134);
-			this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel14.Name = "materialLabel14";
-			this.materialLabel14.Size = new System.Drawing.Size(145, 20);
-			this.materialLabel14.TabIndex = 25;
-			this.materialLabel14.Text = "systemData folder: ";
-			this.materialLabel14.Visible = false;
-			// 
-			// keyFileTb
-			// 
-			this.keyFileTb.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.keyFileTb.Location = new System.Drawing.Point(72, 90);
-			this.keyFileTb.Name = "keyFileTb";
-			this.keyFileTb.Size = new System.Drawing.Size(519, 20);
-			this.keyFileTb.TabIndex = 21;
-			this.keyFileTb.Visible = false;
-			// 
-			// KeyFileBtn
-			// 
-			this.KeyFileBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.KeyFileBtn.AutoSize = true;
-			this.KeyFileBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.KeyFileBtn.Depth = 0;
-			this.KeyFileBtn.ForeColor = System.Drawing.Color.White;
-			this.KeyFileBtn.Icon = null;
-			this.KeyFileBtn.Location = new System.Drawing.Point(598, 82);
-			this.KeyFileBtn.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
-			this.KeyFileBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.KeyFileBtn.Name = "KeyFileBtn";
-			this.KeyFileBtn.Primary = false;
-			this.KeyFileBtn.Size = new System.Drawing.Size(32, 36);
-			this.KeyFileBtn.TabIndex = 23;
-			this.KeyFileBtn.Text = "...";
-			this.KeyFileBtn.UseVisualStyleBackColor = true;
-			this.KeyFileBtn.Visible = false;
-			this.KeyFileBtn.Click += new System.EventHandler(this.MountBtn_Click);
-			// 
-			// materialLabel13
-			// 
-			this.materialLabel13.Depth = 0;
-			this.materialLabel13.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel13.Location = new System.Drawing.Point(9, 90);
-			this.materialLabel13.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel13.Name = "materialLabel13";
-			this.materialLabel13.Size = new System.Drawing.Size(145, 20);
-			this.materialLabel13.TabIndex = 22;
-			this.materialLabel13.Text = "Key file: ";
-			this.materialLabel13.Visible = false;
-			// 
-			// linkLabel4
-			// 
-			this.linkLabel4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabel4.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel4.Location = new System.Drawing.Point(3, 65);
-			this.linkLabel4.Name = "linkLabel4";
-			this.linkLabel4.Size = new System.Drawing.Size(631, 16);
-			this.linkLabel4.TabIndex = 12;
-			this.linkLabel4.TabStop = true;
-			this.linkLabel4.Text = "Open the new guide";
-			this.linkLabel4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.linkLabel4.Visible = false;
-			this.linkLabel4.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel4_LinkClicked);
-			// 
-			// materialLabel10
-			// 
-			this.materialLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel10.Depth = 0;
-			this.materialLabel10.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel10.Location = new System.Drawing.Point(6, 3);
-			this.materialLabel10.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel10.Name = "materialLabel10";
-			this.materialLabel10.Size = new System.Drawing.Size(625, 62);
-			this.materialLabel10.TabIndex = 8;
-			this.materialLabel10.Text = resources.GetString("materialLabel10.Text");
-			this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// AdvancedPage
 			// 
@@ -1281,8 +1116,6 @@
 			this.PatchListPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);
 			this.InjectPage.PerformLayout();
-			this.NCADumpPage.ResumeLayout(false);
-			this.NCADumpPage.PerformLayout();
 			this.AdvancedPage.ResumeLayout(false);
 			this.AdvancedPage.PerformLayout();
 			this.AdvPanel.ResumeLayout(false);
@@ -1327,16 +1160,6 @@
 		private System.Windows.Forms.TabPage NXThemePage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel8;
 		private MaterialSkin.Controls.MaterialRaisedButton ImageToDDSBtn;
-		private System.Windows.Forms.TabPage NCADumpPage;
-		private System.Windows.Forms.TextBox SdCardTb;
-		private MaterialSkin.Controls.MaterialFlatButton SdCardBtn;
-		private MaterialSkin.Controls.MaterialLabel materialLabel14;
-		private System.Windows.Forms.TextBox keyFileTb;
-		private MaterialSkin.Controls.MaterialFlatButton KeyFileBtn;
-		private MaterialSkin.Controls.MaterialLabel materialLabel13;
-		private System.Windows.Forms.LinkLabel linkLabel4;
-		private MaterialSkin.Controls.MaterialLabel materialLabel10;
-		private MaterialSkin.Controls.MaterialRaisedButton NCARunBtn;
 		private MaterialSkin.Controls.MaterialLabel materialLabel3;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton8;
 		private System.Windows.Forms.LinkLabel linkLabel5;
