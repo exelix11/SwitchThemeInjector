@@ -73,7 +73,7 @@ public:
 			Step();
 		}
 
-		Panes::PanePtr operator *() const
+		const Panes::PanePtr& operator *() const
 		{
 			if (!Cur)
 				throw std::runtime_error("The end of the sequence has been reached");
@@ -120,11 +120,11 @@ public:
 
 	Panes::PanePtr operator[] (const std::string &name);
 	
-	void RemovePane(Panes::PanePtr pane);
-	void AddPane(size_t offset, Panes::PanePtr Pane, Panes::PanePtr pane);
-	void MovePane(Panes::PanePtr pane, Panes::PanePtr NewParent, size_t offset);
+	void RemovePane(Panes::PanePtr& pane);
+	void AddPane(size_t offset, Panes::PanePtr& Pane, Panes::PanePtr& pane);
+	void MovePane(Panes::PanePtr& pane, Panes::PanePtr& NewParent, size_t offset);
 
-	Panes::PanePtr FindPane(std::function<bool(Panes::PanePtr)> fun);
+	Panes::PanePtr FindPane(std::function<bool(const Panes::PanePtr&)> fun);
 	Panes::PanePtr FindRoot(const std::string& type);
 private:
 	int FindRootIndex(const std::string& type);

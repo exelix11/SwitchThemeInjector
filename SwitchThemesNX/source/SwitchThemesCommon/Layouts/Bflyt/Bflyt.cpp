@@ -1,3 +1,4 @@
+
 #include "Bflyt.hpp"
 #include "Usd1Pane.hpp"
 #include "Grp1Pane.hpp"
@@ -10,7 +11,7 @@
 using namespace std;
 using namespace Panes;
 
-TextureSection::TextureSection(Buffer &buf) : BasePane("txl1",buf)
+TextureSection::TextureSection(Buffer& buf) : BasePane("txl1", buf)
 {
 	Buffer rd(data);
 	rd.ByteOrder = Endianness::LittleEndian;
@@ -26,7 +27,7 @@ TextureSection::TextureSection(Buffer &buf) : BasePane("txl1",buf)
 
 TextureSection::TextureSection() : BasePane("txl1", 8) {}
 
-void TextureSection::ApplyChanges(Buffer &dataWriter)
+void TextureSection::ApplyChanges(Buffer& dataWriter)
 {
 	dataWriter.Write((s32)Textures.size());
 	for (size_t i = 0; i < Textures.size(); i++)
@@ -44,7 +45,7 @@ void TextureSection::ApplyChanges(Buffer &dataWriter)
 }
 
 MaterialsSection::MaterialsSection(u32 version) : BasePane("mat1", 8), Version(version) {}
-MaterialsSection::MaterialsSection(Buffer &reader, u32 version) : BasePane("mat1", reader) , Version(version)
+MaterialsSection::MaterialsSection(Buffer& reader, u32 version) : BasePane("mat1", reader), Version(version)
 {
 	Buffer dataReader(data);
 	dataReader.ByteOrder = reader.ByteOrder;
@@ -53,12 +54,12 @@ MaterialsSection::MaterialsSection(Buffer &reader, u32 version) : BasePane("mat1
 	for (int i = 0; i < matCount; i++)
 	{
 		int matLen = (i == matCount - 1 ? (int)dataReader.Length() : Offsets[i + 1] - 8) - (int)dataReader.Position;
-		BflytMaterial mat (dataReader.readBytes(matLen), Version, dataReader.ByteOrder);
+		BflytMaterial mat(dataReader.readBytes(matLen), Version, dataReader.ByteOrder);
 		Materials.push_back(move(mat));
 	}
 }
 
-void MaterialsSection::ApplyChanges(Buffer & dataWriter)
+void MaterialsSection::ApplyChanges(Buffer& dataWriter)
 {
 	dataWriter.Write((s32)Materials.size());
 	for (size_t i = 0; i < Materials.size(); i++)
@@ -74,12 +75,12 @@ void MaterialsSection::ApplyChanges(Buffer & dataWriter)
 	}
 }
 
-Panes::PanePtr BflytFile::operator[] (const string &name)
+Panes::PanePtr BflytFile::operator[] (const string& name)
 {
-	return FindPane([name](Panes::PanePtr p) {return p->PaneName == name; });
+	return FindPane([name](const Panes::PanePtr& p) {return p->PaneName == name; });
 }
 
-Panes::PanePtr BflytFile::FindPane(std::function<bool(Panes::PanePtr)> fun)
+Panes::PanePtr BflytFile::FindPane(std::function<bool(const Panes::PanePtr&)> fun)
 {
 	auto&& b = find_if(PanesBegin(), PanesEnd(), fun);
 	if (b == PanesEnd())
@@ -101,7 +102,7 @@ Panes::PanePtr BflytFile::FindRoot(const string& type)
 	return index < 0 ? nullptr : RootPanes[index];
 }
 
-BflytFile::BflytFile(const vector<u8>& file) 
+BflytFile::BflytFile(const vector<u8>& file)
 {
 	Buffer bin(file);
 	bin.ByteOrder = Endianness::LittleEndian;
@@ -117,18 +118,18 @@ BflytFile::BflytFile(const vector<u8>& file)
 	stack<Panes::PanePtr> currentRoot;
 	auto&& PushPane = [&lastPane, &currentRoot, this](Panes::BasePane* ptr) {
 		auto&& x = Panes::PanePtr(ptr);
-		if (x->name == "pas1" || x->name == "grs1") 
-			currentRoot.push(lastPane); 
+		if (x->name == "pas1" || x->name == "grs1")
+			currentRoot.push(lastPane);
 		else if (x->name == "pae1" || x->name == "gre1")
-			currentRoot.pop(); 
+			currentRoot.pop();
 		else if (currentRoot.size() == 0)
 			RootPanes.push_back(x);
-		else 
-		{ 
-			x->Parent = currentRoot.top(); 
-			currentRoot.top()->Children.push_back(x); 
-		} 
-		lastPane = x; 
+		else
+		{
+			x->Parent = currentRoot.top();
+			currentRoot.top()->Children.push_back(x);
+		}
+		lastPane = x;
 	};
 
 	for (size_t i = 0; i < sectionCount; i++)
@@ -149,8 +150,8 @@ BflytFile::BflytFile(const vector<u8>& file)
 			PushPane(new Grp1Pane(bin, Version));
 		else if (name == "pan1" || name == "prt1" || name == "wnd1" || name == "bnd1")
 			PushPane(new Pan1Pane(bin, bin.ByteOrder, name));
-		else 
-			PushPane(new BasePane(name,bin));
+		else
+			PushPane(new BasePane(name, bin));
 
 		//if (i == sectionCount - 1 && bin.Position != bin.Length()) //load sections missing in the section count (my old bflyt patch)
 		//{
@@ -166,7 +167,7 @@ BflytFile::BflytFile(const vector<u8>& file)
 	}
 }
 
-BflytFile::~BflytFile() 
+BflytFile::~BflytFile()
 {
 	RootPanes.clear();
 }
@@ -241,10 +242,10 @@ vector<PanePtr> BflytFile::WritePaneListForBinary()
 			res.emplace_back(new BasePane(c->name == "grp1" ? "grs1" : "pas1", 8));
 		}
 	}
-	return res;
+	return move(res);
 }
 
-vector<u8> BflytFile::SaveFile() 
+vector<u8> BflytFile::SaveFile()
 {
 	auto&& Panes = WritePaneListForBinary();
 
@@ -269,20 +270,21 @@ vector<u8> BflytFile::SaveFile()
 	return bin.getBuffer();
 }
 
-void BflytFile::RemovePane(PanePtr pane)
+void BflytFile::RemovePane(PanePtr& pane)
 {
-	auto& c = pane->Parent->Children;
+	auto ptr = pane->Parent.lock();
+	auto& c = ptr->Children;
 	c.erase(std::remove(c.begin(), c.end(), pane), c.end());
 }
 
-void BflytFile::AddPane(size_t offset, PanePtr Parent, PanePtr pane)
+void BflytFile::AddPane(size_t offset, PanePtr& Parent, PanePtr& pane)
 {
 	if (offset > Parent->Children.size())
 		offset = Parent->Children.size();
 	Parent->Children.insert(Parent->Children.begin() + offset, pane);
 }
 
-void BflytFile::MovePane(PanePtr pane, PanePtr NewParent, size_t offset)
+void BflytFile::MovePane(PanePtr& pane, PanePtr& NewParent, size_t offset)
 {
 	RemovePane(pane);
 	AddPane(offset, NewParent, pane);

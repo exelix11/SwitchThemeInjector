@@ -1,3 +1,4 @@
+
 #include "BflytPatcher.hpp"
 #include "Pic1Pane.hpp"
 #include "Usd1Pane.hpp"
@@ -116,7 +117,7 @@ bool BflytPatcher::ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches
 		if (target == mats->Materials.end()) continue; //Less strict patching
 		if (p.ForegroundColor != "")
 			(*target).ForegroundColor = (u32)std::stoul(p.ForegroundColor, 0, 16);
-		if (p.BackgroundColor!= "")
+		if (p.BackgroundColor != "")
 			(*target).BackgroundColor = (u32)std::stoul(p.BackgroundColor, 0, 16);
 	}
 	return true;
@@ -130,7 +131,7 @@ bool BflytPatcher::AddGroupNames(const std::vector<ExtraGroup>& Groups)
 	vector<string> groupNames;
 	vector<string> paneNames;
 	//Populate list of group and pane names
-	lyt.FindPane([&groupNames, &paneNames](PanePtr cur)
+	lyt.FindPane([&groupNames, &paneNames](const PanePtr& cur)
 		{
 			if (cur->PaneName == "") return false;
 			if (cur->name == "grp1")
@@ -243,7 +244,8 @@ bool BflytPatcher::AddBgPanel(PanePtr target, const std::string& TexName, const 
 		bin.Write((float)1);
 		BgPane->data = bin.getBuffer();
 	}
-	auto& targetCList = target->Parent->Children;
+	auto ptr = target->Parent.lock();
+	auto& targetCList = ptr->Children;
 	targetCList.emplace(targetCList.begin() + Utils::IndexOf(targetCList, target), BgPane);
 	return true;
 }
@@ -252,9 +254,9 @@ bool BflytPatcher::PatchBgLayout(const PatchTemplate& patch)
 {
 	//Detect patch
 	if (lyt[patch.PatchIdentifier]) return true;
-	if (lyt["3x3lxBG"])
+	if (auto p = lyt["3x3lxBG"])
 	{
-		lyt.RemovePane(lyt["3x3lxBG"]);
+		lyt.RemovePane(p);
 		lyt.GetTexSection()->Textures[0] = "White1x1^r";
 		lyt.GetMatSection()->Materials.erase(lyt.GetMatSection()->Materials.begin() + 1);
 	}
@@ -290,7 +292,9 @@ bool BflytPatcher::PanePullToFront(const std::string& paneName)
 {
 	auto target = lyt[paneName];
 	if (!target) return false;
-	lyt.MovePane(target, target->Parent, 0);
+	auto ptr = target->Parent.lock();
+	if (!ptr) return false;
+	lyt.MovePane(target, ptr, 0);
 	return true;
 }
 
@@ -298,6 +302,8 @@ bool BflytPatcher::PanePushBack(const std::string& paneName)
 {
 	auto target = lyt[paneName];
 	if (!target) return false;
-	lyt.MovePane(target, target->Parent, target->Parent->Children.size());
+	auto ptr = target->Parent.lock();
+	if (!ptr) return false;
+	lyt.MovePane(target, ptr, ptr->Children.size());
 	return true;
 }
