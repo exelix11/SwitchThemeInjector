@@ -44,8 +44,9 @@ void ThemesPage::SetDir(const string &dir)
 	pageCount = CurrentFiles.size() / LimitLoad + 1;
 	if (CurrentFiles.size() % LimitLoad == 0)
 		pageCount--;
-	menuIndex = 0;
 	SetPage(0);
+	menuIndex = 0;
+	ResetScroll = true;
 }
 
 void ThemesPage::SetPage(int num)
