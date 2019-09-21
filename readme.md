@@ -31,6 +31,11 @@ Other options specific to the theme target such as applet icons are availbale as
 SwitchThemes.exe szs "<input file>" "<your image.png/jpg/dds>" "<json layout file, optional>" "album=<custom album icon.png/dds>" "out=<OutputPath>.szs"
 ```
 `album` will only be used if patching a residentMenu szs.
+### Remote install
+Using the remote install feature in the NXThemesInstaller homebrew
+```
+SwitchThemes.exe install 192.168.X.Y "<nxtheme/szs file>"
+```
 
 # Useful resources
 Check out how to make your own layouts and animations [here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) \
