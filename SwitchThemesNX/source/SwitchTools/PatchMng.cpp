@@ -5,6 +5,7 @@
 #include <filesystem>
 #include "../Platform/Platform.hpp"
 #include <unordered_map>
+#include "../UI/DialogPages.hpp"
 
 using namespace std;
 
@@ -53,6 +54,13 @@ bool PatchMng::CanInstallTheme(const string& FileName)
 	if (HOSVer.IsGreater(ver) || HOSVer.IsEqual(ver))
 		return HasLatestPatches;
 	else return true;
+}
+
+bool PatchMng::ExefsCompatAsk(const std::string& SzsName)
+{
+	if (!PatchMng::CanInstallTheme(SzsName))
+		return YesNoPage::Ask(PatchMng::InstallWarnStr);
+	return true;
 }
 
 void PatchMng::RemoveAll()

@@ -6,7 +6,7 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
-#include "ThemeEntry.hpp"
+#include "ThemeEntry/ThemeEntry.hpp"
 
 class ThemesPage : public IPage
 {
@@ -29,7 +29,7 @@ class ThemesPage : public IPage
 		std::string CurrentDir;
 		std::vector<std::string> CurrentFiles;
 		
-		std::vector<ThemeEntry*> DisplayEntries;
+		std::vector<std::unique_ptr<ThemeEntry>> DisplayEntries;
 		std::string lblPage;
 		std::string lblCommands;
 		int pageNum = -1;

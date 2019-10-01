@@ -49,6 +49,9 @@
     <Filter Include="SwitchThemesCommon\Layouts\Bflyt">
       <UniqueIdentifier>{9e3ec0c5-5373-4d74-a93d-8e9316a66c12}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pages\ThemeEntry">
+      <UniqueIdentifier>{6142e731-eb3b-4607-98e4-68a455d6ef3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -91,9 +94,6 @@
       <Filter>Pages</Filter>
     </ClInclude>
     <ClInclude Include="source\Pages\TextPage.hpp">
-      <Filter>Pages</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Pages\ThemeEntry.hpp">
       <Filter>Pages</Filter>
     </ClInclude>
     <ClInclude Include="source\Pages\ThemePage.hpp">
@@ -218,6 +218,12 @@
     <ClInclude Include="source\SwitchTools\PatchMng.hpp">
       <Filter>SwitchTools</Filter>
     </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry\NxEntry.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry\ThemeEntry.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -263,9 +269,6 @@
       <Filter>Pages</Filter>
     </ClCompile>
     <ClCompile Include="source\Pages\TextPage.cpp">
-      <Filter>Pages</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Pages\ThemeEntry.cpp">
       <Filter>Pages</Filter>
     </ClCompile>
     <ClCompile Include="source\Pages\ThemePage.cpp">
@@ -359,6 +362,15 @@
     </ClCompile>
     <ClCompile Include="source\SwitchTools\PatchMng.cpp">
       <Filter>SwitchTools</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry\BaseEntry.cpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry\FontEntry.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry\LegacyEntry.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

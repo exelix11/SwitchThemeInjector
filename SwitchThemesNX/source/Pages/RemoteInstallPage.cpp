@@ -196,7 +196,7 @@ void RemoteInstallPage::SocketUpdate()
 	{
 		data = fs::OpenFile("F:/RemoteFile.bin");
 		ThemeSize = data.size();
-		entry = new ThemeEntry(data);
+		entry = ThemeEntry::FromSARC(data);
 		StopSocketing();
 	}
 #endif
@@ -211,9 +211,8 @@ void RemoteInstallPage::Update()
 			//string overrideStr = "";
 			//if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER])//TODO shuffle
 			//	overrideStr = shuffle::MakeThemeShuffleDir();
-			entry->InstallTheme(!AutoInstall,"");
-			delete entry;
-			entry = 0;
+			entry->Install(!AutoInstall,"");
+			entry = nullptr;
 			StopSocketing();
 			
 			if (AutoInstall)
@@ -228,8 +227,7 @@ void RemoteInstallPage::Update()
 		}
 		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 		{
-			delete entry;
-			entry = 0;			
+			entry = nullptr;			
 			StopSocketing();
 			return;			
 		}

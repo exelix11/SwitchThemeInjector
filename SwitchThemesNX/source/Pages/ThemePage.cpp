@@ -65,8 +65,6 @@ void ThemesPage::SetPage(int num, int index)
 		menuIndex = index;
 		ResetScroll = true;
 	}
-	for (auto i : DisplayEntries)
-		delete i;
 	DisplayEntries.clear();
 	
 	size_t baseIndex = num * LimitLoad;
@@ -83,10 +81,8 @@ void ThemesPage::SetPage(int num, int index)
 	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > LimitLoad) imax = LimitLoad;
 	for (int i = 0; i < imax; i++)
-	{
-		auto entry = new ThemeEntry(CurrentFiles[baseIndex + i]);
-		DisplayEntries.push_back(entry);
-	}
+		DisplayEntries.push_back(ThemeEntry::FromFile(CurrentFiles[baseIndex + i]));
+	
 	pageNum = num;
 	auto LblPStr = CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount);
 	if (SelectedFiles.size() != 0)
@@ -143,7 +139,7 @@ void ThemesPage::Render(int X, int Y)
 
 				if (res == ThemeEntry::UserAction::Preview)
 					break;
-				else if (res == ThemeEntry::UserAction::Install)
+				else if (res == ThemeEntry::UserAction::Enter)
 					PushFunction([count, &e, this]()
 						{
 							if (e->IsFolder)
@@ -155,10 +151,10 @@ void ThemesPage::Render(int X, int Y)
 									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_GUIDE])
 									{
 										DisplayLoading("Installing to shuffle...");
-										e->InstallTheme(false, shuffle::MakeThemeShuffleDir());
+										e->Install(false, shuffle::MakeThemeShuffleDir());
 									}
 									else
-										e->InstallTheme();
+										e->Install();
 								}
 								else
 								{
@@ -277,8 +273,7 @@ void ThemesPage::Update()
 		for (string file : SelectedFiles)
 		{
 			DisplayLoading("Installing " + file + "...");
-			ThemeEntry t {file};
-			if (!t.InstallTheme(false,shuffleDir))
+			if (!ThemeEntry::FromFile(file)->Install(false,shuffleDir))
 			{
 				Dialog("Installing a theme failed, the process was cancelled");
 				break;

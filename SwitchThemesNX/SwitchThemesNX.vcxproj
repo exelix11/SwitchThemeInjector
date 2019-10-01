@@ -20,7 +20,8 @@
     <ClInclude Include="source\Pages\RemoteInstallPage.hpp" />
     <ClInclude Include="source\Pages\SettingsPage.hpp" />
     <ClInclude Include="source\Pages\TextPage.hpp" />
-    <ClInclude Include="source\Pages\ThemeEntry.hpp" />
+    <ClInclude Include="source\Pages\ThemeEntry\ThemeEntry.hpp" />
+    <ClInclude Include="source\Pages\ThemeEntry\NxEntry.hpp" />
     <ClInclude Include="source\Pages\ThemePage.hpp" />
     <ClInclude Include="source\Pages\UninstallPage.hpp" />
     <ClInclude Include="source\Platform\Platform.hpp" />
@@ -79,7 +80,9 @@
     <ClCompile Include="source\Pages\RemoteInstallPage.cpp" />
     <ClCompile Include="source\Pages\SettingsPage.cpp" />
     <ClCompile Include="source\Pages\TextPage.cpp" />
-    <ClCompile Include="source\Pages\ThemeEntry.cpp" />
+    <ClCompile Include="source\Pages\ThemeEntry\BaseEntry.cpp" />
+    <ClCompile Include="source\Pages\ThemeEntry\FontEntry.hpp" />
+    <ClCompile Include="source\Pages\ThemeEntry\LegacyEntry.hpp" />
     <ClCompile Include="source\Pages\ThemePage.cpp" />
     <ClCompile Include="source\Pages\UninstallPage.cpp" />
     <ClCompile Include="source\Platform\PlatformSwitch.cpp" />

@@ -1,7 +1,7 @@
 #include "Yaz0.hpp"
 
 using namespace std;
-vector<u8> Yaz0::Decompress(vector<u8> &Data) 
+vector<u8> Yaz0::Decompress(const vector<u8> &Data) 
 {
 	u32 leng = (u32)(Data[4] << 24 | Data[5] << 16 | Data[6] << 8 | Data[7]);
 	vector<u8> _Result(leng);
@@ -42,11 +42,11 @@ bool is_big_endian(void)
 	return bint.c[0] == 1;
 }
 
-vector<u8> Yaz0::Compress(vector<u8> &Data, int level, int reserved1, int reserved2)
+vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int reserved2)
 {
 	int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
 
-	u8* dataptr = Data.data();
+	const u8* dataptr = Data.data();
 
 	vector<u8> result(Data.size() + Data.size() / 8 + 0x10);
 	u8* resultptr = result.data();
@@ -98,7 +98,7 @@ vector<u8> Yaz0::Compress(vector<u8> &Data, int level, int reserved1, int reserv
 			int back = 1;
 			int nr = 2;
 			{
-				u8* ptr = dataptr - 1;
+				const u8* ptr = dataptr - 1;
 				int maxnum = 0x111;
 				if (length - Offs < maxnum) maxnum = length - Offs;
 				//Use a smaller amount of u8s back to decrease time

@@ -8,4 +8,6 @@ namespace PatchMng
 	//returns an error message
 	const char* EnsureInstalled();
 	bool CanInstallTheme(const std::string& FileName);
+
+	bool ExefsCompatAsk(const std::string& SzsName);
 };

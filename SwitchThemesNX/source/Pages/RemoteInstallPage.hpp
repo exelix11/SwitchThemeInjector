@@ -6,7 +6,7 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
-#include "ThemeEntry.hpp"
+#include "ThemeEntry/ThemeEntry.hpp"
 #ifdef __SWITCH__
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -38,7 +38,7 @@ class RemoteInstallPage : public IPage
 		
 		std::string lblInfo;
 		std::string lblConfirm;
-		ThemeEntry *entry = 0;
+		std::unique_ptr<ThemeEntry> entry = 0;
 		std::string BtnStart;
 
 		bool AutoInstall = false;
