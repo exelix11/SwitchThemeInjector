@@ -30,6 +30,8 @@ ThemesPage::~ThemesPage()
 
 void ThemesPage::SetDir(const string &dir)
 {
+	LastPageMap[CurrentDir] = tuple<int,int>(pageNum, menuIndex);
+
 	CurrentDir = dir;
 	if (!StrEndsWith(dir, "/"))
 		CurrentDir += "/";
@@ -44,17 +46,23 @@ void ThemesPage::SetDir(const string &dir)
 	pageCount = CurrentFiles.size() / LimitLoad + 1;
 	if (CurrentFiles.size() % LimitLoad == 0)
 		pageCount--;
-	SetPage(0);
-	menuIndex = 0;
+
+	if (LastPageMap.count(dir))
+	{
+		const auto& [num, index] = LastPageMap[dir];
+		SetPage(num, index);
+	}
+	else SetPage(0);
+
 	ResetScroll = true;
 }
 
-void ThemesPage::SetPage(int num)
+void ThemesPage::SetPage(int num, int index)
 {
 	ImGui::NavMoveRequestCancel();
-	if (pageNum != num)
+	if (pageNum != num || index != 0)
 	{
-		menuIndex = 0;
+		menuIndex = index;
 		ResetScroll = true;
 	}
 	for (auto i : DisplayEntries)
@@ -87,7 +95,6 @@ void ThemesPage::SetPage(int num)
 	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
 }
 
-const int EntryW = 860;
 void ThemesPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupPage("ThemesPageContainer", X, Y, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
