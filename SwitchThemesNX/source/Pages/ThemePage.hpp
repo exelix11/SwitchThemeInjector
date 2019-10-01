@@ -18,7 +18,7 @@ class ThemesPage : public IPage
 		void Update() override;
 	private:
 		void SetDir(const std::string &dir);
-		void SetPage(int num);
+		void SetPage(int num, int index = 0);
 		void SelectCurrent();
 		
 		int PageItemsCount();
@@ -47,4 +47,6 @@ class ThemesPage : public IPage
 		const std::string CommandsTextSelected = "A: Add/Remove to selection  Y: Clear selection  `+`: Install selected";
 
 		int LimitLoad = 25;
+
+		std::unordered_map<std::string, std::tuple<int,int>> LastPageMap;
 };
