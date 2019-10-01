@@ -32,17 +32,16 @@ namespace SwitchThemes.Common
 				BflytFile _or = new BflytFile(original.Files[f]);
 				BflytFile _ed = new BflytFile(edited.Files[f]);
 
-				var ed = _ed.EnumeratePanes().GetEnumerator();
-
 				List<PanePatch> curFile = new List<PanePatch>();
-				foreach (var orpane_ in _or.EnumeratePanes())
+				foreach (var orpane_ in _or.EnumeratePanes().Where(x => x is INamedPane))
 				{
-					if (!ed.MoveNext()) throw new Exception($"{f} doesn't contain the same pane count");
-					if (!(orpane_ is Pan1Pane) || IgnorePaneList.Contains(orpane_.name)) continue;
-					var edPan = (Pan1Pane)ed.Current;
+					var edpane = _ed[((INamedPane)orpane_).PaneName];
+					if (edpane == null) throw new Exception($"{f} is missing {((INamedPane)orpane_).PaneName}");
+					if (orpane_.name != edpane.name) throw new Exception($"{f} : {((INamedPane)orpane_).PaneName} Two panes with the same name are of a different type");
+					if (IgnorePaneList.Contains(orpane_.name)) continue;
+
+					var edPan = (Pan1Pane)edpane;
 					var orPan = (Pan1Pane)orpane_;
-					if (orPan.name != edPan.name) throw new Exception($"{f} : {orPan.name} doesn't match with {edPan.name}");
-					if (orPan.PaneName != edPan.PaneName) throw new Exception($"{f} : {orPan.PaneName} doesn't match with {edPan.PaneName}");
 					
 					PanePatch curPatch = new PanePatch() { PaneName = edPan.PaneName };
 					curPatch.UsdPatches = MakeUsdPatch(edPan.UserData, orPan.UserData);
@@ -153,7 +152,7 @@ namespace SwitchThemes.Common
 			}, Message);
 		}
 
-		static List<UsdPatch> MakeUsdPatch(Usd1Pane or, Usd1Pane ed)
+		static List<UsdPatch> MakeUsdPatch(Usd1Pane ed, Usd1Pane or)
 		{
 			if (or == null || ed == null) return null;
 			if (or.data.SequenceEqual(ed.data)) return null;

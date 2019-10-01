@@ -185,18 +185,22 @@ namespace SwitchThemes
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			LayoutPatch res = null;
+#if !DEBUG
 			try
 			{
+#endif
 				string msg;
 				(res, msg) = LayoutDiff.Diff(originalSzs, CommonSzs);
 				if (msg != null)
 					MessageBox.Show(msg);
+#if !DEBUG
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show(ex.Message);
 				return;
 			}
+#endif
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
@@ -237,7 +241,7 @@ namespace SwitchThemes
 					diffFiles.Add(f);
 			MessageBox.Show(string.Join("\r\n", diffFiles.ToArray()));
 		}
-		#endregion
+#endregion
 
 		private void materialRaisedButton1_Click(object sender, EventArgs e)
 		{
