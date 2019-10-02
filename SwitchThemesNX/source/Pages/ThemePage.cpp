@@ -38,23 +38,20 @@ void ThemesPage::SetDir(const string &dir)
 	
 	CurrentFiles.clear();
 	for (auto f : ThemeFiles)
-	{
 		if (fs::GetPath(f) == CurrentDir)
 			CurrentFiles.push_back(f);
-	}
 	
 	pageCount = CurrentFiles.size() / LimitLoad + 1;
 	if (CurrentFiles.size() % LimitLoad == 0)
 		pageCount--;
 
+	pageNum = -1; //force setpage to reload the entries even if in the same page as the path changed
 	if (LastPageMap.count(dir))
 	{
 		const auto& [num, index] = LastPageMap[dir];
 		SetPage(num, index);
 	}
 	else SetPage(0);
-
-	ResetScroll = true;
 }
 
 void ThemesPage::SetPage(int num, int index)
@@ -65,6 +62,8 @@ void ThemesPage::SetPage(int num, int index)
 		menuIndex = index;
 		ResetScroll = true;
 	}
+
+	if (pageNum == num)	return;
 	DisplayEntries.clear();
 	
 	size_t baseIndex = num * LimitLoad;

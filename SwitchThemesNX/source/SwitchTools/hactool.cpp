@@ -176,7 +176,7 @@ FsFileSystem InitExtractionCode()
     splCryptoInitialize();
     splInitialize();
     FsFileSystem sys;
-	fsOpenBisFileSystem(&sys, 31, "");
+	fsOpenBisFileSystem(&sys, FsBisStorageId_System, "");
 	fsdevMountDevice("System", sys);
 	return sys;
 }
