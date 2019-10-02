@@ -6,7 +6,7 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
-#include "ThemeEntry.hpp"
+#include "ThemeEntry/ThemeEntry.hpp"
 #include <functional>
 
 class ExternalInstallPage : public IUIControlObj
@@ -25,6 +25,6 @@ class ExternalInstallPage : public IUIControlObj
 		std::string Title;
 		std::string Install;
         bool isInstalled = false;		
-		std::vector <ThemeEntry*> ArgEntries; 
+		std::vector <std::unique_ptr<ThemeEntry>> ArgEntries; 
 		const u32 GRAY = 0x808080FF;
 };

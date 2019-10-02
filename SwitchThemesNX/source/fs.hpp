@@ -18,6 +18,7 @@
 
 extern std::string CfwFolder;
 bool StrEndsWith(const std::string &str, const std::string &suffix);
+bool StrStartsWith(const std::string& str, const std::string& prefix);
 
 namespace fs {
 	std::vector<u8> OpenFile(const std::string& name);

@@ -1,5 +1,5 @@
 #include "ThemeEntry.hpp"
-#include "../../fs.cpp"
+#include "../../fs.hpp"
 #include "../../SwitchTools/PatchMng.hpp"
 #include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../SettingsPage.hpp"
@@ -50,7 +50,7 @@ protected:
 		}
 	CONTINUE_INSTALL:
 
-		if (DisplayLoading)
+		if (ShowDialogs)
 			DisplayLoading("Installing...");
 
 		//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout

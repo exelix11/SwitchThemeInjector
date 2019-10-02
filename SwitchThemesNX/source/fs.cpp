@@ -31,6 +31,12 @@ bool StrEndsWith(const std::string &str, const std::string &suffix)
            str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
 }
 
+bool StrStartsWith(const std::string& str, const std::string& prefix)
+{
+	return str.size() >= prefix.size() &&
+		str.compare(0, prefix.size(), prefix) == 0;
+}
+
 static string &replaceWindowsPathChar(string& str)
 {
 	char* c = str.data();
@@ -247,7 +253,7 @@ bool DumpHomeMenuNca()
 {	
 #ifdef __SWITCH__
 	FsFileSystem sys;
-    fsOpenBisFileSystem(&sys, 31, "");
+    fsOpenBisFileSystem(&sys, FsBisStorageId_System, "");
 	fsdevMountDevice("System", sys);
 	try {		
 		auto targetNca = GetNcaPath(0x0100000000001000);

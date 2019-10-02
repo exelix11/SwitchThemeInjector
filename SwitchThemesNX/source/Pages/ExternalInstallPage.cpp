@@ -1,6 +1,6 @@
 #include "ExternalInstallPage.hpp"
 #include "../ViewFunctions.hpp"
-#include "ThemeEntry.hpp"
+#include "ThemeEntry/ThemeEntry.hpp"
 #include "CfwSelectPage.hpp"
 #include "../SwitchTools/PayloadReboot.hpp"
 #include "../UI/UIManagement.hpp"
@@ -13,14 +13,12 @@ Install("Press + to install, B to cancel")
 {
     for (int i=0; i < (int)paths.size(); i++)
     {
-        this->ArgEntries.push_back(new ThemeEntry(paths[i]));
+        ArgEntries.push_back(ThemeEntry::FromFile(paths[i]));
     }
 }
 
 ExternalInstallPage::~ExternalInstallPage()
 {
-	for (int i=0; i < (int)ArgEntries.size(); i++)
-			delete ArgEntries[i];
 	ArgEntries.clear();
 }
 
@@ -30,13 +28,14 @@ void ExternalInstallPage::Render(int X, int Y)
 	ImGui::SetWindowSize({ SCR_W, SCR_H });
 	ImGui::PushFont(font30);
 
-	ImGui::SetCursorPosY(10);
-	Utils::ImGuiCenterString(Title);
-
 	if (isInstalled)
 	{
-		ImGui::SetCursorPosY(SCR_H - 50);
+		ImGui::SetCursorPosY(40);
+		Utils::ImGuiCenterString(Title);
+
+		ImGui::SetCursorPosY(SCR_H - 180);
 		auto res = Utils::ImGuiCenterButtons({ "Exit to homebrew launcher" ,"Reboot" });
+		Utils::ImGuiSelectItemOnce(true);
 		if (res == 0)
 		{
 			SetAppShouldClose();
@@ -60,6 +59,9 @@ void ExternalInstallPage::Render(int X, int Y)
     }
 	else
 	{
+		ImGui::SetCursorPosY(10);
+		Utils::ImGuiCenterString(Title);
+
 		ImGui::SetCursorPosY(SCR_H - 50);
 		Utils::ImGuiCenterString(Install);
 
@@ -98,7 +100,7 @@ void ExternalInstallPage::Update()
             bool installSuccess = true;
             for (int i=0; i < (int)ArgEntries.size(); i++)
             {
-                if(!ArgEntries[i]->InstallTheme(false)) installSuccess = false;
+                if(!ArgEntries[i]->Install(false)) installSuccess = false;
             }
             if(!installSuccess)
             {
