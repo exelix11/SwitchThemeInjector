@@ -142,7 +142,7 @@ void ThemesPage::Render(int X, int Y)
 				else if (res == ThemeEntry::UserAction::Enter)
 					PushFunction([count, &e, this]()
 						{
-							if (e->IsFolder)
+							if (e->IsFolder())
 								SetDir(e->GetPath());
 							else
 							{
@@ -193,7 +193,7 @@ inline bool ThemesPage::IsSelected(const std::string &fname)
 
 void ThemesPage::SelectCurrent()
 {
-	if (DisplayEntries[menuIndex]->IsFolder) return;
+	if (DisplayEntries[menuIndex]->IsFolder()) return;
 	auto fname = DisplayEntries[menuIndex]->GetPath();
 	auto position = std::find(SelectedFiles.begin(), SelectedFiles.end(), fname);
 	if (position != SelectedFiles.end())

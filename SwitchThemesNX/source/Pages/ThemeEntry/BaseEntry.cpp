@@ -35,6 +35,8 @@ protected:
 
 bool ThemeEntry::Install(bool ShowDialogs, const std::string& homeDirOverride)
 {
+	if (!CanInstall())
+		return false;
 	try 
 	{
 		if (!DoInstall())
@@ -45,7 +47,7 @@ bool ThemeEntry::Install(bool ShowDialogs, const std::string& homeDirOverride)
 		DialogBlocking("Error while installing this theme: " + string(ex.what()));
 		return false;
 	}
-FINISHED:
+
 	if (ShowDialogs)
 		DialogBlocking("Done, restart the console to see the changes");
 	return true;
@@ -67,7 +69,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 
 	vector<u8>&& data = fs::OpenFile(fileName);
 
-	if (data.size == 0) 
+	if (data.size() == 0) 
 		return make_unique<DummyEntry>(fileName, "Couldn't open this file", fileName, "ERROR");
 
 	if (StrEndsWith(fileName, ".ttf"))

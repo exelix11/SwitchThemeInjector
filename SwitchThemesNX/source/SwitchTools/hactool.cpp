@@ -282,6 +282,6 @@ bool ExtractTitle(u64 titleID, const string& Path) {
 bool ExtractPlayerSelectMenu() { return true; }
 bool ExtractUserPage() { return true; }
 bool ExtractHomeMenu() { return true; }
-bool ExtractTitle(u64 titleID, const string& Path) { return true; }
+bool ExtractTitle(u64 titleID, const std::string& Path) { return true; }
 
 #endif

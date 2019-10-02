@@ -1,5 +1,7 @@
 #include "ThemeEntry.hpp"
-#include "../../fs.cpp"
+#include "../../fs.hpp"
+#include "../../SwitchThemesCommon/Fonts/TTF.hpp"
+#include "../../ViewFunctions.hpp"
 
 using namespace std;
 
@@ -49,7 +51,7 @@ private:
 		lblLine2 = ("Custom font");
 		auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
 		_CanInstall = fontName != "";
-		lblFname = (CanInstall ? fontName : "Invalid font :(");
+		lblFname = (CanInstall() ? fontName : "Invalid font :(");
 		lblLine1 = (fs::GetFileName(FileName));
 	}
 };

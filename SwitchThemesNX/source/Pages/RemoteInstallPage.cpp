@@ -185,7 +185,7 @@ void RemoteInstallPage::SocketUpdate()
 			else
 			{
 				write(curSock,"ok",2);
-				entry = new ThemeEntry(data);
+				entry = ThemeEntry::FromSARC(data);
 				StopSocketing();
 			}
 		}

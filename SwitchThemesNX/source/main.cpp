@@ -250,36 +250,54 @@ static void CheckCFWDir()
 		PushPageBlocking(new CfwSelectPage(f));
 }
 
-static vector<string> GetArgsInstallList(int argc, char**argv)
+static vector<string> GetArgsInstallList(int argc, char** argv)
 {
-	int i;
-	string key = "installtheme=";
-	string pathss;
-	std::vector<std::string> paths;
-	for (i=1; i< argc; i++)
+	if (argc <= 1) return {};
+
+	vector<string> Args(argc - 1);
+	for (size_t i = 0; i < Args.size(); i++)
+		Args[i] = string(argv[i + 1]);
+
+	//Appstore-style args
+	if (StrStartsWith(Args[0], "installtheme="))
 	{
-		string argvs(argv[i]);
-		auto pos = argvs.find(key);
-		size_t index;
-		while (true)
+		string key = "installtheme=";
+		string pathss;
+		std::vector<std::string> paths;
+		for (auto argvs : Args)
 		{
-			index = argvs.find("(_)");
-    		if (index == std::string::npos) break;
-    		argvs.replace(index, 3, " ");
-		}
-		if (pos != std::string::npos)
-			pathss = argvs.substr(pos + 13);
-		
-		if (!pathss.empty())
-		{
-    		string path;
-    		stringstream stream(pathss);
-    		while(getline(stream, path, ',')){
-				paths.push_back(path); 
+			auto pos = argvs.find(key);
+			size_t index;
+			while (true)
+			{
+				index = argvs.find("(_)");
+				if (index == std::string::npos) break;
+				argvs.replace(index, 3, " ");
+			}
+			if (pos != std::string::npos)
+				pathss = argvs.substr(pos + 13);
+
+			if (!pathss.empty())
+			{
+				string path;
+				stringstream stream(pathss);
+				while (getline(stream, path, ',')) {
+					paths.push_back(path);
+				}
 			}
 		}
- 	}
-	return paths;
+		return paths;
+	}
+	else //File args from nx-hbloader
+	{
+		vector<string> res;
+
+		for (auto& s : Args)
+			if (filesystem::exists(s) && filesystem::is_regular_file(s))
+				res.push_back(move(s));
+
+		return res;
+	}
 }	
 
 std::string SystemVer = "";
