@@ -2,7 +2,7 @@
 [Note that this is slightly outdated and not 100% accurate, still describes pretty much the szs patching process]
 
 To keep the code simple this tool uses templates and patches to edit layouts.
-A template tells the program how to apply a background image to an SZS, while a layout patch can change to position of the UI elements. Both are Json files. \
+A template tells the program how to apply a background image to an SZS, while a layout patch can change specific properties of existing UI elements. Both are Json files. \
 All the default templates are hardcoded but as of V 3.0 you can place a file called 
 ExtraTemplates.json in the same folder of the executable to load more templates. \
 Version 3.2 added support for layout patches, put them in the "Layouts" folder.
