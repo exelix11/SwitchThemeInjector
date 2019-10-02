@@ -30,7 +30,7 @@ void ExternalInstallPage::Render(int X, int Y)
 
 	if (isInstalled)
 	{
-		ImGui::SetCursorPosY(40);
+		ImGui::SetCursorPosY(80);
 		Utils::ImGuiCenterString(Title);
 
 		ImGui::SetCursorPosY(SCR_H - 180);
