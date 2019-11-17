@@ -1,4 +1,9 @@
 # Switch theme injector
+[![Discord](https://img.shields.io/discord/643436008452521984.svg?logo=discord&logoColor=white&label=Discord&color=7289DA
+)](https://discord.gg/rqU5Tf8)
+[![Latest release](https://img.shields.io/github/v/release/exelix11/SwitchThemeInjector)](https://github.com/exelix11/SwitchThemeInjector/releases)
+[![](https://img.shields.io/github/downloads/exelix11/SwitchThemeInjector/total)](https://github.com/exelix11/SwitchThemeInjector/releases)
+[![Contributing](https://img.shields.io/badge/supporting-patreon-f96854)](https://www.patreon.com/exelix11)
 
 ![ThemeScreenshot](ThemeScreenshot.jpg)
 
