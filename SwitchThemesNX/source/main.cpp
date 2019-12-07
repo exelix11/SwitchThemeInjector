@@ -232,12 +232,13 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 "Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/v2\n"
 "\n"
 "That's all, have fun with custom themes :)");
-	Dialog("Altough .nxtheme files can be INSTALLED on every firmware you still have to uninstall any theme before updating, this is because the nxtheme gets converted to an SZS when it's installed.\nAfter the update you will be able to reinstall all your themes in .nxtheme format usually without any compatibility issue.\n"
-"(Please note that some features such as custom Settings page are available only on >= 6.X firmwares)");
-	Dialog("SZS files unfortunately are illegal to share as they contain copyrighted data, that's why this tool also supports .nxtheme files. These work just like SZS files but they can be freely shared and most importantly installed on every firmware.");
-	Dialog("Custom themes are custom SZS files that replace some files of the home menu, these files are firmware-dependent, which means that if you update your firmware while having a custom theme installed your console may not boot anymore until you manually remove the custom theme.\n\n"
-"To remove a custom theme you either boot your CFW without LayeredFS and use this tool to uninstall it or manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/titles'.\n\n"
-"Custom themes CANNOT brick your console because they're installed only on the SDcard");
+	Dialog(
+	"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"
+	"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/contents (/titles on reinx and sxos)'.\n\n"
+	"When you change the firmware your console (upgrade or downgrade) you must uninstall the theme first because the installed files on the sd are firmware-dependent.\n"
+	"If the firmware you installed supports themes you can install them back after the update.\n\n"
+	"Lockscreen themes after firmware version 9.0 are not supported on all CFWs because some lack support for patching titles via IPS."
+	);
 	if (WelcomeScr)
 		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
 }

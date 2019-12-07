@@ -41,7 +41,7 @@ void CfwSelectPage::Render(int X, int Y)
 		ImGui::SetCursorPosX((float)XCursorBtn);
 		if (ImGui::Button(e.c_str(), { BtnWidth, 50 }))
 		{
-			CfwFolder = e;
+			fs::SetCfwFolder(e);
 			PopPage();
 		}
 		count++;

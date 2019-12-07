@@ -16,11 +16,18 @@
 #include <switch.h>
 #endif
 
-extern std::string CfwFolder;
+#define ATMOS_DIR "/atmosphere"
+#define REINX_DIR "/reinx"
+#define SX_DIR "/sxos"
+
 bool StrEndsWith(const std::string &str, const std::string &suffix);
 bool StrStartsWith(const std::string& str, const std::string& prefix);
 
 namespace fs {
+	std::string GetCfwFolder();
+	std::string GetFsMitmFolder();
+	void SetCfwFolder(const std::string&);
+
 	std::vector<u8> OpenFile(const std::string& name);
 	void WriteFile(const std::string& name, const std::vector<u8>& data);
 
