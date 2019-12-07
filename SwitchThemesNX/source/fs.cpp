@@ -8,7 +8,21 @@
 using namespace std;
 using namespace fs;
 
-string CfwFolder = "";
+static string CfwFolder = "";
+static string TitlesFolder = "";
+
+string fs::GetCfwFolder() { return CfwFolder; }
+
+string fs::GetFsMitmFolder() { return CfwFolder + TitlesFolder; }
+
+void fs::SetCfwFolder(const string& s)
+{
+	CfwFolder = s;
+	if (CfwFolder == SD_PREFIX ATMOS_DIR && filesystem::exists(SD_PREFIX ATMOS_DIR "/contents"))
+		TitlesFolder = "/contents";
+	else
+		TitlesFolder = "/titles";
+}
 
 vector<string> fs::SearchCfwFolders()
 {
@@ -16,9 +30,9 @@ vector<string> fs::SearchCfwFolders()
 	DIR * dir = nullptr;
 	#define CHECKFOLDER(f) dir = opendir(f); \
 	if (dir) { res.push_back(f); closedir(dir); dir = nullptr;}
-	CHECKFOLDER(SD_PREFIX "/atmosphere")
-	CHECKFOLDER(SD_PREFIX "/reinx")
-	CHECKFOLDER(SD_PREFIX "/sxos")
+	CHECKFOLDER(SD_PREFIX ATMOS_DIR)
+	CHECKFOLDER(SD_PREFIX REINX_DIR)
+	CHECKFOLDER(SD_PREFIX SX_DIR)
 	#undef CHECKFOLDER
 	if (res.size() == 1)
 		CfwFolder = res[0];
@@ -149,31 +163,36 @@ void fs::RecursiveDeleteFolder(const string &path)
 	}
 }
 
+static string TitleDir(const string& name)
+{
+	return fs::GetFsMitmFolder() + "/" + name;
+}
+
 void fs::UninstallTheme(bool full)
 {
 	#define DelDirFromCfw(x) if (filesystem::exists(CfwFolder + x)) \
-		RecursiveDeleteFolder(CfwFolder + x);
+		RecursiveDeleteFolder(TitleDir(x));
 	
 	if (full)
 	{
-		DelDirFromCfw("/titles/0100000000001000")
-		DelDirFromCfw("/titles/0100000000001013")
+		DelDirFromCfw("0100000000001000")
+		DelDirFromCfw("0100000000001013")
 	}
 	else 
 	{
-		DelDirFromCfw("/titles/0100000000001000/romfs/lyt")
-		DelDirFromCfw("/titles/0100000000001013/romfs/lyt")
+		DelDirFromCfw("0100000000001000/romfs/lyt")
+		DelDirFromCfw("0100000000001013/romfs/lyt")
 	}
-	DelDirFromCfw("/titles/0100000000001007") //Player select
-	DelDirFromCfw("/titles/0100000000000811") //Custom font
-	DelDirFromCfw("/titles/0100000000000039") //needed to enable custom font
+	DelDirFromCfw("0100000000001007") //Player select
+	DelDirFromCfw("0100000000000811") //Custom font
+	DelDirFromCfw("0100000000000039") //needed to enable custom font
 	
 	#undef DelDirFromCfw
 }
 
 void fs::CreateFsMitmStructure(const string &tid)
 {
-	string path = CfwFolder + "/titles";
+	string path = GetFsMitmFolder();
 	mkdir(path.c_str(), ACCESSPERMS);
 	path += "/" + tid;
 	mkdir(path.c_str(), ACCESSPERMS);
@@ -186,7 +205,7 @@ void fs::CreateFsMitmStructure(const string &tid)
 
 void fs::CreateRomfsDir(const std::string &tid)
 {
-	string path = CfwFolder + "/titles/" + tid;
+	string path = GetFsMitmFolder() + "/" + tid;
 	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
 }
 
@@ -194,7 +213,7 @@ void fs::CreateThemeStructure(const string &tid)
 {	
 	CreateFsMitmStructure(tid);
 	CreateRomfsDir(tid);
-	mkdir((CfwFolder + "/titles/" + tid + "/romfs/lyt").c_str(), ACCESSPERMS);
+	mkdir((GetFsMitmFolder() + "/" + tid + "/romfs/lyt").c_str(), ACCESSPERMS);
 }
 
 bool fs::CheckThemesFolder()

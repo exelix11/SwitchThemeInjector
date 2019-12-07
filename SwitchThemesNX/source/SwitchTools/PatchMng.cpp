@@ -37,10 +37,10 @@ static bool HasLatestPatches = true;
 
 static string GetExefsPatchesPath()
 {
-	if (CfwFolder == SD_PREFIX "/atmosphere")
-		return SD_PREFIX "/atmosphere/exefs_patches/";
-	else if (CfwFolder == SD_PREFIX "/reinx")
-		return SD_PREFIX "/reinx/patches/";
+	if (fs::GetCfwFolder() == SD_PREFIX ATMOS_DIR)
+		return SD_PREFIX ATMOS_DIR "/exefs_patches/";
+	else if (fs::GetCfwFolder() == SD_PREFIX REINX_DIR)
+		return SD_PREFIX REINX_DIR "/patches/";
 	else return "";
 }
 
