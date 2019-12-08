@@ -18,10 +18,10 @@ string fs::GetFsMitmFolder() { return CfwFolder + TitlesFolder; }
 void fs::SetCfwFolder(const string& s)
 {
 	CfwFolder = s;
-	if (CfwFolder == SD_PREFIX ATMOS_DIR && filesystem::exists(SD_PREFIX ATMOS_DIR "/contents"))
-		TitlesFolder = "/contents";
+	if (CfwFolder == SD_PREFIX ATMOS_DIR && filesystem::exists(SD_PREFIX ATMOS_DIR "contents/"))
+		TitlesFolder = "contents/";
 	else
-		TitlesFolder = "/titles";
+		TitlesFolder = "titles/";
 }
 
 vector<string> fs::SearchCfwFolders()
@@ -35,7 +35,7 @@ vector<string> fs::SearchCfwFolders()
 	CHECKFOLDER(SD_PREFIX SX_DIR)
 	#undef CHECKFOLDER
 	if (res.size() == 1)
-		CfwFolder = res[0];
+		SetCfwFolder(res[0]);
 	return res;
 }
 
@@ -165,7 +165,7 @@ void fs::RecursiveDeleteFolder(const string &path)
 
 static string TitleDir(const string& name)
 {
-	return fs::GetFsMitmFolder() + "/" + name;
+	return fs::GetFsMitmFolder() + name;
 }
 
 void fs::UninstallTheme(bool full)
@@ -194,26 +194,26 @@ void fs::CreateFsMitmStructure(const string &tid)
 {
 	string path = GetFsMitmFolder();
 	mkdir(path.c_str(), ACCESSPERMS);
-	path += "/" + tid;
+	path += tid + "/";
 	mkdir(path.c_str(), ACCESSPERMS);
-	if (!filesystem::exists(path + "/fsmitm.flag"))
+	if (!filesystem::exists(path + "fsmitm.flag"))
 	{
 		vector<u8> t; 
-		WriteFile(path + "/fsmitm.flag", t);
+		WriteFile(path + "fsmitm.flag", t);
 	}		
 }
 
 void fs::CreateRomfsDir(const std::string &tid)
 {
-	string path = GetFsMitmFolder() + "/" + tid;
-	mkdir((path + "/romfs").c_str(), ACCESSPERMS);
+	string path = GetFsMitmFolder() + tid + "/romfs";
+	mkdir(path.c_str(), ACCESSPERMS);
 }
 
 void fs::CreateThemeStructure(const string &tid)
 {	
 	CreateFsMitmStructure(tid);
 	CreateRomfsDir(tid);
-	mkdir((GetFsMitmFolder() + "/" + tid + "/romfs/lyt").c_str(), ACCESSPERMS);
+	mkdir((GetFsMitmFolder() + tid + "/romfs/lyt").c_str(), ACCESSPERMS);
 }
 
 bool fs::CheckThemesFolder()

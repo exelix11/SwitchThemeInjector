@@ -46,7 +46,7 @@ protected:
 		if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
 			szsPath = homeDirOverride + patch.szsName;
 		else
-			szsPath = fs::GetFsMitmFolder() + "/" + patch.TitleId + "/romfs/lyt/" + patch.szsName;
+			szsPath = fs::GetFsMitmFolder() + patch.TitleId + "/romfs/lyt/" + patch.szsName;
 		fs::WriteFile(szsPath, file);
 
 		return true;
