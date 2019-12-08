@@ -89,7 +89,7 @@ protected:
 			else
 			{
 				fs::CreateThemeStructure("0100000000001000");
-				fs::WriteFile(fs::GetFsMitmFolder() + "/0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
+				fs::WriteFile(fs::GetFsMitmFolder() + "0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
 			}
 		}
 
@@ -191,7 +191,7 @@ if (SData.files.count("layout.json"))\
 				fs::WriteFile(homeDirOverride + SzsName, SarcPack(Patcher.GetFinalSarc()));
 			else {
 				fs::CreateThemeStructure(TitleId);
-				fs::WriteFile(fs::GetFsMitmFolder() + "/" + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
+				fs::WriteFile(fs::GetFsMitmFolder() + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
 			}
 		}
 

@@ -16,9 +16,9 @@
 #include <switch.h>
 #endif
 
-#define ATMOS_DIR "/atmosphere"
-#define REINX_DIR "/reinx"
-#define SX_DIR "/sxos"
+#define ATMOS_DIR "/atmosphere/"
+#define REINX_DIR "/reinx/"
+#define SX_DIR "/sxos/"
 
 bool StrEndsWith(const std::string &str, const std::string &suffix);
 bool StrStartsWith(const std::string& str, const std::string& prefix);
