@@ -161,17 +161,13 @@ void fs::RecursiveDeleteFolder(const string &path)
 		RecursiveDeleteFolder(p);
 		rmdir(p.c_str());
 	}
-}
-
-static string TitleDir(const string& name)
-{
-	return fs::GetFsMitmFolder() + name;
+	rmdir(path.c_str());
 }
 
 void fs::UninstallTheme(bool full)
 {
-	#define DelDirFromCfw(x) if (filesystem::exists(CfwFolder + x)) \
-		RecursiveDeleteFolder(TitleDir(x));
+	#define DelDirFromCfw(x) if (filesystem::exists(fs::GetFsMitmFolder() + x)) \
+		RecursiveDeleteFolder(fs::GetFsMitmFolder() + x);
 	
 	if (full)
 	{
