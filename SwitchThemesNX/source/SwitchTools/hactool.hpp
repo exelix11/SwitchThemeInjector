@@ -7,3 +7,5 @@ bool ExtractUserPage();
 bool ExtractHomeMenu();
 
 bool ExtractTitle(u64 titleID, const std::string& Path);
+
+bool ExtractHomeExefs();
