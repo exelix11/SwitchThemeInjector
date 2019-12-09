@@ -109,7 +109,7 @@ bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
 	return true;
 }
 
-bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, bool Fix8x)
+bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
@@ -122,9 +122,9 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName, 
 	vector<LayoutFilePatch> Files;
 	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
 
-	if (Fix8x && !patch.Ready8X)
+	if (HOSVer.IsGreater({7,9,9}) && !patch.Ready8X)
 	{
-		auto extra = NewFirmFixes::GetFix(patch.PatchName);
+		auto extra = NewFirmFixes::GetFix(patch.PatchName, partName);
 		if (extra.size() != 0)
 			Files.insert(Files.end(), extra.begin(), extra.end());
 	}

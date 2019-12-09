@@ -27,7 +27,7 @@ namespace SwitchThemesCommon {
 		~SzsPatcher();
 		
 		bool PatchAnimations(const std::vector<AnimFilePatch>& files);
-		bool PatchLayouts(const LayoutPatch& patch, const std::string& PartName, bool Fix8x);
+		bool PatchLayouts(const LayoutPatch& patch, const std::string& PartName);
 		bool PatchMainBG(const std::vector<u8>& DDS);
 		bool PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName);
 		bool PatchBntxTexture(const std::vector<u8>& DDS, const std::string& texName, u32 ChannelData = 0xFFFFFFFF);

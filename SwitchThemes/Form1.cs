@@ -65,7 +65,8 @@ namespace SwitchThemes
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			Text += " Ver. " + SwitchThemesCommon.CoreVer;
-						
+			materialLabel10.Text = "Switch Theme Injector Ver " + SwitchThemesCommon.CoreVer;
+
 			if (Properties.Settings.Default.Adv)
 			{
 				Advanced = true;
@@ -501,7 +502,7 @@ namespace SwitchThemes
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
 				Patcher.EnableAnimations = !UseAnim.Checked;
-				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch.NXThemeName == "home");
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch);
 				if (!layoutres)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
@@ -644,21 +645,6 @@ namespace SwitchThemes
 			}
 		}
 
-		int eggCounter = 0;
-		private void label1_Click(object sender, EventArgs e)
-		{
-			if (eggCounter++ == 4)
-				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
-			else
-				MessageBox.Show(
-					"Switch Theme Injector V "+ SwitchThemesCommon.CoreVer + "\r\n" +
-					"by exelix\r\n\r\n" +
-					"Team Qcean:\r\n" +
-					"Creatable, einso, GRAnimated, Traiver, Cellenseres, Vorphixx, SimonMKWii, Exelix\r\n\r\n" +
-					"Discord invite: https://discord.gg/CUnHJgb\r\n\r\n" +
-					"Thanks to:\r\nSyroot for BinaryData lib\r\nAboodXD for Bntx editor");
-		}
-
 		void LayoutPreview(LayoutPatch patch)
 		{
 			if (patch == null)
@@ -778,5 +764,27 @@ namespace SwitchThemes
 
 		private void Button7_Click(object sender, EventArgs e) =>
 			MessageBox.Show("This image will replace the home icon on the lock screen. Use only 184x168 PNG images, colors are supported.\r\nIf you know what you're doing: DDS is supported as well.");
+
+		private void GithubLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://github.com/exelix11/SwitchThemeInjector/releases");
+
+		private void DiscordLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://discord.gg/rqU5Tf8");
+
+		private void PatreonLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://www.patreon.com/exelix11");
+
+		private void SubredditLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://www.reddit.com/r/NXThemes/");
+
+		private void QceanLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://discord.gg/CUnHJgb");
+
+		int eggCounter = 0;
+		private void materialLabel10_Click(object sender, EventArgs e)
+		{
+			if (eggCounter++ == 4)
+				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
+		}
 	}
 }
