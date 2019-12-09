@@ -100,6 +100,7 @@ namespace SwitchThemes.Common
 
 	public static class DefaultTemplates
 	{
+	//TODO: FirmName is used around to identify versions, should probably switch to an int or a custom ver struct. Do not edit existing patches
 		public static readonly PatchTemplate[] templates =
 		{
 			new PatchTemplate() { TemplateName = "home and applets" , szsName = "common.szs", TitleId = "0100000000001000", FirmName = "<= 5.X",

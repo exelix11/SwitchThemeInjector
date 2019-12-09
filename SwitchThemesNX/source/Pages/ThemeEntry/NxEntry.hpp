@@ -313,7 +313,7 @@ private:
 			return false;
 		}
 		Patcher.SetPatchAnimations(Settings::UseAnimations);
-		if (!Patcher.PatchLayouts(patch, PartName, HOSVer.major >= 8 && PartName == "home"))
+		if (!Patcher.PatchLayouts(patch, PartName))
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 			return false;

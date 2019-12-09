@@ -269,7 +269,7 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
-		public bool PatchLayouts(LayoutPatch Patch, string PartName, bool FixFor8)
+		public bool PatchLayouts(LayoutPatch Patch, string PartName, PatchTemplate context)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
 				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
@@ -280,9 +280,18 @@ namespace SwitchThemes.Common
 
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
-			if (FixFor8 && !Patch.Ready8X)
+
+			int fixVer = 0;
+			if (context != null)
 			{
-				var extra = NewFirmFixes.GetFix(Patch.PatchName);
+				if (context.NXThemeName == "home")
+					fixVer = 8;
+				if (context.FirmName == "9.0")
+					fixVer = 9;
+			}
+			if (fixVer >= 8 && !Patch.Ready8X)
+			{
+				var extra = NewFirmFixes.GetFix(Patch.PatchName, context);
 				if (extra != null)
 					Files.AddRange(extra);
 			}

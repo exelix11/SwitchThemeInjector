@@ -141,5 +141,5 @@ namespace Patches {
 
 namespace NewFirmFixes 
 {
-	extern std::vector<LayoutFilePatch> GetFix(const std::string& LayoutName);
+	extern std::vector<LayoutFilePatch> GetFix(const std::string& LayoutName, const std::string& partName);
 }

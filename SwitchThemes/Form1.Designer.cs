@@ -63,6 +63,13 @@
 			this.btnCustomLock = new System.Windows.Forms.Button();
 			this.lblCustomLock = new MaterialSkin.Controls.MaterialLabel();
 			this.PatchListPage = new System.Windows.Forms.TabPage();
+			this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
+			this.SubredditLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.QceanLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.DiscordLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.PatreonLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.GithubLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
 			this.UseAnim = new System.Windows.Forms.CheckBox();
@@ -95,7 +102,6 @@
 			this.materialRaisedButton5 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
-			this.label1 = new System.Windows.Forms.Label();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDebug = new System.Windows.Forms.Label();
 			this.materialTabControl1.SuspendLayout();
@@ -564,12 +570,111 @@
 			// PatchListPage
 			// 
 			this.PatchListPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.PatchListPage.Controls.Add(this.materialLabel13);
+			this.PatchListPage.Controls.Add(this.SubredditLinkLbl);
+			this.PatchListPage.Controls.Add(this.QceanLinkLbl);
+			this.PatchListPage.Controls.Add(this.DiscordLinkLbl);
+			this.PatchListPage.Controls.Add(this.PatreonLinkLbl);
+			this.PatchListPage.Controls.Add(this.GithubLinkLbl);
+			this.PatchListPage.Controls.Add(this.materialLabel10);
 			this.PatchListPage.Controls.Add(this.tbPatches);
 			this.PatchListPage.Location = new System.Drawing.Point(4, 22);
 			this.PatchListPage.Name = "PatchListPage";
 			this.PatchListPage.Size = new System.Drawing.Size(638, 331);
 			this.PatchListPage.TabIndex = 2;
 			this.PatchListPage.Text = "Help&Info";
+			// 
+			// materialLabel13
+			// 
+			this.materialLabel13.Depth = 0;
+			this.materialLabel13.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel13.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel13.Location = new System.Drawing.Point(8, 67);
+			this.materialLabel13.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel13.Name = "materialLabel13";
+			this.materialLabel13.Size = new System.Drawing.Size(296, 25);
+			this.materialLabel13.TabIndex = 22;
+			this.materialLabel13.Text = "Finding new themes or posting your own :";
+			this.materialLabel13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// SubredditLinkLbl
+			// 
+			this.SubredditLinkLbl.LinkColor = System.Drawing.Color.Red;
+			this.SubredditLinkLbl.Location = new System.Drawing.Point(308, 70);
+			this.SubredditLinkLbl.Name = "SubredditLinkLbl";
+			this.SubredditLinkLbl.Size = new System.Drawing.Size(147, 21);
+			this.SubredditLinkLbl.TabIndex = 21;
+			this.SubredditLinkLbl.TabStop = true;
+			this.SubredditLinkLbl.Text = "r/NXThemes subreddit";
+			this.SubredditLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.SubredditLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SubredditLinkLbl_LinkClicked);
+			// 
+			// QceanLinkLbl
+			// 
+			this.QceanLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
+			this.QceanLinkLbl.Location = new System.Drawing.Point(482, 70);
+			this.QceanLinkLbl.Name = "QceanLinkLbl";
+			this.QceanLinkLbl.Size = new System.Drawing.Size(147, 21);
+			this.QceanLinkLbl.TabIndex = 20;
+			this.QceanLinkLbl.TabStop = true;
+			this.QceanLinkLbl.Text = "Qcean discord";
+			this.QceanLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.QceanLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.QceanLinkLbl_LinkClicked);
+			// 
+			// DiscordLinkLbl
+			// 
+			this.DiscordLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.DiscordLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
+			this.DiscordLinkLbl.Location = new System.Drawing.Point(257, 43);
+			this.DiscordLinkLbl.Name = "DiscordLinkLbl";
+			this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 21);
+			this.DiscordLinkLbl.TabIndex = 18;
+			this.DiscordLinkLbl.TabStop = true;
+			this.DiscordLinkLbl.Text = "Exelix\'s discord server";
+			this.DiscordLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.DiscordLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DiscordLinkLbl_LinkClicked);
+			// 
+			// PatreonLinkLbl
+			// 
+			this.PatreonLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.PatreonLinkLbl.LinkColor = System.Drawing.Color.DarkOrange;
+			this.PatreonLinkLbl.Location = new System.Drawing.Point(485, 43);
+			this.PatreonLinkLbl.Name = "PatreonLinkLbl";
+			this.PatreonLinkLbl.Size = new System.Drawing.Size(147, 21);
+			this.PatreonLinkLbl.TabIndex = 17;
+			this.PatreonLinkLbl.TabStop = true;
+			this.PatreonLinkLbl.Text = "Patreon ❤";
+			this.PatreonLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.PatreonLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.PatreonLinkLbl_LinkClicked);
+			// 
+			// GithubLinkLbl
+			// 
+			this.GithubLinkLbl.LinkColor = System.Drawing.Color.Aqua;
+			this.GithubLinkLbl.Location = new System.Drawing.Point(9, 43);
+			this.GithubLinkLbl.Name = "GithubLinkLbl";
+			this.GithubLinkLbl.Size = new System.Drawing.Size(199, 21);
+			this.GithubLinkLbl.TabIndex = 16;
+			this.GithubLinkLbl.TabStop = true;
+			this.GithubLinkLbl.Text = "Updates/NXThemes Installer";
+			this.GithubLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.GithubLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.GithubLinkLbl_LinkClicked);
+			// 
+			// materialLabel10
+			// 
+			this.materialLabel10.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel10.Depth = 0;
+			this.materialLabel10.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel10.Location = new System.Drawing.Point(2, 2);
+			this.materialLabel10.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel10.Name = "materialLabel10";
+			this.materialLabel10.Size = new System.Drawing.Size(633, 41);
+			this.materialLabel10.TabIndex = 13;
+			this.materialLabel10.Text = "Switch theme injector Ver. X.Y.Z By exelix";
+			this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.materialLabel10.Click += new System.EventHandler(this.materialLabel10_Click);
 			// 
 			// tbPatches
 			// 
@@ -580,12 +685,12 @@
 			this.tbPatches.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.tbPatches.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tbPatches.ForeColor = System.Drawing.Color.White;
-			this.tbPatches.Location = new System.Drawing.Point(3, 3);
+			this.tbPatches.Location = new System.Drawing.Point(3, 110);
 			this.tbPatches.Multiline = true;
 			this.tbPatches.Name = "tbPatches";
 			this.tbPatches.ReadOnly = true;
 			this.tbPatches.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.tbPatches.Size = new System.Drawing.Size(635, 313);
+			this.tbPatches.Size = new System.Drawing.Size(635, 218);
 			this.tbPatches.TabIndex = 12;
 			this.tbPatches.Text = resources.GetString("tbPatches.Text");
 			// 
@@ -1036,17 +1141,6 @@
 			this.materialLabel4.Text = "Advanced tools allow you to manually edit the SZS and more to create custom patch" +
     "es, enable them only if you know what you\'re doing";
 			// 
-			// label1
-			// 
-			this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(0, 441);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(113, 13);
-			this.label1.TabIndex = 12;
-			this.label1.Text = "Exelix @ Team Qcean";
-			this.label1.Click += new System.EventHandler(this.label1_Click);
-			// 
 			// materialTabSelector1
 			// 
 			this.materialTabSelector1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -1078,7 +1172,6 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(645, 454);
 			this.Controls.Add(this.lblDebug);
-			this.Controls.Add(this.label1);
 			this.Controls.Add(this.materialTabSelector1);
 			this.Controls.Add(this.materialTabControl1);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1113,7 +1206,6 @@
 		private System.Windows.Forms.TextBox tbImageFile;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton2;
 		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton3;
-		private System.Windows.Forms.Label label1;
 		private MaterialSkin.Controls.MaterialTabSelector materialTabSelector1;
 		private System.Windows.Forms.TabPage PatchListPage;
 		private System.Windows.Forms.TextBox tbPatches;
@@ -1175,6 +1267,13 @@
 		private System.Windows.Forms.Button button7;
 		private System.Windows.Forms.Button btnCustomLock;
 		private MaterialSkin.Controls.MaterialLabel lblCustomLock;
+		private MaterialSkin.Controls.MaterialLabel materialLabel10;
+		private MaterialSkin.Controls.MaterialLabel materialLabel13;
+		private System.Windows.Forms.LinkLabel SubredditLinkLbl;
+		private System.Windows.Forms.LinkLabel QceanLinkLbl;
+		private System.Windows.Forms.LinkLabel DiscordLinkLbl;
+		private System.Windows.Forms.LinkLabel PatreonLinkLbl;
+		private System.Windows.Forms.LinkLabel GithubLinkLbl;
 	}
 }
 
