@@ -26,7 +26,7 @@ class RebootPage : public IPage
 			
 			auto v = fs::SearchCfwFolders();
 			bool hasAtmos = false;
-			if (std::find(v.begin(), v.end(), SD_PREFIX "/atmosphere") != v.end())
+			if (std::find(v.begin(), v.end(), SD_PREFIX ATMOS_DIR ) != v.end())
 			{
 				ShowError = false;
 				hasAtmos = true;
