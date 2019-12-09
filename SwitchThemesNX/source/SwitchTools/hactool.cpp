@@ -26,7 +26,7 @@ void CopyLytDir()
 	}
 }
 
-bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, const Key &HeaderKey, const Key &KakAppSource)
+bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, const Key &HeaderKey, const Key &KakAppSource, bool exefs = false)
 {    
     hactool_ctx_t tool_ctx;
     hactool_ctx_t base_ctx; /* Context for base NCA, if used. */
@@ -43,8 +43,15 @@ bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, co
     nca_ctx.tool_ctx->action = ACTION_EXTRACT;
     pki_initialize_keyset(&tool_ctx.settings.keyset, KEYSET_RETAIL);
     
-    nca_ctx.tool_ctx->settings.romfs_dir_path.enabled = 1;
-    filepath_set(&nca_ctx.tool_ctx->settings.romfs_dir_path.path, OutDir.c_str());		
+	if (exefs)
+	{
+		nca_ctx.tool_ctx->settings.exefs_dir_path.enabled = 1;
+		filepath_set(&nca_ctx.tool_ctx->settings.exefs_dir_path.path, OutDir.c_str());
+	}
+	else {
+		nca_ctx.tool_ctx->settings.romfs_dir_path.enabled = 1;
+		filepath_set(&nca_ctx.tool_ctx->settings.romfs_dir_path.path, OutDir.c_str());
+	}
 
     if ((tool_ctx.file = fopen(NcaFile.c_str(), "rb")) == NULL && tool_ctx.file_type != FILETYPE_BOOT0) {
         Dialog("Couldn't open " + NcaFile);
@@ -260,7 +267,7 @@ bool ExtractHomeMenu()
 bool ExtractTitle(u64 titleID, const string& Path) {
 	EXTRACTION_INIT
 
-		NcaDecryptionkeys Keys;
+	NcaDecryptionkeys Keys;
 	if (!GetKeys(&Keys))
 		return false;
 
@@ -277,6 +284,18 @@ bool ExtractTitle(u64 titleID, const string& Path) {
 		return false;
 	}
 }
+
+bool ExtractHomeExefs()
+{
+	EXTRACTION_INIT
+	
+	NcaDecryptionkeys Keys;
+	if (!GetKeys(&Keys))
+		return false;
+	
+	return HactoolExtractNCA(GetNcaPath(0x0100000000001000),"sdmc:/themes/systemData/",Keys.header_key, Keys.key_area_key_application_source,true);
+}
+
 #else
 
 bool ExtractPlayerSelectMenu() { return true; }
