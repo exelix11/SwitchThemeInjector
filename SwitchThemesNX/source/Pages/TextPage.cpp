@@ -33,8 +33,9 @@ void TextPage::Update()
 }
 
 CreditsPage::CreditsPage() :
-	creditsText("NXThemes installer by exelix\n" + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
-		"\nhttps://github.com/exelix11/SwitchThemeInjector\n\n"),
+	creditsText("NXThemes installer by exelix - " + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
+		"\nhttps://github.com/exelix11/SwitchThemeInjector"+
+		"\nhttps://patreon.com/exelix11\n\n"),
 	creditsText2(
 		"Thanks to:\n"
 		"Syroot for BinaryData lib\n"
