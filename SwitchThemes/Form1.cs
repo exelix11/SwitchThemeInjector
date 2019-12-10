@@ -65,7 +65,7 @@ namespace SwitchThemes
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			Text += " Ver. " + SwitchThemesCommon.CoreVer;
-			materialLabel10.Text = "Switch Theme Injector Ver " + SwitchThemesCommon.CoreVer;
+			materialLabel10.Text = $"Switch Theme Injector Ver {SwitchThemesCommon.CoreVer} by exelix";
 
 			if (Properties.Settings.Default.Adv)
 			{

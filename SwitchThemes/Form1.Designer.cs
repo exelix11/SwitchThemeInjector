@@ -599,6 +599,7 @@
 			// 
 			// SubredditLinkLbl
 			// 
+			this.SubredditLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.SubredditLinkLbl.LinkColor = System.Drawing.Color.Red;
 			this.SubredditLinkLbl.Location = new System.Drawing.Point(308, 70);
 			this.SubredditLinkLbl.Name = "SubredditLinkLbl";
@@ -611,6 +612,7 @@
 			// 
 			// QceanLinkLbl
 			// 
+			this.QceanLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.QceanLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
 			this.QceanLinkLbl.Location = new System.Drawing.Point(482, 70);
 			this.QceanLinkLbl.Name = "QceanLinkLbl";
@@ -625,8 +627,9 @@
 			// 
 			this.DiscordLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.DiscordLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.DiscordLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
-			this.DiscordLinkLbl.Location = new System.Drawing.Point(257, 43);
+			this.DiscordLinkLbl.Location = new System.Drawing.Point(257, 38);
 			this.DiscordLinkLbl.Name = "DiscordLinkLbl";
 			this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 21);
 			this.DiscordLinkLbl.TabIndex = 18;
@@ -638,8 +641,9 @@
 			// PatreonLinkLbl
 			// 
 			this.PatreonLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.PatreonLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.PatreonLinkLbl.LinkColor = System.Drawing.Color.DarkOrange;
-			this.PatreonLinkLbl.Location = new System.Drawing.Point(485, 43);
+			this.PatreonLinkLbl.Location = new System.Drawing.Point(485, 38);
 			this.PatreonLinkLbl.Name = "PatreonLinkLbl";
 			this.PatreonLinkLbl.Size = new System.Drawing.Size(147, 21);
 			this.PatreonLinkLbl.TabIndex = 17;
@@ -650,8 +654,9 @@
 			// 
 			// GithubLinkLbl
 			// 
+			this.GithubLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.GithubLinkLbl.LinkColor = System.Drawing.Color.Aqua;
-			this.GithubLinkLbl.Location = new System.Drawing.Point(9, 43);
+			this.GithubLinkLbl.Location = new System.Drawing.Point(9, 38);
 			this.GithubLinkLbl.Name = "GithubLinkLbl";
 			this.GithubLinkLbl.Size = new System.Drawing.Size(199, 21);
 			this.GithubLinkLbl.TabIndex = 16;
