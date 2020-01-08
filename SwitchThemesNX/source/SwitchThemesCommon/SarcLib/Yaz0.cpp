@@ -3,6 +3,9 @@
 using namespace std;
 vector<u8> Yaz0::Decompress(const vector<u8> &Data) 
 {
+	if (std::memcmp(Data.data(), "Yaz0", 4))
+		throw std::runtime_error("Wrong file format: missing yaz0 magic");
+
 	u32 leng = (u32)(Data[4] << 24 | Data[5] << 16 | Data[6] << 8 | Data[7]);
 	vector<u8> _Result(leng);
 	u8* ResPtr = _Result.data();	

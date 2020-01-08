@@ -60,24 +60,34 @@ ThemeEntry::~ThemeEntry()
 
 unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 {
-	if (filesystem::is_directory(fileName))
-	{
-		auto&& e = make_unique<DummyEntry>(fileName, fs::GetFileName(fileName), fileName, "folder");
-		e->Folder = true;
-		return move(e);
+	try {
+		if (filesystem::is_directory(fileName))
+		{
+			auto&& e = make_unique<DummyEntry>(fileName, fs::GetFileName(fileName), fileName, "folder");
+			e->Folder = true;
+			return move(e);
+		}
+
+		vector<u8>&& data = fs::OpenFile(fileName);
+
+		if (data.size() == 0)
+			return make_unique<DummyEntry>(fileName, "Couldn't open this file", fileName, "ERROR");
+
+		if (StrEndsWith(fileName, ".ttf"))
+			return make_unique<FontEntry>(fileName, move(data));
+		if (StrEndsWith(fileName, ".szs"))
+			return make_unique<LegacyEntry>(fileName, move(data));
+		if (StrEndsWith(fileName, ".nxtheme"))
+			return make_unique<NxEntry>(fileName, move(data));
 	}
-
-	vector<u8>&& data = fs::OpenFile(fileName);
-
-	if (data.size() == 0) 
-		return make_unique<DummyEntry>(fileName, "Couldn't open this file", fileName, "ERROR");
-
-	if (StrEndsWith(fileName, ".ttf"))
-		return make_unique<FontEntry>(fileName, move(data));
-	if (StrEndsWith(fileName, ".szs"))
-		return make_unique<LegacyEntry>(fileName, move(data));
-	if (StrEndsWith(fileName, ".nxtheme"))
-		return make_unique<NxEntry>(fileName, move(data));
+	catch (std::exception &ex)
+	{
+		return make_unique<DummyEntry>(fileName, "Couldn't open this file", ex.what(), "ERROR");
+	}
+	catch (...)
+	{
+		return make_unique<DummyEntry>(fileName, "Unknown exception while opening this file", fileName, "ERROR");
+	}
 
 	return make_unique<DummyEntry>(fileName, "Unknown file type", fileName, "ERROR");
 }
