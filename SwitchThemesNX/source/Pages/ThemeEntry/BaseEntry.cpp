@@ -17,12 +17,12 @@ class DummyEntry : public ThemeEntry
 public:
 	bool Folder = false;
 
-	DummyEntry(const string& fname, const string& _lblFname, const string& _lblLine1, const string& _lblLine2)
+	DummyEntry(const string& fname, const string& _lblFname, const string& description, const string& rightlabel)
 	{
 		FileName = fname;
 		lblFname = _lblFname;
-		lblLine1 = _lblLine1;
-		lblLine2 = _lblLine2;
+		lblLine1 = description;
+		lblLine2 = rightlabel;
 	}
 
 	bool IsFolder() override { return Folder; }
@@ -82,7 +82,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 	}
 	catch (std::exception &ex)
 	{
-		return make_unique<DummyEntry>(fileName, "Couldn't open this file", ex.what(), "ERROR");
+		return make_unique<DummyEntry>(fileName, "Error - " + std::string(ex.what()), fileName, "ERROR");
 	}
 	catch (...)
 	{
