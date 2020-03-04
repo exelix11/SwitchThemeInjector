@@ -19,13 +19,13 @@ static const SystemVersion LastSupportedVer = { 9,2,0 };
 #define WarnOutro "\n\nWithout the correct patches some themes may crash, you will be warned when installing a theme that's known to cause issues"
 
 //Is there even another CFW ?
-const char* WarningCFW = WarnIntro "Unfortunately your cfw doesn't seem to suppot ips patches for titles." WarnOutro;
+const char* WarningCFW = WarnIntro "Unfortunately your CFW doesn't seem to suppot ips patches for titles." WarnOutro;
 
 static const char* WarningSX = 
-	WarnIntro "SX OS Does not officially support these patches in its stable release.\n"
-			  "Support has been added in its latest beta but this application cannot detect if you're running it.\n"
-			  "When installing a lockscreen theme you will be warned about incompatible version, if you know for sure that you have a supported version you can safely install the theme anyway."
-	WarnOutro;
+	WarnIntro "\nIt seems you're using SX OS, support for these patches has been added only in version 2.9.4 beta.\n"
+			  "This means that if you're running an older version your CFW is not compatible, you're seeing this warning because this application cannot detect which is your current version.\n"
+			  "When installing a lockscreen theme you will be warned about missing patches, if you know for sure that you have a supported version you can safely install the theme.\n\n"
+			  "In case you don't have the right version and install the theme anyway your console will crash on boot, the warning before install also displays the instructions to fix it.";
 
 static const char* WarningFWVer =
 	WarnIntro "You're running a newer firmware version that may be not supported by this installer (This build supports up to " LastSupportedVerSTR ").\n"
