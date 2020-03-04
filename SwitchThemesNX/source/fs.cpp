@@ -250,7 +250,7 @@ string GetNcaPath(u64 tid)
 		DialogBlocking((string)"lrInitialize : " + to_string(rc));
 	
 	LrLocationResolver res;
-	rc = lrOpenLocationResolver(FsStorageId_NandSystem ,&res);
+	rc = lrOpenLocationResolver(NcmStorageId_BuiltInSystem,&res);
 	if (R_FAILED(rc))
 		DialogBlocking((string)"lrOpenLocationResolver :" + to_string(rc));
 	
@@ -268,7 +268,7 @@ bool DumpHomeMenuNca()
 {	
 #ifdef __SWITCH__
 	FsFileSystem sys;
-    fsOpenBisFileSystem(&sys, FsBisStorageId_System, "");
+    fsOpenBisFileSystem(&sys, FsBisPartitionId_System, "");
 	fsdevMountDevice("System", sys);
 	try {		
 		auto targetNca = GetNcaPath(0x0100000000001000);

@@ -1,4 +1,5 @@
 #include "Yaz0.hpp"
+#include <cstring>
 
 using namespace std;
 vector<u8> Yaz0::Decompress(const vector<u8> &Data) 
