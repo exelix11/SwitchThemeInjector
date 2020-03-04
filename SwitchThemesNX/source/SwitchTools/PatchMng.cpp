@@ -10,23 +10,33 @@
 using namespace std;
 
 static const u32 PatchSetVer = 2;
-#define LastSupportedVerSTR "9.1.0"
-static const SystemVersion LastSupportedVer = { 9,1,0 };
+#define LastSupportedVerSTR "9.2.0"
+static const SystemVersion LastSupportedVer = { 9,2,0 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
 #define WarnIntro "Since 9.0 some parts of the home menu require a custom code patch (exefs patch) to run properly.\n"
 #define WarnOutro "\n\nWithout the correct patches some themes may crash, you will be warned when installing a theme that's known to cause issues"
+
+//Is there even another CFW ?
 const char* WarningCFW = WarnIntro "Unfortunately your cfw doesn't seem to suppot ips patches for titles." WarnOutro;
-const char* WarningFWVer = 
+
+static const char* WarningSX = 
+	WarnIntro "SX OS Does not officially support these patches in its stable release.\n"
+			  "Support has been added in its latest beta but this application cannot detect if you're running it.\n"
+			  "When installing a lockscreen theme you will be warned about incompatible version, if you know for sure that you have a supported version you can safely install the theme anyway."
+	WarnOutro;
+
+static const char* WarningFWVer =
 	WarnIntro "You're running a newer firmware version that may be not supported by this installer (This build supports up to " LastSupportedVerSTR ").\n"
 			  "If the home menu was updated it's likely that the built-in patches won't work, if that's the case you should check for updates" WarnOutro;
-const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
+
+static const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
 
 const char* PatchMng::InstallWarnStr = 
 	"The theme you're trying to install is known to crash without an home menu patch and you don't seem to have a compatible one installed,"
 	"it may work but it's possible that it will crash on boot. Do you want to continue ?\n\n"
-	"In case of crash on boot you can delete the theme by manually removing the 0100000000001000 folder from /<your cfw>/titles on your sd card";
+	"In case of crash on boot you can delete the theme by manually removing the 0100000000001000 folder from /atmosphere/contents on your sd card (/<your cfw>/titles for old atmosphere and other CFWs)";
 
 static const unordered_map<string, SystemVersion> PartsRequiringPatch = 
 {
@@ -41,6 +51,8 @@ static string GetExefsPatchesPath()
 		return SD_PREFIX ATMOS_DIR "exefs_patches/";
 	else if (fs::GetCfwFolder() == SD_PREFIX REINX_DIR)
 		return SD_PREFIX REINX_DIR "patches/";
+	else if (fs::GetCfwFolder() == SD_PREFIX SX_DIR)
+		return SD_PREFIX SX_DIR "exefs_patches/";
 	else return "";
 }
 
@@ -122,6 +134,12 @@ const char* PatchMng::EnsureInstalled()
 	if (HOSVer.IsGreater(LastSupportedVer)) {
 		HasLatestPatches = false;
 		return WarningFWVer;
+	}
+
+	if (fs::GetCfwFolder() == SD_PREFIX SX_DIR)
+	{
+		HasLatestPatches = false;
+		return WarningSX;
 	}
 
 	return nullptr;
