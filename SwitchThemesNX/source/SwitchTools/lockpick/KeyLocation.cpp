@@ -31,7 +31,7 @@ void KeyLocation::get_from_memory(u64 tid, u8 seg_mask) {
     // if not a kernel process, get pid from pm:dmnt
     if ((tid > 0x0100000000000005) && (tid != 0x0100000000000028)) {
         u64 pid;
-        pmdmntGetTitlePid(&pid, tid);
+        pmdmntGetProcessId(&pid, tid);
 
         if (R_FAILED(svcDebugActiveProcess(&debug_handle, pid)) ||
             R_FAILED(svcGetDebugEvent(reinterpret_cast<u8 *>(&d), debug_handle)))
@@ -104,7 +104,7 @@ void KeyLocation::get_from_memory(u64 tid, u8 seg_mask) {
 
 void KeyLocation::get_keyblobs() {
     FsStorage boot0;
-    fsOpenBisStorage(&boot0, 0);
+    fsOpenBisStorage(&boot0, FsBisPartitionId_BootPartition1Root);
     data.resize(0x200 * KNOWN_KEYBLOBS);
     fsStorageRead(&boot0, KEYBLOB_OFFSET, data.data(), data.size());
     fsStorageClose(&boot0);

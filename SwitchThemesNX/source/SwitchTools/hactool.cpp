@@ -183,7 +183,7 @@ FsFileSystem InitExtractionCode()
     splCryptoInitialize();
     splInitialize();
     FsFileSystem sys;
-	fsOpenBisFileSystem(&sys, FsBisStorageId_System, "");
+	fsOpenBisFileSystem(&sys, FsBisPartitionId_System, "");
 	fsdevMountDevice("System", sys);
 	return sys;
 }
