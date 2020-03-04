@@ -16,7 +16,7 @@ public:
 	RGBAColor(u8 r, u8 g, u8 b, u8 a = 255) : R(r), G(g), B(b), A(a) {}
 	RGBAColor(const std::string& LeByteString)
 	{
-		u32 Col = std::stol(LeByteString, nullptr, 16);
+		u32 Col = std::stoull(LeByteString, nullptr, 16);
 		R = (Col & 0xFF);
 		G = ((Col >> 8) & 0xFF);
 		B = ((Col >> 16) & 0xFF);
