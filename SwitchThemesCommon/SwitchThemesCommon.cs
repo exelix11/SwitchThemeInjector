@@ -268,8 +268,22 @@ namespace SwitchThemes.Common
 			sarc.Files[p.FileName] = target.SaveFile();
 			return true;
 		}
+		
+		public bool PatchLayouts(LayoutPatch Patch, PatchTemplate context)
+		{
+			int fixVer = 0;
+			if (context != null)
+			{
+				if (context.NXThemeName == "home")
+					fixVer = 8;
+				if (context.FirmName == "9.0")
+					fixVer = 9;
+			}
+			
+			return PatchLayouts(Patch, context.NXThemeName, context.FirmName, fixVer);
+		}
 
-		public bool PatchLayouts(LayoutPatch Patch, string PartName, PatchTemplate context)
+		public bool PatchLayouts(LayoutPatch Patch, string PartName, string FirmName, int patchLevel)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
 				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
@@ -281,17 +295,9 @@ namespace SwitchThemes.Common
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
 
-			int fixVer = 0;
-			if (context != null)
+			if ((patchLevel == 8 && !Patch.Ready8X) || patchLevel > 8)
 			{
-				if (context.NXThemeName == "home")
-					fixVer = 8;
-				if (context.FirmName == "9.0")
-					fixVer = 9;
-			}
-			if (fixVer >= 8 && !Patch.Ready8X)
-			{
-				var extra = NewFirmFixes.GetFix(Patch.PatchName, context);
+				var extra = NewFirmFixes.GetFix(Patch.PatchName, PartName, FirmName);
 				if (extra != null)
 					Files.AddRange(extra);
 			}
