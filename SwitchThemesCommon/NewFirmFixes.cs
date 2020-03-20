@@ -13,15 +13,17 @@ namespace SwitchThemes.Common
 
 		const string ClearLock9Fix = "{\"PatchName\":\"clearlayout 9.x fix\",\"AuthorName\":\"exelix\",\"Ready8X\":true,\"Files\":[{\"FileName\":\"blyt/EntMain.bflyt\",\"Patches\":[{\"PaneName\":\"L_BtnResume\",\"Position\":{\"X\":-180,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_CntHud\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0}}]}]}";
 
-		public static LayoutFilePatch[] GetFix(string LayoutName, PatchTemplate context)
+		public static LayoutFilePatch[] GetFix(string LayoutName, PatchTemplate context) => GetFix(LayoutName, context.FirmName, context.NXThemeName);
+	
+		public static LayoutFilePatch[] GetFix(string LayoutName, string FirmName, string NXThemeName)
 		{
-			if (context.FirmName == "9.0" && context.NXThemeName == "lock")
+			if (FirmName == "9.0" && NXThemeName == "lock")
 			{
 				if (LayoutName.ToLower().Contains("clear lockscreen"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(ClearLock9Fix).Files;
 			}
 
-			if (context.NXThemeName == "home")
+			if (NXThemeName == "home")
 			{
 				if (LayoutName.ToLower().Contains("dogelayout") || LayoutName.ToLower().Contains("clearlayout"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(DogeLayoutFix).Files;

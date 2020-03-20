@@ -128,13 +128,17 @@ namespace SwitchThemes.Common.Bflan
 		public List<string> Textures { get; set; } = new List<string>();
 		public List<PaiEntry> Entries = new List<PaiEntry>();
 
+		public override string ToString() => "[Pai1 section]";
+
 		[TypeConverter(typeof(ExpandableObjectConverter))]
 		public class PaiEntry
 		{
 			public enum AnimationTarget : byte
 			{
 				Pane = 0,
-				Material = 1
+				Material = 1,
+				UserData = 2, //Actually not sure about this, but seems to be needed for FLEU
+				TargetMax = 3
 			}
 
 			public string Name { get; set; }
@@ -150,6 +154,10 @@ namespace SwitchThemes.Common.Bflan
 				Name = bin.ReadFixedLenString(28);
 				var tagCount = bin.ReadByte();
 				Target = (AnimationTarget)bin.ReadByte();
+
+				if (Target >= AnimationTarget.TargetMax)
+					throw new Exception("Unsupported PaiEntry target value: " + Target);
+				
 				bin.ReadUInt16(); //padding
 				List<uint> TagOffsets = new List<uint>();
 				for (int i= 0; i < tagCount; i++)
@@ -183,6 +191,8 @@ namespace SwitchThemes.Common.Bflan
 					Tags[i].Write(bin, (byte)Target);
 				}
 			}
+
+			public override string ToString() => $"Pai entry: {Name} [{Target}]";
 		}
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
@@ -191,6 +201,8 @@ namespace SwitchThemes.Common.Bflan
 			public uint Unknown { get; set; }
 			public string TagType { get; set; }
 			public List<PaiTagEntry> Entries = new List<PaiTagEntry>();
+
+			public bool IsFLEU => "FLEU" == TagType;
 
 			public PaiTag() { }
 
@@ -207,7 +219,7 @@ namespace SwitchThemes.Common.Bflan
 				for (int i = 0; i < entryCount; i++)
 				{
 					bin.Position = EntryOffsets[i] + sectionStart;
-					Entries.Add(new PaiTagEntry(bin, TagType));
+					Entries.Add(new PaiTagEntry(bin, IsFLEU));
 				}
 			}
 
@@ -227,9 +239,11 @@ namespace SwitchThemes.Common.Bflan
 					bin.Position = EntryTable + i * 4;
 					bin.Write((uint)oldpos - sectionStart);
 					bin.Position = oldpos;
-					Entries[i].Write(bin, TagType);
+					Entries[i].Write(bin, IsFLEU);
 				}
 			}
+
+			public override string ToString() => "PaiTag: " + TagType;
 		}
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
@@ -243,9 +257,11 @@ namespace SwitchThemes.Common.Bflan
 			public uint FLEUUnknownInt { get; set; } = 0;
 			public string FLEUEntryName { get; set; } = "";
 
+			public override string ToString() => String.IsNullOrEmpty(FLEUEntryName) ? "[Entry]" : "[Entry: " + FLEUEntryName + "]";
+
 			public PaiTagEntry() { }
 
-			public PaiTagEntry(BinaryDataReader bin, string TagName)
+			public PaiTagEntry(BinaryDataReader bin, bool FLEU)
 			{
 				uint tagStart = (uint)bin.Position;
 				Index = bin.ReadByte();
@@ -256,14 +272,14 @@ namespace SwitchThemes.Common.Bflan
 				bin.BaseStream.Position = tagStart + bin.ReadUInt32(); //offset to first keyframe
 				for (int i = 0; i < KeyFrameCount; i++)
 					KeyFrames.Add(new KeyFrame(bin, DataType));
-				if (TagName == "FLEU")
+				if (FLEU)
 				{
 					FLEUUnknownInt = bin.ReadUInt32();
 					FLEUEntryName = bin.ReadString(BinaryStringFormat.ZeroTerminated);
 				}
 			}
 
-			public void Write(BinaryDataWriter bin, string TagName)
+			public void Write(BinaryDataWriter bin, bool FLEU)
 			{
 				uint tagStart = (uint)bin.Position;
 				bin.Write(Index);
@@ -287,7 +303,7 @@ namespace SwitchThemes.Common.Bflan
 					}
 					else throw new Exception("Unexpected data type for KeyFrame");
 				}
-				if (TagName == "FLEU")
+				if (FLEU)
 				{
 					bin.Write(FLEUUnknownInt);
 					bin.Write(FLEUEntryName, BinaryStringFormat.ZeroTerminated);
@@ -320,6 +336,8 @@ namespace SwitchThemes.Common.Bflan
 			}
 
 			public KeyFrame() { }
+
+			public override string ToString() => $"Keyframe {Frame}: Value {Value}, Blend {Blend}";
 		}
 
 		public Pai1Section() : base("pai1") { }
@@ -407,8 +425,6 @@ namespace SwitchThemes.Common.Bflan
 
 			Data = mem.ToArray();
 		}
-
-		public override string ToString() => "[Pai1 section]";
 	}
 
 	public class BflanFile
