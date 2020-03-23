@@ -48,7 +48,11 @@ namespace SwitchThemes.Common
 
 		public override void PaintValue(PaintValueEventArgs e)
 		{
-			PaintValueEventArgs evt = new PaintValueEventArgs(e.Context, ((RGBAColor)e.Value).Color, e.Graphics, e.Bounds);
+			PaintValueEventArgs evt = null;
+			if (e.Value is RGBAColor)
+				evt = new PaintValueEventArgs(e.Context, ((RGBAColor)e.Value).Color, e.Graphics, e.Bounds);
+			else //handle the case e.Value is a System.Drawing.Color
+				evt = new PaintValueEventArgs(e.Context, e.Value, e.Graphics, e.Bounds);
 			base.PaintValue(evt);
 		}
 	}
