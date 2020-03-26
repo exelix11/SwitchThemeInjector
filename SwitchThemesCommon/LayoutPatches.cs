@@ -121,17 +121,46 @@ namespace SwitchThemes.Common
 		public NullableVector2? Size = null;
 		public bool? Visible = null;
 
-		public string ColorTL = null;
-		public string ColorTR = null;
-		public string ColorBL = null;
-		public string ColorBR = null;
-
 		public List<UsdPatch> UsdPatches = null;
 
 		public byte? OriginX;
 		public byte? OriginY;
 		public byte? ParentOriginX;
 		public byte? ParentOriginY;
+
+		//These fields are used to store extra data according to the pane type.
+		[JsonIgnore]
+		private string[] PaneSpecific = new string[4];
+
+		//For compatibility reasons these fields have the old pic1-specific name in layouts 
+
+		/// <summary>
+		/// PIC1 : Top left color <br/>
+		/// TXT1 : Top font color
+		/// </summary>
+		[JsonProperty("ColorTL")]
+		public string PaneSpecific0 { get => PaneSpecific[0]; set => PaneSpecific[0] = value; }
+
+		/// <summary>
+		/// PIC1 : Top right color <br/>
+		/// TXT1 : Top shadow color
+		/// </summary>
+		[JsonProperty("ColorTR")]
+		public string PaneSpecific1 { get => PaneSpecific[1]; set => PaneSpecific[1] = value; }
+
+		/// <summary>
+		/// PIC1 : Bottom left color <br/>
+		/// TXT1 : Bottom font color
+		/// </summary>
+		[JsonProperty("ColorBL")]
+		public string PaneSpecific2 { get => PaneSpecific[2]; set => PaneSpecific[2] = value; }
+
+		/// <summary>
+		/// PIC1 : Bottom right color <br/>
+		/// TXT1 : Bottom shadow color
+		/// </summary>
+		[JsonProperty("ColorBR")]
+		public string PaneSpecific3 { get => PaneSpecific[3]; set => PaneSpecific[3] = value; }
 	}
 
 	public class UsdPatch

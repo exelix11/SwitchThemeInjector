@@ -125,7 +125,7 @@ namespace SwitchThemes.Common.Bflyt
 			dataReader.ReadByte(); //padding
 			ItalicTilt = dataReader.ReadSingle();
 			uint TextOffset = dataReader.ReadUInt32();
-			FontTopColor = dataReader.ReadColorRGBA();
+			FontTopColor = dataReader.ReadColorRGBA(); //+20
 			FontBottomColor = dataReader.ReadColorRGBA();
 			FontXYSize = dataReader.ReadVector2();
 			CharacterSpace = dataReader.ReadSingle();
@@ -133,7 +133,7 @@ namespace SwitchThemes.Common.Bflyt
 			uint TbNameOffset = dataReader.ReadUInt32();
 			ShadowXY = dataReader.ReadSingles(2);
 			ShadowXYSize = dataReader.ReadSingles(2);
-			ShadowTopColor = dataReader.ReadColorRGBA();
+			ShadowTopColor = dataReader.ReadColorRGBA(); //+64
 			ShadowBottomColor = dataReader.ReadColorRGBA();
 			ShadowItalic = dataReader.ReadSingle();
 			dataReader.Position = TextOffset - 8;

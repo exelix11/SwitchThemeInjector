@@ -3,6 +3,7 @@
 #include "Usd1Pane.hpp"
 #include "Grp1Pane.hpp"
 #include "Pic1Pane.hpp"
+#include "Txt1Pane.hpp"
 
 #include <stdexcept>
 #include <algorithm>
@@ -141,6 +142,8 @@ BflytFile::BflytFile(const vector<u8>& file)
 			PushPane(new MaterialsSection(bin, Version));
 		else if (name == "pic1")
 			PushPane(new Pic1Pane(bin, bin.ByteOrder));
+		else if (name == "txt1")
+			PushPane(new Txt1Pane(bin, bin.ByteOrder));
 		else if (name == "usd1") {
 			if (!lastPane)
 				throw runtime_error("Misplaced user data section");
@@ -152,18 +155,6 @@ BflytFile::BflytFile(const vector<u8>& file)
 			PushPane(new Pan1Pane(bin, bin.ByteOrder, name));
 		else
 			PushPane(new BasePane(name, bin));
-
-		//if (i == sectionCount - 1 && bin.Position != bin.Length()) //load sections missing in the section count (my old bflyt patch)
-		//{
-		//	u8 c = 0;
-		//	while (bin.Position < bin.Length() && (c = bin.readUInt8() == 0)) {}
-		//	if (c != 0)
-		//		bin.Position--;
-		//	if (bin.Length() - bin.Position >= 8) //min section size
-		//	{
-		//		sectionCount++;
-		//	}
-		//}
 	}
 }
 

@@ -84,7 +84,7 @@ namespace SwitchThemes.Common.Serializers
 		public ushort AnimationOrder;
 		public string Name;
 		public byte ChildBinding;
-		public List<string> Groups;
+		public string[] Groups;
 
 		public UInt16 Unk_StartOfFile;
 		public UInt16 Unk_EndOfFile;
@@ -95,7 +95,7 @@ namespace SwitchThemes.Common.Serializers
 	{
 		public UInt16 FrameSize;
 		public byte Flags;
-		public List<string> Textures;
+		public string[] Textures;
 		public List<PaiEntrySerializer> Entries;
 
 		public static Pai1Serializer Serialize(Pai1Section p)

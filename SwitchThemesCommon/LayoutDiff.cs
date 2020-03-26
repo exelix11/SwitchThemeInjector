@@ -77,13 +77,27 @@ namespace SwitchThemes.Common
 						var edPic = (Pic1Pane)edPan;
 						var orPic = (Pic1Pane)orPan;
 						if (edPic.ColorTopLeft != orPic.ColorTopLeft)
-							curPatch.ColorTL = edPic.ColorTopLeft.AsHexLEString();
+							curPatch.PaneSpecific0 = edPic.ColorTopLeft.AsHexLEString();
 						if (edPic.ColorTopRight != orPic.ColorTopRight)
-							curPatch.ColorTR = edPic.ColorTopRight.AsHexLEString();
+							curPatch.PaneSpecific1 = edPic.ColorTopRight.AsHexLEString();
 						if (edPic.ColorBottomLeft != orPic.ColorBottomLeft)
-							curPatch.ColorBL = edPic.ColorBottomLeft.AsHexLEString();
+							curPatch.PaneSpecific2 = edPic.ColorBottomLeft.AsHexLEString();
 						if (edPic.ColorBottomRight != orPic.ColorBottomRight)
-							curPatch.ColorBR = edPic.ColorBottomRight.AsHexLEString();
+							curPatch.PaneSpecific3 = edPic.ColorBottomRight.AsHexLEString();
+					}
+
+					if (edPan is Txt1Pane && orPan is Txt1Pane)
+					{
+						var edTxt = (Txt1Pane)edPan;
+						var orTxt = (Txt1Pane)orPan;
+						if (edTxt.FontTopColor != orTxt.FontTopColor)
+							curPatch.PaneSpecific0 = edTxt.FontTopColor.AsHexLEString();
+						if (edTxt.ShadowTopColor != orTxt.ShadowTopColor)
+							curPatch.PaneSpecific1 = edTxt.ShadowTopColor.AsHexLEString();
+						if (edTxt.FontBottomColor != orTxt.FontBottomColor)
+							curPatch.PaneSpecific2 = edTxt.FontBottomColor.AsHexLEString();
+						if (edTxt.ShadowBottomColor != orTxt.ShadowBottomColor)
+							curPatch.PaneSpecific3 = edTxt.ShadowBottomColor.AsHexLEString();
 					}
 					curFile.Add(curPatch);
 				}

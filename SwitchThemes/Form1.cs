@@ -502,7 +502,7 @@ namespace SwitchThemes
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
 				Patcher.EnableAnimations = !UseAnim.Checked;
-				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch.NXThemeName, targetPatch);
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch);
 				if (!layoutres)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
