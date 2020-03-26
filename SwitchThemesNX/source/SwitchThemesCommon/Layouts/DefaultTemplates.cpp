@@ -58,20 +58,20 @@ static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
 
 		if (panePatch.count("ColorTL"))
 		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTL;
-			pp.ColorTL = panePatch["ColorTL"].get<string>();
+			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific0;
+			pp.PaneSpecific0() = panePatch["ColorTL"].get<string>();
 		}if (panePatch.count("ColorTR"))
 		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorTR;
-			pp.ColorTR = panePatch["ColorTR"].get<string>();
+			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific1;
+			pp.PaneSpecific1() = panePatch["ColorTR"].get<string>();
 		}if (panePatch.count("ColorBL"))
 		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBL;
-			pp.ColorBL = panePatch["ColorBL"].get<string>();
+			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific2;
+			pp.PaneSpecific2() = panePatch["ColorBL"].get<string>();
 		}if (panePatch.count("ColorBR"))
 		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::ColorBR;
-			pp.ColorBR = panePatch["ColorBR"].get<string>();
+			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific3;
+			pp.PaneSpecific3() = panePatch["ColorBR"].get<string>();
 		}
 
 		if (panePatch.count("OriginX"))

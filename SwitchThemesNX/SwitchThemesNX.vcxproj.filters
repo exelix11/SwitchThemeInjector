@@ -224,6 +224,9 @@
     <ClInclude Include="source\Pages\ThemeEntry\ThemeEntry.hpp">
       <Filter>Pages\ThemeEntry</Filter>
     </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp">
+      <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">

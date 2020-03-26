@@ -21,11 +21,6 @@ struct PanePatch
 	Vector2 Scale, Size;
 	bool Visible;
 
-	std::string ColorTL;
-	std::string ColorTR;
-	std::string ColorBL;
-	std::string ColorBR;
-
 	u8 OriginX;
 	u8 OriginY;
 	u8 ParentOriginX;
@@ -40,10 +35,10 @@ struct PanePatch
 		Rotation = 1 << 2,
 		Scale = 1 << 3,
 		Size = 1 << 4,
-		ColorTL = 1 << 5,
-		ColorTR = 1 << 6,
-		ColorBL = 1 << 7,
-		ColorBR = 1 << 8,
+		PaneSpecific0 = 1 << 5,
+		PaneSpecific1 = 1 << 6,
+		PaneSpecific2 = 1 << 7,
+		PaneSpecific3 = 1 << 8,
 		Usd1 = 1 << 9,
 		OriginX = 1 << 10,
 		OriginY = 1 << 11,
@@ -52,6 +47,31 @@ struct PanePatch
 	};
 
 	std::vector<UsdPatch> UsdPatches;
+
+	// These fields were originally used for color data in PIC1 panes, now they can be used for pane-specific data 
+	// For compatibility reasons they keep the original name in the JSON
+
+	// JSON : ColorTL
+	// PIC1 : Top left color
+	// TXT1 : Top font color
+	inline std::string& PaneSpecific0() { return PaneSpecific[0]; }
+	
+	// JSON : ColorTR
+	// PIC1 : Top right color
+	// TXT1 : Top shadow color
+	inline std::string& PaneSpecific1() { return PaneSpecific[1]; }
+	
+	// JSON : ColorBL
+	// PIC1 : Bottom left color
+	// TXT1 : Bottom font color
+	inline std::string& PaneSpecific2() { return PaneSpecific[2]; }
+
+	// JSON : ColorBR
+	// PIC1 : Bottom right color
+	// TXT1 : Bottom shadow color
+	inline std::string& PaneSpecific3() { return PaneSpecific[3]; }
+private:
+	std::string PaneSpecific[4];
 };
 
 struct ExtraGroup

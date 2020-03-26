@@ -42,6 +42,7 @@
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pan1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Pic1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp" />

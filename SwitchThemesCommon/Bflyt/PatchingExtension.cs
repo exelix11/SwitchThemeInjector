@@ -76,16 +76,30 @@ namespace SwitchThemes.Common.Bflyt
                 if (e.name == "pic1")
                 {
 					var ee = e as Pic1Pane;
-                    if (p.ColorTL != null)
-                        ee.ColorTopLeft = new RGBAColor(p.ColorTL);
-                    if (p.ColorTR != null)
-                        ee.ColorTopRight = new RGBAColor(p.ColorTR);
-                    if (p.ColorBL != null)
-                        ee.ColorBottomLeft = new RGBAColor(p.ColorBL);
-                    if (p.ColorBR != null)
-                        ee.ColorBottomRight = new RGBAColor(p.ColorBR);
-                }
-                #endregion
+                    if (p.PaneSpecific0 != null)
+                        ee.ColorTopLeft = new RGBAColor(p.PaneSpecific0);
+                    if (p.PaneSpecific1 != null)
+                        ee.ColorTopRight = new RGBAColor(p.PaneSpecific1);
+                    if (p.PaneSpecific2 != null)
+                        ee.ColorBottomLeft = new RGBAColor(p.PaneSpecific2);
+                    if (p.PaneSpecific3 != null)
+                        ee.ColorBottomRight = new RGBAColor(p.PaneSpecific3);
+				}
+				#endregion
+				#region ColorForTextPanes
+				if (e.name == "txt1")
+				{
+					var ee = e as Txt1Pane;
+					if (p.PaneSpecific0 != null)
+						ee.FontTopColor = new RGBAColor(p.PaneSpecific0);
+					if (p.PaneSpecific1 != null)
+						ee.ShadowTopColor = new RGBAColor(p.PaneSpecific1);
+					if (p.PaneSpecific2 != null)
+						ee.FontBottomColor = new RGBAColor(p.PaneSpecific2);
+					if (p.PaneSpecific3 != null)
+						ee.ShadowBottomColor = new RGBAColor(p.PaneSpecific3);
+				}
+				#endregion
 				#region usdPane
 				if (e.UserData != null && p.UsdPatches != null)
 				{

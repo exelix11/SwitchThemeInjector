@@ -3,6 +3,7 @@
 #include "Pic1Pane.hpp"
 #include "Usd1Pane.hpp"
 #include "Grp1Pane.hpp"
+#include "Txt1Pane.hpp"
 
 #include <stdexcept>
 #include <algorithm>
@@ -78,14 +79,28 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 		{
 			auto ee = dynamic_pointer_cast<Pic1Pane>(e);
 
-			if (p.ApplyFlags & (u32)PanePatch::Flags::ColorTL)
-				ee->ColorTopLeft = RGBAColor(p.ColorTL);
-			if (p.ApplyFlags & (u32)PanePatch::Flags::ColorTR)
-				ee->ColorTopRight = RGBAColor(p.ColorTR);
-			if (p.ApplyFlags & (u32)PanePatch::Flags::ColorBL)
-				ee->ColorBottomLeft = RGBAColor(p.ColorBL);
-			if (p.ApplyFlags & (u32)PanePatch::Flags::ColorBR)
-				ee->ColorBottomRight = RGBAColor(p.ColorBR);
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific0)
+				ee->ColorTopLeft = RGBAColor(p.PaneSpecific0());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific1)
+				ee->ColorTopRight = RGBAColor(p.PaneSpecific1());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific2)
+				ee->ColorBottomLeft = RGBAColor(p.PaneSpecific2());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific3)
+				ee->ColorBottomRight = RGBAColor(p.PaneSpecific3());
+		}
+
+		if (e->name == "txt1")
+		{
+			auto ee = dynamic_pointer_cast<Txt1Pane>(e);
+
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific0)
+				ee->FontTopColor = RGBAColor(p.PaneSpecific0());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific1)
+				ee->ShadowTopColor = RGBAColor(p.PaneSpecific1());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific2)
+				ee->FontBottomColor = RGBAColor(p.PaneSpecific2());
+			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific3)
+				ee->ShadowBottomColor = RGBAColor(p.PaneSpecific3());
 		}
 
 		if ((p.ApplyFlags & (u32)PanePatch::Flags::Usd1) && target->UserData)

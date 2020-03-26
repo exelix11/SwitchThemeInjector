@@ -280,7 +280,7 @@ namespace SwitchThemes.Common
 					fixVer = 9;
 			}
 			
-			return PatchLayouts(Patch, context.NXThemeName, context.FirmName, fixVer);
+			return PatchLayouts(Patch, context?.NXThemeName ?? "", context?.FirmName ?? "", fixVer);
 		}
 
 		public bool PatchLayouts(LayoutPatch Patch, string PartName, string FirmName, int patchLevel)

@@ -46,7 +46,7 @@ namespace SwitchThemes.Common.Bflan
 		public ushort AnimationOrder { get; set; }
 		public string Name { get; set; }
 		public byte ChildBinding { get; set; }
-		public List<string> Groups { get; set; } = new List<string>();
+		public string[] Groups { get; set; }
 
 		public UInt16 Unk_StartOfFile { get; set; }
 		public UInt16 Unk_EndOfFile { get; set; }
@@ -76,11 +76,13 @@ namespace SwitchThemes.Common.Bflan
 			Unk_EndOfHeader = bin.ReadBytes((int)animName - (int)bin.Position);
 			bin.BaseStream.Position = animName;
 			Name = bin.ReadString(BinaryStringFormat.ZeroTerminated);
+			var groups = new List<string>();
 			for (int i = 0; i < groupCount; i++)
 			{
 				bin.BaseStream.Position = groupNames + i * groupNameLen;
-				Groups.Add(bin.ReadFixedLenString(groupNameLen));
+				groups.Add(bin.ReadFixedLenString(groupNameLen));
 			}
+			Groups = groups.ToArray();
 			if (Unk_StartOfFile != 0 || Unk_EndOfFile != 0)
 			{
 				Console.Write("");
@@ -93,7 +95,7 @@ namespace SwitchThemes.Common.Bflan
 			BinaryDataWriter bin = new BinaryDataWriter(mem);
 			bin.ByteOrder = byteOrder;
 			bin.Write((UInt16)AnimationOrder);
-			bin.Write((UInt16)Groups.Count);
+			bin.Write((UInt16)Groups.Length);
 			var UpdateOffsetsPos = bin.Position;
 			bin.Write((UInt32)0);
 			bin.Write((UInt32)0);
@@ -112,7 +114,7 @@ namespace SwitchThemes.Common.Bflan
 			bin.Position = UpdateOffsetsPos + 4; //Group name table
 			bin.Write((uint)oldPos + 8);
 			bin.Position = oldPos;
-			for (int i = 0; i < Groups.Count; i++)
+			for (int i = 0; i < Groups.Length; i++)
 				bin.WriteFixedLenString(Groups[i], groupNameLen);
 			Data = mem.ToArray();
 		}
@@ -125,7 +127,7 @@ namespace SwitchThemes.Common.Bflan
 	{
 		public UInt16 FrameSize { get; set; }
 		public byte Flags { get; set; }
-		public List<string> Textures { get; set; } = new List<string>();
+		public string[] Textures { get; set; } 
 		public List<PaiEntry> Entries = new List<PaiEntry>();
 
 		public override string ToString() => "[Pai1 section]";
@@ -357,6 +359,7 @@ namespace SwitchThemes.Common.Bflan
 			var texCount = bin.ReadUInt16();
 			var entryCount = bin.ReadUInt16();
 			var entryTable = bin.ReadUInt32() - 8;
+			var tex = new List<string>();
 			if (texCount != 0)
 			{
 				var texTableStart = bin.Position;
@@ -366,9 +369,10 @@ namespace SwitchThemes.Common.Bflan
 				for (int i = 0; i < texCount; i++)
 				{
 					bin.Position = texTableStart + offsets[i];
-					Textures.Add(bin.ReadString(BinaryStringFormat.ZeroTerminated));
+					tex.Add(bin.ReadString(BinaryStringFormat.ZeroTerminated));
 				}
 			}
+			Textures = tex.ToArray();
 			for (int i = 0; i < entryCount; i++)
 			{
 				bin.Position = entryTable + i * 4;
@@ -385,16 +389,16 @@ namespace SwitchThemes.Common.Bflan
 			bin.Write(FrameSize);
 			bin.Write(Flags);
 			bin.Write((byte)0);
-			bin.Write((UInt16)Textures.Count);
+			bin.Write((UInt16)Textures.Length);
 			bin.Write((UInt16)Entries.Count);
 			var updateOffsets = bin.Position;
 			bin.Write((uint)0);
-			if (Textures.Count != 0)
+			if (Textures.Length != 0)
 			{
 				var texTableStart = bin.Position;
-				bin.Write(new byte[Textures.Count * 4]); //make space for tex offsets
+				bin.Write(new byte[Textures.Length * 4]); //make space for tex offsets
 
-				for (int i = 0; i < Textures.Count; i++)
+				for (int i = 0; i < Textures.Length; i++)
 				{
 					var texPos = bin.Position;
 					bin.Write(Textures[i], BinaryStringFormat.ZeroTerminated);

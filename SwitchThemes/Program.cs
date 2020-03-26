@@ -179,7 +179,7 @@ namespace SwitchThemes
 				{
 					Patcher.EnableAnimations = true;
 					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
-					var layoutres = Patcher.PatchLayouts(l, targetPatch.NXThemeName, targetPatch);
+					var layoutres = Patcher.PatchLayouts(l, targetPatch);
 					if (!layoutres)
 					{
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
