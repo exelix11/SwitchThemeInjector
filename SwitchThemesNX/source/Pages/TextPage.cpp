@@ -65,12 +65,12 @@ void CreditsPage::Render(int X, int Y)
 	if (ImGui::Button("Show first startup info"))
 		ShowFirstTimeHelp(false);
 	PAGE_RESET_FOCUS
-	ImGui::SameLine();
-	if (ImGui::Button("Show licenses"))
-	{
-		auto f = fs::OpenFile(ASSET("licenses.txt"));
-		Dialog(string((char*)f.data(), f.size()));
-	}
+	//ImGui::SameLine();
+	//if (ImGui::Button("Show licenses"))
+	//{
+	//	auto f = fs::OpenFile(ASSET("licenses.txt"));
+	//	Dialog(string((char*)f.data(), f.size()));
+	//}
 
 	IsLayoutBlockingLeft = GImGui->NavId == ImGui::GetCurrentWindow()->GetID("Show licenses");
 

@@ -141,10 +141,11 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 		MarkItemEdited(id);
 
 	// Render
-	const ImU32 col = GetColorU32((held && hovered && !OverrideColor) ? ImGuiCol_::ImGuiCol_ButtonActive: hovered && !OverrideColor ? ImGuiCol_::ImGuiCol_ButtonHovered : ImGuiCol_Button);
+	const ImU32 col = GetColorU32((held && hovered && !OverrideColor) ? ImGuiCol_ButtonActive : hovered && !OverrideColor ? ImGuiCol_ButtonHovered : ImGuiCol_WindowBg);
 	RenderNavHighlight(bb, id);
 	RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 	
+	//Ew but works for me(TM)
 	if (HasPreview() && (hovered || held) && gamepad.buttons[GLFW_GAMEPAD_BUTTON_X])
 	{
 		auto Preview = GetPreview();
@@ -165,6 +166,8 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderTextWrapped({ pos.x + 2, pos.y + name_size.y + 2 }, lblLine1.c_str(), 0, EntryW - 5);
 	ImGui::PopFont();
 	
+	window->DrawList->AddRectFilled({ bb.Min.x + 20, bb.Max.y }, { bb.Max.x - 20, bb.Max.y + 1}, 0xff4e4e4e);
+
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
 	return pressed && Utils::ItemNotDragging() ? UserAction::Enter : UserAction::None;
 }

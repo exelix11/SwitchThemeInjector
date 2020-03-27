@@ -13,15 +13,16 @@ using namespace std;
 
 const int BorderPadding = 20;
 
+// X Y width height -> x y z w
 const ImVec4 BottomRect = { 0, SCR_H - 67, SCR_W, 67 };
-const ImVec4 TopRect = { 0,0,SCR_W,76 };
-const ImVec4 SideRect = { 0,TopRect.z,330,BottomRect.y - TopRect.w };
+const ImVec4 TopRect = { 0, 0, SCR_W, 76 };
+const ImVec4 SideRect = { 0, TopRect.w, 330, BottomRect.y };
 
 #define TopLineLen 1200
 #define SideLineLen 510
 
-const ImVec2 TopLineSz = { TopLineLen,2 };
-const ImVec2 SideLineSz = { 2,SideLineLen };
+const ImVec2 TopLineSz = { TopLineLen,1 };
+const ImVec2 SideLineSz = { 1,SideLineLen };
 
 const ImVec2 TopLine = { SCR_W / 2 - TopLineLen / 2, TopRect.w + 1 };
 const ImVec2 BottomLine = { SCR_W / 2 - TopLineLen / 2, BottomRect.y - 1 };
@@ -29,8 +30,11 @@ const ImVec2 SideLine = { SideRect.z + 1, (SCR_H) / 2 - SideLineLen / 2 };
 
 void TabRenderer::Render(int X, int Y)
 {
-	Utils::ImGuiSetupWin("TabRenderer", 0, 0);
+	Utils::ImGuiSetupWin("TabRenderer", 0, 0, DefaultWinFlags);
 	ImGui::SetWindowSize(ImVec2(SideRect.z, SideRect.w));
+	
+	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, SideRect.y }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) / 2 }, 0xff2d2d2d, 0xff2d2d2d, 0xff353535, 0xff353535);
+	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, (SideRect.y + SideRect.w) / 2 }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) }, 0xff353535, 0xff353535, 0xff2d2d2d, 0xff2d2d2d);
 
 	if (!ControlHasFocus && !ImGui::IsWindowFocused())
 		ImGui::SetWindowFocus();
@@ -39,17 +43,22 @@ void TabRenderer::Render(int X, int Y)
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0,0.5 });
-	float BaseLabelY = TopRect.w + 15;
+	const float BaseLabelY = TopRect.w + 15;
 	ImGui::SetCursorPos({ TopLine.x + 4, BaseLabelY });
 	int count = 0;
 	static int selectedIndex;
 	for (const IPage *page : Pages)
 	{
 		ImGui::SetCursorPosX(TopLine.x + 4);
+		float CursorY; //Used to draw selection marker
 		
-		bool Border = (page == CurrentControl);
-		if (Border)
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 1);
+		bool CurrentSelected = (page == CurrentControl);
+		if (CurrentSelected)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, { 0,1,0.788f,1 }); //Font color
+			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 12);
+			CursorY = ImGui::GetCursorPosY();
+		}
 
 		if (ImGui::Button(page->Name.c_str(), ImVec2(260,0)))
 		{
@@ -57,18 +66,21 @@ void TabRenderer::Render(int X, int Y)
 			selectedIndex = count;
 		}
 		if (count == 0) Utils::ImGuiSelectItemOnce();
-
-		if (Border)
-			ImGui::PopStyleVar();
+	
+		if (CurrentSelected)
+		{
+			ImGui::PopStyleColor();
+			ImGui::GetCurrentWindow()->DrawList->AddRectFilled({ TopLine.x + 4, CursorY }, { TopLine.x + 8, ImGui::GetCursorPosY() - 10}, 0xffc9ff00);
+		}
 
 		if (!ControlHasFocus && GImGui->NavId == ImGui::GetID(page->Name.c_str()))
 			selectedIndex = count;
-
+	
 		++count;
 	}
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor();
-
+	
 	if (!ControlHasFocus)
 		CurrentControl = Pages[selectedIndex];
 
@@ -78,7 +90,7 @@ void TabRenderer::Render(int X, int Y)
 
 	dList->AddRectFilled(TopLine, TopLine + TopLineSz, 0xffffffff);
 	dList->AddRectFilled(BottomLine, BottomLine + TopLineSz, 0xffffffff);
-	dList->AddRectFilled(SideLine, SideLine + SideLineSz, 0xffffffff);
+	//dList->AddRectFilled(SideLine, SideLine + SideLineSz, 0xffffffff);
 	
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
