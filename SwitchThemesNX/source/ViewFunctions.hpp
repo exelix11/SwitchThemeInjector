@@ -45,7 +45,7 @@ namespace Utils
 	static inline void ImGuiSetupPage(const IPage* page, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
 		ImGuiSetupWin(page->Name.c_str(), x, y, flags);
-		ImGui::SetWindowSize(ImVec2(SCR_W - (float)x, SCR_H - (float)y));
+		ImGui::SetWindowSize(ImVec2(SCR_W - (float)x - 20, SCR_H - (float)y));
 	}
 
 	static inline void ImGuiCloseWin()

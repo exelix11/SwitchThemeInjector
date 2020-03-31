@@ -33,8 +33,8 @@ bool ImguiInit()
 	ImGuiIO& io = ImGui::GetIO();
 	io.DisplaySize = ImVec2{ SCR_W, SCR_H};
 	
-	font25 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 33.0f);
-	font30 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 37.0f);
+	font25 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 30.0f);
+	font30 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 35.0f);
 	font40 = io.Fonts->AddFontFromFileTTF(ASSET("opensans.ttf"), 40.0f);
 
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -56,7 +56,7 @@ bool ImguiInit()
 	colors[ImGuiCol_TitleBgActive] = ImVec4(0.16f, 0.29f, 0.48f, 1.00f);
 	colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.00f, 0.00f, 0.00f, 0.51f);
 	colors[ImGuiCol_MenuBarBg] = ImVec4(0.14f, 0.14f, 0.14f, 1.00f);
-	colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+	colors[ImGuiCol_ScrollbarBg] = ImVec4(0,0,0,0);
 	colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
 	colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
 	colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
@@ -96,8 +96,8 @@ bool ImguiInit()
 	style.WindowRounding = 0;
 	style.WindowRounding = 0;
 	style.ItemSpacing = { 15,10 };
-	style.ScrollbarRounding = 1;
-	style.ScrollbarSize = 28;
+	style.ScrollbarRounding = 8;
+	style.ScrollbarSize = 8;
 
 	return ImGui_ImplOpenGL3_Init();
 }

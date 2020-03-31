@@ -23,7 +23,7 @@ lblInstalled("Currently installed themes number: 0")
 void SettingsPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupWin(Name.c_str(), X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
-	ImGui::SetWindowSize(ImVec2(SCR_W - (float)X, SCR_H - (float)Y - 70));
+	ImGui::SetWindowSize(ImVec2(SCR_W - (float)X - 30, SCR_H - (float)Y - 70));
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
