@@ -39,17 +39,18 @@ void TabRenderer::Render(int X, int Y)
 	if (!ControlHasFocus && !ImGui::IsWindowFocused())
 		ImGui::SetWindowFocus();
 
-	ImGui::PushFont(font30);
+	ImGui::PushFont(font25);
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0,0.5 });
 	const float BaseLabelY = TopRect.w + 15;
-	ImGui::SetCursorPos({ TopLine.x + 4, BaseLabelY });
+	const float BaseLabelX = TopLine.x + 15;
+	ImGui::SetCursorPos({ BaseLabelX, BaseLabelY });
 	int count = 0;
 	static int selectedIndex;
 	for (const IPage *page : Pages)
 	{
-		ImGui::SetCursorPosX(TopLine.x + 4);
+		ImGui::SetCursorPosX(BaseLabelX);
 		float CursorY; //Used to draw selection marker
 		
 		bool CurrentSelected = (page == CurrentControl);
@@ -60,7 +61,7 @@ void TabRenderer::Render(int X, int Y)
 			CursorY = ImGui::GetCursorPosY();
 		}
 
-		if (ImGui::Button(page->Name.c_str(), ImVec2(260,0)))
+		if (ImGui::Button(page->Name.c_str(), ImVec2(230,0)))
 		{
 			SetFocused(count);
 			selectedIndex = count;
@@ -70,13 +71,14 @@ void TabRenderer::Render(int X, int Y)
 		if (CurrentSelected)
 		{
 			ImGui::PopStyleColor();
-			ImGui::GetCurrentWindow()->DrawList->AddRectFilled({ TopLine.x + 4, CursorY }, { TopLine.x + 8, ImGui::GetCursorPosY() - 10}, 0xffc9ff00);
+			ImGui::GetCurrentWindow()->DrawList->AddRectFilled({ BaseLabelX, CursorY }, { BaseLabelX + 4, ImGui::GetCursorPosY() - 10}, 0xffc9ff00);
 		}
 
 		if (!ControlHasFocus && GImGui->NavId == ImGui::GetID(page->Name.c_str()))
 			selectedIndex = count;
 	
 		++count;
+		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
 	}
 	ImGui::PopStyleVar();
 	ImGui::PopStyleColor();
@@ -99,7 +101,7 @@ void TabRenderer::Render(int X, int Y)
 		SetFocused(selectedIndex);
 
 	if (CurrentControl)
-		CurrentControl->Render((int)SideRect.z + 14, (int)TopRect.w + 14);
+		CurrentControl->Render((int)SideRect.z + 30, (int)TopRect.w + 14);
 }
 
 TabRenderer::TabRenderer() :
