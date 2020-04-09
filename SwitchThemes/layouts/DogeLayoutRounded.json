@@ -1,0 +1,1057 @@
+{
+  "PatchName": "Clean Layout (Dogelayout) Rounded Buttons",
+  "AuthorName": "Such Meme, Many Skill",
+  "TargetName": "ResidentMenu.szs",
+  "Ready8X": true,
+  "Files": [
+    {
+      "FileName": "blyt/RdtBtnCtrl.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": -280.0,
+            "Y": 72.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/HudTime.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_AMPM",
+          "Position": {
+            "X": 30.0,
+            "Y": -1.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.9,
+            "Y": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnFullLauncher.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "30"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Pict_00",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_PictBase_00",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Pict_01",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_PictBase_01",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Pict_02",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_PictBase_02",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Pict_03",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_PictBase_03",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "10"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "30"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "30"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_Tip",
+          "Scale": {
+            "X": 1.1,
+            "Y": 1.1
+          }
+        },
+        {
+          "PaneName": "B_Hit",
+          "Size": {
+            "X": 130.0,
+            "Y": 140.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/Cursor3.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_Main",
+          "UsdPatches": [
+            {
+              "PropName": "S_BorderSize",
+              "PropValues": [
+                "7"
+              ],
+              "type": 2
+            },
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Grow",
+          "UsdPatches": [
+            {
+              "PropName": "S_BorderSize",
+              "PropValues": [
+                "7"
+              ],
+              "type": 2
+            },
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnSet.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": -380.0,
+            "Y": 72.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnPvr.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": -280.0,
+            "Y": 72.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnMyPage.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Tip",
+          "Position": {
+            "X": 125.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "B_Hit",
+          "Scale": {
+            "X": 1.428571,
+            "Y": 1.428571
+          },
+          "Size": {
+            "X": 40.0,
+            "Y": 40.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnIconGame.bflyt",
+      "Patches": [
+        {
+          "PaneName": "RootPane",
+          "Scale": {
+            "X": 0.5,
+            "Y": 0.5
+          }
+        },
+        {
+          "PaneName": "P_BtnBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_IconGame",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "38"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Blank",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_InnerCursor",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "Size": {
+            "X": 259.0,
+            "Y": 259.0
+          }
+        },
+        {
+          "PaneName": "N_Tip",
+          "Scale": {
+            "X": 1.1,
+            "Y": 1.1
+          }
+        },
+        {
+          "PaneName": "B_Hit",
+          "Scale": {
+            "X": 2.0,
+            "Y": 2.0
+          },
+          "Size": {
+            "X": 132.0,
+            "Y": 132.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBase.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_ScrollArea",
+          "Position": {
+            "X": 0.0,
+            "Y": -218.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 1.0,
+            "Y": 0.5
+          }
+        },
+        {
+          "PaneName": "N_ScrollWindow",
+          "Position": {
+            "X": 0.0,
+            "Y": -218.0,
+            "Z": 0.0
+          },
+          "Size": {
+            "X": 100000.0,
+            "Y": 322.0
+          }
+        },
+        {
+          "PaneName": "N_GameRoot",
+          "Position": {
+            "X": -530.0,
+            "Y": -218.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 1E-05,
+            "Y": 1.0
+          }
+        },
+        {
+          "PaneName": "N_Game",
+          "Scale": {
+            "X": 100000.0,
+            "Y": 1.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_00",
+          "Position": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_01",
+          "Position": {
+            "X": 135.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_02",
+          "Position": {
+            "X": 270.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_04",
+          "Position": {
+            "X": 540.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_05",
+          "Position": {
+            "X": 675.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_06",
+          "Position": {
+            "X": 810.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_07",
+          "Position": {
+            "X": 945.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_08",
+          "Position": {
+            "X": 1.0,
+            "Y": 99999.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "N_Icon_09",
+          "Position": {
+            "X": 1.0,
+            "Y": 99999.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "N_Icon_10",
+          "Position": {
+            "X": 1.0,
+            "Y": 99999.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "N_Icon_11",
+          "Position": {
+            "X": 1.0,
+            "Y": 99999.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "N_Icon_12",
+          "Position": {
+            "X": 1080.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnFlc",
+          "Position": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.6,
+            "Y": 0.6
+          }
+        },
+        {
+          "PaneName": "N_System",
+          "Position": {
+            "X": 575.0,
+            "Y": 310.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.7,
+            "Y": 0.7
+          }
+        },
+        {
+          "PaneName": "L_BtnNoti",
+          "Position": {
+            "X": 0.0,
+            "Y": -500.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "L_BtnShop",
+          "Position": {
+            "X": -100.0,
+            "Y": -100.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnPvr",
+          "Position": {
+            "X": 0.0,
+            "Y": -100.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnCtrl",
+          "Position": {
+            "X": -100.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnSet",
+          "Position": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnPow",
+          "Position": {
+            "X": -200.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_MyPage",
+          "Position": {
+            "X": -587.0,
+            "Y": 270.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.7,
+            "Y": 0.7
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_00",
+          "Position": {
+            "X": 0.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_01",
+          "Position": {
+            "X": 72.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_02",
+          "Position": {
+            "X": 0.0,
+            "Y": -72.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_03",
+          "Position": {
+            "X": 72.0,
+            "Y": -72.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_04",
+          "Position": {
+            "X": 0.0,
+            "Y": -144.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_05",
+          "Position": {
+            "X": 72.0,
+            "Y": -144.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_06",
+          "Position": {
+            "X": 0.0,
+            "Y": -216.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_07",
+          "Position": {
+            "X": 72.0,
+            "Y": -216.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_Hud",
+          "Position": {
+            "X": -340.0,
+            "Y": -325.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/Hud.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Time",
+          "Position": {
+            "X": -190.0,
+            "Y": 640.0,
+            "Z": 0.0
+          },
+          "Size": {
+            "X": 12.0,
+            "Y": 30.0
+          }
+        },
+        {
+          "PaneName": "L_Time",
+          "Position": {
+            "X": -18.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnShop.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": -180.0,
+            "Y": 72.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnPow.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnDecideKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_BtnTouch",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "N_BtnFocusKey",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "P_Effect",
+          "UsdPatches": [
+            {
+              "PropName": "S_RoundRadius",
+              "PropValues": [
+                "40"
+              ],
+              "type": 2
+            }
+          ]
+        },
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": -180.0,
+            "Y": 72.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "Anims": [
+    {
+      "FileName": "anim/HudTime_TimeFormat.bflan",
+      "AnimJson": "{\"LittleEndian\":true,\"Version\":134610944,\"pat1\":{\"AnimationOrder\":0,\"Name\":\"TimeFormat\",\"ChildBinding\":0,\"Groups\":[\"G_TimeFormat\"],\"Unk_StartOfFile\":0,\"Unk_EndOfFile\":0,\"Unk_EndOfHeader\":\"AAEA\"},\"pai1\":{\"FrameSize\":1,\"Flags\":0,\"Textures\":[],\"Entries\":[{\"Name\":\"N_Root\",\"Target\":0,\"Tags\":[{\"Unknown\":0,\"TagType\":\"FLPA\",\"Entries\":[{\"Index\":0,\"AnimationTarget\":0,\"DataType\":2,\"KeyFrames\":[{\"Frame\":0.0,\"Value\":0.0,\"Blend\":0.0},{\"Frame\":1.0,\"Value\":0.0,\"Blend\":0.0},{\"Frame\":1.0,\"Value\":0.0,\"Blend\":0.0}],\"FLEUUnknownInt\":0,\"FLEUEntryName\":\"\"}]}],\"UnkwnownData\":\"\"},{\"Name\":\"N_AMPM\",\"Target\":0,\"Tags\":[{\"Unknown\":0,\"TagType\":\"FLVI\",\"Entries\":[{\"Index\":0,\"AnimationTarget\":0,\"DataType\":1,\"KeyFrames\":[{\"Frame\":0.0,\"Value\":0.0,\"Blend\":0.0},{\"Frame\":1.0,\"Value\":1.0,\"Blend\":0.0}],\"FLEUUnknownInt\":0,\"FLEUEntryName\":\"\"}]}],\"UnkwnownData\":\"\"}]}}"
+    }
+  ]
+}

@@ -40,6 +40,9 @@
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=3.3.2.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.2\lib\net40\Costura.dll</HintPath>
@@ -158,6 +161,25 @@
     <EmbeddedResource Include="ThemeInputInfo.resx">
       <DependentUpon>ThemeInputInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="layouts\CarefulLayout.json" />
+    <None Include="layouts\CommonNoFooter.json" />
+    <None Include="layouts\DiamondLayoutHomescreen.json" />
+    <None Include="layouts\DogeFl.json" />
+    <None Include="layouts\DogeLayoutRounded.json" />
+    <None Include="layouts\FlaunchRounded.json" />
+    <None Include="layouts\Flow Layout.json" />
+    <None Include="layouts\GleLk.json" />
+    <None Include="layouts\RedAppletButtons.json" />
+    <None Include="layouts\RoundedSmallCompact.json" />
+    <None Include="layouts\SimpleLockscreenLayout.json" />
+    <None Include="layouts\SmallCompactHomescreen.json" />
+    <None Include="layouts\SuchHm.json" />
+    <None Include="layouts\SuchLk.json" />
+    <None Include="layouts\Transparant Playerselect 90%25 Scale centered.json" />
+    <None Include="layouts\Transparant Playerselect 90%25 Scale.json" />
+    <None Include="layouts\Transparant Playerselect centered.json" />
+    <None Include="layouts\Transparant Playerselect.json" />
+    <None Include="layouts\ZnHm.json" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -174,6 +196,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
+    <Content Include="layouts\CarefulLayout.jpg" />
+    <Content Include="layouts\DiamondLayoutHomescreen.jpg" />
+    <Content Include="layouts\DogeFl.png" />
+    <Content Include="layouts\DogeLayoutRounded.jpg" />
+    <Content Include="layouts\FlaunchRounded.jpg" />
+    <Content Include="layouts\Flow Layout.jpg" />
+    <Content Include="layouts\GleLk.jpg" />
+    <Content Include="layouts\RoundedSmallCompact.jpg" />
+    <Content Include="layouts\SimpleLockscreenLayout.jpg" />
+    <Content Include="layouts\SmallCompactHomescreen.jpg" />
+    <Content Include="layouts\SuchHm.jpg" />
+    <Content Include="layouts\SuchLk.jpg" />
+    <Content Include="layouts\Transparant Playerselect 90%25 Scale centered.jpg" />
+    <Content Include="layouts\Transparant Playerselect 90%25 Scale.jpg" />
+    <Content Include="layouts\Transparant Playerselect centered.jpg" />
+    <Content Include="layouts\Transparant Playerselect.jpg" />
+    <Content Include="layouts\ZnHm.jpg" />
   </ItemGroup>
   <Import Project="..\SwitchThemesCommon\SwitchThemesCommon.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -185,4 +224,10 @@
     <Error Condition="!Exists('..\packages\Fody.3.3.5\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.3.5\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.3.3.2\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.3.3.2\build\Costura.Fody.props'))" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent>rmdir Layouts /s /q
+
+robocopy $(ProjectDir)Layouts Layouts /E /H /C /R /Q /Y 
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

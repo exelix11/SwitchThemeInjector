@@ -1,0 +1,23 @@
+{
+  "PatchName": "Common.szs no footer",
+  "AuthorName": "SvenDaHacker64",
+  "TargetName": "common.szs",
+  "Files": [
+    {
+      "FileName": "blyt/FooterAll.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Root_00"
+        },
+        {
+          "PaneName": "N_Pos_00",
+          "Position": {
+            "X": 0.0,
+            "Y": 1000.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}
