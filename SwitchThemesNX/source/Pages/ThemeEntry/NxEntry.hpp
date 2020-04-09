@@ -215,7 +215,7 @@ if (SData.files.count("layout.json"))\
 private:
 	bool _CanInstall = true;
 	SARC::SarcData SData;
-	bool _HasPreview = true;
+	bool _HasPreview = false;
 	int NXThemeVer = 0;
 
 	const vector<u8>& NxThemeGetBgImage()
@@ -262,9 +262,7 @@ private:
 		}
 		if (_CanInstall) {
 			if (SData.files.count("image.dds") || SData.files.count("image.jpg"))
-			{
 				_HasPreview = true;
-			}
 		}
 		if (!ThemeTargetToName.count(themeInfo.Target))
 		{
