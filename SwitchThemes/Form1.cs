@@ -87,7 +87,8 @@ namespace SwitchThemes
 			AdvPanel.Visible = true;
 			Advanced = true;
 			checkBox1.Checked = true;
-			materialTabControl1.TabPages.Add(InjectPage);
+			if (!materialTabControl1.TabPages.Contains(InjectPage))
+				materialTabControl1.TabPages.Add(InjectPage);
 			AdvancedUpdate();
 		}
 

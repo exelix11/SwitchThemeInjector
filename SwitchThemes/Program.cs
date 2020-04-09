@@ -260,13 +260,6 @@ namespace SwitchThemes
 				if (a == null) return null;
 				else return a.Split('=')[1];
 			}
-
-			bool? GetArgBool(string start)
-			{
-				var a = GetArg(start);
-				if (a == null) return null;
-				else return bool.Parse(a);
-			}
 			
 			string Name = GetArg("name");
 			string Author = GetArg("author");
