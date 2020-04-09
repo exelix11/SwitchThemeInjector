@@ -52,20 +52,22 @@ namespace SwitchThemes
 					SZSFromArgs(args);
 				else if (args[0].ToLower() == "install")
 					RemoteInstallFromArgs(args);
+				else if (args[0].ToLower() == "extract")
+					RemoteInstallFromArgs(args);
 				else if (args[0].ToLower() == "help")
 				{
 					Console.WriteLine(
 						"Switch themes Injector V " + SwitchThemesCommon.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
 						"Command line usage:\r\n" +
-						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
+						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						" instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n" +
 						" Only the image and out file are needed.\r\n" +
-						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.png/jpg/dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
+						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
+						"Extract an nxtheme: Switchthemes.exe extract \"<input file>\" \"<target oath>\" \r\n" +
 						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n");
 					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
 					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
-					if (IsMono)
-						Console.WriteLine("Note that on linux you MUST use dds images, make sure to use DXT1 encoding for background image and DXT5 for album. Always check with an hex editor, some times ImageMagick uses DXT5 even if DXT1 is specified through command line args");
+					Console.WriteLine("Applet icons only support png and dds images");
 				}
 
 				ArgsHandled = true;
@@ -102,6 +104,27 @@ namespace SwitchThemes
 			return true;
 		}
 
+		static bool ExtractNxtheme(string[] args)
+		{
+			if (args.Length != 3)
+			{
+				Console.WriteLine("Error: Wrong number of arguments.");
+				return false;
+			}
+
+			try
+			{
+				Form1.ExtractNxTheme(args[1], args[2]);
+				Console.WriteLine("Done !");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"There was an error:\r\n{ex}");
+			}
+
+			return true;
+		}
+
 		static bool SZSFromArgs(string[] args)
 		{
 			string GetArg(string start)
@@ -124,10 +147,10 @@ namespace SwitchThemes
 				return false;
 			}
 
-			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).FirstOrDefault();
+			string Image = args.Where(x => x.ToLower().EndsWith(".dds")).FirstOrDefault();
 			if (Image == null || !File.Exists(Image))
 			{
-				Console.WriteLine("No image file !");
+				Console.WriteLine("No image file !\r\nNote that only dds files are supported for szs themes.");
 				return false;
 			}
 			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
@@ -137,12 +160,11 @@ namespace SwitchThemes
 			if (Output == null || Output == "")
 				return false;
 
-			if (!Image.EndsWith(".dds"))
 			{
-				if (Form1.ImageToDDS(Image, Path.GetTempPath()))
-					Image = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(Image) + ".dds");
-				else return false;
-			}		
+				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(Image));
+				if (dds.Format != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+				if (dds.width != 1280 || dds.height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+			}
 
 			try
 			{				
@@ -164,8 +186,11 @@ namespace SwitchThemes
 					foreach (var a in l)
 					{
 						string path = GetArg(a.NxThemeName);
-						if (!path.EndsWith(".dds") && !Form1.IcontoDDS(ref path))
+						if (!path.EndsWith(".dds"))
+						{
+							Console.WriteLine($"{path} is not supported, only dds files can be used for szs themes");
 							path = null;
+						}
 						if (path != null)
 							if (!Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName))
 								Console.WriteLine($"Applet icon patch for {a.NxThemeName} failed");
@@ -255,14 +280,10 @@ namespace SwitchThemes
 				return false;
 			}
 
-			bool preview = GetArgBool("preview") ?? true;
-
 			if (Name == null || Name.Trim() == "")
 			{
-				var info = ThemeInputInfo.Ask();
-				Name = info.Item1;
-				Author = info.Item2;
-				preview = info.Item3;
+				(Name, Author) = ThemeInputInfo.Ask();
+				if (Name == null) return true;	
 			}
 
 			LayoutPatch layout = null;

@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="materialLabel7.Text" xml:space="preserve">
+    <value>Warning: when changing layouts you should always use an SZS with the original layout
+(bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
+  </data>
   <data name="tbPatches.Text" xml:space="preserve">
     <value>Frequently asked questions:
 
@@ -128,10 +132,6 @@ A: Check out Switch Layout Editor: https://github.com/FuryBaguette/SwitchLayoutE
 
 Q: I installed a bad theme and now the console won't boot anymore, how to fix it?
 A: Delete the '0100000000001000' and '0100000000001013' folders in 'SDcard:/&lt;your cfw&gt;/titles' or contents if using latest atmosphere.</value>
-  </data>
-  <data name="materialLabel7.Text" xml:space="preserve">
-    <value>Warning: when changing layouts you should always use an SZS with the original layout
-(bg doesn't matter), if the layout in the SZS you opened has already been modified, either  manually or with this tool, the new layout may behave incorrectly.</value>
   </data>
   <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

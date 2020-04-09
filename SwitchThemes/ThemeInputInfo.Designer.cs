@@ -35,13 +35,12 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.tbAuthorName = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// button1
 			// 
 			this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button1.Location = new System.Drawing.Point(233, 132);
+			this.button1.Location = new System.Drawing.Point(228, 108);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
 			this.button1.TabIndex = 0;
@@ -52,7 +51,7 @@
 			// button2
 			// 
 			this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.button2.Location = new System.Drawing.Point(152, 132);
+			this.button2.Location = new System.Drawing.Point(147, 108);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
 			this.button2.TabIndex = 1;
@@ -101,25 +100,12 @@
 			this.label3.Text = "To continue fill the following form, these informations will be shown when instal" +
     "ling the theme so keep it short";
 			// 
-			// checkBox1
-			// 
-			this.checkBox1.Checked = true;
-			this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.checkBox1.Location = new System.Drawing.Point(15, 99);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(288, 33);
-			this.checkBox1.TabIndex = 20;
-			this.checkBox1.Text = "Generate preview image for the background (doesn\'t include layout)";
-			this.checkBox1.UseVisualStyleBackColor = true;
-			this.checkBox1.Visible = false;
-			// 
 			// ThemeInputInfo
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(312, 159);
+			this.ClientSize = new System.Drawing.Size(312, 141);
 			this.ControlBox = false;
-			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.tbAuthorName);
@@ -132,6 +118,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "Theme info";
 			this.TopMost = true;
+			this.Load += new System.EventHandler(this.ThemeInputInfo_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -146,6 +133,5 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox tbAuthorName;
 		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.CheckBox checkBox1;
 	}
 }
