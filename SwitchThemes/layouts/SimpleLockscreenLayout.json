@@ -1,0 +1,108 @@
+{
+  "PatchName": "Simple Layout Lockscreen",
+  "AuthorName": "Akai",
+  "TargetName": "Entrance.szs",
+
+  "Files": [
+    {
+      "FileName": "blyt/EntMain.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_CntRMain",
+          "Position": {
+            "X": 300.0,
+            "Y": -299.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.4,
+            "Y": 0.4
+          }
+        },
+        {
+          "PaneName": "L_BtnResume",
+          "Position": {
+            "X": 1000.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_ChildLock",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_MarginChildLockHud",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_CntL",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_News",
+          "Position": {
+            "X": -100.0,
+            "Y": 36.0,
+            "Z": 0.0
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "L_BtnNtf",
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          },
+          "Visible": false
+        },
+        {
+          "PaneName": "L_Lock",
+          "Position": {
+            "X": -200.0,
+            "Y": -290.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnBack",
+          "Position": {
+            "X": -362.0,
+            "Y": -285.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/EntBtnChildLock.bflyt",
+      "Patches": [
+        {
+          "PaneName": "RootPane",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_Root",
+          "Visible": false
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/Hud.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Root",
+          "Position": {
+            "X": -900.0,
+            "Y": -580.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "PatchName": "Transparant Playerselect",
+  "AuthorName": "Migush",
+  "TargetName": "Psl.szs",
+  "Files": [
+    {
+      "FileName": "blyt/DBtmHeaderNml.bflyt",
+      "Patches": [
+        {
+          "PaneName": "T_00",
+          "Visible": false
+        },
+        {
+          "PaneName": "P_Line",
+          "Visible": false
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/PslSelectSinglePlayer.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_Bg",
+          "Visible": false
+        }
+      ]
+    }
+  ]
+}
