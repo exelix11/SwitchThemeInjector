@@ -44,6 +44,10 @@ namespace SwitchThemes
 			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
 			InitializeComponent();
 
+			Advanced = Properties.Settings.Default.Adv;
+			if (Advanced) EnableAdvanced();
+			else DisableAdvanced();
+
 			//LayoutPatch.CreateTestTemplates();
 			//PatchTemplate.BuildTemplateFile();
 			Templates.AddRange(DefaultTemplates.templates);
@@ -66,12 +70,6 @@ namespace SwitchThemes
 		{
 			Text += " Ver. " + SwitchThemesCommon.CoreVer;
 			materialLabel10.Text = $"Switch Theme Injector Ver {SwitchThemesCommon.CoreVer} by exelix";
-
-			if (Properties.Settings.Default.Adv)
-			{
-				Advanced = true;
-				EnableAdvanced();
-			}
 #if DEBUG
 			lblDebug.Visible = true;
 #endif
@@ -89,6 +87,7 @@ namespace SwitchThemes
 			AdvPanel.Visible = true;
 			Advanced = true;
 			checkBox1.Checked = true;
+			materialTabControl1.TabPages.Add(InjectPage);
 			AdvancedUpdate();
 		}
 
@@ -103,6 +102,7 @@ namespace SwitchThemes
 			AdvPanel.Visible = false;
 			Advanced = false;
 			checkBox1.Checked = false;
+			materialTabControl1.TabPages.Remove(InjectPage);
 		}
 
 		void AdvancedUpdate()
@@ -785,6 +785,30 @@ namespace SwitchThemes
 		{
 			if (eggCounter++ == 4)
 				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
+		}
+
+		private void ExtractNxTheme_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				OpenFileDialog opn = new OpenFileDialog() { Filter = "nxtheme files|*.nxtheme" };
+				if (opn.ShowDialog() != DialogResult.OK) return;
+				FolderBrowserDialog fld = new FolderBrowserDialog() { Description = "Extract the theme to.." };
+				if (fld.ShowDialog() != DialogResult.OK) return;
+				ExtractNxTheme(opn.FileName, fld.SelectedPath);
+				MessageBox.Show("Done");
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"Error while extracting the file:\r\n{ex}");
+			}
+		}
+
+		public static void ExtractNxTheme(string theme, string path)
+		{
+		 	var data = SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(theme)));
+			foreach (var f in data.Files.Where(x => x.Key != "info.json"))
+				File.WriteAllBytes(Path.Combine(path, f.Key), f.Value);	
 		}
 	}
 }

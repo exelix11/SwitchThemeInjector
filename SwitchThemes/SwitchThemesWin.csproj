@@ -225,9 +225,9 @@
     <Error Condition="!Exists('..\packages\Costura.Fody.3.3.2\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.3.3.2\build\Costura.Fody.props'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>rmdir Layouts /s /q
-
-robocopy $(ProjectDir)Layouts Layouts /E /H /C /R /Q /Y 
-</PostBuildEvent>
+    <PostBuildEvent>if $(ConfigurationName) == "Release" (
+rmdir Layouts /s /q
+robocopy $(ProjectDir)Layouts Layouts /E /Y 
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
