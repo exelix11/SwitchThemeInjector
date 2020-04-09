@@ -62,6 +62,10 @@
 			this.button7 = new System.Windows.Forms.Button();
 			this.btnCustomLock = new System.Windows.Forms.Button();
 			this.lblCustomLock = new MaterialSkin.Controls.MaterialLabel();
+			this.ExtractPage = new System.Windows.Forms.TabPage();
+			this.materialLabel18 = new MaterialSkin.Controls.MaterialLabel();
+			this.ExtractNxthemeBtn = new MaterialSkin.Controls.MaterialRaisedButton();
+			this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
 			this.InfoPage = new System.Windows.Forms.TabPage();
 			this.materialLabel13 = new MaterialSkin.Controls.MaterialLabel();
 			this.SubredditLinkLbl = new System.Windows.Forms.LinkLabel();
@@ -74,10 +78,8 @@
 			this.InjectPage = new System.Windows.Forms.TabPage();
 			this.UseAnim = new System.Windows.Forms.CheckBox();
 			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
-			this.materialRaisedButton8 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.linkLabel5 = new System.Windows.Forms.LinkLabel();
 			this.tbImageFile = new System.Windows.Forms.TextBox();
 			this.materialLabel7 = new MaterialSkin.Controls.MaterialLabel();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -104,20 +106,16 @@
 			this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
 			this.lblDebug = new System.Windows.Forms.Label();
-			this.ExtractPage = new System.Windows.Forms.TabPage();
-			this.materialLabel14 = new MaterialSkin.Controls.MaterialLabel();
-			this.ExtractNxthemeBtn = new MaterialSkin.Controls.MaterialRaisedButton();
-			this.materialLabel18 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialTabControl1.SuspendLayout();
 			this.NXThemePage.SuspendLayout();
 			this.grpHomeExtra.SuspendLayout();
 			this.grpLockExtra.SuspendLayout();
+			this.ExtractPage.SuspendLayout();
 			this.InfoPage.SuspendLayout();
 			this.InjectPage.SuspendLayout();
 			this.AdvancedPage.SuspendLayout();
 			this.AdvPanel.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
-			this.ExtractPage.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// materialTabControl1
@@ -572,6 +570,67 @@
 			this.lblCustomLock.TabIndex = 12;
 			this.lblCustomLock.Text = "Custom home icon: Not set";
 			// 
+			// ExtractPage
+			// 
+			this.ExtractPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
+			this.ExtractPage.Controls.Add(this.materialLabel18);
+			this.ExtractPage.Controls.Add(this.ExtractNxthemeBtn);
+			this.ExtractPage.Controls.Add(this.materialLabel14);
+			this.ExtractPage.Location = new System.Drawing.Point(4, 22);
+			this.ExtractPage.Name = "ExtractPage";
+			this.ExtractPage.Padding = new System.Windows.Forms.Padding(3);
+			this.ExtractPage.Size = new System.Drawing.Size(638, 331);
+			this.ExtractPage.TabIndex = 5;
+			this.ExtractPage.Text = "Extract nxtheme";
+			// 
+			// materialLabel18
+			// 
+			this.materialLabel18.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel18.Depth = 0;
+			this.materialLabel18.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel18.Location = new System.Drawing.Point(3, 84);
+			this.materialLabel18.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel18.Name = "materialLabel18";
+			this.materialLabel18.Size = new System.Drawing.Size(633, 25);
+			this.materialLabel18.TabIndex = 13;
+			this.materialLabel18.Text = "Once the files have been extracted you can create a new theme in the \"NXTHEME BUI" +
+    "LDER\" tab";
+			this.materialLabel18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
+			// ExtractNxthemeBtn
+			// 
+			this.ExtractNxthemeBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
+			this.ExtractNxthemeBtn.AutoSize = true;
+			this.ExtractNxthemeBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+			this.ExtractNxthemeBtn.Depth = 0;
+			this.ExtractNxthemeBtn.Icon = null;
+			this.ExtractNxthemeBtn.Location = new System.Drawing.Point(254, 40);
+			this.ExtractNxthemeBtn.MouseState = MaterialSkin.MouseState.HOVER;
+			this.ExtractNxthemeBtn.Name = "ExtractNxthemeBtn";
+			this.ExtractNxthemeBtn.Primary = true;
+			this.ExtractNxthemeBtn.Size = new System.Drawing.Size(124, 36);
+			this.ExtractNxthemeBtn.TabIndex = 12;
+			this.ExtractNxthemeBtn.Text = "Open nxtheme";
+			this.ExtractNxthemeBtn.UseVisualStyleBackColor = true;
+			this.ExtractNxthemeBtn.Click += new System.EventHandler(this.ExtractNxTheme_Click);
+			// 
+			// materialLabel14
+			// 
+			this.materialLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel14.Depth = 0;
+			this.materialLabel14.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel14.Location = new System.Drawing.Point(3, 8);
+			this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel14.Name = "materialLabel14";
+			this.materialLabel14.Size = new System.Drawing.Size(633, 25);
+			this.materialLabel14.TabIndex = 8;
+			this.materialLabel14.Text = "In this page you can extract an nxtheme file to edit its assets";
+			this.materialLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			// 
 			// InfoPage
 			// 
 			this.InfoPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
@@ -708,11 +767,8 @@
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
 			this.InjectPage.Controls.Add(this.UseAnim);
-			this.InjectPage.Controls.Add(this.materialLabel1);
-			this.InjectPage.Controls.Add(this.materialRaisedButton8);
 			this.InjectPage.Controls.Add(this.lblDetected);
 			this.InjectPage.Controls.Add(this.materialRaisedButton3);
-			this.InjectPage.Controls.Add(this.linkLabel5);
 			this.InjectPage.Controls.Add(this.tbImageFile);
 			this.InjectPage.Controls.Add(this.materialLabel7);
 			this.InjectPage.Controls.Add(this.linkLabel1);
@@ -723,6 +779,7 @@
 			this.InjectPage.Controls.Add(this.materialRaisedButton2);
 			this.InjectPage.Controls.Add(this.materialLabel3);
 			this.InjectPage.Controls.Add(this.materialLabel17);
+			this.InjectPage.Controls.Add(this.materialLabel1);
 			this.InjectPage.Location = new System.Drawing.Point(4, 22);
 			this.InjectPage.Name = "InjectPage";
 			this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
@@ -752,28 +809,11 @@
 			this.materialLabel1.Location = new System.Drawing.Point(3, 6);
 			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel1.Name = "materialLabel1";
-			this.materialLabel1.Size = new System.Drawing.Size(633, 25);
+			this.materialLabel1.Size = new System.Drawing.Size(633, 45);
 			this.materialLabel1.TabIndex = 14;
-			this.materialLabel1.Text = "Use this page to create themes with the old SZS format, for sharing you should us" +
-    "e nxtheme instead.";
+			this.materialLabel1.Text = "Use this page to create themes with the old SZS format, if you don\'t know what yo" +
+    "u\'re doing it\'s recommended to use nxtheme instead.";
 			this.materialLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// materialRaisedButton8
-			// 
-			this.materialRaisedButton8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialRaisedButton8.AutoSize = true;
-			this.materialRaisedButton8.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.materialRaisedButton8.Depth = 0;
-			this.materialRaisedButton8.Icon = null;
-			this.materialRaisedButton8.Location = new System.Drawing.Point(363, 290);
-			this.materialRaisedButton8.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialRaisedButton8.Name = "materialRaisedButton8";
-			this.materialRaisedButton8.Primary = true;
-			this.materialRaisedButton8.Size = new System.Drawing.Size(126, 36);
-			this.materialRaisedButton8.TabIndex = 11;
-			this.materialRaisedButton8.Text = "Build nxtheme";
-			this.materialRaisedButton8.UseVisualStyleBackColor = true;
-			this.materialRaisedButton8.Click += new System.EventHandler(this.materialRaisedButton8_Click);
 			// 
 			// lblDetected
 			// 
@@ -782,7 +822,7 @@
 			this.lblDetected.Depth = 0;
 			this.lblDetected.Font = new System.Drawing.Font("Roboto", 11F);
 			this.lblDetected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.lblDetected.Location = new System.Drawing.Point(366, 41);
+			this.lblDetected.Location = new System.Drawing.Point(366, 59);
 			this.lblDetected.MouseState = MaterialSkin.MouseState.HOVER;
 			this.lblDetected.Name = "lblDetected";
 			this.lblDetected.Size = new System.Drawing.Size(260, 22);
@@ -797,7 +837,7 @@
 			this.materialRaisedButton3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton3.Depth = 0;
 			this.materialRaisedButton3.Icon = null;
-			this.materialRaisedButton3.Location = new System.Drawing.Point(274, 34);
+			this.materialRaisedButton3.Location = new System.Drawing.Point(274, 52);
 			this.materialRaisedButton3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton3.Name = "materialRaisedButton3";
 			this.materialRaisedButton3.Primary = true;
@@ -807,24 +847,11 @@
 			this.materialRaisedButton3.UseVisualStyleBackColor = true;
 			this.materialRaisedButton3.Click += new System.EventHandler(this.OpenSzsButton);
 			// 
-			// linkLabel5
-			// 
-			this.linkLabel5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.linkLabel5.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel5.Location = new System.Drawing.Point(363, 266);
-			this.linkLabel5.Name = "linkLabel5";
-			this.linkLabel5.Size = new System.Drawing.Size(126, 21);
-			this.linkLabel5.TabIndex = 12;
-			this.linkLabel5.TabStop = true;
-			this.linkLabel5.Text = "What is a nxtheme?";
-			this.linkLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.linkLabel5.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel5_LinkClicked);
-			// 
 			// tbImageFile
 			// 
 			this.tbImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tbImageFile.Location = new System.Drawing.Point(65, 82);
+			this.tbImageFile.Location = new System.Drawing.Point(65, 98);
 			this.tbImageFile.Name = "tbImageFile";
 			this.tbImageFile.ReadOnly = true;
 			this.tbImageFile.Size = new System.Drawing.Size(530, 20);
@@ -835,7 +862,7 @@
 			this.materialLabel7.Depth = 0;
 			this.materialLabel7.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel7.Location = new System.Drawing.Point(6, 162);
+			this.materialLabel7.Location = new System.Drawing.Point(6, 185);
 			this.materialLabel7.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel7.Name = "materialLabel7";
 			this.materialLabel7.Size = new System.Drawing.Size(620, 64);
@@ -846,7 +873,7 @@
 			// 
 			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel1.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-			this.linkLabel1.Location = new System.Drawing.Point(547, 130);
+			this.linkLabel1.Location = new System.Drawing.Point(547, 153);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(84, 21);
 			this.linkLabel1.TabIndex = 9;
@@ -862,7 +889,7 @@
 			this.LayoutPatchList.BackColor = System.Drawing.Color.White;
 			this.LayoutPatchList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.LayoutPatchList.FormattingEnabled = true;
-			this.LayoutPatchList.Location = new System.Drawing.Point(108, 130);
+			this.LayoutPatchList.Location = new System.Drawing.Point(108, 153);
 			this.LayoutPatchList.Name = "LayoutPatchList";
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 8;
@@ -873,7 +900,7 @@
 			this.materialLabel6.Depth = 0;
 			this.materialLabel6.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel6.Location = new System.Drawing.Point(6, 130);
+			this.materialLabel6.Location = new System.Drawing.Point(6, 153);
 			this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel6.Name = "materialLabel6";
 			this.materialLabel6.Size = new System.Drawing.Size(103, 19);
@@ -888,7 +915,7 @@
 			this.materialFlatButton1.Depth = 0;
 			this.materialFlatButton1.ForeColor = System.Drawing.Color.White;
 			this.materialFlatButton1.Icon = null;
-			this.materialFlatButton1.Location = new System.Drawing.Point(602, 74);
+			this.materialFlatButton1.Location = new System.Drawing.Point(602, 90);
 			this.materialFlatButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
 			this.materialFlatButton1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialFlatButton1.Name = "materialFlatButton1";
@@ -904,7 +931,7 @@
 			this.materialLabel2.Depth = 0;
 			this.materialLabel2.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel2.Location = new System.Drawing.Point(6, 82);
+			this.materialLabel2.Location = new System.Drawing.Point(6, 98);
 			this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel2.Name = "materialLabel2";
 			this.materialLabel2.Size = new System.Drawing.Size(63, 19);
@@ -918,7 +945,7 @@
 			this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.materialRaisedButton2.Depth = 0;
 			this.materialRaisedButton2.Icon = null;
-			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 291);
+			this.materialRaisedButton2.Location = new System.Drawing.Point(495, 284);
 			this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
@@ -933,10 +960,10 @@
 			this.materialLabel3.Depth = 0;
 			this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel3.Location = new System.Drawing.Point(6, 226);
+			this.materialLabel3.Location = new System.Drawing.Point(6, 247);
 			this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel3.Name = "materialLabel3";
-			this.materialLabel3.Size = new System.Drawing.Size(475, 57);
+			this.materialLabel3.Size = new System.Drawing.Size(475, 43);
 			this.materialLabel3.TabIndex = 13;
 			this.materialLabel3.Text = "To install themes copy them to the themes folder on your SD card and use the NXTh" +
     "emes Installer homebrew.";
@@ -948,12 +975,12 @@
 			this.materialLabel17.Depth = 0;
 			this.materialLabel17.Font = new System.Drawing.Font("Roboto", 11F);
 			this.materialLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel17.Location = new System.Drawing.Point(13, 105);
+			this.materialLabel17.Location = new System.Drawing.Point(13, 122);
 			this.materialLabel17.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialLabel17.Name = "materialLabel17";
 			this.materialLabel17.Size = new System.Drawing.Size(617, 24);
 			this.materialLabel17.TabIndex = 25;
-			this.materialLabel17.Text = "To avoid crashes use 720p images (1280x720 pixels)";
+			this.materialLabel17.Text = "To avoid crashes use 720p DDS images (1280x720 pixels)";
 			this.materialLabel17.TextAlign = System.Drawing.ContentAlignment.TopCenter;
 			// 
 			// AdvancedPage
@@ -1176,67 +1203,6 @@
 			this.lblDebug.Text = "Debug build: Generated NXThemes may not install with the public installer";
 			this.lblDebug.Visible = false;
 			// 
-			// ExtractPage
-			// 
-			this.ExtractPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.ExtractPage.Controls.Add(this.materialLabel18);
-			this.ExtractPage.Controls.Add(this.ExtractNxthemeBtn);
-			this.ExtractPage.Controls.Add(this.materialLabel14);
-			this.ExtractPage.Location = new System.Drawing.Point(4, 22);
-			this.ExtractPage.Name = "ExtractPage";
-			this.ExtractPage.Padding = new System.Windows.Forms.Padding(3);
-			this.ExtractPage.Size = new System.Drawing.Size(638, 331);
-			this.ExtractPage.TabIndex = 5;
-			this.ExtractPage.Text = "Extract nxtheme";
-			// 
-			// materialLabel14
-			// 
-			this.materialLabel14.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel14.Depth = 0;
-			this.materialLabel14.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel14.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel14.Location = new System.Drawing.Point(3, 8);
-			this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel14.Name = "materialLabel14";
-			this.materialLabel14.Size = new System.Drawing.Size(633, 25);
-			this.materialLabel14.TabIndex = 8;
-			this.materialLabel14.Text = "In this page you can extract an nxtheme file to edit its assets";
-			this.materialLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// ExtractNxthemeBtn
-			// 
-			this.ExtractNxthemeBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
-			this.ExtractNxthemeBtn.AutoSize = true;
-			this.ExtractNxthemeBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ExtractNxthemeBtn.Depth = 0;
-			this.ExtractNxthemeBtn.Icon = null;
-			this.ExtractNxthemeBtn.Location = new System.Drawing.Point(254, 40);
-			this.ExtractNxthemeBtn.MouseState = MaterialSkin.MouseState.HOVER;
-			this.ExtractNxthemeBtn.Name = "ExtractNxthemeBtn";
-			this.ExtractNxthemeBtn.Primary = true;
-			this.ExtractNxthemeBtn.Size = new System.Drawing.Size(124, 36);
-			this.ExtractNxthemeBtn.TabIndex = 12;
-			this.ExtractNxthemeBtn.Text = "Open nxtheme";
-			this.ExtractNxthemeBtn.UseVisualStyleBackColor = true;
-			this.ExtractNxthemeBtn.Click += new System.EventHandler(this.ExtractNxTheme_Click);
-			// 
-			// materialLabel18
-			// 
-			this.materialLabel18.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel18.Depth = 0;
-			this.materialLabel18.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel18.Location = new System.Drawing.Point(3, 84);
-			this.materialLabel18.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel18.Name = "materialLabel18";
-			this.materialLabel18.Size = new System.Drawing.Size(633, 25);
-			this.materialLabel18.TabIndex = 13;
-			this.materialLabel18.Text = "Once the files have been extracted you can create a new theme in the \"NXTHEME BUI" +
-    "LDER\" tab";
-			this.materialLabel18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1256,6 +1222,8 @@
 			this.NXThemePage.PerformLayout();
 			this.grpHomeExtra.ResumeLayout(false);
 			this.grpLockExtra.ResumeLayout(false);
+			this.ExtractPage.ResumeLayout(false);
+			this.ExtractPage.PerformLayout();
 			this.InfoPage.ResumeLayout(false);
 			this.InfoPage.PerformLayout();
 			this.InjectPage.ResumeLayout(false);
@@ -1265,8 +1233,6 @@
 			this.AdvPanel.ResumeLayout(false);
 			this.AdvPanel.PerformLayout();
 			this.contextMenuStrip1.ResumeLayout(false);
-			this.ExtractPage.ResumeLayout(false);
-			this.ExtractPage.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1305,8 +1271,6 @@
 		private System.Windows.Forms.TabPage NXThemePage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel8;
 		private MaterialSkin.Controls.MaterialLabel materialLabel3;
-		private MaterialSkin.Controls.MaterialRaisedButton materialRaisedButton8;
-		private System.Windows.Forms.LinkLabel linkLabel5;
 		private System.Windows.Forms.ComboBox HomeMenuPartBox;
 		private MaterialSkin.Controls.MaterialLabel materialLabel15;
 		private System.Windows.Forms.TextBox tbImageFile2;

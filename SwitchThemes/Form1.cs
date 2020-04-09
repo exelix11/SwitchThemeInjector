@@ -280,7 +280,7 @@ namespace SwitchThemes
 			OpenFileDialog opn = new OpenFileDialog()
 			{
 				Title = "open a picture",
-				Filter = "Supported files (DDS,JPG,PNG)|*.dds;*.jpg;*.jpeg;*.png|all files|*.*",
+				Filter = "Supported files (DDS,JPG)|*.dds;*.jpg;*.jpeg|all files|*.*",
 			};
 			if (opn.ShowDialog() != DialogResult.OK)
 			{
@@ -358,78 +358,6 @@ namespace SwitchThemes
 			AllLayoutsBox.SelectedIndex = 0;
 		}
 
-		public static bool ImageToDDS(string fileName, string outPath, string format = "DXT1", bool useAlpha = false)
-		{
-			if (!File.Exists("texconv.exe"))
-			{
-				MessageBox.Show("texconv.exe is missing, this program is needed to convert images to dds.\r\nYou can download it from https://github.com/Microsoft/DirectXTex/releases");
-				return false;
-			}
-			Process p = new Process();
-			string pathName = outPath;
-			if (pathName.EndsWith("\\") || pathName.EndsWith("/"))
-				pathName = pathName.Substring(0, pathName.Length - 1); //fix wierd bug with quotes of texconv
-			p.StartInfo = new ProcessStartInfo()
-			{
-				FileName = "texconv",
-				Arguments = $"-y -f {format} -ft dds -srgb {(useAlpha ? "-pmalpha" : "")} -o \"{pathName}\" \"{fileName}\"",
-				CreateNoWindow = true,
-				UseShellExecute = false,
-				RedirectStandardOutput = true,
-			};
-			p.Start();
-			p.WaitForExit(8000);
-			if (!p.HasExited)
-			{
-				p.Kill();
-				MessageBox.Show("The texture converter has timed out and the process was killed, it may have generated a corrupted image");
-			}
-			string target = Path.Combine(pathName, Path.GetFileNameWithoutExtension(fileName) + ".dds");
-			if (!File.Exists(target))
-			{
-				string pOut = p.StandardOutput.ReadToEnd();
-				MessageBox.Show(
-					"Couldn't convert the image to DDS. This happens if texconv.exe can't be executed, make sure you're running a 64 bits version of windows, you installed microsoft's Visual C++ 15 libs and that the path of the injector doesn't contain special characters not allowed by DOS. Running texconv.exe by double clicking it may explicitly show what's the error." +
-					"\r\nThis is the output of the converter : \r\n\r\n" + pOut);
-				return false;
-			}
-			return true;
-		}
-		
-		bool BgImageCheck(bool IsLegacyTarget)
-		{
-			if (tbImageFile.Text.Trim() == "") return true;
-			if (!tbImageFile.Text.EndsWith(".dds"))
-			{
-				var res = ImageToDDS(tbImageFile.Text, Path.GetTempPath());
-				if (res)
-				{
-					tbImageFile.Text = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(tbImageFile.Text) + ".dds");
-					tbImageFile2.Text = tbImageFile.Text;
-				}
-				else return false;
-			}
-
-			if (IsLegacyTarget) //This is checked at a later stage for nxtheme
-			{
-				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbImageFile.Text));
-				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
-			}
-
-			return true;
-		}
-
-		public static bool IcontoDDS(ref string FilePath)
-		{
-			var res = ImageToDDS(FilePath, Path.GetTempPath(), "DXT4", true);
-			if (res)
-			{
-				FilePath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(FilePath) + ".dds");
-			}
-			return res;
-		}
-
 		private void PatchButtonClick(object sender, EventArgs e)
 		{
 			if (CommonSzs == null || targetPatch == null)
@@ -453,6 +381,17 @@ namespace SwitchThemes
 				MessageBox.Show($"{tbImageFile.Text} not found!");
 				return;
 			}
+			else if (!tbImageFile.Text.ToLower().EndsWith("dds"))
+			{
+				MessageBox.Show($"For szs patching only dds images are supported");
+				return;
+			}
+			
+			{
+				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbImageFile.Text));
+				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+			}
 
 			SaveFileDialog sav = new SaveFileDialog()
 			{
@@ -466,8 +405,6 @@ namespace SwitchThemes
 			var res = true;
 			if (tbImageFile.Text.Trim() != "")
 			{
-				if (!BgImageCheck(true)) return;
-
 				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
 				if (!res)
 				{
@@ -481,9 +418,12 @@ namespace SwitchThemes
 				foreach (var n in TextureReplacement.NxNameToList[targetPatch.NXThemeName])
 				{
 					if (HomeAppletIcons[n.NxThemeName] == null) continue;
-					string path = HomeAppletIcons[n.NxThemeName];
-					if (!path.EndsWith(".dds") && !IcontoDDS(ref path))
+					string path = HomeAppletIcons[n.NxThemeName].ToLower();
+					if (!path.EndsWith(".dds"))
+					{
+						MessageBox.Show($"For szs patching only dds images are supported");
 						return;
+					}
 					HomeAppletIcons[n.NxThemeName] = path;
 					if (!Patcher.PatchAppletIcon(File.ReadAllBytes(path), n.NxThemeName))
 					{
@@ -494,8 +434,11 @@ namespace SwitchThemes
 			}
 			else if (targetPatch.NXThemeName == "lock" && LockCustomIcon != null)
 			{
-				if (!LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
+				if (!LockCustomIcon.ToLower().EndsWith(".dds"))
+				{
+					MessageBox.Show($"For szs patching only dds images are supported");
 					return;
+				}
 				Patcher.PatchAppletIcon(File.ReadAllBytes(LockCustomIcon), TextureReplacement.Entrance[0].NxThemeName);
 			}
 
@@ -528,49 +471,6 @@ namespace SwitchThemes
 				MessageBox.Show("Done");
 		}
 
-		private void materialRaisedButton8_Click(object sender, EventArgs e)
-		{
-			if (CommonSzs == null || targetPatch == null)
-			{
-				MessageBox.Show("Open a valid SZS first");
-				return;
-			}
-			if (tbImageFile.Text.Trim() == "")
-			{
-				MessageBox.Show("Select an image first");
-				return;
-			}
-
-			if (!BgImageCheck(false)) return;
-
-			var info = ThemeInputInfo.Ask();
-			if (info == null)
-				return;
-
-			LayoutPatch layout = null;
-			if (LayoutPatchList.SelectedIndex != 0)
-				layout = LayoutPatchList.SelectedItem as LayoutPatch;
-			try
-			{
-				var builder = new NXThemeBuilder(targetPatch.NXThemeName, info.Item1, info.Item2);
-
-				if (layout != null)
-					builder.AddMainLayout(layout);
-
-				builder.AddMainBg(File.ReadAllBytes(tbImageFile.Text));
-
-				SaveFileDialog sav = new SaveFileDialog() { Filter = "Theme pack (*.nxtheme)|*.nxtheme" };
-				if (sav.ShowDialog() != DialogResult.OK)
-					return;
-				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
-				MessageBox.Show("Done");
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("ERROR: " + ex.Message);
-			}
-		}
-
 		LayoutPatch ExtraCommonLyt = null;
 		Dictionary<string, string> HomeAppletIcons = new Dictionary<string, string>();
 		string LockCustomIcon = null;
@@ -588,32 +488,18 @@ namespace SwitchThemes
 					return;
 			}
 
-			if (!BgImageCheck(false)) return;
-
-			var info = ThemeInputInfo.Ask();
-			if (info == null)
+			var (name, author) = ThemeInputInfo.Ask();
+			if (name == null)
 				return;
 
 			string target = HomeMenuParts[HomeMenuPartBox.Text];
-
-			if (target == "home")
-				foreach (var k in HomeAppletIcons.Keys.ToArray())
-				{
-					string path = HomeAppletIcons[k];
-					if (path != null && !path.EndsWith(".dds") && !IcontoDDS(ref path))
-						return;
-					HomeAppletIcons[k] = path;
-				}
-			else if (target == "lock")
-				if (LockCustomIcon != null && !LockCustomIcon.EndsWith(".dds") && !IcontoDDS(ref LockCustomIcon))
-					return;
 
 			LayoutPatch layout = null;
 			if (AllLayoutsBox.SelectedIndex != 0)
 				layout = AllLayoutsBox.SelectedItem as LayoutPatch;
 			try
 			{
-				var builder = new NXThemeBuilder(target, info.Item1, info.Item2);
+				var builder = new NXThemeBuilder(target, name, author);
 
 				if (layout != null)
 					builder.AddMainLayout(layout);
@@ -633,7 +519,7 @@ namespace SwitchThemes
 				else if (target == "lock" && LockCustomIcon != null)
 					builder.AddAppletIcon("lock", File.ReadAllBytes(LockCustomIcon));
 
-				 SaveFileDialog sav = new SaveFileDialog() { Filter = "Theme pack (*.nxtheme)|*.nxtheme" };
+				SaveFileDialog sav = new SaveFileDialog() { Filter = "Theme pack (*.nxtheme)|*.nxtheme" };
 				if (sav.ShowDialog() != DialogResult.OK)
 					return;
 				File.WriteAllBytes(sav.FileName, builder.GetNxtheme());
