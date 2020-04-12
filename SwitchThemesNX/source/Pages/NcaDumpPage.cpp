@@ -13,8 +13,8 @@ NcaDumpPage::NcaDumpPage() :
 {
 	Name = "Extract home menu";
 	guideText = ("To install .nxtheme files you need to extract the home menu first.\n"
-		"This is done automatically, if you have issues you can try doing it manually here.\n"
-		"You have to do this EVERY TIME you update (or downgrade) the firmware.");
+		"This is needed EVERY TIME you update (or downgrade) the firmware, when the extracted version doesn't match with your firmware you'll be prompted to do it.\n"
+		"Usually you don't need to extract it manually but in case you're facing issues you can try doing so here.");
 }
 
 void NcaDumpPage::Render(int X, int Y)

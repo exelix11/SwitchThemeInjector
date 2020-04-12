@@ -16,25 +16,27 @@
 void Utils::ImGuiDragWithLastElement()
 {
 	static float scrollY = 0;
-	static ImGuiID item = 0;
-	auto cur = GImGui->CurrentWindow->DC.LastItemId;
-	if ((!item || item == cur) && ImGui::IsItemActive())
+	static ImGuiID PrevItem = 0;
+	const auto ScrollItem = GImGui->CurrentWindow->DC.LastItemId;
+	if (ImGui::IsItemActive()) // Is the scrolling item active ?
 	{
-		if (!item)
+		if (!PrevItem) //If we're not scrolling, begin.
 		{
-			item = cur;
+			PrevItem = ScrollItem;
 			scrollY = ImGui::GetScrollY();
 		}
-		ImVec2 drag = ImGui::GetMouseDragDelta(0);
-		ImGui::SetScrollY(scrollY - drag.y);
-	}
-	else if (item == cur)
+		if (PrevItem == ScrollItem) //Calculate the scrolling
+		{			
+			ImVec2 drag = ImGui::GetMouseDragDelta(0);
+			ImGui::SetScrollY(scrollY - drag.y);
+		}
+	}	
+	else if (PrevItem == ScrollItem) //we were scrolling but now we stopped
 	{
 		scrollY = 0;
-		item = 0;
+		PrevItem = 0;
 	}
 }
-
 
 using namespace std;
 
