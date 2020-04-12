@@ -168,7 +168,7 @@ void ThemesPage::Render(int X, int Y)
 			}
 		}
 
-		Utils::ImGuiSetWindowScrollable();
+		//Here scrolling is handled by the individual theme entries, Utils::ImGuiSetWindowScrollable is not needed
 		Utils::ImGuiCloseWin();
 	}
 QUIT_RENDERING:

@@ -39,12 +39,12 @@ void TabRenderer::Render(int X, int Y)
 	if (!ControlHasFocus && !ImGui::IsWindowFocused())
 		ImGui::SetWindowFocus();
 
-	ImGui::PushFont(font25);
+	ImGui::PushFont(font30);
 
 	ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
 	ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0,0.5 });
 	const float BaseLabelY = TopRect.w + 15;
-	const float BaseLabelX = TopLine.x + 15;
+	const float BaseLabelX = TopLine.x + 5;
 	ImGui::SetCursorPos({ BaseLabelX, BaseLabelY });
 	int count = 0;
 	static int selectedIndex;
@@ -61,7 +61,7 @@ void TabRenderer::Render(int X, int Y)
 			CursorY = ImGui::GetCursorPosY();
 		}
 
-		if (ImGui::Button(page->Name.c_str(), ImVec2(230,0)))
+		if (ImGui::Button(page->Name.c_str(), ImVec2(240,0)))
 		{
 			SetFocused(count);
 			selectedIndex = count;
