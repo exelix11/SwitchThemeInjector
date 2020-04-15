@@ -9,9 +9,9 @@
 
 using namespace std;
 
-static const u32 PatchSetVer = 2;
-#define LastSupportedVerSTR "9.2.0"
-static const SystemVersion LastSupportedVer = { 9,2,0 };
+static const u32 PatchSetVer = 3;
+#define LastSupportedVerSTR "10.0.0"
+static const SystemVersion LastSupportedVer = { 10,0,0 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
@@ -29,7 +29,7 @@ static const char* WarningSX =
 
 static const char* WarningFWVer =
 	WarnIntro "You're running a newer firmware version that may be not supported by this installer (This build supports up to " LastSupportedVerSTR ").\n"
-			  "If the home menu was updated it's likely that the built-in patches won't work, if that's the case you should check for updates" WarnOutro;
+			  "If the home menu was updated it's likely that the built-in patches won't work, if that's the case you should check for updates of the theme installer" WarnOutro;
 
 static const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
 
@@ -66,6 +66,7 @@ bool PatchMng::CanInstallTheme(const string& FileName)
 	if (HOSVer.IsGreater(ver) || HOSVer.IsEqual(ver))
 		return HasLatestPatches;
 	else return true;
+
 }
 
 bool PatchMng::ExefsCompatAsk(const std::string& SzsName)
