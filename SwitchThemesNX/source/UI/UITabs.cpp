@@ -61,7 +61,7 @@ void TabRenderer::Render(int X, int Y)
 			CursorY = ImGui::GetCursorPosY();
 		}
 
-		if (ImGui::Button(page->Name.c_str(), ImVec2(240,0)))
+		if (ImGui::Button(page->Name.c_str(), ImVec2(250,0)))
 		{
 			SetFocused(count);
 			selectedIndex = count;

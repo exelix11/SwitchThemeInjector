@@ -74,8 +74,8 @@ void ThemesPage::SetPage(int num, int index)
 		return;
 	}
 	
-	if (CurrentFiles.size() > 10)
-		DisplayLoading("Loading...");
+	//if (CurrentFiles.size() > 10)
+	//	DisplayLoading("Loading...");
 	
 	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > LimitLoad) imax = LimitLoad;
@@ -125,7 +125,7 @@ void ThemesPage::Render(int X, int Y)
 			{
 				bool Selected = IsSelected(e->GetPath());
 				if (Selected)
-					ImGui::PushStyleColor(ImGuiCol_Button, 0x366e64ff);
+					ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x366e64ff);
 
 				if (e->IsHighlighted())
 					menuIndex = count;
@@ -192,7 +192,7 @@ inline bool ThemesPage::IsSelected(const std::string &fname)
 
 void ThemesPage::SelectCurrent()
 {
-	if (DisplayEntries[menuIndex]->IsFolder()) return;
+	if (DisplayEntries[menuIndex]->IsFolder() || !DisplayEntries[menuIndex]->CanInstall()) return;
 	auto fname = DisplayEntries[menuIndex]->GetPath();
 	auto position = std::find(SelectedFiles.begin(), SelectedFiles.end(), fname);
 	if (position != SelectedFiles.end())
@@ -279,6 +279,7 @@ void ThemesPage::Update()
 			}
 		}
 		SelectedFiles.clear();
+		lblCommands = CommandsTextNormal;
 		SetPage(pageNum);		
 	}
 }
