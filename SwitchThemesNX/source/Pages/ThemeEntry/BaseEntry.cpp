@@ -39,7 +39,7 @@ bool ThemeEntry::Install(bool ShowDialogs, const std::string& homeDirOverride)
 		return false;
 	try 
 	{
-		if (!DoInstall())
+		if (!DoInstall(ShowDialogs, homeDirOverride))
 			return false;
 	}
 	catch (const exception & ex)
