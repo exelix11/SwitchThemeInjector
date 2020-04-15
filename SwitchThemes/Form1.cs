@@ -366,7 +366,10 @@ namespace SwitchThemes
 				MessageBox.Show("Open a valid SZS first");
 				return;
 			}
-			if (tbImageFile.Text.Trim() == "")
+
+			bool HasImage = tbImageFile.Text.Trim() != "";
+
+			if (!HasImage)
 			{
 				if (LayoutPatchList.SelectedIndex <= 0)
 				{
@@ -388,6 +391,7 @@ namespace SwitchThemes
 				return;
 			}
 			
+			if (HasImage)
 			{
 				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbImageFile.Text));
 				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
@@ -404,7 +408,7 @@ namespace SwitchThemes
 			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
 
 			var res = true;
-			if (tbImageFile.Text.Trim() != "")
+			if (HasImage)
 			{
 				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
 				if (!res)
