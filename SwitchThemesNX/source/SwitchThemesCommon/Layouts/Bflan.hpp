@@ -89,7 +89,9 @@ public:
 	enum class AnimationTarget : u8 
 	{
 		Pane = 0,
-		Material = 1
+		Material = 1,
+		UserData = 2,
+		MAX = 3
 	};
 
 	std::string Name;
