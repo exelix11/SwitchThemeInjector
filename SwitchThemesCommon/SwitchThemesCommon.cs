@@ -15,8 +15,8 @@ namespace SwitchThemes.Common
 {
 	public static class SwitchThemesCommon
 	{
-		public const string CoreVer = "4.3.2";
-		public const int NxThemeFormatVersion = 11;
+		public const string CoreVer = "4.4";
+		public const int NxThemeFormatVersion = 12;
 
 		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
 			{"home","ResidentMenu.szs"},
@@ -28,7 +28,6 @@ namespace SwitchThemes.Common
 			//{ "opt","Option.szs" },
 			{ "psl","Psl.szs" },
 		};
-
 	}
 
 	public class NXThemeBuilder
