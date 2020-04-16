@@ -53,24 +53,14 @@ RdtBtnFullLauncher
 As examples for 8.0-Compatible layouts you can use the layouts that have "Ready8X" flag from the layouts folder of the injector
 
 ## Generating a layout patch with LayoutDiff
-Once your custom layout is ready you can convert it to json for use with nxthemes.\
-You need your custom szs and the original szs you used as a base, the bg image doesn't matter.
-1) Open the Switch theme injector **Windows app** and enable the advanced tools
-2) In the szs patching tab open the PATCHED SZS
-2) Go to the advanced tab and click on the "Layout Diff" button, it will show a dialog to open another SZS, open the ORIGINAL one.
-3) If everything went ok you should be able to save your json patch.
-4) Open the json you just saved with a text editor and change the name and the author
-5) Look for bad panes in the json and manually remove them, they have a weird name or no properties. (this bug should have been fixed but checking anyway doesn't hurt) Use a json checker to make sure you didn't make any mistakes like skipping commas 
-6) Save and share your layout
+Once your custom layout is ready you can convert it to json for use with nxthemes.
 
-Note that if the output file is big (100-200kb) and it clearly contains more data than just the stuff you've edited you most likely used as original szs a file for a different firmware and the differ picked up the firmware differences, using that layout may fail or cause crashes, that's why it's important to use the original szs to dif
+The layout editor has an user friendly tool to do it, just open your modified SZS then click on Tools -> Layout diff -> This is the edited layout. In the window that appears select the original SZS and clcik on generate diff.
+
+**Note that if the output file is big (100-200kb) and it clearly contains more data than just the stuff you've edited you most likely used as original szs a file for a different firmware and the differ picked up the firmware differences, using that layout may fail or cause crashes, that's why it's important to use the original szs to diff**
  
 ## Extracting the layout from an nxtheme
-If a theme uses a layout you like you can easily extract it with the injector:\
-1) Enable the advanced tools
-2) Go to the szs patching tab and click on open file, on the bottom right of the file open window select all files instead of szs and open the nxtheme file
-3) An error will pop up as it's not an szs theme but the data will be loaded in the advanced tab
-4) In the advanced tab you should see a file called layout.json, right click it and press extract
+If a theme uses a layout you like you can easily extract it with the injector, as of version 4.4 go to the nxtheme extraction tab, click on extract nxtheme, select the file and where to extract it and confirm. Once it's done you're looking for the `layout.json` file.
 
 ## Supported properties
 The layout patcher doesn't support all the properties of bflyt files, this is to avoid compatibility issues in the future, if you changed values not included in the following list they won't be detected by the differ :
