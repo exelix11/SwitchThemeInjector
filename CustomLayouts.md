@@ -84,17 +84,16 @@ The layout patcher doesn't support all the properties of bflyt files, this is to
 - `ParentOriginX`
 - `ParentOriginY`
 
-Only for picture panes (pic1) :
-- `ColorTL` : Top left vertex color 
-- `ColorTR` : Top right vertex color 
-- `ColorBL` : Bottom left vertex color 
-- `ColorBR` : Bottom right vertex color 
+Only for picture panes (pic1) and text panes (txt1) :
+- `ColorTL` : Top left color 
+- `ColorTR` : Top right color 
+- `ColorBL` : Bottom left color 
+- `ColorBR` : Bottom right color 
 
-In addition, it's possible to change the order of panes via the `PushBackPanes` and `PullFrontPanes` Properties in the `LayoutFilePatch` json object (Aka the one that contains the `FileName` property) 
-These two properties aren't supported by the differ and must be manually added, they're simple string arrays with the names of the panes to move. The panes won't be moved out of their parent.\
-Note that layouts are rendered top to bottom, this means that `PullFrontPanes` will move the panes to the start of the list and so they will be rendered behind, the name was chosen to match the action in the layout editor.\
+**In addition, it's possible to change the order of panes via the `PushBackPanes` and `PullFrontPanes` Properties in the `LayoutFilePatch` json object (Aka the one that contains the `FileName` property)**, this isn't supported by the differ and must be manually added, they're simple string arrays with the names of the panes to move. The panes won't be moved out of their parent.\
+Note that layouts are rendered top to bottom, this means that `PullFrontPanes` will move the panes to the start of the list and so they will be rendered behind, the name was chosen to match the action in the layout editor.
 
 
 For usd1 (user data) panes only float and int properties are supported.\
-Bflan animations are fully supported.\
+**Bflan animations are fully supported.**\
 For materials only the `ForegroundColor` and `BackgroundColor` properties are supported
