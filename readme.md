@@ -2,7 +2,7 @@
 [![Discord](https://img.shields.io/discord/643436008452521984.svg?logo=discord&logoColor=white&label=Discord&color=7289DA
 )](https://discord.gg/rqU5Tf8)
 [![Latest release](https://img.shields.io/github/v/release/exelix11/SwitchThemeInjector)](https://github.com/exelix11/SwitchThemeInjector/releases)
-[![](https://img.shields.io/github/downloads/exelix11/SwitchThemeInjector/total)](https://github.com/exelix11/SwitchThemeInjector/releases)
+[![Download](https://img.shields.io/github/downloads/exelix11/SwitchThemeInjector/total)](https://github.com/exelix11/SwitchThemeInjector/releases)
 [![Contributing](https://img.shields.io/badge/supporting-patreon-f96854)](https://www.patreon.com/exelix11)
 
 ![ThemeScreenshot](ThemeScreenshot.jpg)
@@ -43,5 +43,7 @@ SwitchThemes.exe install 192.168.X.Y "<nxtheme/szs file>"
 ```
 
 # Useful resources
-Check out how to make your own layouts and animations [here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) \
+For layout editing read the [Layout editor wiki](https://github.com/FuryBaguette/SwitchLayoutEditor/wiki) to get started, parts of the main home menu layout are documented in this repo [wiki](https://github.com/exelix11/SwitchThemeInjector/wiki/ResidentMenu.szs). \
+[Here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) you can find more info about layouts and the supported Properties.
+
 You can also find more info about the szs patching process [here](https://github.com/exelix11/SwitchThemeInjector/blob/master/SzsPatching.md)
