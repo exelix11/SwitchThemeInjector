@@ -1,5 +1,5 @@
 #include "fs.hpp"
-#include "Platform\Platform.hpp"
+#include "Platform/Platform.hpp"
 
 #include <filesystem>
 #include "ViewFunctions.hpp"

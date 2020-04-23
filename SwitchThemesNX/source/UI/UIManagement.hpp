@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 #include "glad.h"
 
-#include "imgui\imgui.h"
+#include "imgui/imgui.h"
 
 namespace UIMNG {
 

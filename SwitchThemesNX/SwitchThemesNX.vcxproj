@@ -119,6 +119,9 @@
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="source\UI\UITabs.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Makefile" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{B6DA9247-8ED4-44D7-9FD3-6EAB523FC003}</ProjectGuid>
