@@ -26,7 +26,7 @@
 //#define IMGUI_IMPL_OPENGL_ES2     // Auto-detected on Emscripten
 //#define IMGUI_IMPL_OPENGL_ES3     // Auto-detected on iOS/Android
 
-#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM "..\glad.h"
+#define IMGUI_IMPL_OPENGL_LOADER_CUSTOM "../glad.h"
 
 // Set default OpenGL3 loader to be gl3w
 #if !defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)     \

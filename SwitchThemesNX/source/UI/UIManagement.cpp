@@ -1,6 +1,6 @@
 #include "UIManagement.hpp"
 #include <stdio.h>
-#include "imgui\imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_opengl3.h"
 #include "UI.hpp"
 
 #include "../Platform/Platform.hpp"
