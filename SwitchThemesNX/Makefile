@@ -40,7 +40,7 @@ ROMFS	:=	romfs
 
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
-APP_VERSION := 2.3.2
+APP_VERSION := 2.3.2-1
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
