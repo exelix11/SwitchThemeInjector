@@ -18,7 +18,7 @@ string fs::GetFsMitmFolder() { return CfwFolder + TitlesFolder; }
 void fs::SetCfwFolder(const string& s)
 {
 	CfwFolder = s;
-	if (CfwFolder == SD_PREFIX ATMOS_DIR && filesystem::exists(SD_PREFIX ATMOS_DIR "contents/"))
+	if ((CfwFolder == SD_PREFIX ATMOS_DIR || CfwFolder == SD_PREFIX REINX_DIR) && filesystem::exists(CfwFolder + "contents/"))
 		TitlesFolder = "contents/";
 	else
 		TitlesFolder = "titles/";
