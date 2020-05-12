@@ -361,7 +361,10 @@ namespace SwitchThemes.Common.Bflyt
 					case "grp1":
 						PushPane(new Grp1Pane(bin, Version));
 						break;
-					case "pan1":	case "prt1":
+					case "prt1":
+						PushPane(new Prt1Pane(bin, Version));
+						break;
+					case "pan1":
 					case "wnd1":	case "bnd1":
 						PushPane(new Pan1Pane(bin, name));
 						break;
