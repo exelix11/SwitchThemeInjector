@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pan1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\PatchingExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Pic1Pane.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Prt1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Txt1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Usd1Pane.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Bntx.cs" />
