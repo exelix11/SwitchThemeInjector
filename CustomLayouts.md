@@ -20,7 +20,7 @@ When editing animations it's important to **add new groups instead of using the 
 The firmware 8.0 changed the behavior of some parts of the home menu and broke most layouts that changed the size or the position of the game icons, migush found a way to fix it, here's what he wrote:
 ```
 Only x translation is a problem
-So yeah, N_GameRoot scale controls the gameroot scrollwidth, so change x scale of it to like 0.00001 and change N_Game to 100000 to compensate: it doesn't scroll anymore.
+N_GameRoot scale controls the gameroot scrollwidth, so change x scale of it to like 0.00001 and change N_Game to 100000 to compensate: it doesn't scroll anymore.
 RdtBase
     N_ScrollWindow
         width: 100000.0 - This makes the allapps button behave properly
