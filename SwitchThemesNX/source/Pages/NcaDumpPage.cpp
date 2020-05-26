@@ -13,7 +13,8 @@ NcaDumpPage::NcaDumpPage() :
 {
 	Name = "Extract home menu";
 	guideText = ("To install .nxtheme files you need to extract the home menu first.\n"
-		"This is needed EVERY TIME you update (or downgrade) the firmware, when the extracted version doesn't match with your firmware you'll be prompted to do it.\n"
+		"This is needed every time the firmware changes, both for updates and downgrades.\n"
+		"When the extracted version doesn't match with your firmware you will be prompted to do it.\n\n"
 		"Usually you don't need to extract it manually but in case you're facing issues you can try doing so here.");
 }
 
@@ -68,8 +69,8 @@ void NcaDumpPage::CheckHomeMenuVer()
 		FILE *ver = fopen(SD_PREFIX "/themes/systemData/ver.cfg", "r");
 		if (ver)
 		{
-			char str[50];
-			fgets(str,50,ver);
+			char str[50] = {0};
+			fgets(str,49,ver);
 			fclose(ver);
 			string version(str);
 			if (version != SystemVer) goto ASK_DUMP;
@@ -83,7 +84,11 @@ void NcaDumpPage::CheckHomeMenuVer()
 	
 ASK_DUMP:
 	if (!YesNoPage::Ask("The current firmware version is different than the one of the extracted home menu, do you want to dump the home menu again ?\nIf the extracted home menu doesn't match with the installed one themes will crash."))
+	{
+		DialogBlocking("You won't see this message again, in case of crashes you can extract the home menu manually from the `Extract home menu` option in the main menu");
+		fs::WriteHomeDumpVer();
 		return;
+	}
 	
 DUMP_HOMEMENU:
 	fs::RemoveSystemDataDir();
