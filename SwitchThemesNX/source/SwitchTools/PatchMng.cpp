@@ -10,8 +10,8 @@
 using namespace std;
 
 static const u32 PatchSetVer = 3;
-#define LastSupportedVerSTR "10.0.2"
-static const SystemVersion LastSupportedVer = { 10,0,2 };
+#define LastSupportedVerSTR "10.0.3"
+static const SystemVersion LastSupportedVer = { 10,0,3 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
@@ -28,8 +28,9 @@ static const char* WarningSX =
 			  "In case you don't have the right version and install the theme anyway your console will crash on boot, the warning before install also displays the instructions to fix it.";
 
 static const char* WarningFWVer =
-	WarnIntro "You're running a newer firmware version that may be not supported by this installer (This build supports up to " LastSupportedVerSTR ").\n"
-			  "If the home menu was updated it's likely that the built-in patches won't work, if that's the case you should check for updates of the theme installer" WarnOutro;
+	WarnIntro "You're running a newer firmware version that may be not supported by this installer. This build supports up to " LastSupportedVerSTR ".\n"
+			  "If the home menu was updated the built-in patches won't work, if that's the case you should check for updates of the theme installer.\n\n"
+			  "In case of `micro` updates eg 9.0.0 -> 9.0.1 it's possible that home menu was not updated and you can safely ignore this warning." WarnOutro;
 
 static const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
 
