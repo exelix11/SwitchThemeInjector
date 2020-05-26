@@ -71,13 +71,12 @@
 			this.SubredditLinkLbl = new System.Windows.Forms.LinkLabel();
 			this.QceanLinkLbl = new System.Windows.Forms.LinkLabel();
 			this.DiscordLinkLbl = new System.Windows.Forms.LinkLabel();
-			this.PatreonLinkLbl = new System.Windows.Forms.LinkLabel();
+			this.SupportLinkLbl = new System.Windows.Forms.LinkLabel();
 			this.GithubLinkLbl = new System.Windows.Forms.LinkLabel();
 			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
 			this.UseAnim = new System.Windows.Forms.CheckBox();
-			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.tbImageFile = new System.Windows.Forms.TextBox();
@@ -90,6 +89,7 @@
 			this.materialRaisedButton2 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
 			this.materialLabel17 = new MaterialSkin.Controls.MaterialLabel();
+			this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
 			this.AdvancedPage = new System.Windows.Forms.TabPage();
 			this.AdvPanel = new System.Windows.Forms.Panel();
 			this.materialRaisedButton7 = new MaterialSkin.Controls.MaterialRaisedButton();
@@ -638,7 +638,7 @@
 			this.InfoPage.Controls.Add(this.SubredditLinkLbl);
 			this.InfoPage.Controls.Add(this.QceanLinkLbl);
 			this.InfoPage.Controls.Add(this.DiscordLinkLbl);
-			this.InfoPage.Controls.Add(this.PatreonLinkLbl);
+			this.InfoPage.Controls.Add(this.SupportLinkLbl);
 			this.InfoPage.Controls.Add(this.GithubLinkLbl);
 			this.InfoPage.Controls.Add(this.materialLabel10);
 			this.InfoPage.Controls.Add(this.tbPatches);
@@ -693,7 +693,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.DiscordLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.DiscordLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
-			this.DiscordLinkLbl.Location = new System.Drawing.Point(257, 38);
+			this.DiscordLinkLbl.Location = new System.Drawing.Point(274, 38);
 			this.DiscordLinkLbl.Name = "DiscordLinkLbl";
 			this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 21);
 			this.DiscordLinkLbl.TabIndex = 18;
@@ -702,19 +702,19 @@
 			this.DiscordLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.DiscordLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DiscordLinkLbl_LinkClicked);
 			// 
-			// PatreonLinkLbl
+			// SupportLinkLbl
 			// 
-			this.PatreonLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.PatreonLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-			this.PatreonLinkLbl.LinkColor = System.Drawing.Color.DarkOrange;
-			this.PatreonLinkLbl.Location = new System.Drawing.Point(485, 38);
-			this.PatreonLinkLbl.Name = "PatreonLinkLbl";
-			this.PatreonLinkLbl.Size = new System.Drawing.Size(147, 21);
-			this.PatreonLinkLbl.TabIndex = 17;
-			this.PatreonLinkLbl.TabStop = true;
-			this.PatreonLinkLbl.Text = "Patreon ❤";
-			this.PatreonLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			this.PatreonLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.PatreonLinkLbl_LinkClicked);
+			this.SupportLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.SupportLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+			this.SupportLinkLbl.LinkColor = System.Drawing.Color.DarkOrange;
+			this.SupportLinkLbl.Location = new System.Drawing.Point(458, 38);
+			this.SupportLinkLbl.Name = "SupportLinkLbl";
+			this.SupportLinkLbl.Size = new System.Drawing.Size(174, 21);
+			this.SupportLinkLbl.TabIndex = 17;
+			this.SupportLinkLbl.TabStop = true;
+			this.SupportLinkLbl.Text = "Ko-fi❤";
+			this.SupportLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.SupportLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SupportLinkLbl_LinkClicked);
 			// 
 			// GithubLinkLbl
 			// 
@@ -798,22 +798,6 @@
 			this.UseAnim.TabIndex = 26;
 			this.UseAnim.Text = "Do NOT add animations (Use if you have crashes with animations)";
 			this.UseAnim.UseVisualStyleBackColor = true;
-			// 
-			// materialLabel1
-			// 
-			this.materialLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.materialLabel1.Depth = 0;
-			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
-			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-			this.materialLabel1.Location = new System.Drawing.Point(3, 6);
-			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
-			this.materialLabel1.Name = "materialLabel1";
-			this.materialLabel1.Size = new System.Drawing.Size(633, 45);
-			this.materialLabel1.TabIndex = 14;
-			this.materialLabel1.Text = "Use this page to create themes with the old SZS format, if you don\'t know what yo" +
-    "u\'re doing it\'s recommended to use nxtheme instead.";
-			this.materialLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// lblDetected
 			// 
@@ -982,6 +966,22 @@
 			this.materialLabel17.TabIndex = 25;
 			this.materialLabel17.Text = "To avoid crashes use 720p DDS images (1280x720 pixels)";
 			this.materialLabel17.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			// 
+			// materialLabel1
+			// 
+			this.materialLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.materialLabel1.Depth = 0;
+			this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
+			this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+			this.materialLabel1.Location = new System.Drawing.Point(3, 6);
+			this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
+			this.materialLabel1.Name = "materialLabel1";
+			this.materialLabel1.Size = new System.Drawing.Size(633, 45);
+			this.materialLabel1.TabIndex = 14;
+			this.materialLabel1.Text = "Use this page to create themes with the old SZS format, if you don\'t know what yo" +
+    "u\'re doing it\'s recommended to use nxtheme instead.";
+			this.materialLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// AdvancedPage
 			// 
@@ -1309,7 +1309,7 @@
 		private System.Windows.Forms.LinkLabel SubredditLinkLbl;
 		private System.Windows.Forms.LinkLabel QceanLinkLbl;
 		private System.Windows.Forms.LinkLabel DiscordLinkLbl;
-		private System.Windows.Forms.LinkLabel PatreonLinkLbl;
+		private System.Windows.Forms.LinkLabel SupportLinkLbl;
 		private System.Windows.Forms.LinkLabel GithubLinkLbl;
 		private System.Windows.Forms.TabPage ExtractPage;
 		private MaterialSkin.Controls.MaterialLabel materialLabel14;

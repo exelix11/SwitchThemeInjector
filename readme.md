@@ -3,6 +3,7 @@
 )](https://discord.gg/rqU5Tf8)
 [![Latest release](https://img.shields.io/github/v/release/exelix11/SwitchThemeInjector)](https://github.com/exelix11/SwitchThemeInjector/releases)
 [![Download](https://img.shields.io/github/downloads/exelix11/SwitchThemeInjector/total)](https://github.com/exelix11/SwitchThemeInjector/releases)
+[![ko-fi](https://img.shields.io/badge/supporting-ko--fi-f96854)](https://ko-fi.com/exelix11)
 
 ![ThemeScreenshot](ThemeScreenshot.jpg)
 
