@@ -662,8 +662,8 @@ namespace SwitchThemes
 		private void DiscordLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
 			System.Diagnostics.Process.Start("https://discord.gg/rqU5Tf8");
 
-		private void PatreonLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
-			System.Diagnostics.Process.Start("https://www.patreon.com/exelix11");
+		private void SupportLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
+			System.Diagnostics.Process.Start("https://ko-fi.com/exelix11");
 
 		private void SubredditLinkLbl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) =>
 			System.Diagnostics.Process.Start("https://www.reddit.com/r/NXThemes/");
