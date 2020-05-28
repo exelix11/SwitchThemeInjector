@@ -2,7 +2,7 @@
   "PatchName": "Diamond Homescreen",
   "AuthorName": "Akai",
   "TargetName": "ResidentMenu.szs",
-  "Ready8X": true,
+  "ID": "builtin_DiamondHome",
   "Files": [
     {
       "FileName": "blyt/RdtBtnCtrl.bflyt",

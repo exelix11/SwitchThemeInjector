@@ -2,6 +2,7 @@
   "PatchName": "Transparant Playerselect 90% Scale",
   "AuthorName": "Migush",
   "TargetName": "Psl.szs",
+  "ID": "builtin_TransparentPSL90S",
   "Files": [
     {
       "FileName": "blyt/DBtmHeaderNml.bflyt",

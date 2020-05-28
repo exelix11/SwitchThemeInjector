@@ -2,6 +2,7 @@
   "PatchName": "All Apps 90% scale rounded icons",
   "AuthorName": "Such Meme, Many Skill",
   "TargetName": "Flaunch.szs",
+  "ID": "builtin_AllApps90Round",
   "Files": [
     {
       "FileName": "blyt/FlcBtnIconGame.bflyt",

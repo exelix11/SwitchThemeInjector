@@ -2,6 +2,7 @@
   "PatchName": "Common.szs no footer",
   "AuthorName": "SvenDaHacker64",
   "TargetName": "common.szs",
+  "ID": "builtin_CommonNoFooter",
   "Files": [
     {
       "FileName": "blyt/FooterAll.bflyt",
