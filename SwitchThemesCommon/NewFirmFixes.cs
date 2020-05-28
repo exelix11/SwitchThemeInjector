@@ -13,17 +13,20 @@ namespace SwitchThemes.Common
 
 		const string ClearLock9Fix = "{\"PatchName\":\"clearlayout 9.x fix\",\"AuthorName\":\"exelix\",\"Ready8X\":true,\"Files\":[{\"FileName\":\"blyt/EntMain.bflyt\",\"Patches\":[{\"PaneName\":\"L_BtnResume\",\"Position\":{\"X\":-180,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_CntHud\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0}}]}]}";
 
-		public static LayoutFilePatch[] GetFix(string LayoutName, PatchTemplate context) => GetFix(LayoutName, context.FirmName, context.NXThemeName);
+		public static LayoutFilePatch[] GetFixLegacy(string LayoutName, PatchTemplate context) => GetFixLegacy(LayoutName, context.PatchRevision, context.NXThemeName);
 	
-		public static LayoutFilePatch[] GetFix(string LayoutName, string FirmName, string NXThemeName)
+		public static LayoutFilePatch[] GetFixLegacy(string LayoutName, int PatchRevision, string NXThemeName)
 		{
-			if (FirmName == "9.0" && NXThemeName == "lock")
+			// Check PatchRevision definitions in PatchTemplte.cs for firmware version
+
+			if (PatchRevision >= 1 && NXThemeName == "lock") // >= 9.0 lock screen
 			{
 				if (LayoutName.ToLower().Contains("clear lockscreen"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(ClearLock9Fix).Files;
 			}
 
-			if (NXThemeName == "home")
+			// These are have all been updated in the builtins as of 4.4
+			if (PatchRevision >= 2 && NXThemeName == "home") // >= 8.0 home menu
 			{
 				if (LayoutName.ToLower().Contains("dogelayout") || LayoutName.ToLower().Contains("clearlayout"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(DogeLayoutFix).Files;
@@ -32,6 +35,15 @@ namespace SwitchThemes.Common
 				else if (LayoutName.ToLower().Contains("small compact"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(CompactFix).Files;
 			}
+			return null;
+		}
+
+		public static LayoutFilePatch[] GetFix(string NxPart, string LayoutID, int PatchRevision)
+		{
+			// As of 4.5 this still hasn't been fixed in the builtin layouts but it has been given an ID
+			if (PatchRevision >= 1 && LayoutID == "builtin_ClearLock" && NxPart == "lock") /* Do we need NxPart ? */
+				return JsonConvert.DeserializeObject<LayoutPatch>(ClearLock9Fix).Files;
+
 			return null;
 		}
 	}
