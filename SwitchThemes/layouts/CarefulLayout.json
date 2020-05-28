@@ -2,7 +2,7 @@
   "PatchName": "Careful Layout ENX v1",
   "AuthorName": "Migush",
   "TargetName": "ResidentMenu.szs",
-  "Ready8X": true,
+  "ID": "builtin_CarefulLayoutENX1",
   "Files": [
     {
       "FileName": "blyt/BgNml.bflyt",

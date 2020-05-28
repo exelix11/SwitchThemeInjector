@@ -2,7 +2,7 @@
   "PatchName": "Rounded Small Compact Homescreen",
   "AuthorName": "Akai",
   "TargetName": "ResidentMenu.szs",
-  "Ready8X": true,
+  "ID": "builtin_RoundSmallCompactHome",
   "Files": [
     {
       "FileName": "blyt/Cursor3.bflyt",

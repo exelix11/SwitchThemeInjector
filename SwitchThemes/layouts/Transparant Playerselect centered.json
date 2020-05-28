@@ -2,6 +2,7 @@
   "PatchName": "Transparant Playerselect centered",
   "AuthorName": "Migush",
   "TargetName": "Psl.szs",
+  "ID": "builtin_TransparentPSLCenter",
   "Files": [
     {
       "FileName": "blyt/DBtmHeaderNml.bflyt",

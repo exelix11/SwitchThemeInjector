@@ -2,7 +2,7 @@
    "PatchName":"Red applet buttons example V3. Color format is AABBGGRR",
    "AuthorName":"exelix",
    "TargetName": "ResidentMenu.szs",
-   "Ready8X":true,
+   "ID": "builtin_RedAppletExample",
    "Files":[
       {
          "FileName":"blyt/RdtBtnCtrl.bflyt",

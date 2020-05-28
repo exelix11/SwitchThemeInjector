@@ -2,7 +2,7 @@
   "PatchName": "Simple Layout Lockscreen",
   "AuthorName": "Akai",
   "TargetName": "Entrance.szs",
-
+  "ID": "builtin_SimpleLayoutLockscreen",
   "Files": [
     {
       "FileName": "blyt/EntMain.bflyt",

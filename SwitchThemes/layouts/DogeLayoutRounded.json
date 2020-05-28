@@ -2,7 +2,7 @@
   "PatchName": "Clean Layout (Dogelayout) Rounded Buttons",
   "AuthorName": "Such Meme, Many Skill",
   "TargetName": "ResidentMenu.szs",
-  "Ready8X": true,
+  "ID": "builtin_DogeLayoutRound",
   "Files": [
     {
       "FileName": "blyt/RdtBtnCtrl.bflyt",

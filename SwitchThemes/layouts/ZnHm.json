@@ -2,6 +2,7 @@
   "PatchName": "Two Row Theme (Fixed)",
   "AuthorName": "Zaigenshi",
   "TargetName": "ResidentMenu.szs",
+  "ID": "builtin_TwoRowHome",
   "Files": [
     {
       "FileName": "blyt/RdtBtnCtrl.bflyt",

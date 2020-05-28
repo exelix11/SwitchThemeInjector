@@ -2,6 +2,7 @@
   "PatchName": "Transparant Playerselect",
   "AuthorName": "Migush",
   "TargetName": "Psl.szs",
+  "ID": "builtin_TransparentPSL",
   "Files": [
     {
       "FileName": "blyt/DBtmHeaderNml.bflyt",

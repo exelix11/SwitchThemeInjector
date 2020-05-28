@@ -2,7 +2,7 @@
   "PatchName": "Clean Layout (Dogelayout)",
   "AuthorName": "Such Meme, Many Skill",
   "TargetName": "ResidentMenu.szs",
-  "Ready8X": true,
+  "ID": "builtin_DogeLayout",
   "Files": [
     {
       "FileName": "blyt/RdtBtnCtrl.bflyt",
