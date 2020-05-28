@@ -111,9 +111,12 @@ struct LayoutPatch
 	std::vector<LayoutFilePatch> Files;
 	std::vector<AnimFilePatch> Anims;
 	bool PatchAppletColorAttrib = false;
-	bool Ready8X = false;
+	std::string ID;
 
-	bool IsCompatible(const SARC::SarcData &sarc);
+	bool Obsolete_Ready8X = false;
+	bool UsesOldFixes() const { return ID == "" && !Obsolete_Ready8X; }
+
+	bool IsCompatible(const SARC::SarcData &sarc) const;
 };
 
 struct PatchTemplate 
@@ -161,5 +164,6 @@ namespace Patches {
 
 namespace NewFirmFixes 
 {
-	extern std::vector<LayoutFilePatch> GetFix(const std::string& LayoutName, const std::string& partName);
+	std::vector<LayoutFilePatch> GetFixLegacy(const std::string& LayoutName, const std::string& NXThemeName);
+	std::vector<LayoutFilePatch> GetFix(const std::string& LayoutID, const std::string& NxPart);
 }

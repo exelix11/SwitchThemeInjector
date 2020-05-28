@@ -23,17 +23,19 @@ namespace NewFirmFixes
 		return (it != strHaystack.end());
 	}
 
-	vector<LayoutFilePatch> GetFix(const string &LayoutName, const string &partName)
+	vector<LayoutFilePatch> GetFixLegacy(const string& LayoutName, const string& NXThemeName)
 	{
+		// Instead of patch revision here we can use the HOS version detected which may be more precise
+		// TODO: is this inconsistent with the injector ?
 		if (HOSVer.IsGreater({ 8,1,1 }))
 		{
-			if (partName == "lock") {
+			if (NXThemeName == "lock") {
 				if (findStringIC(LayoutName, "clear lockscreen"))
 					return Patches::LoadLayout(ClearLock9Fix).Files;
 			}
 		}
 
-		if (partName == "home") {
+		if (NXThemeName == "home") {
 			if (findStringIC(LayoutName, "dogelayout") || findStringIC(LayoutName, "clearlayout"))
 				return Patches::LoadLayout(DogeLayoutFix).Files;
 			else if (findStringIC(LayoutName, "diamond"))
@@ -41,6 +43,14 @@ namespace NewFirmFixes
 			else if (findStringIC(LayoutName, "small compact"))
 				return Patches::LoadLayout(CompactFix).Files;
 		}
+		return {};
+	}
+
+	vector<LayoutFilePatch> GetFix(const string& LayoutID, const string& NxPart)
+	{
+		if (LayoutID == "builtin_ClearLock" && HOSVer.IsGreater({ 8,1,1 }) && NxPart == "lock")
+			return Patches::LoadLayout(ClearLock9Fix).Files;
+		
 		return {};
 	}
 }
