@@ -1,8 +1,8 @@
 {
-  "PatchName": "Transparent Playerselect 90% Scale centered",
+  "PatchName": "Transparent Playerselect 90% Scale top",
   "AuthorName": "Migush",
   "TargetName": "Psl.szs",
-  "ID": "builtin_TransparentPSL90SC",
+  "ID": "builtin_TransparentPSL90ST",
   "Files": [
     {
       "FileName": "blyt/DBtmHeaderNml.bflyt",
@@ -24,7 +24,7 @@
           "PaneName": "N_Cnt",
           "Position": {
             "X": 0.0,
-            "Y": 0.0,
+            "Y": 230.0,
             "Z": 0.0
           }
         },
