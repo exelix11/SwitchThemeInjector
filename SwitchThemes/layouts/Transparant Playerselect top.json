@@ -1,8 +1,8 @@
 {
-  "PatchName": "Transparent Playerselect 90% Scale centered",
+  "PatchName": "Transparent Playerselect top",
   "AuthorName": "Migush",
   "TargetName": "Psl.szs",
-  "ID": "builtin_TransparentPSL90SC",
+  "ID": "builtin_TransparentPSLTop",
   "Files": [
     {
       "FileName": "blyt/DBtmHeaderNml.bflyt",
@@ -24,31 +24,13 @@
           "PaneName": "N_Cnt",
           "Position": {
             "X": 0.0,
-            "Y": 0.0,
+            "Y": 230.0,
             "Z": 0.0
           }
         },
         {
           "PaneName": "P_Bg",
-          "Visible": false,
-          "Scale": {
-            "X": 1.1111111,
-            "Y": 1.1111111
-          }
-        },
-        {
-          "PaneName": "exelixPSL",
-          "Scale": {
-            "X": 1.1111111,
-            "Y": 1.1111111
-          }
-        },
-        {
-          "PaneName": "RootPane",
-          "Scale": {
-            "X": 0.9,
-            "Y": 0.9
-          }
+          "Visible": false
         }
       ]
     }
