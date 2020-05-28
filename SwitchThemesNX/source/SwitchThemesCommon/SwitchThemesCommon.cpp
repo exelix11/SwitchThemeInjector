@@ -122,9 +122,15 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 	vector<LayoutFilePatch> Files;
 	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
 
-	if (HOSVer.IsGreater({7,9,9}) && !patch.Ready8X)
+	if (HOSVer.IsGreater({7,9,9}) && patch.UsesOldFixes())
 	{
-		auto extra = NewFirmFixes::GetFix(patch.PatchName, partName);
+		auto extra = NewFirmFixes::GetFixLegacy(patch.PatchName, partName);
+		if (extra.size() != 0)
+			Files.insert(Files.end(), extra.begin(), extra.end());
+	}
+	else if (patch.ID != "")
+	{
+		auto extra = NewFirmFixes::GetFix(patch.ID, partName);
 		if (extra.size() != 0)
 			Files.insert(Files.end(), extra.begin(), extra.end());
 	}
