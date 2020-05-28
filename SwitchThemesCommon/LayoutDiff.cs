@@ -162,7 +162,7 @@ namespace SwitchThemes.Common
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
-				Ready8X = true
+				ID = $"Generated_{Guid.NewGuid()}"
 			}, Message);
 		}
 

@@ -268,21 +268,10 @@ namespace SwitchThemes.Common
 			return true;
 		}
 		
-		public bool PatchLayouts(LayoutPatch Patch, PatchTemplate context)
-		{
-			int fixVer = 0;
-			if (context != null)
-			{
-				if (context.NXThemeName == "home")
-					fixVer = 8;
-				if (context.FirmName == "9.0")
-					fixVer = 9;
-			}
-			
-			return PatchLayouts(Patch, context?.NXThemeName ?? "", context?.FirmName ?? "", fixVer);
-		}
-
-		public bool PatchLayouts(LayoutPatch Patch, string PartName, string FirmName, int patchLevel)
+		public bool PatchLayouts(LayoutPatch Patch, PatchTemplate context) =>
+			PatchLayouts(Patch, context?.NXThemeName ?? "", context?.PatchRevision ?? 0);
+		
+		public bool PatchLayouts(LayoutPatch Patch, string PartName, int PatchRevision)
 		{
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
 				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
@@ -294,9 +283,18 @@ namespace SwitchThemes.Common
 			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
 			Files.AddRange(Patch.Files);
 
-			if ((patchLevel == 8 && !Patch.Ready8X) || patchLevel > 8)
+			LayoutFilePatch[] extra;
+			//Legacy fixes based on name and version
+			if (PatchRevision != 0 && Patch.UsesOldFixes)
 			{
-				var extra = NewFirmFixes.GetFix(Patch.PatchName, PartName, FirmName);
+				extra = NewFirmFixes.GetFixLegacy(Patch.PatchName, PatchRevision, PartName);
+				if (extra != null)
+					Files.AddRange(extra);
+			}
+			//Modern fixes based on layout ID
+			else if (Patch.ID != null)
+			{
+				extra = NewFirmFixes.GetFix(PartName, Patch.ID, PatchRevision);
 				if (extra != null)
 					Files.AddRange(extra);
 			}

@@ -12,9 +12,16 @@ namespace SwitchThemes.Common
 		public string PatchName;
 		public string AuthorName;
 		public string TargetName;
-		public bool Ready8X = false;
+		public string ID;
+
+		public bool UsesOldFixes => ID == null && !Ready8X;
+
+		[Obsolete("This was used to detect whether a layout would need patches to support 8.0+ qlaunch, ssince version 4.5 (TBD) prefer the ID value to detect layouts")]
+		public bool Ready8X;
+		
 		[Obsolete("Editing C_W in the usd panes is a better way of achieving this")]
 		public bool PatchAppletColorAttrib = false;
+		
 		public LayoutFilePatch[] Files;
 		public AnimFilePatch[] Anims;
 
@@ -40,6 +47,9 @@ namespace SwitchThemes.Common
 
 		public string AsJson()
 		{
+			if (ID == null && Ready8X) //Upgrade old layouts using Ready8X to a random ID
+				ID = $"updated_{Guid.NewGuid()}";
+			Ready8X = false; //Don't include a Ready8x Property
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
 				DefaultValueHandling = DefaultValueHandling.Ignore,
