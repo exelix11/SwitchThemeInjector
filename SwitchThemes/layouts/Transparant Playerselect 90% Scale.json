@@ -30,7 +30,18 @@
         },
         {
           "PaneName": "P_Bg",
-          "Visible": false
+          "Visible": false,
+          "Scale": {
+            "X": 1.1111111,
+            "Y": 1.1111111
+          }
+        },
+        {
+          "PaneName": "exelixPSL",
+          "Scale": {
+            "X": 1.1111111,
+            "Y": 1.1111111
+          }
         },
         {
           "PaneName": "RootPane",
