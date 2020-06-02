@@ -17,18 +17,18 @@ Animations are the .bflan files in the szs files of the home menu.\
 When editing animations it's important to **add new groups instead of using the ones already in the bflyt**, this means that if you want to animate a group that's already in the layout you have to clone and rename it and use the renamed one for your animations, this is to improve compatibility in the future. Note that only groups inside of the RootGroup are supported by the differ, the bflyt format allows for groups inside of groups but we didn't find those in the home menu files.
 
 ## Custom layouts and 8.X
-The firmware 8.0 changed the behavior of some parts of the home menu and broke most layouts that changed the size or the position of the game icons, migush found a way to fix it, here's what he wrote:
+The firmware 8.0 changed the behavior of some parts of the home menu and broke most layouts that changed the size or the position of the game icons, Migush found a way to fix it, here's what he wrote:
 ```
-Only x translation is a problem.
-N_GameRoot scale controls the gameroot scrollwidth, so change x scale of it to like 0.00001 and change N_Game to 100000 to compensate: is doesn't scroll anymore.
+Only x translation is a problem
+N_GameRoot scale controls the gameroot scrollwidth, so change x scale of it to like 0.00001 and change N_Game to 100000 to compensate: it doesn't scroll anymore.
 RdtBase
     N_ScrollWindow
-        width: 100000.0
+        width: 100000.0 - This makes the allapps button behave properly
     N_GameRoot 
-        x Translation: p. Keep in mind N_Icon_00 at x=0
+        x Translation: <set where your first icon should be> - Keep in mind N_Icon_00 at x=0
         x Scale: 0.00001
     N_Game
-    x translation: 0 (!)
+        x Translation: 0 (!)
         x Scale: 100000.0
         N_Icon_xx
             x Translation: set the N_Icon_00 to x=0 and start from there. Keep in mind the scale of the RootPane in RdtBtnIconGame
@@ -43,12 +43,8 @@ RdtBtnIconGame
         x Scale: p
         y Scale: p
     B_Hit
-        width/height: devide default by RootPane scale (Controls the 'cursor snap area'. Must be the right size to prevent the cursor from skipping an icon)
-        x+y Scale: set it to the opposite of the width/height change (eg. width 264->132: scale 1->2) (controls the touch area)
-       
-RdtBtnFullLauncher
-    ?Don't think you have to change anything here
-
+        x/y Scale: devide default by by RootPane scale (controls the touch area)
+        width/height: multiply default by RootPane scale (Controls the 'cursor snap area'. Must be the right size to prevent the cursor from skipping an icon)
 ```
 As examples for 8.0-Compatible layouts you can use the layouts that have "Ready8X" flag from the layouts folder of the injector
 
