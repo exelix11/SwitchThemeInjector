@@ -15,7 +15,7 @@ static void *nso_uncompress(nso0_ctx_t *ctx) {
     new_header.segments[1].align_or_total_size = 0;
     /* Clear compression flags. */
     new_header.flags &= 0xF8;
-    
+
     uint64_t size = nso_get_size(&new_header);
     nso0_header_t *new_nso = calloc(1, size);
     if (new_nso == NULL) {
@@ -23,7 +23,7 @@ static void *nso_uncompress(nso0_ctx_t *ctx) {
         exit(EXIT_FAILURE);
     }
     *((nso0_header_t *)new_nso) = new_header;
-    
+
     for (unsigned int segment = 0; segment < 3; segment++) {
         char *src = (char *)ctx->header + ctx->header->segments[segment].file_off;
         char *dst = (char *)new_nso + new_header.segments[segment].file_off;
@@ -45,19 +45,19 @@ static void *nso_uncompress(nso0_ctx_t *ctx) {
             }
         }
     }
-        
+
     return new_nso;
 }
 
 void nso0_process(nso0_ctx_t *ctx) {
     /* Read *just* safe amount. */
-    nso0_header_t raw_header; 
+    nso0_header_t raw_header;
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(&raw_header, 1, sizeof(raw_header), ctx->file) != sizeof(raw_header)) {
         fprintf(stderr, "Failed to read NSO0 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (raw_header.magic != MAGIC_NSO0) {
         printf("Error: NSO0 is corrupt!\n");
         exit(EXIT_FAILURE);
@@ -69,19 +69,19 @@ void nso0_process(nso0_ctx_t *ctx) {
         fprintf(stderr, "Failed to allocate NSO0!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(ctx->header, 1, size, ctx->file) != size) {
         fprintf(stderr, "Failed to read NSO0!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     ctx->uncompressed_header = nso_uncompress(ctx);
-    
+
     if (ctx->tool_ctx->action & ACTION_INFO) {
         nso0_print(ctx);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         nso0_save(ctx);
     }
@@ -111,7 +111,7 @@ void nso0_print(nso0_ctx_t *ctx) {
 
 void nso0_save(nso0_ctx_t *ctx) {
     filepath_t *uncmp_path = &ctx->tool_ctx->settings.uncompressed_path;
-    if (ctx->tool_ctx->file_type == FILETYPE_NSO0 && uncmp_path->valid == VALIDITY_VALID) {     
+    if (ctx->tool_ctx->file_type == FILETYPE_NSO0 && uncmp_path->valid == VALIDITY_VALID) {
         FILE *f_uncmp = os_fopen(uncmp_path->os_path, OS_MODE_WRITE);
         if (f_uncmp == NULL) {
             fprintf(stderr, "Failed to open %s!\n", uncmp_path->char_path);

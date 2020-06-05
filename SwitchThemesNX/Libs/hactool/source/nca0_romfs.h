@@ -27,7 +27,7 @@ typedef struct {
     uint32_t block_size; /* In bytes. */
     uint32_t always_2;
     uint64_t hash_table_offset; /* Normally zero. */
-    uint64_t hash_table_size; 
+    uint64_t hash_table_size;
     uint64_t romfs_offset;
     uint64_t romfs_size;
     uint8_t _0x48[0xF0];

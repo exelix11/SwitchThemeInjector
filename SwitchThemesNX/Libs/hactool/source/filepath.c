@@ -106,11 +106,26 @@ void filepath_set(filepath_t *fpath, const char *path) {
     if (strlen(path) < MAX_PATH) {
         fpath->valid = VALIDITY_VALID;
         memset(fpath->char_path, 0, MAX_PATH);
-        strncpy(fpath->char_path, path, MAX_PATH);
+        strncpy(fpath->char_path, path, MAX_PATH - 1);
         filepath_update(fpath);
     } else {
         fpath->valid = VALIDITY_INVALID;
     }
+}
+
+void filepath_set_format(filepath_t *fpath, const char *format, ...) {
+    va_list args;
+
+    if (fpath->valid == VALIDITY_INVALID)
+        return;
+
+    memset(fpath->char_path, 0, MAX_PATH);
+
+    va_start(args, format);
+    vsnprintf(fpath->char_path, MAX_PATH, format, args);
+    va_end(args);
+
+    filepath_update(fpath);
 }
 
 oschar_t *filepath_get(filepath_t *fpath) {

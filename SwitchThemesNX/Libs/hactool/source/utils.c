@@ -65,9 +65,9 @@ void save_buffer_to_file(void *buf, uint64_t size, struct filepath *filepath) {
         fprintf(stderr, "Failed to open %s!\n", filepath->char_path);
         return;
     }
-    
+
     fwrite(buf, 1, size, f_out);
-    
+
     fclose(f_out);
 }
 
@@ -100,7 +100,7 @@ void save_file_section(FILE *f_in, uint64_t ofs, uint64_t total_size, filepath_t
     memset(buf, 0xCC, read_size); /* Debug in case I fuck this up somehow... */
     uint64_t end_ofs = ofs + total_size;
     fseeko64(f_in, ofs, SEEK_SET);
-    while (ofs < end_ofs) {       
+    while (ofs < end_ofs) {
         if (ofs + read_size >= end_ofs) read_size = end_ofs - ofs;
         if (fread(buf, 1, read_size, f_in) != read_size) {
             fprintf(stderr, "Failed to read file!\n");
@@ -138,11 +138,11 @@ validity_t check_memory_hash_table(FILE *f_in, unsigned char *hash_table, uint64
             memset(block, 0, read_size);
             read_size = data_len - ofs;
         }
-        
+
         if (fread(block, 1, read_size, f_in) != read_size) {
             fprintf(stderr, "Failed to read file!\n");
             exit(EXIT_FAILURE);
-        }        
+        }
         sha256_hash_buffer(cur_hash, block, full_block ? block_size : read_size);
         if (memcmp(cur_hash, cur_hash_table_entry, 0x20) != 0) {
             result = VALIDITY_INVALID;
@@ -153,14 +153,61 @@ validity_t check_memory_hash_table(FILE *f_in, unsigned char *hash_table, uint64
     free(block);
 
     return result;
+}
 
+validity_t check_memory_hash_table_with_suffix(FILE *f_in, unsigned char *hash_table, uint64_t data_ofs, uint64_t data_len, uint64_t block_size, const uint8_t *suffix, int full_block) {
+    if (block_size == 0) {
+        /* Block size of 0 is always invalid. */
+        return VALIDITY_INVALID;
+    }
+
+    unsigned char cur_hash[0x20];
+    uint64_t read_size = block_size;
+    unsigned char *block = malloc(block_size);
+    if (block == NULL) {
+        fprintf(stderr, "Failed to allocate hash block!\n");
+        exit(EXIT_FAILURE);
+    }
+
+    validity_t result = VALIDITY_VALID;
+    unsigned char *cur_hash_table_entry = hash_table;
+    for (uint64_t ofs = 0; ofs < data_len; ofs += read_size) {
+        fseeko64(f_in, ofs + data_ofs, SEEK_SET);
+        if (ofs + read_size > data_len) {
+            /* Last block... */
+            memset(block, 0, read_size);
+            read_size = data_len - ofs;
+        }
+
+        if (fread(block, 1, read_size, f_in) != read_size) {
+            fprintf(stderr, "Failed to read file!\n");
+            exit(EXIT_FAILURE);
+        }
+        {
+            sha_ctx_t *sha_ctx = new_sha_ctx(HASH_TYPE_SHA256, 0);
+            sha_update(sha_ctx, block, full_block ? block_size : read_size);
+            if (suffix) {
+                sha_update(sha_ctx, suffix, sizeof(*suffix));
+            }
+            sha_get_hash(sha_ctx, cur_hash);
+            free_sha_ctx(sha_ctx);
+        }
+        if (memcmp(cur_hash, cur_hash_table_entry, 0x20) != 0) {
+            result = VALIDITY_INVALID;
+            break;
+        }
+        cur_hash_table_entry += 0x20;
+    }
+    free(block);
+
+    return result;
 }
 
 validity_t check_file_hash_table(FILE *f_in, uint64_t hash_ofs, uint64_t data_ofs, uint64_t data_len, uint64_t block_size, int full_block) {
     if (block_size == 0) {
         /* Block size of 0 is always invalid. */
         return VALIDITY_INVALID;
-    }    
+    }
     uint64_t hash_table_size = data_len / block_size;
     if (data_len % block_size) hash_table_size++;
     hash_table_size *= 0x20;
@@ -198,7 +245,15 @@ const char *get_key_revision_summary(uint8_t key_rev) {
         case 5:
             return "6.0.0-6.1.0";
         case 6:
-            return "6.2.0-";
+            return "6.2.0";
+        case 7:
+            return "7.0.0-8.0.1";
+        case 8:
+            return "8.1.0-8.1.1";
+        case 9:
+            return "9.0.0-9.0.1";
+        case 0xA:
+            return "9.1.0-";
         default:
             return "Unknown";
     }
@@ -240,6 +295,6 @@ FILE *open_key_file(const char *prefix) {
     if (keyfile == NULL && keypath.valid == VALIDITY_VALID) {
         keyfile = os_fopen(keypath.os_path, OS_MODE_READ);
     }
-    
+
     return keyfile;
 }

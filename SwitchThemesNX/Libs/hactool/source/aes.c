@@ -8,24 +8,24 @@
 /* Allocate a new context. */
 aes_ctx_t *new_aes_ctx(const void *key, unsigned int key_size, aes_mode_t mode) {
     aes_ctx_t *ctx;
-    
+
     if ((ctx = malloc(sizeof(*ctx))) == NULL) {
         FATAL_ERROR("Failed to allocate aes_ctx_t!");
     }
 
     mbedtls_cipher_init(&ctx->cipher_dec);
     mbedtls_cipher_init(&ctx->cipher_enc);
-    
+
     if (mbedtls_cipher_setup(&ctx->cipher_dec, mbedtls_cipher_info_from_type(mode))
         || mbedtls_cipher_setup(&ctx->cipher_enc, mbedtls_cipher_info_from_type(mode))) {
         FATAL_ERROR("Failed to set up AES context!");
     }
-        
+
     if (mbedtls_cipher_setkey(&ctx->cipher_dec, key, key_size * 8, AES_DECRYPT)
         || mbedtls_cipher_setkey(&ctx->cipher_enc, key, key_size * 8, AES_ENCRYPT)) {
         FATAL_ERROR("Failed to set key for AES context!");
     }
-    
+
     return ctx;
 }
 
@@ -35,7 +35,7 @@ void free_aes_ctx(aes_ctx_t *ctx) {
     if (ctx == NULL) {
         return;
     }
-    
+
     mbedtls_cipher_free(&ctx->cipher_dec);
     mbedtls_cipher_free(&ctx->cipher_enc);
     free(ctx);
@@ -65,17 +65,17 @@ void aes_calculate_cmac(void *dst, void *src, size_t size, const void *key) {
 /* Encrypt with context. */
 void aes_encrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l) {
     size_t out_len = 0;
-    
+
     /* Prepare context */
     mbedtls_cipher_reset(&ctx->cipher_enc);
-    
+
     /* XTS doesn't need per-block updating */
-    if (mbedtls_cipher_get_cipher_mode(&ctx->cipher_enc) == MBEDTLS_MODE_XTS)
+    if (mbedtls_cipher_get_cipher_mode(&ctx->cipher_enc) == MBEDTLS_MODE_XTS || mbedtls_cipher_get_cipher_mode(&ctx->cipher_enc) == MBEDTLS_MODE_CBC)
         mbedtls_cipher_update(&ctx->cipher_enc, (const unsigned char * )src, l, (unsigned char *)dst, &out_len);
     else
     {
         unsigned int blk_size = mbedtls_cipher_get_block_size(&ctx->cipher_enc);
-        
+
         /* Do per-block updating */
         for (int offset = 0; (unsigned int)offset < l; offset += blk_size)
         {
@@ -83,15 +83,15 @@ void aes_encrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l) {
             mbedtls_cipher_update(&ctx->cipher_enc, (const unsigned char * )src + offset, len, (unsigned char *)dst + offset, &out_len);
         }
     }
-    
+
     /* Flush all data */
     mbedtls_cipher_finish(&ctx->cipher_enc, NULL, NULL);
 }
 
 /* Decrypt with context. */
-void aes_decrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l) 
+void aes_decrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l)
 {
-    bool src_equals_dst = false; 
+    bool src_equals_dst = false;
 
     if (src == dst)
     {
@@ -105,17 +105,17 @@ void aes_decrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l)
     }
 
     size_t out_len = 0;
-    
+
     /* Prepare context */
     mbedtls_cipher_reset(&ctx->cipher_dec);
-    
+
     /* XTS doesn't need per-block updating */
-    if (mbedtls_cipher_get_cipher_mode(&ctx->cipher_dec) == MBEDTLS_MODE_XTS)
+    if (mbedtls_cipher_get_cipher_mode(&ctx->cipher_dec) == MBEDTLS_MODE_XTS || mbedtls_cipher_get_cipher_mode(&ctx->cipher_enc) == MBEDTLS_MODE_CBC)
         mbedtls_cipher_update(&ctx->cipher_dec, (const unsigned char * )src, l, (unsigned char *)dst, &out_len);
     else
     {
         unsigned int blk_size = mbedtls_cipher_get_block_size(&ctx->cipher_dec);
-        
+
         /* Do per-block updating */
         for (int offset = 0; (unsigned int)offset < l; offset += blk_size)
         {
@@ -123,7 +123,7 @@ void aes_decrypt(aes_ctx_t *ctx, void *dst, const void *src, size_t l)
             mbedtls_cipher_update(&ctx->cipher_dec, (const unsigned char * )src + offset, len, (unsigned char *)dst + offset, &out_len);
         }
     }
-    
+
     /* Flush all data */
     mbedtls_cipher_finish(&ctx->cipher_dec, NULL, NULL);
 

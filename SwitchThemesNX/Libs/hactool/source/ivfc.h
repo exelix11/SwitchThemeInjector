@@ -37,6 +37,15 @@ typedef struct {
     uint8_t master_hash[0x20];
 } ivfc_hdr_t;
 
+typedef struct {
+    uint32_t magic;
+    uint32_t id;
+    uint32_t master_hash_size;
+    uint32_t num_levels;
+    ivfc_level_hdr_t level_headers[IVFC_MAX_LEVEL];
+    uint8_t salt_source[0x20];
+} ivfc_save_hdr_t;
+
 /* RomFS structs. */
 #define ROMFS_HEADER_SIZE 0x00000050
 

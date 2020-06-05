@@ -5,31 +5,32 @@
 
 /* NCA0 RomFS functions... */
 static void nca0_romfs_visit_file(nca0_romfs_ctx_t *ctx, uint32_t file_offset, filepath_t *dir_path) {
-    romfs_fentry_t *entry = romfs_get_fentry(ctx->files, file_offset);
     filepath_t *cur_path = calloc(1, sizeof(filepath_t));
     if (cur_path == NULL) {
         fprintf(stderr, "Failed to allocate filepath!\n");
         exit(EXIT_FAILURE);
     }
 
-    filepath_copy(cur_path, dir_path);
-    if (entry->name_size) {
-        filepath_append_n(cur_path, entry->name_size, "%s", entry->name);
-    }
-    
-    /* If we're extracting... */
-    if ((ctx->tool_ctx->action & ACTION_LISTROMFS) == 0) {
-        printf("Saving %s...\n", cur_path->char_path);
-        save_file_section(ctx->file, ctx->romfs_offset + ctx->header.data_offset + entry->offset, entry->size, cur_path);
-    } else {
-        printf("rom:%s\n", cur_path->char_path);
+    while (file_offset != ROMFS_ENTRY_EMPTY) {
+        romfs_fentry_t *entry = romfs_get_fentry(ctx->files, file_offset);
+
+        filepath_copy(cur_path, dir_path);
+        if (entry->name_size) {
+            filepath_append_n(cur_path, entry->name_size, "%s", entry->name);
+        }
+
+        /* If we're extracting... */
+        if ((ctx->tool_ctx->action & ACTION_LISTROMFS) == 0) {
+            printf("Saving %s...\n", cur_path->char_path);
+            save_file_section(ctx->file, ctx->romfs_offset + ctx->header.data_offset + entry->offset, entry->size, cur_path);
+        } else {
+            printf("rom:%s\n", cur_path->char_path);
+        }
+
+        file_offset = entry->sibling;
     }
 
     free(cur_path);
-
-    if (entry->sibling != ROMFS_ENTRY_EMPTY) {
-        nca0_romfs_visit_file(ctx, entry->sibling, dir_path);
-    }
 }
 
 static void nca0_romfs_visit_dir(nca0_romfs_ctx_t *ctx, uint32_t dir_offset, filepath_t *parent_path) {
@@ -99,14 +100,14 @@ void nca0_romfs_process(nca0_romfs_ctx_t *ctx) {
         fprintf(stderr, "NCA0 RomFS is corrupt?\n");
         return;
     }
-    
+
     /* If there's ever anything meaningful to print about RomFS, uncomment and implement.
      *
      * if (ctx->tool_ctx->action & ACTION_INFO) {
      *    nca0_romfs_print(ctx);
      * }
      */
-     
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         nca0_romfs_save(ctx);
     }

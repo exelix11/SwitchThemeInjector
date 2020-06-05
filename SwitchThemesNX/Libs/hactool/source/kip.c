@@ -6,13 +6,13 @@
 
 void ini1_process(ini1_ctx_t *ctx) {
     /* Read *just* safe amount. */
-    ini1_header_t raw_header; 
+    ini1_header_t raw_header;
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(&raw_header, 1, sizeof(raw_header), ctx->file) != sizeof(raw_header)) {
         fprintf(stderr, "Failed to read INI1 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (raw_header.magic != MAGIC_INI1 || raw_header.num_processes > INI1_MAX_KIPS) {
         printf("Error: INI1 is corrupt!\n");
         exit(EXIT_FAILURE);
@@ -23,13 +23,13 @@ void ini1_process(ini1_ctx_t *ctx) {
         fprintf(stderr, "Failed to allocate INI1 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(ctx->header, 1, raw_header.size, ctx->file) != raw_header.size) {
         fprintf(stderr, "Failed to read INI1!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     uint64_t offset = 0;
     for (unsigned int i = 0; i < ctx->header->num_processes; i++) {
         ctx->kips[i].tool_ctx = ctx->tool_ctx;
@@ -40,11 +40,11 @@ void ini1_process(ini1_ctx_t *ctx) {
         }
         offset += kip1_get_size(&ctx->kips[i]);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_INFO) {
         ini1_print(ctx);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         ini1_save(ctx);
     }
@@ -109,7 +109,7 @@ char *kip1_get_json(kip1_ctx_t *ctx) {
     cJSON *kip_json = cJSON_CreateObject();
     char *output_str = NULL;
     char work_buffer[0x300] = {0};
-    
+
     /* Add KIP1 header fields. */
     strcpy(work_buffer, ctx->header->name);
     cJSON_AddStringToObject(kip_json, "name", work_buffer);
@@ -118,13 +118,13 @@ char *kip1_get_json(kip1_ctx_t *ctx) {
     cJSON_AddNumberToObject(kip_json, "main_thread_priority", ctx->header->main_thread_priority);
     cJSON_AddNumberToObject(kip_json, "default_cpu_id", ctx->header->default_core);
     cJSON_AddNumberToObject(kip_json, "process_category", ctx->header->process_category);
-    
+
      /* Add KAC. */
     cJSON *kac_json = kac_get_json(ctx->header->capabilities, sizeof(ctx->header->capabilities) / sizeof(uint32_t));
     cJSON_AddItemToObject(kip_json, "kernel_capabilities", kac_json);
-    
+
     output_str = cJSON_Print(kip_json);
-    
+
     cJSON_Delete(kip_json);
     return output_str;
 }
@@ -133,11 +133,11 @@ static void kip1_blz_uncompress(void *hdr_end) {
     uint32_t addl_size = ((uint32_t *)hdr_end)[-1];
     uint32_t header_size = ((uint32_t *)hdr_end)[-2];
     uint32_t cmp_and_hdr_size = ((uint32_t *)hdr_end)[-3];
-    
+
     unsigned char *cmp_start = (unsigned char *)(((uintptr_t)hdr_end) - cmp_and_hdr_size);
     uint32_t cmp_ofs = cmp_and_hdr_size - header_size;
     uint32_t out_ofs = cmp_and_hdr_size + addl_size;
-    
+
     while (out_ofs) {
         unsigned char control = cmp_start[--cmp_ofs];
         for (unsigned int i = 0; i < 8; i++) {
@@ -155,7 +155,7 @@ static void kip1_blz_uncompress(void *hdr_end) {
                     seg_size = out_ofs;
                 }
                 out_ofs -= seg_size;
-                
+
                 for (unsigned int j = 0; j < seg_size; j++) {
                     cmp_start[out_ofs + j] = cmp_start[out_ofs + j + seg_ofs];
                 }
@@ -182,7 +182,7 @@ static void *kip1_uncompress(kip1_ctx_t *ctx, uint64_t *size) {
         new_header.section_headers[i].compressed_size = new_header.section_headers[i].out_size;
     }
     new_header.flags &= 0xF8;
-    
+
     *size = kip1_get_size_from_header(&new_header);
     unsigned char *new_kip = calloc(1, *size);
     if (new_kip == NULL) {
@@ -190,7 +190,7 @@ static void *kip1_uncompress(kip1_ctx_t *ctx, uint64_t *size) {
         exit(EXIT_FAILURE);
     }
     *((kip1_header_t *)new_kip) = new_header;
-    
+
     uint64_t new_offset = 0x100;
     uint64_t old_offset = 0x100;
     for (unsigned int i = 0; i < 3; i++) {
@@ -200,19 +200,19 @@ static void *kip1_uncompress(kip1_ctx_t *ctx, uint64_t *size) {
         new_offset += ctx->header->section_headers[i].out_size;
         old_offset += ctx->header->section_headers[i].compressed_size;
     }
-    
+
     return new_kip;
 }
 
 void kip1_process(kip1_ctx_t *ctx) {
     /* Read *just* safe amount. */
-    kip1_header_t raw_header; 
+    kip1_header_t raw_header;
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(&raw_header, 1, sizeof(raw_header), ctx->file) != sizeof(raw_header)) {
         fprintf(stderr, "Failed to read KIP1 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (raw_header.magic != MAGIC_KIP1) {
         printf("Error: KIP1 is corrupt!\n");
         exit(EXIT_FAILURE);
@@ -224,17 +224,17 @@ void kip1_process(kip1_ctx_t *ctx) {
         fprintf(stderr, "Failed to allocate KIP1!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(ctx->header, 1, size, ctx->file) != size) {
         fprintf(stderr, "Failed to read KIP1!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_INFO) {
         kip1_print(ctx, 0);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         kip1_save(ctx);
     }
@@ -283,7 +283,9 @@ void kip1_save(kip1_ctx_t *ctx) {
             }
             cJSON_free(json);
             fclose(f_json);
-        } else if (uncmp_path->valid == VALIDITY_VALID) {
+        }
+
+        if (uncmp_path->valid == VALIDITY_VALID) {
             FILE *f_uncmp = os_fopen(uncmp_path->os_path, OS_MODE_WRITE);
             if (f_uncmp == NULL) {
                 fprintf(stderr, "Failed to open %s!\n", uncmp_path->char_path);
