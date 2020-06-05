@@ -242,7 +242,7 @@ string fs::GetParentDir(const string &path)
 }
 
 #ifdef __SWITCH__
-string GetNcaPath(u64 tid)
+string fs::GetNcaPath(u64 tid)
 {
 	char path[FS_MAX_PATH] = {0};
 	auto rc = lrInitialize();		
@@ -264,7 +264,7 @@ string GetNcaPath(u64 tid)
 }
 #endif
 
-bool DumpHomeMenuNca()
+bool fs::DumpHomeMenuNca()
 {	
 #ifdef __SWITCH__
 	FsFileSystem sys;

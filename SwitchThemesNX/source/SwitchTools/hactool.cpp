@@ -9,12 +9,12 @@
 using namespace std;
 using namespace fs;
 
-inline void CopyFile(const std::string &Src, const std::string &Dst)
+static inline void CopyFile(const std::string &Src, const std::string &Dst)
 {
 	WriteFile(Dst,OpenFile(Src));
 }
 
-void CopyLytDir()
+static void CopyLytDir()
 {
 	for (auto p : filesystem::directory_iterator("sdmc:/themes/systemData/tmp/lyt/"))
 	{		
@@ -26,7 +26,19 @@ void CopyLytDir()
 	}
 }
 
-bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, const Key &HeaderKey, const Key &KakAppSource, bool exefs = false)
+static struct NcaDecryptionkeys
+{
+	bool Initialized;
+	Key header_key, key_area_key_application_source;
+} g_Keys = {false};
+
+enum class ExtractionTarget
+{
+	RomFS,
+	ExeFS
+};
+
+static bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, ExtractionTarget target)
 {    
     hactool_ctx_t tool_ctx;
     hactool_ctx_t base_ctx; /* Context for base NCA, if used. */
@@ -43,7 +55,7 @@ bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, co
     nca_ctx.tool_ctx->action = ACTION_EXTRACT;
     pki_initialize_keyset(&tool_ctx.settings.keyset, KEYSET_RETAIL);
     
-	if (exefs)
+	if (target == ExtractionTarget::ExeFS)
 	{
 		nca_ctx.tool_ctx->settings.exefs_dir_path.enabled = 1;
 		filepath_set(&nca_ctx.tool_ctx->settings.exefs_dir_path.path, OutDir.c_str());
@@ -58,8 +70,8 @@ bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, co
         return false;
     }
 	
-	memcpy(tool_ctx.settings.keyset.header_key, HeaderKey.key.data(), 0x20);
-	memcpy(tool_ctx.settings.keyset.key_area_key_application_source, KakAppSource.key.data(), 0x10);
+	memcpy(tool_ctx.settings.keyset.header_key, g_Keys.header_key.key.data(), 0x20);
+	memcpy(tool_ctx.settings.keyset.key_area_key_application_source, g_Keys.key_area_key_application_source.key.data(), 0x10);
     
     if (nca_ctx.tool_ctx->base_nca_ctx != NULL) {
         memcpy(&base_ctx.settings.keyset, &tool_ctx.settings.keyset, sizeof(nca_keyset_t));
@@ -106,30 +118,11 @@ bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, co
     return true;
 }
 
-std::string GetNcaPath(u64 tid);
-
-template <typename F>
-struct ScopeExit {
-    ScopeExit(F f) : f(f) {}
-    ~ScopeExit() { f(); }
-    F f;
-};
-template <typename F>
-ScopeExit<F> MakeScopeExit(F f) {
-    return ScopeExit<F>(f);
-};
-#define STRING_JOIN2(arg1, arg2) DO_STRING_JOIN2(arg1, arg2)
-#define DO_STRING_JOIN2(arg1, arg2) arg1 ## arg2
-#define SCOPE_EXIT(code) \
-auto STRING_JOIN2(scope_exit_, __LINE__) = MakeScopeExit([&](){code;})
-
-struct NcaDecryptionkeys
+static bool GetKeys() 
 {
-	Key header_key, key_area_key_application_source;
-};
-
-bool GetKeys(NcaDecryptionkeys *out) 
-{
+	if (g_Keys.Initialized) 
+		return true;
+	
 	if (!(envIsSyscallHinted(0x60) &&     // svcDebugActiveProcess
           envIsSyscallHinted(0x63) &&     // svcGetDebugEvent
           envIsSyscallHinted(0x65) &&     // svcGetProcessList
@@ -155,15 +148,17 @@ bool GetKeys(NcaDecryptionkeys *out)
 		DialogBlocking("Key extraction from FS failed !");
 		return false;
 	}
-	*out = {header_key,Keys.key_area_key_application_source};
+	
+	g_Keys = {true, header_key, Keys.key_area_key_application_source};
+	
 	return true;
 }
 
 //Don't use this multiple times from the same archive
-bool NcaExtractSingleFile(const string &file, u64 titleid, const NcaDecryptionkeys &Keys, const string &targetName)
+static bool NcaExtractSingleFile(const string &file, u64 titleid, const string &targetName)
 {
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
-	if (HactoolExtractNCA(GetNcaPath(titleid),"sdmc:/themes/systemData/tmp",Keys.header_key, Keys.key_area_key_application_source))
+	if (HactoolExtractNCA(GetNcaPath(titleid),"sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/" + file))
 		{			
@@ -174,41 +169,49 @@ bool NcaExtractSingleFile(const string &file, u64 titleid, const NcaDecryptionke
 		RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
 		return true;
 	}
-	else return false;
-}
-
-FsFileSystem InitExtractionCode()
-{
-	pmdmntInitialize();
-    splCryptoInitialize();
-    splInitialize();
-    FsFileSystem sys;
-	fsOpenBisFileSystem(&sys, FsBisPartitionId_System, "");
-	fsdevMountDevice("System", sys);
-	return sys;
-}
-
-void ExitExtractionCode(FsFileSystem *sys)
-{
-	fsFsClose(sys);
-	pmdmntExit();
-	splCryptoExit();
-	splExit();
-	fsdevUnmountDevice("System");
-}
-
-#define EXTRACTION_INIT auto sys = InitExtractionCode(); SCOPE_EXIT({ExitExtractionCode(&sys);});
-
-bool ExtractPlayerSelectMenu()
-{
-	EXTRACTION_INIT
 	
-	NcaDecryptionkeys Keys;
-	if (!GetKeys(&Keys))
-		return false;
+	return false;
+}
+
+#define R_THROW(x) if (R_FAILED(x)) throw std::runtime_error(#x)
+
+class FsExtractionCtx
+{
+public:
+	FsFileSystem sys;
+	
+	FsExtractionCtx() {
+		R_THROW(pmdmntInitialize());
+		R_THROW(splCryptoInitialize());
+		R_THROW(splInitialize());
+		R_THROW(fsOpenBisFileSystem(&sys, FsBisPartitionId_System, ""));
+		
+		if (fsdevMountDevice("System", sys) == -1)
+			throw std::runtime_error("fsdevMountDevice");
+	}
+	
+	~FsExtractionCtx() noexcept(false) {
+		fsFsClose(&sys);		
+		pmdmntExit();
+		splCryptoExit();
+		splExit();
+		
+		if (fsdevUnmountDevice("System") == -1)
+			throw std::runtime_error("fsdevUnmountDevice");
+	}
+	
+	FsExtractionCtx& operator=(const FsExtractionCtx&) = delete;
+	FsExtractionCtx& operator=(FsExtractionCtx&&) = delete;
+};
+
+bool hactool::ExtractPlayerSelectMenu()
+{
+	FsExtractionCtx ctx;
+	
+	if (!GetKeys()) return false;
 	
 	DisplayLoading("Extracting player select menu...");
-	if (!NcaExtractSingleFile("lyt/Psl.szs",0x0100000000001007,Keys,"Psl.szs"))
+	if (!NcaExtractSingleFile("lyt/Psl.szs", 0x0100000000001007, "Psl.szs"))
 	{
 		DialogBlocking("Couldn't extract player select menu");
 		return false;
@@ -216,16 +219,14 @@ bool ExtractPlayerSelectMenu()
 	return true;
 }
 
-bool ExtractUserPage()
+bool hactool::ExtractUserPage()
 {
-	EXTRACTION_INIT
+	FsExtractionCtx ctx;
 	
-	NcaDecryptionkeys Keys;
-	if (!GetKeys(&Keys))
-		return false;
+	if (!GetKeys()) return false;
 	
 	DisplayLoading("Extracting user page...");
-	if (!NcaExtractSingleFile("lyt/MyPage.szs",0x0100000000001013,Keys,"MyPage.szs"))
+	if (!NcaExtractSingleFile("lyt/MyPage.szs", 0x0100000000001013, "MyPage.szs"))
 	{
 		DialogBlocking("Couldn't extract user.nca");
 		return false;
@@ -233,17 +234,15 @@ bool ExtractUserPage()
 	return true;
 }
 
-bool ExtractHomeMenu()
+bool hactool::ExtractHomeMenu()
 {
-	EXTRACTION_INIT
+	FsExtractionCtx ctx;
 	
-	NcaDecryptionkeys Keys;
-	if (!GetKeys(&Keys))
-		return false;
+	if (!GetKeys()) return false;
 	
 	DisplayLoading("Extracting home menu...");
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
-	if (HactoolExtractNCA(GetNcaPath(0x0100000000001000),"sdmc:/themes/systemData/tmp",Keys.header_key, Keys.key_area_key_application_source))
+	if (HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/lyt/ResidentMenu.szs"))
 		{			
@@ -264,43 +263,38 @@ bool ExtractHomeMenu()
 	return true;
 }
 
-bool ExtractTitle(u64 titleID, const string& Path) {
-	EXTRACTION_INIT
-
-	NcaDecryptionkeys Keys;
-	if (!GetKeys(&Keys))
-		return false;
+bool hactool::ExtractTitle(u64 titleID, const string& Path) {
+	FsExtractionCtx ctx;
+	
+	if (!GetKeys()) return false;
 
 	DisplayLoading("Extracting ...");
 	RecursiveDeleteFolder(Path);
-	if (HactoolExtractNCA(GetNcaPath(titleID), Path, Keys.header_key, Keys.key_area_key_application_source))
-	{
+	if (HactoolExtractNCA(GetNcaPath(titleID), Path, ExtractionTarget::RomFS))
 		Dialog("Done");
-		return true;
-	}
 	else
 	{
 		Dialog("Couldn't extract");
 		return false;
 	}
+	
+	return true;
 }
 
-bool ExtractHomeExefs()
+bool hactool::ExtractHomeExefs()
 {
-	EXTRACTION_INIT
+	FsExtractionCtx ctx;
 	
-	NcaDecryptionkeys Keys;
-	if (!GetKeys(&Keys))
-		return false;
+	if (!GetKeys()) return false;
 	
-	return HactoolExtractNCA(GetNcaPath(0x0100000000001000),"sdmc:/themes/systemData/",Keys.header_key, Keys.key_area_key_application_source,true);
+	return HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/", ExtractionTarget::ExeFS);
 }
 
 #else
 
-bool ExtractPlayerSelectMenu() { return true; }
-bool ExtractUserPage() { return true; }
-bool ExtractHomeMenu() { return true; }
-bool ExtractTitle(u64 titleID, const std::string& Path) { return true; }
+bool hactool::ExtractPlayerSelectMenu() { return true; }
+bool hactool::ExtractUserPage() { return true; }
+bool hactool::ExtractHomeMenu() { return true; }
+bool hactool::ExtractTitle(u64 titleID, const std::string& Path) { return true; }
 
 #endif

@@ -49,9 +49,12 @@ namespace fs {
 	std::string GetHomeNcaPath();
 	void RemoveSystemDataDir();
 	bool WriteHomeDumpVer();
+	
+#ifdef __SWITCH__
+	std::string GetNcaPath(u64 tid);
+#endif
+	bool DumpHomeMenuNca();
 }
-
-bool DumpHomeMenuNca();
 
 namespace shuffle {
 	int GetShuffleCount();
