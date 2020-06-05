@@ -178,7 +178,7 @@ void parse_hex_key(unsigned char *key, const char *hex, unsigned int len) {
 void extkeys_parse_titlekeys(hactool_settings_t *settings, FILE *f) {
     char *key, *value;
     int ret;
-    
+
     while ((ret = get_kv(f, &key, &value)) != 1 && ret != -2) {
         if (ret == 0) {
             if (key == NULL || value == NULL) {
@@ -186,7 +186,7 @@ void extkeys_parse_titlekeys(hactool_settings_t *settings, FILE *f) {
             }
             unsigned char rights_id[0x10];
             unsigned char titlekey[0x10];
-            
+
             bool should_ignore_key = false;
             if (strlen(key) != 0x20) {
                 should_ignore_key = true;
@@ -214,7 +214,7 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
     char *key, *value;
     int ret;
     nca_keyset_t *keyset = &settings->keyset;
-    
+
     while ((ret = get_kv(f, &key, &value)) != 1 && ret != -2) {
         if (ret == 0) {
             if (key == NULL || value == NULL) {
@@ -225,7 +225,7 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
                 parse_hex_key(keyset->aes_kek_generation_source, value, sizeof(keyset->aes_kek_generation_source));
                 matched_key = 1;
             } else if (strcmp(key, "aes_key_generation_source") == 0) {
-                parse_hex_key(keyset->aes_key_generation_source, value, sizeof(keyset->aes_key_generation_source));            
+                parse_hex_key(keyset->aes_key_generation_source, value, sizeof(keyset->aes_key_generation_source));
                 matched_key = 1;
             } else if (strcmp(key, "key_area_key_application_source") == 0) {
                 parse_hex_key(keyset->key_area_key_application_source, value, sizeof(keyset->key_area_key_application_source));
@@ -250,6 +250,12 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
                 matched_key = 1;
             } else if (strcmp(key, "package2_key_source") == 0) {
                 parse_hex_key(keyset->package2_key_source, value, sizeof(keyset->package2_key_source));
+                matched_key = 1;
+            } else if (strcmp(key, "per_console_key_source") == 0) {
+                parse_hex_key(keyset->per_console_key_source, value, sizeof(keyset->per_console_key_source));
+                matched_key = 1;
+            } else if (strcmp(key, "xci_header_key") == 0) {
+                parse_hex_key(keyset->xci_header_key, value, sizeof(keyset->xci_header_key));
                 matched_key = 1;
             } else if (strcmp(key, "sd_card_kek_source") == 0) {
                 parse_hex_key(keyset->sd_card_kek_source, value, sizeof(keyset->sd_card_kek_source));
@@ -278,8 +284,20 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
             } else if (strcmp(key, "tsec_key") == 0) {
                 parse_hex_key(keyset->tsec_key, value, sizeof(keyset->tsec_key));
                 matched_key = 1;
-            } else if (strcmp(key, "tsec_root_key") == 0 || strcmp(key, "tsec_root_key_00") == 0) {
-                parse_hex_key(keyset->tsec_root_key, value, sizeof(keyset->tsec_root_key));
+            } else if (strcmp(key, "mariko_kek") == 0) {
+                parse_hex_key(keyset->mariko_kek, value, sizeof(keyset->mariko_kek));
+                matched_key = 1;
+            }  else if (strcmp(key, "mariko_bek") == 0) {
+                parse_hex_key(keyset->mariko_bek, value, sizeof(keyset->mariko_bek));
+                matched_key = 1;
+            }  else if (strcmp(key, "tsec_root_kek") == 0) {
+                parse_hex_key(keyset->tsec_root_kek, value, sizeof(keyset->tsec_root_kek));
+                matched_key = 1;
+            } else if (strcmp(key, "package1_mac_kek") == 0) {
+                parse_hex_key(keyset->package1_mac_kek, value, sizeof(keyset->package1_mac_kek));
+                matched_key = 1;
+            } else if (strcmp(key, "package1_kek") == 0) {
+                parse_hex_key(keyset->package1_kek, value, sizeof(keyset->package1_kek));
                 matched_key = 1;
             } else if (strcmp(key, "beta_nca0_exponent") == 0) {
                 unsigned char exponent[0x100] = {0};
@@ -295,28 +313,28 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "keyblob_key_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->keyblob_keys[i], value, sizeof(keyset->keyblob_keys[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "keyblob_mac_key_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->keyblob_mac_keys[i], value, sizeof(keyset->keyblob_mac_keys[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "encrypted_keyblob_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->encrypted_keyblobs[i], value, sizeof(keyset->encrypted_keyblobs[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "keyblob_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->keyblobs[i], value, sizeof(keyset->keyblobs[i]));
@@ -325,63 +343,101 @@ void extkeys_initialize_settings(hactool_settings_t *settings, FILE *f) {
                     }
                 }
                 for (unsigned int i = 0x6; i < 0x20 && !matched_key; i++) {
+                    snprintf(test_name, sizeof(test_name), "tsec_auth_signature_%02"PRIx32, i - 6);
+                    if (strcmp(key, test_name) == 0) {
+                        parse_hex_key(keyset->tsec_auth_signatures[i - 6], value, sizeof(keyset->tsec_auth_signatures[i - 6]));
+                        matched_key = 1;
+                        break;
+                    }
+
+                    snprintf(test_name, sizeof(test_name), "tsec_root_key_%02"PRIx32, i - 6);
+                    if (strcmp(key, test_name) == 0) {
+                        parse_hex_key(keyset->tsec_root_keys[i - 6], value, sizeof(keyset->tsec_root_keys[i - 6]));
+                        matched_key = 1;
+                        break;
+                    }
+
                     snprintf(test_name, sizeof(test_name), "master_kek_source_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->master_kek_sources[i], value, sizeof(keyset->master_kek_sources[i]));
                         matched_key = 1;
                         break;
                     }
+
+                    snprintf(test_name, sizeof(test_name), "mariko_master_kek_source_%02"PRIx32, i);
+                    if (strcmp(key, test_name) == 0) {
+                        parse_hex_key(keyset->mariko_master_kek_sources[i], value, sizeof(keyset->mariko_master_kek_sources[i]));
+                        matched_key = 1;
+                        break;
+                    }
+
+                    snprintf(test_name, sizeof(test_name), "package1_mac_key_%02"PRIx32, i);
+                    if (strcmp(key, test_name) == 0) {
+                        parse_hex_key(keyset->package1_mac_keys[i], value, sizeof(keyset->package1_mac_keys[i]));
+                        matched_key = 1;
+                        break;
+                    }
                 }
-                for (unsigned int i = 0; i < 0x20 && !matched_key; i++) { 
+
+                for (unsigned int i = 0; i < 0xC && !matched_key; i++) {
+                    snprintf(test_name, sizeof(test_name), "mariko_aes_class_key_%02"PRIx32, i);
+                    if (strcmp(key, test_name) == 0) {
+                        parse_hex_key(keyset->mariko_aes_class_keys[i], value, sizeof(keyset->mariko_aes_class_keys[i]));
+                        matched_key = 1;
+                        break;
+                    }
+                }
+
+                for (unsigned int i = 0; i < 0x20 && !matched_key; i++) {
                     snprintf(test_name, sizeof(test_name), "master_kek_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->master_keks[i], value, sizeof(keyset->master_keks[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "master_key_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->master_keys[i], value, sizeof(keyset->master_keys[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "package1_key_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->package1_keys[i], value, sizeof(keyset->package1_keys[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "package2_key_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->package2_keys[i], value, sizeof(keyset->package2_keys[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "titlekek_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->titlekeks[i], value, sizeof(keyset->titlekeks[i]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "key_area_key_application_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->key_area_keys[i][0], value, sizeof(keyset->key_area_keys[i][0]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "key_area_key_ocean_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->key_area_keys[i][1], value, sizeof(keyset->key_area_keys[i][1]));
                         matched_key = 1;
                         break;
                     }
-                    
+
                     snprintf(test_name, sizeof(test_name), "key_area_key_system_%02"PRIx32, i);
                     if (strcmp(key, test_name) == 0) {
                         parse_hex_key(keyset->key_area_keys[i][2], value, sizeof(keyset->key_area_keys[i][2]));
@@ -411,7 +467,7 @@ void settings_add_titlekey(hactool_settings_t *settings, const unsigned char *ri
         fprintf(stderr, " already has a corresponding titlekey!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* Ensure enough space for keys. */
     if (settings->known_titlekeys.count == 0) {
         settings->known_titlekeys.titlekeys = malloc(1 * sizeof(titlekey_entry_t));
@@ -423,9 +479,9 @@ void settings_add_titlekey(hactool_settings_t *settings, const unsigned char *ri
         fprintf(stderr, "Failed to allocate titlekey list!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     titlekey_entry_t *new_key = &settings->known_titlekeys.titlekeys[settings->known_titlekeys.count++];
-    
+
     memcpy(new_key->rights_id, rights_id, 0x10);
     memcpy(new_key->titlekey, titlekey, 0x10);
 }
@@ -436,7 +492,7 @@ titlekey_entry_t *settings_get_titlekey(hactool_settings_t *settings, const unsi
             return &settings->known_titlekeys.titlekeys[i];
         }
     }
-    
+
     return NULL;
 }
 

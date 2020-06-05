@@ -3,13 +3,13 @@
 
 void pfs0_process(pfs0_ctx_t *ctx) {
     /* Read *just* safe amount. */
-    pfs0_header_t raw_header; 
+    pfs0_header_t raw_header;
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(&raw_header, 1, sizeof(raw_header), ctx->file) != sizeof(raw_header)) {
         fprintf(stderr, "Failed to read PFS0 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     if (raw_header.magic != MAGIC_PFS0) {
         printf("Error: PFS0 is corrupt!\n");
         exit(EXIT_FAILURE);
@@ -21,23 +21,19 @@ void pfs0_process(pfs0_ctx_t *ctx) {
         fprintf(stderr, "Failed to allocate PFS0 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     fseeko64(ctx->file, 0, SEEK_SET);
     if (fread(ctx->header, 1, header_size, ctx->file) != header_size) {
         fprintf(stderr, "Failed to read PFS0 header!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     /* Weak file validation. */
     uint64_t max_size = 0x1ULL;
-    max_size <<= 48; /* Switch file sizes are capped at 48 bits. */ 
+    max_size <<= 48; /* Switch file sizes are capped at 48 bits. */
     uint64_t cur_ofs = 0;
     for (unsigned int i = 0; i < ctx->header->num_files; i++) {
         pfs0_file_entry_t *cur_file = pfs0_get_file_entry(ctx->header, i);
-        if (cur_file->offset != cur_ofs) {
-            printf("Error: PFS0 is corrupt!\n");
-            exit(EXIT_FAILURE);
-        }
         cur_ofs += cur_file->size;
     }
 
@@ -62,11 +58,11 @@ void pfs0_process(pfs0_ctx_t *ctx) {
             }
         }
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_INFO) {
         pfs0_print(ctx);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         pfs0_save(ctx);
     }

@@ -39,6 +39,7 @@ void filepath_copy(filepath_t *fpath, filepath_t *copy);
 void filepath_append(filepath_t *fpath, const char *format, ...);
 void filepath_append_n(filepath_t *fpath, uint32_t n, const char *format, ...);
 void filepath_set(filepath_t *fpath, const char *path);
+void filepath_set_format(filepath_t *fpath, const char *format, ...);
 oschar_t *filepath_get(filepath_t *fpath);
 
 

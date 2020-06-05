@@ -1,14 +1,15 @@
 #ifndef HACTOOL_AES_H
 #define HACTOOL_AES_H
 
-#include "mbedtls/cipher.h"
-#include "mbedtls/cmac.h"
+#include <mbedtls/cipher.h>
+#include <mbedtls/cmac.h>
 
 /* Enumerations. */
 typedef enum {
     AES_MODE_ECB = MBEDTLS_CIPHER_AES_128_ECB,
     AES_MODE_CTR = MBEDTLS_CIPHER_AES_128_CTR,
-    AES_MODE_XTS = MBEDTLS_CIPHER_AES_128_XTS
+    AES_MODE_XTS = MBEDTLS_CIPHER_AES_128_XTS,
+    AES_MODE_CBC = MBEDTLS_CIPHER_AES_128_CBC
 } aes_mode_t;
 
 typedef enum {

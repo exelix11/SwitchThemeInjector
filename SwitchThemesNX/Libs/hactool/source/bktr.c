@@ -12,20 +12,20 @@ bktr_relocation_entry_t *bktr_get_relocation(bktr_relocation_block_t *block, uin
         fprintf(stderr, "Too big offset looked up in BKTR relocation table!\n");
         exit(EXIT_FAILURE);
     }
-    
+
     uint32_t bucket_num = 0;
     for (unsigned int i = 1; i < block->num_buckets; i++) {
         if (block->bucket_virtual_offsets[i] <= offset) {
             bucket_num++;
         }
     }
-    
+
     bktr_relocation_bucket_t *bucket = bktr_get_relocation_bucket(block, bucket_num);
-    
+
     if (bucket->num_entries == 1) { /* Check for edge case, short circuit. */
         return &bucket->entries[0];
     }
-    
+
     /* Binary search. */
     uint32_t low = 0, high = bucket->num_entries - 1;
     while (low <= high) {
@@ -55,20 +55,20 @@ bktr_subsection_entry_t *bktr_get_subsection(bktr_subsection_block_t *block, uin
     if (offset >= last_bucket->entries[last_bucket->num_entries].offset) {
         return &last_bucket->entries[last_bucket->num_entries];
     }
-    
+
     uint32_t bucket_num = 0;
     for (unsigned int i = 1; i < block->num_buckets; i++) {
         if (block->bucket_physical_offsets[i] <= offset) {
             bucket_num++;
         }
     }
-    
+
     bktr_subsection_bucket_t *bucket = bktr_get_subsection_bucket(block, bucket_num);
-    
+
     if (bucket->num_entries == 1) { /* Check for edge case, short circuit. */
         return &bucket->entries[0];
     }
-    
+
     /* Binary search. */
     uint32_t low = 0, high = bucket->num_entries - 1;
     while (low <= high) {

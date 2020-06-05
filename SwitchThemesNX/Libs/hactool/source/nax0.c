@@ -8,7 +8,7 @@ static size_t nax0_read(nax0_ctx_t *ctx, uint64_t offset, void *dst, size_t size
         fseeko64(ctx->files[0], offset, SEEK_SET);
         return fread(dst, 1, size, ctx->files[0]);
     }
-    
+
     FILE *which = ctx->files[offset / 0xFFFF0000ULL];
     uint64_t offset_in_file = offset % 0xFFFF0000ULL;
     fseeko64(which, offset_in_file, SEEK_SET);
@@ -61,15 +61,15 @@ void nax0_process(nax0_ctx_t *ctx) {
             }
         }
     }
-    
+
     nax0_read(ctx, 0, &ctx->header, sizeof(ctx->header));
     if (ctx->header.magic != MAGIC_NAX0) {
         printf("Error: File has invalid NAX0 magic!\n");
         return;
     }
-    
+
     memcpy(ctx->encrypted_keys, ctx->header.keys, sizeof(ctx->header.keys));
-    
+
     int found = 0;
     for (ctx->k = 0; ctx->k < 2; ctx->k++) {
         unsigned char nax_specific_keys[2][0x10];
@@ -79,7 +79,7 @@ void nax0_process(nax0_ctx_t *ctx) {
             aes_decrypt(nax_k_ctx, ctx->header.keys[i], ctx->encrypted_keys[i], 0x10);
             free_aes_ctx(nax_k_ctx);
         }
-        
+
         unsigned char validation_mac[0x20];
         sha256_get_buffer_hmac(validation_mac, &ctx->header.magic, 0x60, ctx->tool_ctx->settings.keyset.sd_card_keys[ctx->k] + 0x10, 0x10);
         if (memcmp(ctx->header.hmac_header, validation_mac, 0x20) == 0) {
@@ -87,18 +87,18 @@ void nax0_process(nax0_ctx_t *ctx) {
             break;
         }
     }
-    
+
     if (!found) {
         printf("Error: NAX0 key derivation failed. Check SD card seed and relative path?\n");
         return;
     }
-    
+
     ctx->aes_ctx = new_aes_ctx(ctx->header.keys, 0x20, AES_MODE_XTS);
-    
+
     if (ctx->tool_ctx->action & ACTION_INFO) {
         nax0_print(ctx);
     }
-    
+
     if (ctx->tool_ctx->action & ACTION_EXTRACT) {
         nax0_save(ctx);
     }

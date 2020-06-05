@@ -109,7 +109,8 @@ typedef struct {
         };
     };
     uint8_t crypto_type2; /* Which keyblob (field 2) */
-    uint8_t _0x221[0xF]; /* Padding. */
+    uint8_t fixed_key_generation;
+    uint8_t _0x222[0xE]; /* Padding. */
     uint8_t rights_id[0x10]; /* Rights ID (for titlekey crypto). */
     nca_section_entry_t section_entries[4]; /* Section entry metadata. */
     uint8_t section_hashes[4][0x20]; /* SHA-256 hashes for each section header. */
@@ -133,6 +134,15 @@ enum nca_version {
     /* NCAVERSION_NCA1, // Does this exist? */
     NCAVERSION_NCA2,
     NCAVERSION_NCA3
+};
+
+enum nca_content_type {
+    NCACONTENTTYPE_PROGRAM    = 0,
+    NCACONTENTTYPE_META       = 1,
+    NCACONTENTTYPE_CONTROL    = 2,
+    NCACONTENTTYPE_MANUAL     = 3,
+    NCACONTENTTYPE_DATA       = 4,
+    NCACONTENTTPYE_PUBLICDATA = 5,
 };
 
 typedef struct {
@@ -165,7 +175,7 @@ typedef struct {
 
 typedef struct nca_ctx {
     FILE *file; /* File for this NCA. */
-    size_t file_size;   
+    size_t file_size;
     unsigned char crypto_type;
     int has_rights_id;
     int is_decrypted;

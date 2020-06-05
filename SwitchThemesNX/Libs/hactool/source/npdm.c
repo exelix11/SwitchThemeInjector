@@ -53,7 +53,7 @@ static const char * const svc_names[0x80] = {
     "svcFlushDataCache",
     "svcMapPhysicalMemory",
     "svcUnmapPhysicalMemory",
-    "svcGetFutureThreadInfo",
+    "svcGetDebugFutureThreadInfo",
     "svcGetLastThreadInfo",
     "svcGetResourceLimitLimitValue",
     "svcGetResourceLimitCurrentValue",
@@ -61,14 +61,14 @@ static const char * const svc_names[0x80] = {
     "svcGetThreadContext3",
     "svcWaitForAddress",
     "svcSignalToAddress",
+    "svcSynchronizePreemptionState",
     "svcUnknown",
     "svcUnknown",
     "svcUnknown",
     "svcUnknown",
     "svcUnknown",
-    "svcUnknown",
-    "svcDumpInfo",
-    "svcDumpInfoNew",
+    "svcKernelDebug",
+    "svcChangeKernelTraceState",
     "svcUnknown",
     "svcUnknown",
     "svcCreateSession",
@@ -405,7 +405,7 @@ void kac_print(const uint32_t *descriptors, uint32_t num_descriptors) {
     if (kac.irqs != NULL) {
         printf("        Mapped Interrupts:          ");
         int num_irqs = 0;
-        while (kac.irqs != NULL) {   
+        while (kac.irqs != NULL) {
             cur_irq = kac.irqs;
             if (cur_irq->irq0 != 0x3FF) {
                 if (num_irqs % 8 == 0) {
@@ -438,9 +438,9 @@ void kac_print(const uint32_t *descriptors, uint32_t num_descriptors) {
     if (kac.has_handle_table_size) {
         printf("        Handle Table Size:          %"PRId32"\n", kac.handle_table_size);
     }
-    
+
     if (kac.has_kern_ver) {
-        printf("        Minimum Kernel Version:     %"PRIx8"\n", kac.kernel_release_version);
+        printf("        Minimum Kernel Version:     %"PRIu32"\n", kac.kernel_release_version);
     }
 
     if (kac.has_debug_flags) {
@@ -585,7 +585,7 @@ static void fac_print(fac_t *fac, fah_t *fah) {
                 printf("%s\n                                    ", fs_permissions_bool[i].name);
             } else {
                 printf("%-32s [DEBUG ONLY]\n                                    ", fs_permissions_bool[i].name);
-            }        
+            }
         }
     }
     printf("\n");
@@ -595,7 +595,7 @@ void npdm_process(npdm_t *npdm, hactool_ctx_t *tool_ctx) {
     if (tool_ctx->action & ACTION_INFO) {
         npdm_print(npdm, tool_ctx);
     }
-    
+
     if (tool_ctx->action & ACTION_EXTRACT) {
         npdm_save(npdm, tool_ctx);
     }
@@ -607,7 +607,7 @@ void npdm_print(npdm_t *npdm, hactool_ctx_t *tool_ctx) {
     printf("    MMU Flags:                      %"PRIx8"\n", npdm->mmu_flags);
     printf("    Main Thread Priority:           %"PRId8"\n", npdm->main_thread_prio);
     printf("    Default CPU ID:                 %"PRIx8"\n", npdm->default_cpuid);
-    printf("    Process Category:               %s\n", npdm_get_proc_category(npdm->process_category));
+    printf("    Version:                        %"PRIu32".%"PRIu32".%"PRIu32"-%"PRIu32" (%"PRIu32")\n", (npdm->version >> 26) & 0x3F, (npdm->version >> 20) & 0x3F, (npdm->version >> 16) & 0xF, (npdm->version >> 0) & 0xFFFF, npdm->version);
     printf("    Main Thread Stack Size:         0x%"PRIx32"\n", npdm->main_stack_size);
     printf("    Title Name:                     %s\n", npdm->title_name);
     npdm_acid_t *acid = npdm_get_acid(npdm);
@@ -615,12 +615,20 @@ void npdm_print(npdm_t *npdm, hactool_ctx_t *tool_ctx) {
     printf("    ACID:\n");
     print_magic("        Magic:                      ", acid->magic);
     if (tool_ctx->action & ACTION_VERIFY) {
-        if (rsa2048_pss_verify(acid->modulus, acid->size, acid->signature, tool_ctx->settings.keyset.acid_fixed_key_modulus)) {
-            memdump(stdout, "        Signature (GOOD):           ", &acid->signature, 0x100);
+        if (npdm->acid_sign_key_index < sizeof(tool_ctx->settings.keyset.acid_fixed_key_moduli) / sizeof(tool_ctx->settings.keyset.acid_fixed_key_moduli[0])) {
+            printf("        Signature Key (GOOD):       %"PRIu32"\n", npdm->acid_sign_key_index);
+            if (rsa2048_pss_verify(acid->modulus, acid->size, acid->signature, tool_ctx->settings.keyset.acid_fixed_key_moduli[npdm->acid_sign_key_index])) {
+                memdump(stdout, "        Signature (GOOD):           ", &acid->signature, 0x100);
+            } else {
+                memdump(stdout, "        Signature (FAIL):           ", &acid->signature, 0x100);
+            }
         } else {
+            printf("        Signature Key (FAIL):       %"PRIu32"\n", npdm->acid_sign_key_index);
             memdump(stdout, "        Signature (FAIL):           ", &acid->signature, 0x100);
         }
+
     } else {
+        printf("        Signature Key:              %"PRIu32"\n", npdm->acid_sign_key_index);
         memdump(stdout, "        Signature:                  ", &acid->signature, 0x100);
     }
     memdump(stdout, "        Header Modulus:             ", &acid->modulus, 0x100);
@@ -710,7 +718,7 @@ void cJSON_AddU8ToObject(cJSON *obj, const char *name, uint8_t val) {
 
 void cJSON_AddU16ToObject(cJSON *obj, const char *name, uint16_t val) {
     char buf[0x20] = {0};
-    snprintf(buf, sizeof(buf), "0x%04"PRIx16, val & 0xFFFF);
+    snprintf(buf, sizeof(buf), "0x%04"PRIx16, val);
     cJSON_AddStringToObject(obj, name, buf);
 }
 
@@ -877,7 +885,7 @@ char *npdm_get_json(npdm_t *npdm) {
     cJSON *npdm_json = cJSON_CreateObject();
     char *output_str = NULL;
     char work_buffer[0x300] = {0};
-    
+
     /* Add NPDM header fields. */
     strcpy(work_buffer, npdm->title_name);
     cJSON_AddStringToObject(npdm_json, "name", work_buffer);
@@ -887,31 +895,31 @@ char *npdm_get_json(npdm_t *npdm) {
     cJSON_AddU32ToObject(npdm_json, "main_thread_stack_size", npdm->main_stack_size);
     cJSON_AddNumberToObject(npdm_json, "main_thread_priority", npdm->main_thread_prio);
     cJSON_AddNumberToObject(npdm_json, "default_cpu_id", npdm->default_cpuid);
-    cJSON_AddNumberToObject(npdm_json, "process_category", npdm->process_category);
+    cJSON_AddU32ToObject(npdm_json, "version", npdm->version);
     cJSON_AddBoolToObject(npdm_json, "is_retail", acid->flags & 1);
     cJSON_AddNumberToObject(npdm_json, "pool_partition", (acid->flags >> 2) & 3);
     cJSON_AddBoolToObject(npdm_json, "is_64_bit", npdm->mmu_flags & 1);
     cJSON_AddNumberToObject(npdm_json, "address_space_type", (npdm->mmu_flags >> 1) & 7);
-    
+
     /* Add FAC. */
     fac_t *fac = (fac_t *)((char *)acid + acid->fac_offset);
     fah_t *fah = (fah_t *)((char *)aci0 + aci0->fah_offset);
     cJSON *fac_json = cJSON_CreateObject();
     cJSON_AddU64ToObject(fac_json, "permissions", fac->perms & fah->perms);
     cJSON_AddItemToObject(npdm_json, "filesystem_access", fac_json);
-    
+
     /* Add SAC. */
     cJSON *sac_access_json = sac_access_get_json((char *)aci0 + aci0->sac_offset, aci0->sac_size);
     cJSON *sac_host_json = sac_host_get_json((char *)aci0 + aci0->sac_offset, aci0->sac_size);
     cJSON_AddItemToObject(npdm_json, "service_access", sac_access_json);
     cJSON_AddItemToObject(npdm_json, "service_host", sac_host_json);
-    
+
     /* Add KAC. */
     cJSON *kac_json = kac_get_json((uint32_t *)((char *)aci0 + aci0->kac_offset), aci0->kac_size / sizeof(uint32_t));
     cJSON_AddItemToObject(npdm_json, "kernel_capabilities", kac_json);
-    
+
     output_str = cJSON_Print(npdm_json);
-    
+
     cJSON_Delete(npdm_json);
     return output_str;
 }

@@ -69,5 +69,4 @@ static inline uint64_t kip1_get_size_from_header(kip1_header_t *header) {
     return 0x100 + header->section_headers[0].compressed_size + header->section_headers[1].compressed_size + header->section_headers[2].compressed_size;
 }
 
-
 #endif

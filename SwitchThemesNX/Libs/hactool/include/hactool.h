@@ -4,16 +4,16 @@
 extern "C" {
 #endif
 
-#include "types.h"
-#include "utils.h"
-#include "settings.h"
-#include "pki.h"
-#include "nca.h"
-#include "xci.h"
-#include "nax0.h"
-#include "extkeys.h"
-#include "packages.h"
-#include "nso.h"
+#include "../source/types.h"
+#include "../source/utils.h"
+#include "../source/settings.h"
+#include "../source/pki.h"
+#include "../source/nca.h"
+#include "../source/xci.h"
+#include "../source/nax0.h"
+#include "../source/extkeys.h"
+#include "../source/packages.h"
+#include "../source/nso.h"
 
 #ifdef __cplusplus
 }
