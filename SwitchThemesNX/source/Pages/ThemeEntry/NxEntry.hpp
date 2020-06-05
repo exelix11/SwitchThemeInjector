@@ -40,9 +40,9 @@ protected:
 		string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
 		if (!filesystem::exists(BaseSzs))
 		{
-			if (themeInfo.Target == "user" && ExtractUserPage())
+			if (themeInfo.Target == "user" && hactool::ExtractUserPage())
 				goto CONTINUE_INSTALL;
-			if (themeInfo.Target == "psl" && ExtractPlayerSelectMenu())
+			if (themeInfo.Target == "psl" && hactool::ExtractPlayerSelectMenu())
 				goto CONTINUE_INSTALL;
 
 			MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);

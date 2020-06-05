@@ -31,7 +31,7 @@ void NcaDumpPage::Render(int X, int Y)
 			{
 				DialogBlocking("Super secret combination entered, only the home menu NCA will be dumped (it won't be extracted)");
 				DisplayLoading("Extracting NCA...");
-				if (DumpHomeMenuNca())
+				if (fs::DumpHomeMenuNca())
 					Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
 				return;
 			}
@@ -39,8 +39,15 @@ void NcaDumpPage::Render(int X, int Y)
 				"To install custom themes you need to extract the home menu first, this process may take several minutes, don't let your console go to sleep mode and don't press the home button.\n"
 				"Do you want to continue ?")) return;
 			fs::RemoveSystemDataDir();
-			if (ExtractHomeMenu())
-				Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
+			try
+			{				
+				if (hactool::ExtractHomeMenu())
+					Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
+			}
+			catch (std::runtime_error err)
+			{
+				DialogBlocking("Error while extracting the home menu: " + string(err.what()));
+			}
 		});
 	}
 	PAGE_RESET_FOCUS
@@ -92,7 +99,14 @@ ASK_DUMP:
 	
 DUMP_HOMEMENU:
 	fs::RemoveSystemDataDir();
-	ExtractHomeMenu();
+	try
+	{
+		hactool::ExtractHomeMenu();
+	}
+	catch (std::runtime_error err)
+	{
+		DialogBlocking("Error while extracting the home menu: " + string(err.what()));
+	}
 }
 
 
