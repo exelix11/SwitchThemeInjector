@@ -2,14 +2,16 @@
 #include <cstring>
 
 using namespace std;
-vector<u8> Yaz0::Decompress(const vector<u8> &Data) 
+vector<u8> Yaz0::Decompress(const vector<u8>& Data)
 {
+	if (Data.size() < 8)
+		throw std::runtime_error("File format: invalid length");
+
 	if (std::memcmp(Data.data(), "Yaz0", 4))
-		throw std::runtime_error("Wrong file format: missing yaz0 magic");
+		throw std::runtime_error("File format: missing yaz0 magic");
 
 	u32 leng = (u32)(Data[4] << 24 | Data[5] << 16 | Data[6] << 8 | Data[7]);
-	vector<u8> _Result(leng);
-	u8* ResPtr = _Result.data();	
+	vector<u8> Result(leng);
 	int Offs = 16;
 	u32 dstoffs = 0;
 	while (true)
@@ -17,20 +19,20 @@ vector<u8> Yaz0::Decompress(const vector<u8> &Data)
 		u8 header = Data[Offs++];
 		for (int i = 0; i < 8; i++)
 		{
-			if ((header & 0x80) != 0) ResPtr[dstoffs++] = Data[Offs++];
+			if ((header & 0x80) != 0) Result.at(dstoffs++) = Data.at(Offs++);
 			else
 			{
-				u8 b = Data[Offs++];
-				int offs = ((b & 0xF) << 8 | Data[Offs++]) + 1;
+				u8 b = Data.at(Offs++);
+				int offs = ((b & 0xF) << 8 | Data.at(Offs++)) + 1;
 				int length = (b >> 4) + 2;
-				if (length == 2) length = Data[Offs++] + 0x12;
+				if (length == 2) length = Data.at(Offs++) + 0x12;
 				for (int j = 0; j < length; j++)
 				{
-					ResPtr[dstoffs] = ResPtr[dstoffs - offs];
+					Result.at(dstoffs) = Result.at(dstoffs - offs);
 					dstoffs++;
 				}
 			}
-			if (dstoffs >= leng) return _Result;
+			if (dstoffs >= leng) return Result;
 			header <<= 1;
 		}
 	}
@@ -48,7 +50,7 @@ bool is_big_endian(void)
 
 vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int reserved2)
 {
-	int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
+	const int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
 
 	const u8* dataptr = Data.data();
 
