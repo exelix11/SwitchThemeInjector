@@ -17,7 +17,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 TARGET		:=	$(notdir $(CURDIR))
 SOURCES		:=	source
 DATA		:=	data
-INCLUDES	:=
+INCLUDES	:=	
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -30,7 +30,7 @@ CFLAGS	:=	-g -Wall -Werror \
 			$(ARCH) \
 			$(BUILD_CFLAGS)
 
-CFLAGS	+=	$(INCLUDE)
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__
 
 CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions
 
@@ -40,7 +40,7 @@ ASFLAGS	:=	-g $(ARCH)
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS := $(PORTLIBS) $(LIBNX)
+LIBDIRS := $(LIBNX) $(CURDIR)/../mbedtls
 
 #---------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional
