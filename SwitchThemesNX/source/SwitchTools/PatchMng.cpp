@@ -10,8 +10,8 @@
 using namespace std;
 
 static const u32 PatchSetVer = 3;
-#define LastSupportedVerSTR "10.0.3"
-static const SystemVersion LastSupportedVer = { 10,0,3 };
+#define LastSupportedVerSTR "10.0.4"
+static const SystemVersion LastSupportedVer = { 10,0,4 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
