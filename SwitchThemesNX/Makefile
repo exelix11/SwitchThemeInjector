@@ -49,9 +49,9 @@ ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror
 
-CXXFLAGS	:= $(CFLAGS) -std=gnu++17 -fpermissive
+CXXFLAGS	:= $(CFLAGS) -std=gnu++17
 
 ASFLAGS	:=	 -g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs

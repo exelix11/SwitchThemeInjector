@@ -44,7 +44,7 @@ void NcaDumpPage::Render(int X, int Y)
 				if (hactool::ExtractHomeMenu())
 					Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
 			}
-			catch (std::runtime_error err)
+			catch (std::runtime_error &err)
 			{
 				DialogBlocking("Error while extracting the home menu: " + string(err.what()));
 			}
@@ -103,7 +103,7 @@ DUMP_HOMEMENU:
 	{
 		hactool::ExtractHomeMenu();
 	}
-	catch (std::runtime_error err)
+	catch (std::runtime_error &err)
 	{
 		DialogBlocking("Error while extracting the home menu: " + string(err.what()));
 	}

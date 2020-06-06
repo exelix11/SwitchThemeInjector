@@ -9,7 +9,9 @@ extern "C" {
 #include <switch/types.h>
 
 #define SHA256_DIGEST_SIZE      32
-#define SHA256_BLOCK_SIZE       64
+#ifndef SHA256_BLOCK_SIZE
+	#define SHA256_BLOCK_SIZE       64
+#endif
 
 #define SHA256_H0   0x6a09e667UL
 #define SHA256_H1   0xbb67ae85UL

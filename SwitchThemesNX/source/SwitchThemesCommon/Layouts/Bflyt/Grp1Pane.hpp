@@ -10,12 +10,12 @@ namespace Panes
 		std::string GroupName;
 		std::vector<std::string> Panes;
 
-		Grp1Pane(Buffer& buf, u32 version) : Version{ version }, BasePane("grp1", buf)
+		Grp1Pane(Buffer& buf, u32 version) : BasePane("grp1", buf), Version{ version }
 		{
 			LoadProperties();
 		}
 
-		Grp1Pane(u32 version) : Version{ version }, BasePane("grp1", 8) {};
+		Grp1Pane(u32 version) : BasePane("grp1", 8), Version{ version } {};
 	private:
 		void LoadProperties() 
 		{

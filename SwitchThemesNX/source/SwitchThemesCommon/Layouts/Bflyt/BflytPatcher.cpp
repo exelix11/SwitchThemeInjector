@@ -192,7 +192,7 @@ u16 BflytPatcher::AddBgMat(const std::string& texName)
 	//Add texture
 	auto texSection = lyt.GetTexSection();
 	if (!MatSect || !texSection) return false;
-	int texIndex = Utils::IndexOf(texSection->Textures, texName);
+	size_t texIndex = Utils::IndexOf(texSection->Textures, texName);
 	if (texIndex == SIZE_MAX)
 	{
 		texIndex = texSection->Textures.size();

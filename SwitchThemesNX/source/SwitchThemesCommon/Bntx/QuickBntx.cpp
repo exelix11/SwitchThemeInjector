@@ -8,22 +8,22 @@ QuickBntx::QuickBntx(Buffer &Reader)
 		throw runtime_error("Wrong magic");
 
 	Reader.readInt32();
-	s32 DataLength = Reader.readInt32();
-	u16 ByteOrderMark = Reader.readUInt16();
-	u16 FormatRevision = Reader.readUInt16();
-	s32 NameAddress = Reader.readInt32();
-	s32 StringsAddress = Reader.readInt32() >> 16;
-	s32 RelocAddress = Reader.readInt32();
-	s32 FileLength = Reader.readInt32();
+	/*s32 DataLength =		*/Reader.readInt32();
+	/*u16 ByteOrderMark =	*/Reader.readUInt16();
+	/*u16 FormatRevision =	*/Reader.readUInt16();
+	/*s32 NameAddress =		*/Reader.readInt32();
+	/*s32 StringsAddress =	*/Reader.readInt32();// >> 16;
+	s32 RelocAddress =		Reader.readInt32();
+	/*s32 FileLength =		*/Reader.readInt32();
 
 	if (Reader.readStr(4) != "NX  ")
 		throw runtime_error("Wrong magic");
 
-	u32 TexturesCount = Reader.readUInt32();
-	s64 InfoPtrsAddress = Reader.readInt64();
-	s64 DataBlkAddress = Reader.readInt64();
-	s64 DictAddress = Reader.readInt64();
-	u32 StrDictLength = Reader.readUInt32();
+	u32 TexturesCount =		Reader.readUInt32();
+	s64 InfoPtrsAddress =	Reader.readInt64();
+	/*s64 DataBlkAddress =	*/Reader.readInt64();
+	/*s64 DictAddress =		*/Reader.readInt64();
+	/*u32 StrDictLength =	*/Reader.readUInt32();
 
 	Reader.Position = (size_t)InfoPtrsAddress;
 	auto FirstBrti = (int)Reader.readInt64();
@@ -53,7 +53,7 @@ vector<u8> QuickBntx::Write()
 		TexPositions.push_back(bin.Position);
 		bin.Write(t.Write());
 	}
-	auto DataStart = bin.Position;
+
 	vector<s64> TexDataPositions;
 	bin.WriteAlign(0x10);
 	bin.Write("BRTD");

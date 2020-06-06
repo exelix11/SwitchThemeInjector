@@ -40,10 +40,10 @@ void KeyLocation::get_from_memory(u64 tid, u8 seg_mask) {
         }
     } else { // otherwise query svc for the process list
         u64 pids[300];
-        u32 num_processes;
+        s32 num_processes = 0;
 
         svcGetProcessList(&num_processes, pids, 300);
-        u32 i;
+        s32 i;
         for (i = 0; i < num_processes - 1; i++) {
             if (R_SUCCEEDED(svcDebugActiveProcess(&debug_handle, pids[i])) &&
                 R_SUCCEEDED(svcGetDebugEvent(reinterpret_cast<u8 *>(&d), debug_handle)) &&
