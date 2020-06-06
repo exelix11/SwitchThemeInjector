@@ -82,6 +82,8 @@ typedef struct {
     titlekey_entry_t *titlekeys;
 } known_titlekeys_t;
 
+typedef bool (*file_filter_function)(const char*);
+
 typedef struct {
     nca_keyset_t keyset;
     int skip_key_warnings;
@@ -122,6 +124,7 @@ typedef struct {
     filepath_t nax0_path;
     filepath_t nax0_sd_path;
     filepath_t npdm_json_path;
+	file_filter_function romfs_filter;
 } hactool_settings_t;
 
 enum hactool_file_type

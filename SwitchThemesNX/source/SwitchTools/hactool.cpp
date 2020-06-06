@@ -38,21 +38,38 @@ enum class ExtractionTarget
 	ExeFS
 };
 
+const char* g_filter = nullptr;
+static bool LytFileFilter(const char* str)
+{
+	if (!g_filter) return true;
+
+	return strstr(str, g_filter);
+}
+
 static bool HactoolExtractNCA(const std::string &NcaFile, const std::string &OutDir, ExtractionTarget target)
 {    
+	if (!g_Keys.Initialized) 
+	{
+		DialogBlocking("Keys have not been initialized");
+		return false;
+	}	
+
     hactool_ctx_t tool_ctx;
     hactool_ctx_t base_ctx; /* Context for base NCA, if used. */
     nca_ctx_t nca_ctx;
     filepath_t keypath;
+
     nca_init(&nca_ctx);
     memset(&tool_ctx, 0, sizeof(tool_ctx));
     memset(&base_ctx, 0, sizeof(base_ctx));
     filepath_init(&keypath);
     nca_ctx.tool_ctx = &tool_ctx;
     nca_ctx.is_cli_target = false;
+
     nca_ctx.tool_ctx->file_type = FILETYPE_NCA;
-    base_ctx.file_type = FILETYPE_NCA; 
-    nca_ctx.tool_ctx->action = ACTION_EXTRACT;
+    base_ctx.file_type = FILETYPE_NCA;
+
+    nca_ctx.tool_ctx->action = ACTION_INFO | ACTION_EXTRACT;
     pki_initialize_keyset(&tool_ctx.settings.keyset, KEYSET_RETAIL);
     
 	if (target == ExtractionTarget::ExeFS)
@@ -61,6 +78,7 @@ static bool HactoolExtractNCA(const std::string &NcaFile, const std::string &Out
 		filepath_set(&nca_ctx.tool_ctx->settings.exefs_dir_path.path, OutDir.c_str());
 	}
 	else {
+		nca_ctx.tool_ctx->settings.romfs_filter = LytFileFilter;
 		nca_ctx.tool_ctx->settings.romfs_dir_path.enabled = 1;
 		filepath_set(&nca_ctx.tool_ctx->settings.romfs_dir_path.path, OutDir.c_str());
 	}
@@ -70,42 +88,43 @@ static bool HactoolExtractNCA(const std::string &NcaFile, const std::string &Out
         return false;
     }
 	
+	// Copy keys
 	memcpy(tool_ctx.settings.keyset.header_key, g_Keys.header_key.key.data(), 0x20);
 	memcpy(tool_ctx.settings.keyset.key_area_key_application_source, g_Keys.key_area_key_application_source.key.data(), 0x10);
-    
-    if (nca_ctx.tool_ctx->base_nca_ctx != NULL) {
-        memcpy(&base_ctx.settings.keyset, &tool_ctx.settings.keyset, sizeof(nca_keyset_t));
-        base_ctx.settings.known_titlekeys = tool_ctx.settings.known_titlekeys;
-        nca_ctx.tool_ctx->base_nca_ctx->tool_ctx = &base_ctx;
-        nca_process(nca_ctx.tool_ctx->base_nca_ctx);
-        int found_romfs = 0;
-        for (unsigned int i = 0; i < 4; i++) {
-            if (nca_ctx.tool_ctx->base_nca_ctx->section_contexts[i].is_present && nca_ctx.tool_ctx->base_nca_ctx->section_contexts[i].type == ROMFS) {
-                found_romfs = 1;
-                break;
-            }
-        }
-        if (found_romfs == 0) {
-            Dialog("Unable to locate RomFS in base NCA!\n");
-            return false;
-        }
-    }
+	
+	if (nca_ctx.tool_ctx->base_nca_ctx != NULL) {
+		memcpy(&base_ctx.settings.keyset, &tool_ctx.settings.keyset, sizeof(nca_keyset_t));
+		base_ctx.settings.known_titlekeys = tool_ctx.settings.known_titlekeys;
+		nca_ctx.tool_ctx->base_nca_ctx->tool_ctx = &base_ctx;
+		nca_process(nca_ctx.tool_ctx->base_nca_ctx);
+		int found_romfs = 0;
+		for (unsigned int i = 0; i < 4; i++) {
+			if (nca_ctx.tool_ctx->base_nca_ctx->section_contexts[i].is_present && nca_ctx.tool_ctx->base_nca_ctx->section_contexts[i].type == ROMFS) {
+				found_romfs = 1;
+				break;
+			}
+		}
+		if (found_romfs == 0) {
+			Dialog("Unable to locate RomFS in base NCA!\n");
+			return false;
+		}
+	}
 
-    nca_ctx.file = tool_ctx.file;
-    nca_process(&nca_ctx);
-    nca_free_section_contexts(&nca_ctx);
-    
-    if (nca_ctx.tool_ctx->base_file_type == BASEFILE_FAKE) {
-        nca_ctx.tool_ctx->base_file = NULL;
-    }
-    
-    if (nca_ctx.tool_ctx->base_file != NULL) {
-        fclose(nca_ctx.tool_ctx->base_file);
-        if (nca_ctx.tool_ctx->base_file_type == BASEFILE_NCA) {
-            nca_free_section_contexts(nca_ctx.tool_ctx->base_nca_ctx);
-            free(nca_ctx.tool_ctx->base_nca_ctx);
-        }
-    }     
+	nca_ctx.file = tool_ctx.file;
+	nca_process(&nca_ctx);
+	nca_free_section_contexts(&nca_ctx);
+
+	if (nca_ctx.tool_ctx->base_file_type == BASEFILE_FAKE) {
+		nca_ctx.tool_ctx->base_file = NULL;
+	}
+
+	if (nca_ctx.tool_ctx->base_file != NULL) {
+		fclose(nca_ctx.tool_ctx->base_file);
+		if (nca_ctx.tool_ctx->base_file_type == BASEFILE_NCA) {
+			nca_free_section_contexts(nca_ctx.tool_ctx->base_nca_ctx);
+			free(nca_ctx.tool_ctx->base_nca_ctx);
+		}
+	}
 	
     if (tool_ctx.settings.known_titlekeys.titlekeys != NULL) {
         free(tool_ctx.settings.known_titlekeys.titlekeys);
@@ -114,6 +133,8 @@ static bool HactoolExtractNCA(const std::string &NcaFile, const std::string &Out
     if (tool_ctx.file != NULL) {
         fclose(tool_ctx.file);
     }
+
+	printf("hactool done\n");
 
     return true;
 }
@@ -157,6 +178,8 @@ static bool GetKeys()
 //Don't use this multiple times from the same archive
 static bool NcaExtractSingleFile(const string &file, u64 titleid, const string &targetName)
 {
+	g_filter = file.c_str();
+
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
 	if (HactoolExtractNCA(GetNcaPath(titleid),"sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
@@ -173,28 +196,26 @@ static bool NcaExtractSingleFile(const string &file, u64 titleid, const string &
 	return false;
 }
 
-#define R_THROW(x) if (R_FAILED(x)) throw std::runtime_error(#x)
-
 class FsExtractionCtx
 {
 public:
 	FsFileSystem sys;
-	
+
+#define R_THROW(x) if (R_FAILED(x)) { ExitServices(); throw std::runtime_error(#x); }	
 	FsExtractionCtx() {
-		R_THROW(pmdmntInitialize());
-		R_THROW(splCryptoInitialize());
-		R_THROW(splInitialize());
-		R_THROW(fsOpenBisFileSystem(&sys, FsBisPartitionId_System, ""));
+		R_THROW(pmdmntInitialize())
+		R_THROW(splInitialize())
+		R_THROW(splCryptoInitialize())
+		R_THROW(fsOpenBisFileSystem(&sys, FsBisPartitionId_System, ""))
 		
 		if (fsdevMountDevice("System", sys) == -1)
 			throw std::runtime_error("fsdevMountDevice");
 	}
-	
+#undef R_THROW
+
 	~FsExtractionCtx() noexcept(false) {
+		ExitServices();
 		fsFsClose(&sys);		
-		pmdmntExit();
-		splCryptoExit();
-		splExit();
 		
 		if (fsdevUnmountDevice("System") == -1)
 			throw std::runtime_error("fsdevUnmountDevice");
@@ -202,6 +223,13 @@ public:
 	
 	FsExtractionCtx& operator=(const FsExtractionCtx&) = delete;
 	FsExtractionCtx& operator=(FsExtractionCtx&&) = delete;
+private:
+	void ExitServices() 
+	{
+		pmdmntExit();
+		splCryptoExit();
+		splExit();
+	}
 };
 
 bool hactool::ExtractPlayerSelectMenu()
@@ -242,11 +270,12 @@ bool hactool::ExtractHomeMenu()
 	
 	DisplayLoading("Extracting home menu...");
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
+	g_filter = "lyt/";
 	if (HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/lyt/ResidentMenu.szs"))
 		{			
-			Dialog("ResidentMenu not found in lyt dir !");
+			DialogBlocking("ResidentMenu not found in lyt dir !");
 			return false;
 		}
 		CopyLytDir();
@@ -254,12 +283,12 @@ bool hactool::ExtractHomeMenu()
 	}
 	else
 	{
-		Dialog("Couldn't extract home.nca");
+		DialogBlocking("Couldn't extract home.nca");
 		return false;
 	}	
 	
 	if (!WriteHomeDumpVer())
-		Dialog("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
+		DialogBlocking("The home menu was succesfully extracted but version information couldn't be saved, you can ignore this warning.");
 	return true;
 }
 
@@ -270,11 +299,12 @@ bool hactool::ExtractTitle(u64 titleID, const string& Path) {
 
 	DisplayLoading("Extracting ...");
 	RecursiveDeleteFolder(Path);
+	g_filter = nullptr;
 	if (HactoolExtractNCA(GetNcaPath(titleID), Path, ExtractionTarget::RomFS))
-		Dialog("Done");
+		DialogBlocking("Done");
 	else
 	{
-		Dialog("Couldn't extract");
+		DialogBlocking("Couldn't extract");
 		return false;
 	}
 	
@@ -287,6 +317,7 @@ bool hactool::ExtractHomeExefs()
 	
 	if (!GetKeys()) return false;
 	
+	g_filter = nullptr;
 	return HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/", ExtractionTarget::ExeFS);
 }
 

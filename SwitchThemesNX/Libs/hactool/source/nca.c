@@ -1574,8 +1574,15 @@ static int nca_visit_romfs_file(nca_section_ctx_t *ctx, uint32_t file_offset, fi
         }
         if ((ctx->tool_ctx->action & ACTION_ONLYUPDATEDROMFS) == 0 || nca_is_romfs_file_updated(ctx, phys_offset, entry->size)) {
             if ((ctx->tool_ctx->action & ACTION_LISTROMFS) == 0) {
-                printf("Saving %s...\n", cur_path->char_path);
-                nca_save_section_file(ctx, phys_offset, entry->size, cur_path);
+				bool should_extract = !ctx->tool_ctx->settings.romfs_filter || ctx->tool_ctx->settings.romfs_filter(cur_path->char_path);
+				
+				if (!should_extract)
+					printf("Skipping %s...\n", cur_path->char_path);
+				else
+				{
+					printf("Saving %s...\n", cur_path->char_path);
+					nca_save_section_file(ctx, phys_offset, entry->size, cur_path);
+				}
             } else {
                 printf("rom:%s\n", cur_path->char_path);
             }
@@ -1616,8 +1623,15 @@ static int nca_visit_nca0_romfs_file(nca_section_ctx_t *ctx, uint32_t file_offse
         uint64_t phys_offset = ctx->nca0_romfs_ctx.romfs_offset + ctx->nca0_romfs_ctx.header.data_offset + entry->offset;
 
         if ((ctx->tool_ctx->action & ACTION_LISTROMFS) == 0) {
-            printf("Saving %s...\n", cur_path->char_path);
-            nca_save_section_file(ctx, phys_offset, entry->size, cur_path);
+			bool should_extract = !ctx->tool_ctx->settings.romfs_filter || ctx->tool_ctx->settings.romfs_filter(cur_path->char_path);
+			
+			if (!should_extract)
+				printf("Skipping %s...\n", cur_path->char_path);
+			else
+			{	
+				printf("Saving %s...\n", cur_path->char_path);
+				nca_save_section_file(ctx, phys_offset, entry->size, cur_path);
+			}
         } else {
             printf("rom:%s\n", cur_path->char_path);
         }
