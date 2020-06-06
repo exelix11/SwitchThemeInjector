@@ -40,10 +40,17 @@ protected:
 		string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
 		if (!filesystem::exists(BaseSzs))
 		{
-			if (themeInfo.Target == "user" && hactool::ExtractUserPage())
-				goto CONTINUE_INSTALL;
-			if (themeInfo.Target == "psl" && hactool::ExtractPlayerSelectMenu())
-				goto CONTINUE_INSTALL;
+			try {
+				if (themeInfo.Target == "user" && hactool::ExtractUserPage())
+					goto CONTINUE_INSTALL;
+				if (themeInfo.Target == "psl" && hactool::ExtractPlayerSelectMenu())
+					goto CONTINUE_INSTALL;
+			}
+			catch (std::runtime_error& err)
+			{
+				DialogBlocking("Error while extracting the requested title: " + string(err.what()));
+				return false;
+			}
 
 			MissingFileErrorDialog(ThemeTargetToFileName[themeInfo.Target]);
 			return false;
