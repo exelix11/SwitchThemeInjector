@@ -33,7 +33,7 @@ class RemoteInstallPage : public IPage
 	
 		//For SocketUpdate:
 		int curSock = -1;
-		int ThemeSize = 0;
+		u32 ThemeSize = 0;
 		std::vector<u8> data;
 		
 		std::string lblInfo;

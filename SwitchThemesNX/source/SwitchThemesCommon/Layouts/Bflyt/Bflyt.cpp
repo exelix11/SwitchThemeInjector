@@ -233,7 +233,7 @@ vector<PanePtr> BflytFile::WritePaneListForBinary()
 			res.emplace_back(new BasePane(c->name == "grp1" ? "grs1" : "pas1", 8));
 		}
 	}
-	return move(res);
+	return res;
 }
 
 vector<u8> BflytFile::SaveFile()

@@ -93,14 +93,14 @@ vector<string> fs::GetThemeFiles()
 	vector<string> res;
 	
 	{	
-		DIR *dir = nullptr;
-		if (dir = opendir(SD_PREFIX "/themes"))
+		DIR *dir = opendir(SD_PREFIX "/themes");
+		if (dir)
 			closedir(dir);
 		else
 			return res;
 	}
 	
-	res = GetThemeFilesInDirRecursive(SD_PREFIX "/themes",0);
+	res = GetThemeFilesInDirRecursive(SD_PREFIX "/themes", 0);
 	
 	return res;	
 }

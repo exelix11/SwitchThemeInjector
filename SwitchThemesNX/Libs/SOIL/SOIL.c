@@ -13,6 +13,8 @@
 	* everybody at gamedev.net
 */
 
+#pragma GCC diagnostic ignored "-Wunused-variable"
+
 #define SOIL_CHECK_FOR_GL_ERRORS 0
 
 #define GLFW_INCLUDE_NONE

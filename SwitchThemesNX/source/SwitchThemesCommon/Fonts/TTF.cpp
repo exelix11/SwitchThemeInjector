@@ -39,8 +39,8 @@ string SwitchThemesCommon::TTF::GetFontName(const vector<u8> &Data)
 	for (int i = 0; i < NamesCount; i++)
 	{
 		u16 platform = buf.readUInt16();
-		u16 encoding = buf.readUInt16();
-		u16 language = buf.readUInt16();
+		/*u16 encoding = */buf.readUInt16();
+		/*u16 language = */buf.readUInt16();
 		if (buf.readUInt16() == 1) //NameId is the font name
 		{
 			u16 StringLength = buf.readUInt16();

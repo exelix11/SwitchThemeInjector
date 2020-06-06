@@ -194,7 +194,6 @@ void Pat1Section::ParseData(Endianness bo)
 	}
 	if (Unk_StartOfFile != 0 || Unk_EndOfFile != 0)
 	{
-		int a = 0; //breakpoint here
 		//this has never been the case till now and i have no clue what those two values mean
 	}
 }

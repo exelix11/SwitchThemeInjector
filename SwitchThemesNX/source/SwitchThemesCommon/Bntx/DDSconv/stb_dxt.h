@@ -29,6 +29,8 @@
 //
 //   See end of file for license information.
 
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+
 #ifndef STB_INCLUDE_STB_DXT_H
 #define STB_INCLUDE_STB_DXT_H
 

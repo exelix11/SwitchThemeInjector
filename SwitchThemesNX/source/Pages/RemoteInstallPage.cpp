@@ -18,9 +18,9 @@ RemoteInstallPage::~RemoteInstallPage()
 }
 
 RemoteInstallPage::RemoteInstallPage() : 
-BtnStart("Start remote install###InstallBtn"),
 lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'"),
-lblConfirm("Press A to install, B to cancel.")
+lblConfirm("Press A to install, B to cancel."),
+BtnStart("Start remote install###InstallBtn")
 {
 	Name = "Remote Install";
 }
@@ -159,7 +159,7 @@ void RemoteInstallPage::SocketUpdate()
 				StopSocketing();
 				return;
 			}
-			ThemeSize = *reinterpret_cast<int*>(buf + 8);
+			memcpy(&ThemeSize, buf + 8, sizeof(u32));
 			if (ThemeSize < 50 || ThemeSize > 2000000)
 			{
 				DialogError("(Invalid size: " + to_string(ThemeSize) + ")");

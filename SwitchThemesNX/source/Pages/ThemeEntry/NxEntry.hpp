@@ -115,9 +115,11 @@ protected:
 				return false;
 			}
 			if (NxThemeGetBgImage().size() != 0)
+			{
 				if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 					return false;
-				else FileHasBeenPatched = true;
+				FileHasBeenPatched = true;
+			}
 		}
 
 		/*

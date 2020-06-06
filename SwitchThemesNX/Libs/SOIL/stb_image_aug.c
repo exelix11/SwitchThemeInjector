@@ -63,6 +63,10 @@
              on 'test' only check type, not whether we support this variant
 */
 
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#pragma GCC diagnostic ignored "-Wmisleading-indentation"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+
 #include "stb_image_aug.h"
 
 #ifndef STBI_NO_HDR

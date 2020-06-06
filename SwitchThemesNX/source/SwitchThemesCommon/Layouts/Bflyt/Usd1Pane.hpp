@@ -99,7 +99,7 @@ namespace Panes
 			dataReader.ByteOrder = Endianness::LittleEndian;
 			dataReader.Position = 0;
 			u16 Count = dataReader.readUInt16();
-			u16 Unk1 = dataReader.readUInt16();
+			/*u16 Unk1 =*/ dataReader.readUInt16();
 			for (int i = 0; i < Count; i++)
 			{
 				auto EntryOffset = dataReader.Position;
