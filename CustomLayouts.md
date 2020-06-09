@@ -11,6 +11,22 @@ Here are some resources to get started:
 - https://github.com/suchmememanyskill/SwitchLayoutGuide/wiki
 - https://github.com/FuryBaguette/SwitchLayoutEditor/wiki
 
+## Generating a layout patch with LayoutDiff
+Once your custom layout is ready you can convert it to json for use with nxthemes.
+
+The layout editor has an user friendly tool to do it, just open your modified SZS then click on Tools -> Layout diff -> This is the edited layout. In the window that appears select the original SZS and clcik on generate diff.
+
+**Note that if the output file is big (100-200kb) and it clearly contains more data than just the stuff you've edited you most likely used as original szs a file for a different firmware and the differ picked up the firmware differences, using that layout may fail or cause crashes, that's why it's important to use the original szs to diff**
+ 
+## Extracting the layout from an nxtheme
+If a theme uses a layout you like you can easily extract it with the injector, as of version 4.4 go to the nxtheme extraction tab, click on extract nxtheme, select the file and where to extract it and confirm. Once it's done you're looking for the `layout.json` file.
+
+## Editing existing JSON layouts
+Open the target szs file in the LayoutEditor. If you used NXThemesInstaller at least once you'll fild the szs **for your firmware** in themes/systemData on your sd card. \
+From the window that appears click tools -> Load JSON patch and open the json file. \
+When you're done create a new layout patch with LayoutDiff as explained earlier. \
+The file names for each part are listed in the wiki: https://github.com/exelix11/SwitchThemeInjector/wiki
+
 ## Custom animations
 Editing animations is supported as well, all three of the tools linked earlier support it but it's not as straight forward as layout editing, if you want to give it a try read the documentation from [3dskit](https://github.com/Tyulis/3DSkit/blob/master/doc/BFLAN.md#constants).\
 Animations are the .bflan files in the szs files of the home menu.\
@@ -47,16 +63,6 @@ RdtBtnIconGame
         width/height: multiply default by RootPane scale (Controls the 'cursor snap area'. Must be the right size to prevent the cursor from skipping an icon)
 ```
 As examples for 8.0-Compatible layouts you can use the layouts that have "Ready8X" flag from the layouts folder of the injector
-
-## Generating a layout patch with LayoutDiff
-Once your custom layout is ready you can convert it to json for use with nxthemes.
-
-The layout editor has an user friendly tool to do it, just open your modified SZS then click on Tools -> Layout diff -> This is the edited layout. In the window that appears select the original SZS and clcik on generate diff.
-
-**Note that if the output file is big (100-200kb) and it clearly contains more data than just the stuff you've edited you most likely used as original szs a file for a different firmware and the differ picked up the firmware differences, using that layout may fail or cause crashes, that's why it's important to use the original szs to diff**
- 
-## Extracting the layout from an nxtheme
-If a theme uses a layout you like you can easily extract it with the injector, as of version 4.4 go to the nxtheme extraction tab, click on extract nxtheme, select the file and where to extract it and confirm. Once it's done you're looking for the `layout.json` file.
 
 ## Supported properties
 The layout patcher doesn't support all the properties of bflyt files, this is to avoid compatibility issues in the future, if you changed values not included in the following list they won't be detected by the differ :
