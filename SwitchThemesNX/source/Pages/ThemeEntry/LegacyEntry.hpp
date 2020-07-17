@@ -32,7 +32,7 @@ public:
 	bool CanInstall() override { return _CanInstall; }
 	bool HasPreview() override { return false; }
 protected:
-	bool DoInstall(bool ShowDialogs = true, const string& homeDirOverride = "") override
+	bool DoInstall(bool ShowDialogs = true) override
 	{
 		if (ShowDialogs)
 			DisplayLoading("Installing...");
@@ -41,13 +41,8 @@ protected:
 		if (!PatchMng::ExefsCompatAsk(patch.szsName))
 			return false;
 
-		fs::CreateThemeStructure(patch.TitleId);
-		string szsPath;
-		if (patch.TitleId == "0100000000001000" && homeDirOverride != "")
-			szsPath = homeDirOverride + patch.szsName;
-		else
-			szsPath = fs::GetFsMitmFolder() + patch.TitleId + "/romfs/lyt/" + patch.szsName;
-		fs::WriteFile(szsPath, file);
+		fs::CreateThemeStructure(patch.TitleId);;
+		fs::WriteFile(fs::GetFsMitmFolder() + patch.TitleId + "/romfs/lyt/" + patch.szsName, file);
 
 		return true;
 	}

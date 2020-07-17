@@ -30,7 +30,7 @@ public:
 	bool HasPreview() override { return _HasPreview; }
 protected:
 
-	bool DoInstall(bool ShowDialogs = true, const string& homeDirOverride = "") override
+	bool DoInstall(bool ShowDialogs = true) override
 	{
 		auto themeInfo = ParseNXThemeFile(SData);
 
@@ -91,13 +91,8 @@ protected:
 					return false;
 			}
 
-			if (homeDirOverride != "")
-				fs::WriteFile(homeDirOverride + "common.szs", SarcPack(Patcher.GetFinalSarc()));
-			else
-			{
-				fs::CreateThemeStructure("0100000000001000");
-				fs::WriteFile(fs::GetFsMitmFolder() + "0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
-			}
+			fs::CreateThemeStructure("0100000000001000");
+			fs::WriteFile(fs::GetFsMitmFolder() + "0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
 		}
 
 		//Actual file patching code 
@@ -195,13 +190,9 @@ if (SData.files.count("layout.json"))\
 			APPLY_LAYOUT_PATCH;
 
 		if (FileHasBeenPatched)
-		{
-			if (TitleId == "0100000000001000" && homeDirOverride != "")
-				fs::WriteFile(homeDirOverride + SzsName, SarcPack(Patcher.GetFinalSarc()));
-			else {
-				fs::CreateThemeStructure(TitleId);
-				fs::WriteFile(fs::GetFsMitmFolder() + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
-			}
+		{			
+			fs::CreateThemeStructure(TitleId);
+			fs::WriteFile(fs::GetFsMitmFolder() + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
 		}
 
 		return true;

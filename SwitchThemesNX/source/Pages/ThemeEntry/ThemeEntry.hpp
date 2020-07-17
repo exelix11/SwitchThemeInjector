@@ -23,7 +23,7 @@ class ThemeEntry
 
 		virtual bool IsFolder() = 0;
 		virtual bool CanInstall() = 0;		
-		bool Install(bool ShowDialogs = true, const std::string& homeDirOverride = "");
+		bool Install(bool ShowDialogs = true);
 		virtual bool HasPreview() = 0;
 
 		bool IsHighlighted();
@@ -31,7 +31,7 @@ class ThemeEntry
 		
 		virtual UserAction Render(bool OverrideColor = false);
 	protected:
-		virtual bool DoInstall(bool ShowDialogs = true, const std::string& homeDirOverride = "") = 0;
+		virtual bool DoInstall(bool ShowDialogs = true) = 0;
 		virtual LoadedImage GetPreview() = 0;
 
 		std::vector<u8> file;		

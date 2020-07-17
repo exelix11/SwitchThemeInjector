@@ -20,13 +20,4 @@ class SettingsPage : public IPage
 		
 		void Render(int X, int Y) override;
 		void Update() override;
-	private:	
-		void LoadShuffleState();
-		void WriteShuffleFlag(int i);
-		
-		std::string lblGuide;
-		std::string lblInstalled;
-
-		int shuffleValue = 0;
-		bool IsLayoutBlockingLeft = false;
 };

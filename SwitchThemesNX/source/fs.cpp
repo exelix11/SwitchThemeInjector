@@ -305,39 +305,3 @@ bool fs::WriteHomeDumpVer()
 	fclose(ver);
 	return true;
 }
-
-using namespace shuffle;
-int shuffle::GetShuffleCount()
-{
-	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
-		return 0;
-	int dirCount = 0;
-	for (auto p : filesystem::directory_iterator(SD_PREFIX "/themes/shuffle"))
-	{
-		if (p.is_directory())
-			dirCount++;
-	}
-	return dirCount;
-}
-
-string shuffle::MakeThemeShuffleDir()
-{
-	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
-		mkdir(SD_PREFIX "/themes/shuffle", ACCESSPERMS);
-	int dirCount = GetShuffleCount();
-	string dirName = SD_PREFIX "/themes/shuffle/set" + to_string(dirCount) + "/";
-	while (filesystem::exists(dirName))
-	{
-		dirName = SD_PREFIX "/themes/shuffle/set" + to_string(++dirCount) + "/";
-	}
-	mkdir(dirName.c_str(), ACCESSPERMS);
-	return dirName;
-}
-
-void shuffle::ClearThemeShuffle()
-{
-	if (!filesystem::exists(SD_PREFIX "/themes/shuffle"))
-		return;
-	RecursiveDeleteFolder(SD_PREFIX "/themes/shuffle/");
-	rmdir(SD_PREFIX "/themes/shuffle/");	
-}
