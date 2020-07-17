@@ -46,7 +46,6 @@ namespace fs {
 
 	void RecursiveDeleteFolder(const std::string& path);
 
-	std::string GetHomeNcaPath();
 	void RemoveSystemDataDir();
 	bool WriteHomeDumpVer();
 	
@@ -54,10 +53,4 @@ namespace fs {
 	std::string GetNcaPath(u64 tid);
 #endif
 	bool DumpHomeMenuNca();
-}
-
-namespace shuffle {
-	int GetShuffleCount();
-	std::string MakeThemeShuffleDir();
-	void ClearThemeShuffle();
 }

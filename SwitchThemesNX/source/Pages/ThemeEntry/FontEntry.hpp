@@ -19,14 +19,8 @@ public:
 	bool CanInstall() override { return _CanInstall; }
 	bool HasPreview() override { return false; }
 protected:
-	bool DoInstall(bool ShowDialogs = true, const string& homeDirOverride = "") override
+	bool DoInstall(bool ShowDialogs = true) override
 	{
-		if (homeDirOverride != "")
-		{
-			DialogBlocking("Can't install a font to theme shuffle.");
-			return false;
-		}
-
 		if (ShowDialogs)
 			DisplayLoading("Installing font...");
 

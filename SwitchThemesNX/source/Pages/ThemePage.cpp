@@ -147,12 +147,6 @@ void ThemesPage::Render(int X, int Y)
 							{
 								if (SelectedFiles.size() == 0)
 								{
-									if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_GUIDE])
-									{
-										DisplayLoading("Installing to shuffle...");
-										e->Install(false, shuffle::MakeThemeShuffleDir());
-									}
-									else
 										e->Install();
 								}
 								else
@@ -266,13 +260,10 @@ void ThemesPage::Update()
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{
-		string shuffleDir = "";
-		if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_GUIDE])
-			shuffleDir = shuffle::MakeThemeShuffleDir();
 		for (string file : SelectedFiles)
 		{
 			DisplayLoading("Installing " + file + "...");
-			if (!ThemeEntry::FromFile(file)->Install(false,shuffleDir))
+			if (!ThemeEntry::FromFile(file)->Install(false))
 			{
 				Dialog("Installing a theme failed, the process was cancelled");
 				break;

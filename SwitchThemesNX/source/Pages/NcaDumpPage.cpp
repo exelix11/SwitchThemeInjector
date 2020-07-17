@@ -90,7 +90,7 @@ void NcaDumpPage::CheckHomeMenuVer()
 	return;
 	
 ASK_DUMP:
-	if (!YesNoPage::Ask("The current firmware version is different than the one of the extracted home menu, do you want to dump the home menu again ?\nIf the extracted home menu doesn't match with the installed one themes will crash."))
+	if (!YesNoPage::Ask("The current firmware version is different than the one of the extracted home menu, do you want to extract the home menu again ?\nIf the extracted home menu doesn't match with the installed one themes will crash."))
 	{
 		DialogBlocking("You won't see this message again, in case of crashes you can extract the home menu manually from the `Extract home menu` option in the main menu");
 		fs::WriteHomeDumpVer();

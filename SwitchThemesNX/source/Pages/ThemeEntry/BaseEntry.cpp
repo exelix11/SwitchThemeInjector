@@ -30,16 +30,16 @@ public:
 	bool HasPreview() override { return false; }
 protected:
 	LoadedImage GetPreview() override { throw runtime_error("Preview is not implemented"); }
-	bool DoInstall(bool ShowDialogs = true, const std::string& homeDirOverride = "") override { return false; }
+	bool DoInstall(bool ShowDialogs = true) override { return false; }
 };
 
-bool ThemeEntry::Install(bool ShowDialogs, const std::string& homeDirOverride)
+bool ThemeEntry::Install(bool ShowDialogs)
 {
 	if (!CanInstall())
 		return false;
 	try 
 	{
-		if (!DoInstall(ShowDialogs, homeDirOverride))
+		if (!DoInstall(ShowDialogs))
 			return false;
 	}
 	catch (const exception & ex)
