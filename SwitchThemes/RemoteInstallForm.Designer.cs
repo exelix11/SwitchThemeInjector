@@ -48,14 +48,14 @@
 			this.textBox1.Location = new System.Drawing.Point(111, 56);
 			this.textBox1.Name = "textBox1";
 			this.textBox1.Size = new System.Drawing.Size(197, 20);
-			this.textBox1.TabIndex = 1;
+			this.textBox1.TabIndex = 0;
 			// 
 			// button1
 			// 
 			this.button1.Location = new System.Drawing.Point(227, 83);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(81, 27);
-			this.button1.TabIndex = 2;
+			this.button1.TabIndex = 1;
 			this.button1.Text = "Connect";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -65,7 +65,7 @@
 			this.label2.Location = new System.Drawing.Point(12, 9);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(296, 43);
-			this.label2.TabIndex = 3;
+			this.label2.TabIndex = 2;
 			this.label2.Text = "Open the Theme installer on your switch and press on \"Start remote install\". Make" +
     " sure your console and this pc are on the same network";
 			// 
