@@ -43,7 +43,7 @@
 			this.button1.Location = new System.Drawing.Point(228, 108);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(75, 23);
-			this.button1.TabIndex = 0;
+			this.button1.TabIndex = 2;
 			this.button1.Text = "OK";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -54,7 +54,7 @@
 			this.button2.Location = new System.Drawing.Point(147, 108);
 			this.button2.Name = "button2";
 			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 1;
+			this.button2.TabIndex = 3;
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
@@ -64,7 +64,7 @@
 			this.tbThemeName.Location = new System.Drawing.Point(93, 43);
 			this.tbThemeName.Name = "tbThemeName";
 			this.tbThemeName.Size = new System.Drawing.Size(207, 20);
-			this.tbThemeName.TabIndex = 2;
+			this.tbThemeName.TabIndex = 0;
 			// 
 			// label1
 			// 
@@ -89,7 +89,7 @@
 			this.tbAuthorName.Location = new System.Drawing.Point(93, 73);
 			this.tbAuthorName.Name = "tbAuthorName";
 			this.tbAuthorName.Size = new System.Drawing.Size(207, 20);
-			this.tbAuthorName.TabIndex = 4;
+			this.tbAuthorName.TabIndex = 1;
 			// 
 			// label3
 			// 

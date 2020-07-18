@@ -177,7 +177,7 @@
 			this.materialFlatButton2.Name = "materialFlatButton2";
 			this.materialFlatButton2.Primary = false;
 			this.materialFlatButton2.Size = new System.Drawing.Size(32, 36);
-			this.materialFlatButton2.TabIndex = 12;
+			this.materialFlatButton2.TabIndex = 2;
 			this.materialFlatButton2.Text = "...";
 			this.materialFlatButton2.UseVisualStyleBackColor = true;
 			this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton1_Click);
@@ -189,7 +189,7 @@
 			this.linkLabel2.Location = new System.Drawing.Point(545, 147);
 			this.linkLabel2.Name = "linkLabel2";
 			this.linkLabel2.Size = new System.Drawing.Size(84, 21);
-			this.linkLabel2.TabIndex = 15;
+			this.linkLabel2.TabIndex = 4;
 			this.linkLabel2.TabStop = true;
 			this.linkLabel2.Text = "Preview layout";
 			this.linkLabel2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -207,7 +207,7 @@
 			this.AllLayoutsBox.Location = new System.Drawing.Point(108, 147);
 			this.AllLayoutsBox.Name = "AllLayoutsBox";
 			this.AllLayoutsBox.Size = new System.Drawing.Size(432, 21);
-			this.AllLayoutsBox.TabIndex = 14;
+			this.AllLayoutsBox.TabIndex = 3;
 			this.AllLayoutsBox.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
 			// 
 			// materialLabel9
@@ -263,7 +263,7 @@
 			this.materialRaisedButton9.Name = "materialRaisedButton9";
 			this.materialRaisedButton9.Primary = true;
 			this.materialRaisedButton9.Size = new System.Drawing.Size(144, 36);
-			this.materialRaisedButton9.TabIndex = 23;
+			this.materialRaisedButton9.TabIndex = 6;
 			this.materialRaisedButton9.Text = "Remote install...";
 			this.materialRaisedButton9.UseVisualStyleBackColor = true;
 			this.materialRaisedButton9.Click += new System.EventHandler(this.materialRaisedButton9_Click);
@@ -280,7 +280,7 @@
 			this.NxBuilderBuild.Name = "NxBuilderBuild";
 			this.NxBuilderBuild.Primary = true;
 			this.NxBuilderBuild.Size = new System.Drawing.Size(126, 36);
-			this.NxBuilderBuild.TabIndex = 22;
+			this.NxBuilderBuild.TabIndex = 7;
 			this.NxBuilderBuild.Text = "Build NXTheme";
 			this.NxBuilderBuild.UseVisualStyleBackColor = true;
 			this.NxBuilderBuild.Click += new System.EventHandler(this.NnBuilderBuild_Click);
@@ -308,7 +308,7 @@
 			this.HomeMenuPartBox.Location = new System.Drawing.Point(287, 55);
 			this.HomeMenuPartBox.Name = "HomeMenuPartBox";
 			this.HomeMenuPartBox.Size = new System.Drawing.Size(231, 21);
-			this.HomeMenuPartBox.TabIndex = 20;
+			this.HomeMenuPartBox.TabIndex = 0;
 			this.HomeMenuPartBox.SelectedIndexChanged += new System.EventHandler(this.HomeMenuPartBox_SelectedIndexChanged);
 			// 
 			// materialLabel15
@@ -331,7 +331,7 @@
 			this.tbImageFile2.Name = "tbImageFile2";
 			this.tbImageFile2.ReadOnly = true;
 			this.tbImageFile2.Size = new System.Drawing.Size(537, 20);
-			this.tbImageFile2.TabIndex = 10;
+			this.tbImageFile2.TabIndex = 1;
 			// 
 			// materialLabel11
 			// 
@@ -380,7 +380,7 @@
 			this.grpHomeExtra.Location = new System.Drawing.Point(5, 209);
 			this.grpHomeExtra.Name = "grpHomeExtra";
 			this.grpHomeExtra.Size = new System.Drawing.Size(630, 70);
-			this.grpHomeExtra.TabIndex = 25;
+			this.grpHomeExtra.TabIndex = 5;
 			this.grpHomeExtra.TabStop = false;
 			this.grpHomeExtra.Text = "Home menu optional settings";
 			this.grpHomeExtra.Visible = false;
@@ -392,7 +392,7 @@
 			this.btnApplet6.Location = new System.Drawing.Point(535, 41);
 			this.btnApplet6.Name = "btnApplet6";
 			this.btnApplet6.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet6.TabIndex = 23;
+			this.btnApplet6.TabIndex = 7;
 			this.btnApplet6.Text = "Power";
 			this.btnApplet6.UseVisualStyleBackColor = true;
 			// 
@@ -403,7 +403,7 @@
 			this.btnApplet5.Location = new System.Drawing.Point(467, 41);
 			this.btnApplet5.Name = "btnApplet5";
 			this.btnApplet5.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet5.TabIndex = 22;
+			this.btnApplet5.TabIndex = 6;
 			this.btnApplet5.Text = "Settings";
 			this.btnApplet5.UseVisualStyleBackColor = true;
 			// 
@@ -414,7 +414,7 @@
 			this.btnApplet4.Location = new System.Drawing.Point(400, 41);
 			this.btnApplet4.Name = "btnApplet4";
 			this.btnApplet4.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet4.TabIndex = 21;
+			this.btnApplet4.TabIndex = 5;
 			this.btnApplet4.Text = "Controller";
 			this.btnApplet4.UseVisualStyleBackColor = true;
 			// 
@@ -425,7 +425,7 @@
 			this.btnApplet3.Location = new System.Drawing.Point(332, 41);
 			this.btnApplet3.Name = "btnApplet3";
 			this.btnApplet3.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet3.TabIndex = 20;
+			this.btnApplet3.TabIndex = 4;
 			this.btnApplet3.Text = "Shop";
 			this.btnApplet3.UseVisualStyleBackColor = true;
 			// 
@@ -436,7 +436,7 @@
 			this.btnApplet2.Location = new System.Drawing.Point(264, 41);
 			this.btnApplet2.Name = "btnApplet2";
 			this.btnApplet2.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet2.TabIndex = 19;
+			this.btnApplet2.TabIndex = 3;
 			this.btnApplet2.Text = "News";
 			this.btnApplet2.UseVisualStyleBackColor = true;
 			// 
@@ -447,7 +447,7 @@
 			this.button1.Location = new System.Drawing.Point(605, 12);
 			this.button1.Name = "button1";
 			this.button1.Size = new System.Drawing.Size(19, 23);
-			this.button1.TabIndex = 18;
+			this.button1.TabIndex = 1;
 			this.button1.Text = "?";
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -459,7 +459,7 @@
 			this.btnAlbumIcoHelp.Location = new System.Drawing.Point(605, 41);
 			this.btnAlbumIcoHelp.Name = "btnAlbumIcoHelp";
 			this.btnAlbumIcoHelp.Size = new System.Drawing.Size(19, 23);
-			this.btnAlbumIcoHelp.TabIndex = 17;
+			this.btnAlbumIcoHelp.TabIndex = 8;
 			this.btnAlbumIcoHelp.Text = "?";
 			this.btnAlbumIcoHelp.UseVisualStyleBackColor = true;
 			this.btnAlbumIcoHelp.Click += new System.EventHandler(this.btnAlbumIcoHelp_Click);
@@ -471,7 +471,7 @@
 			this.btnApplet1.Location = new System.Drawing.Point(195, 41);
 			this.btnApplet1.Name = "btnApplet1";
 			this.btnApplet1.Size = new System.Drawing.Size(64, 23);
-			this.btnApplet1.TabIndex = 16;
+			this.btnApplet1.TabIndex = 2;
 			this.btnApplet1.Text = "Album";
 			this.btnApplet1.UseVisualStyleBackColor = true;
 			// 
@@ -496,7 +496,7 @@
 			this.btnOpenCustomLayout.Location = new System.Drawing.Point(566, 12);
 			this.btnOpenCustomLayout.Name = "btnOpenCustomLayout";
 			this.btnOpenCustomLayout.Size = new System.Drawing.Size(33, 23);
-			this.btnOpenCustomLayout.TabIndex = 14;
+			this.btnOpenCustomLayout.TabIndex = 0;
 			this.btnOpenCustomLayout.Text = "...";
 			this.btnOpenCustomLayout.UseVisualStyleBackColor = true;
 			this.btnOpenCustomLayout.Click += new System.EventHandler(this.btnOpenCustomLayout_Click);
@@ -611,7 +611,7 @@
 			this.ExtractNxthemeBtn.Name = "ExtractNxthemeBtn";
 			this.ExtractNxthemeBtn.Primary = true;
 			this.ExtractNxthemeBtn.Size = new System.Drawing.Size(124, 36);
-			this.ExtractNxthemeBtn.TabIndex = 12;
+			this.ExtractNxthemeBtn.TabIndex = 0;
 			this.ExtractNxthemeBtn.Text = "Open nxtheme";
 			this.ExtractNxthemeBtn.UseVisualStyleBackColor = true;
 			this.ExtractNxthemeBtn.Click += new System.EventHandler(this.ExtractNxTheme_Click);
@@ -795,7 +795,7 @@
 			this.UseAnim.Location = new System.Drawing.Point(3, 301);
 			this.UseAnim.Name = "UseAnim";
 			this.UseAnim.Size = new System.Drawing.Size(338, 17);
-			this.UseAnim.TabIndex = 26;
+			this.UseAnim.TabIndex = 6;
 			this.UseAnim.Text = "Do NOT add animations (Use if you have crashes with animations)";
 			this.UseAnim.UseVisualStyleBackColor = true;
 			// 
@@ -826,7 +826,7 @@
 			this.materialRaisedButton3.Name = "materialRaisedButton3";
 			this.materialRaisedButton3.Primary = true;
 			this.materialRaisedButton3.Size = new System.Drawing.Size(85, 36);
-			this.materialRaisedButton3.TabIndex = 11;
+			this.materialRaisedButton3.TabIndex = 0;
 			this.materialRaisedButton3.Text = "Open SZS";
 			this.materialRaisedButton3.UseVisualStyleBackColor = true;
 			this.materialRaisedButton3.Click += new System.EventHandler(this.OpenSzsButton);
@@ -860,7 +860,7 @@
 			this.linkLabel1.Location = new System.Drawing.Point(547, 153);
 			this.linkLabel1.Name = "linkLabel1";
 			this.linkLabel1.Size = new System.Drawing.Size(84, 21);
-			this.linkLabel1.TabIndex = 9;
+			this.linkLabel1.TabIndex = 4;
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "Preview layout";
 			this.linkLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -876,7 +876,7 @@
 			this.LayoutPatchList.Location = new System.Drawing.Point(108, 153);
 			this.LayoutPatchList.Name = "LayoutPatchList";
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
-			this.LayoutPatchList.TabIndex = 8;
+			this.LayoutPatchList.TabIndex = 3;
 			this.LayoutPatchList.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
 			// 
 			// materialLabel6
@@ -905,7 +905,7 @@
 			this.materialFlatButton1.Name = "materialFlatButton1";
 			this.materialFlatButton1.Primary = false;
 			this.materialFlatButton1.Size = new System.Drawing.Size(32, 36);
-			this.materialFlatButton1.TabIndex = 3;
+			this.materialFlatButton1.TabIndex = 2;
 			this.materialFlatButton1.Text = "...";
 			this.materialFlatButton1.UseVisualStyleBackColor = true;
 			this.materialFlatButton1.Click += new System.EventHandler(this.materialFlatButton1_Click);
@@ -934,7 +934,7 @@
 			this.materialRaisedButton2.Name = "materialRaisedButton2";
 			this.materialRaisedButton2.Primary = true;
 			this.materialRaisedButton2.Size = new System.Drawing.Size(135, 36);
-			this.materialRaisedButton2.TabIndex = 0;
+			this.materialRaisedButton2.TabIndex = 5;
 			this.materialRaisedButton2.Text = "Patch and save";
 			this.materialRaisedButton2.UseVisualStyleBackColor = true;
 			this.materialRaisedButton2.Click += new System.EventHandler(this.PatchButtonClick);
@@ -1025,7 +1025,7 @@
 			this.materialRaisedButton7.Name = "materialRaisedButton7";
 			this.materialRaisedButton7.Primary = true;
 			this.materialRaisedButton7.Size = new System.Drawing.Size(79, 36);
-			this.materialRaisedButton7.TabIndex = 10;
+			this.materialRaisedButton7.TabIndex = 4;
 			this.materialRaisedButton7.Text = "File diff";
 			this.materialRaisedButton7.UseVisualStyleBackColor = true;
 			this.materialRaisedButton7.Click += new System.EventHandler(this.materialRaisedButton7_Click);
@@ -1042,7 +1042,7 @@
 			this.materialRaisedButton6.Name = "materialRaisedButton6";
 			this.materialRaisedButton6.Primary = true;
 			this.materialRaisedButton6.Size = new System.Drawing.Size(104, 36);
-			this.materialRaisedButton6.TabIndex = 9;
+			this.materialRaisedButton6.TabIndex = 3;
 			this.materialRaisedButton6.Text = "Layout diff";
 			this.materialRaisedButton6.UseVisualStyleBackColor = true;
 			this.materialRaisedButton6.Click += new System.EventHandler(this.materialRaisedButton6_Click);
@@ -1059,7 +1059,7 @@
 			this.materialRaisedButton4.Name = "materialRaisedButton4";
 			this.materialRaisedButton4.Primary = true;
 			this.materialRaisedButton4.Size = new System.Drawing.Size(110, 36);
-			this.materialRaisedButton4.TabIndex = 8;
+			this.materialRaisedButton4.TabIndex = 2;
 			this.materialRaisedButton4.Text = "Diff file list";
 			this.materialRaisedButton4.UseVisualStyleBackColor = true;
 			this.materialRaisedButton4.Click += new System.EventHandler(this.materialRaisedButton4_Click);
@@ -1092,7 +1092,7 @@
 			this.SzsFileList.Name = "SzsFileList";
 			this.SzsFileList.Size = new System.Drawing.Size(626, 234);
 			this.SzsFileList.Sorted = true;
-			this.SzsFileList.TabIndex = 5;
+			this.SzsFileList.TabIndex = 0;
 			// 
 			// contextMenuStrip1
 			// 
@@ -1128,7 +1128,7 @@
 			this.materialRaisedButton1.Name = "materialRaisedButton1";
 			this.materialRaisedButton1.Primary = true;
 			this.materialRaisedButton1.Size = new System.Drawing.Size(132, 36);
-			this.materialRaisedButton1.TabIndex = 4;
+			this.materialRaisedButton1.TabIndex = 5;
 			this.materialRaisedButton1.Text = "Save edited SZS";
 			this.materialRaisedButton1.UseVisualStyleBackColor = true;
 			this.materialRaisedButton1.Click += new System.EventHandler(this.materialRaisedButton1_Click);
@@ -1145,7 +1145,7 @@
 			this.materialRaisedButton5.Name = "materialRaisedButton5";
 			this.materialRaisedButton5.Primary = true;
 			this.materialRaisedButton5.Size = new System.Drawing.Size(175, 36);
-			this.materialRaisedButton5.TabIndex = 3;
+			this.materialRaisedButton5.TabIndex = 1;
 			this.materialRaisedButton5.Text = "Texture usage count";
 			this.materialRaisedButton5.UseVisualStyleBackColor = true;
 			this.materialRaisedButton5.Click += new System.EventHandler(this.materialRaisedButton5_Click);
@@ -1188,7 +1188,7 @@
 			this.materialTabSelector1.MouseState = MaterialSkin.MouseState.HOVER;
 			this.materialTabSelector1.Name = "materialTabSelector1";
 			this.materialTabSelector1.Size = new System.Drawing.Size(646, 30);
-			this.materialTabSelector1.TabIndex = 5;
+			this.materialTabSelector1.TabIndex = 0;
 			this.materialTabSelector1.Text = "materialTabSelector1";
 			// 
 			// lblDebug
