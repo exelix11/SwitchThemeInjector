@@ -349,7 +349,10 @@ int main(int argc, char **argv)
 	bool ThemesFolderExists = fs::CheckThemesFolder();
 	NcaDumpPage::CheckHomeMenuVer();
 	CheckCFWDir();
+
 	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
+	if (!PatchErrorMsg && UseLowMemory) // if patches are fine, check if applet mode
+		PatchErrorMsg = "You're running in applet mode, when launching homebrew from album they have less memory available.\n\nThis app should work fine but in case you encounter crashes try launching via title takeover by opening a game from the home menu and pressing R at the same time.";
 
 	if (
 #ifdef __SWITCH__
@@ -373,7 +376,7 @@ int main(int argc, char **argv)
 		
 		if (!ThemesFolderExists)
 			ShowFirstTimeHelp(true);
-		
+
 		TextPage* PatchFailedWarning = nullptr;
 		if (PatchErrorMsg)
 		{

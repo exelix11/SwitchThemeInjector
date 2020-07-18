@@ -59,7 +59,7 @@ static void AddValue(const string& str, LoadedImage img)
 	ImagePool.emplace_back(str, img);
 	LOGf("Pushing %s size %lu\n", str.c_str(), ImagePool.size());
 
-	const u32 MaxCachedImages = UseLowMemory ? 3 : 7;
+	const u32 MaxCachedImages = UseLowMemory ? 2 : 7;
 	if (ImagePool.size() > MaxCachedImages)
 		PopFirst();
 }
