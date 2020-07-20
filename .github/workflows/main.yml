@@ -13,7 +13,7 @@ jobs:
     - name: make hactool mbedtls and make all
       run: |
         cd $GITHUB_WORKSPACE/SwitchThemesNX/Libs/hactool
-        make
+        make -f makefile
         cd $GITHUB_WORKSPACE/SwitchThemesNX/Libs/mbedtls
         make
         cd $GITHUB_WORKSPACE/SwitchThemesNX/
