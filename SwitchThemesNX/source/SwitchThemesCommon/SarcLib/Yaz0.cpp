@@ -1,5 +1,6 @@
 #include "Yaz0.hpp"
 #include <cstring>
+#include <algorithm>
 
 using namespace std;
 vector<u8> Yaz0::Decompress(const vector<u8>& Data)
@@ -38,57 +39,39 @@ vector<u8> Yaz0::Decompress(const vector<u8>& Data)
 	}
 }
 
-bool is_big_endian(void)
-{
-	union {
-		uint32_t i;
-		char c[4];
-	} bint = { 0x01020304 };
-
-	return bint.c[0] == 1;
-}
-
 vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int reserved2)
 {
+	level = std::clamp(level, 1, 9);
 	const int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);
 
-	const u8* dataptr = Data.data();
-
 	vector<u8> result(Data.size() + Data.size() / 8 + 0x10);
-	u8* resultptr = result.data();
+
+	auto sourceptr = Data.begin();
+	auto resultptr = result.begin();
+
 	*resultptr++ = (u8)'Y';
 	*resultptr++ = (u8)'a';
 	*resultptr++ = (u8)'z';
 	*resultptr++ = (u8)'0';
+
 	*resultptr++ = (u8)((Data.size() >> 24) & 0xFF);
 	*resultptr++ = (u8)((Data.size() >> 16) & 0xFF);
 	*resultptr++ = (u8)((Data.size() >> 8) & 0xFF);
 	*resultptr++ = (u8)((Data.size() >> 0) & 0xFF);
 	{
-		union { int val; u8 u8s[4]; } res1 = { reserved1 };
-		union { int val; u8 u8s[4]; } res2 = { reserved2 };
-		if (is_big_endian())
-		{
-			*resultptr++ = (u8)res1.u8s[0];
-			*resultptr++ = (u8)res1.u8s[1];
-			*resultptr++ = (u8)res1.u8s[2];
-			*resultptr++ = (u8)res1.u8s[3];
-			*resultptr++ = (u8)res2.u8s[0];
-			*resultptr++ = (u8)res2.u8s[1];
-			*resultptr++ = (u8)res2.u8s[2];
-			*resultptr++ = (u8)res2.u8s[3];
-		}
-		else
-		{
-			*resultptr++ = (u8)res1.u8s[3];
-			*resultptr++ = (u8)res1.u8s[2];
-			*resultptr++ = (u8)res1.u8s[1];
-			*resultptr++ = (u8)res1.u8s[0];
-			*resultptr++ = (u8)res2.u8s[3];
-			*resultptr++ = (u8)res2.u8s[2];
-			*resultptr++ = (u8)res2.u8s[1];
-			*resultptr++ = (u8)res2.u8s[0];
-		}
+		u8 tmp[4];
+
+		std::memcpy(tmp, &reserved1, sizeof(tmp));
+		*resultptr++ = tmp[3];
+		*resultptr++ = tmp[2];
+		*resultptr++ = tmp[1];
+		*resultptr++ = tmp[0];
+		
+		std::memcpy(tmp, &reserved2, sizeof(tmp));
+		*resultptr++ = tmp[3];
+		*resultptr++ = tmp[2];
+		*resultptr++ = tmp[1];
+		*resultptr++ = tmp[0];
 	}
 	int length = Data.size();
 	int dstoffs = 16;
@@ -104,30 +87,28 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 			int back = 1;
 			int nr = 2;
 			{
-				const u8* ptr = dataptr - 1;
-				int maxnum = 0x111;
-				if (length - Offs < maxnum) maxnum = length - Offs;
-				//Use a smaller amount of u8s back to decrease time
-				int maxback = maxBackLevel;//0x1000;
-				if (Offs < maxback) maxback = Offs;
-				maxback = (intptr_t)dataptr - maxback;
+				auto ptr = sourceptr - 1;
+				const int maxnum = std::min(length - Offs, 0x111);
+				const int maxback = std::min(Offs, maxBackLevel);
+				
+				auto maxbackptr = sourceptr - maxback;
 				int tmpnr;
-				while ((size_t)maxback <= (size_t)ptr)
+				while (maxbackptr <= ptr)
 				{
-					if (*(u16*)ptr == *(u16*)dataptr && ptr[2] == dataptr[2])
+					if (ptr[0] == sourceptr[0] && ptr[1] == sourceptr[1] && ptr[2] == sourceptr[2])
 					{
 						tmpnr = 3;
-						while (tmpnr < maxnum && ptr[tmpnr] == dataptr[tmpnr]) tmpnr++;
+						while (tmpnr < maxnum && ptr[tmpnr] == sourceptr[tmpnr]) tmpnr++;
 						if (tmpnr > nr)
 						{
 							if (Offs + tmpnr > length)
 							{
 								nr = length - Offs;
-								back = (int)(dataptr - ptr);
+								back = (int)(sourceptr - ptr);
 								break;
 							}
 							nr = tmpnr;
-							back = (int)(dataptr - ptr);
+							back = (int)(sourceptr - ptr);
 							if (nr == maxnum) break;
 						}
 					}
@@ -137,7 +118,7 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 			if (nr > 2)
 			{
 				Offs += nr;
-				dataptr += nr;
+				sourceptr += nr;
 				if (nr >= 0x12)
 				{
 					*resultptr++ = (u8)(((back - 1) >> 8) & 0xF);
@@ -155,7 +136,7 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 			}
 			else
 			{
-				*resultptr++ = *dataptr++;
+				*resultptr++ = *sourceptr++;
 				dstoffs++;
 				Offs++;
 			}
@@ -170,6 +151,7 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 		if (Offs >= length) break;
 	}
 	while ((dstoffs % 4) != 0) dstoffs++;
+	
 	result.resize(dstoffs);
 	return result;
 }
