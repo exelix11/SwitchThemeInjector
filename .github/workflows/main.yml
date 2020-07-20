@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+    steps:
+    - name: Checkout master branch
+      run: git clone --recursive https://github.com/exelix11/SwitchThemeInjector.git $GITHUB_WORKSPACE
+
+    - name: make hactool mbedtls and make all
+      run: |
+        cd $GITHUB_WORKSPACE/SwitchThemesNX/Libs/hactool
+        make
+        cd $GITHUB_WORKSPACE/SwitchThemesNX/Libs/mbedtls
+        make
+        cd $GITHUB_WORKSPACE/SwitchThemesNX/
+        make
+    - uses: actions/upload-artifact@master
+      with:
+        name: Build
+        path: NXThemesInstaller.nro
