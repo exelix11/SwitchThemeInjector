@@ -11,13 +11,22 @@
 class LoadingOverlay : public IUIControlObj
 {	
 	public:
-		LoadingOverlay(const std::string &msg);	
+		LoadingOverlay(std::initializer_list<std::string> lines) : _lines(lines)
+		{
+
+		}
+
+		LoadingOverlay(const std::string& line)
+		{
+			_lines.push_back(line);
+		}
+
 		~LoadingOverlay() override {};
 
 		void Render(int X, int Y) override;
-		void Update() override;
+		void Update() override {}
 	private:
-		std::string text;
+		std::vector<std::string> _lines;
 };
 
 class DialogPage : public IUIControlObj
