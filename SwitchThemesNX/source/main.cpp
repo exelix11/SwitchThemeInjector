@@ -144,12 +144,21 @@ void DialogBlocking(const string &msg)
 	PushPageBlocking(new DialogPage(msg));
 }
 
-void DisplayLoading(const string &msg)
+static inline void DisplayLoading(LoadingOverlay &&o)
 {
 	UiStartFrame();
-	LoadingOverlay o(msg);
 	o.Render(0, 0);
 	UiEndFrame();
+}
+
+void DisplayLoading(const string& msg)
+{
+	DisplayLoading(LoadingOverlay(msg));
+}
+
+void DisplayLoading(std::initializer_list<std::string> lines)
+{
+	DisplayLoading(LoadingOverlay(lines));
 }
 
 #ifdef DEBUG

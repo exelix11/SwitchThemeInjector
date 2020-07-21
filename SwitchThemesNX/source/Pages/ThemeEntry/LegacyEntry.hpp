@@ -4,6 +4,7 @@
 #include "../../SwitchThemesCommon/SarcLib/Yaz0.hpp"
 #include "../../ViewFunctions.hpp"
 #include "../../SwitchThemesCommon/SwitchThemesCommon.hpp"
+#include "../ThemePage.hpp"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ protected:
 	bool DoInstall(bool ShowDialogs = true) override
 	{
 		if (ShowDialogs)
-			DisplayLoading("Installing...");
+			ThemesPage::DisplayInstallDialog(FileName);
 		PatchTemplate patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
 
 		if (!PatchMng::ExefsCompatAsk(patch.szsName))

@@ -58,7 +58,7 @@ protected:
 	CONTINUE_INSTALL:
 
 		if (ShowDialogs)
-			DisplayLoading("Installing...");
+			ThemesPage::DisplayInstallDialog(FileName);
 
 		//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout
 		//On <= 5.0 apply the background image for the applets

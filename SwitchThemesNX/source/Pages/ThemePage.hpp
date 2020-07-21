@@ -14,6 +14,8 @@ class ThemesPage : public IPage
 		ThemesPage(const std::vector<std::string> &files);	
 		~ThemesPage();
 		
+		static void DisplayInstallDialog(const std::string& path);
+
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:

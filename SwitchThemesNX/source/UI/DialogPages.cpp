@@ -3,21 +3,18 @@
 
 using namespace std;
 
-LoadingOverlay::LoadingOverlay(const string &msg) : text(msg) {}
-
 void LoadingOverlay::Render(int X, int Y)
-{		
+{
 	Utils::ImGuiSetupWin("Loading", 20, 20);
 	ImGui::SetWindowFocus();
-	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30});
+	ImGui::SetWindowSize({ SCR_W - 30, SCR_H - 30 });
 	ImGui::PushFont(font30);
-	ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2 - 20);
-	Utils::ImGuiCenterString(text.c_str());
+	ImGui::SetCursorPosY(ImGui::GetWindowHeight() / 2 - 20 * _lines.size());
+	for (auto s : _lines)
+		Utils::ImGuiCenterString(s.c_str());
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
 }
-
-void LoadingOverlay::Update() {}
 
 DialogPage::DialogPage(const string &msg,const string &buttonMsg) : text(msg), btn(buttonMsg){}
 DialogPage::DialogPage(const string &msg) : DialogPage(msg, "Continue") {}

@@ -2,6 +2,7 @@
 #include "../../fs.hpp"
 #include "../../SwitchThemesCommon/Fonts/TTF.hpp"
 #include "../../ViewFunctions.hpp"
+#include "../ThemePage.hpp"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ protected:
 	bool DoInstall(bool ShowDialogs = true) override
 	{
 		if (ShowDialogs)
-			DisplayLoading("Installing font...");
+			ThemesPage::DisplayInstallDialog(FileName);
 
 		fs::CreateFsMitmStructure("0100000000000811");
 		fs::CreateRomfsDir("0100000000000811");
