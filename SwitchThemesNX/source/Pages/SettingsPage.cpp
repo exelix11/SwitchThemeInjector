@@ -22,7 +22,7 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
-	ImGui::Text("NXTheme settings");
+	ImGui::TextUnformatted("NXTheme settings");
 	ImGui::PopFont();
 	ImGui::TextWrapped("These settings only apply for installing nxthemes and are not saved, you have to switch them back every time you launch this app");
 	ImGui::Checkbox("Enable animations", &Settings::UseAnimations);

@@ -20,6 +20,7 @@ void PushFunction(const std::function<void()>& fun);
 void PushPageBlocking(IUIControlObj* page);
 void DialogBlocking(const std::string &msg);
 void DisplayLoading(const std::string &msg);
+void DisplayLoading(std::initializer_list<std::string> lines);
 
 namespace Utils
 {
@@ -109,7 +110,7 @@ namespace Utils
 	static inline void ImGuiRightString(const std::string& str)
 	{
 		ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize(str.c_str()).x - 2);
-		ImGui::Text(str.c_str());
+		ImGui::TextUnformatted(str.c_str());
 	}
 
 	static inline bool PageLeaveFocusInput(bool AllowLeft = true)
