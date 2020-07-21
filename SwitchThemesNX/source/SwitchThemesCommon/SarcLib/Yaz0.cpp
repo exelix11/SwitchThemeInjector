@@ -1,4 +1,5 @@
 #include "Yaz0.hpp"
+#include <iostream>
 #include <cstring>
 #include <algorithm>
 
@@ -46,8 +47,14 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 
 	vector<u8> result(Data.size() + Data.size() / 8 + 0x10);
 
+#if _MSC_VER
+	//Msvc is way too slow using iterators in debug builds
+	auto sourceptr = &Data[0];
+	auto resultptr = &result[0];
+#else
 	auto sourceptr = Data.begin();
 	auto resultptr = result.begin();
+#endif
 
 	*resultptr++ = (u8)'Y';
 	*resultptr++ = (u8)'a';
@@ -86,6 +93,7 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 			int comp = 0;
 			int back = 1;
 			int nr = 2;
+			if (Offs)
 			{
 				auto ptr = sourceptr - 1;
 				const int maxnum = std::min(length - Offs, 0x111);
@@ -93,7 +101,7 @@ vector<u8> Yaz0::Compress(const vector<u8> &Data, int level, int reserved1, int 
 				
 				auto maxbackptr = sourceptr - maxback;
 				int tmpnr;
-				while (maxbackptr <= ptr)
+				while (maxbackptr < ptr)
 				{
 					if (ptr[0] == sourceptr[0] && ptr[1] == sourceptr[1] && ptr[2] == sourceptr[2])
 					{
