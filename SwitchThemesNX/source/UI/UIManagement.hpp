@@ -6,18 +6,20 @@
 
 #include "imgui/imgui.h"
 
-namespace UIMNG {
+namespace GFX {
 
 	extern float WRatio, HRatio;
 
 	extern GLFWwindow* mainWindow;
 
-	bool InitUI();
-	void ExitUI();
+	bool Init();
+	void Exit();
+
+	void StartFrame();
+	void EndFrame();
 }
 
-bool AppMainLoop();
-void SetAppShouldClose();
-
-void UiStartFrame();
-void UiEndFrame();
+namespace App {
+	bool MainLoop();
+	void Quit();
+}

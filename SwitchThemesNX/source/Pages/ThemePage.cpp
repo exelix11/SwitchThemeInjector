@@ -262,7 +262,7 @@ void ThemesPage::Update()
 	{
 		for (string file : SelectedFiles)
 		{
-			DisplayInstallDialog(file);
+			ThemeEntry::DisplayInstallDialog(file);
 			if (!ThemeEntry::FromFile(file)->Install(false))
 			{
 				Dialog("Installing a theme failed, the process was cancelled");
@@ -273,9 +273,4 @@ void ThemesPage::Update()
 		lblCommands = CommandsTextNormal;
 		SetPage(pageNum);		
 	}
-}
-
-void ThemesPage::DisplayInstallDialog(const string& path)
-{
-	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::GetCfwFolder() });
 }

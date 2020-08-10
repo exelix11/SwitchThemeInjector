@@ -42,7 +42,7 @@ void CfwSelectPage::Render(int X, int Y)
 		if (ImGui::Button(e.c_str(), { BtnWidth, 50 }))
 		{
 			fs::SetCfwFolder(e);
-			PopPage();
+			PopPage(this);
 		}
 		count++;
 	}
@@ -55,7 +55,7 @@ void CfwSelectPage::Render(int X, int Y)
 void CfwSelectPage::Update()
 {
 	if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_START])
-		SetAppShouldClose();
+		App::Quit();
 }
 
 

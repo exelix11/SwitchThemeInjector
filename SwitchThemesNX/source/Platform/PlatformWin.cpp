@@ -5,7 +5,7 @@
 #include "../UI/UIManagement.hpp"
 #include "../UI/UI.hpp"
 
-using namespace UIMNG;
+using namespace GFX;
 
 GLFWgamepadstate gamepad;
 GLFWgamepadstate OldGamepad;
@@ -71,7 +71,7 @@ void PlatformGetInputs()
 void PlatformImguiBinds() 
 {
 	double mouseX, mouseY;
-	glfwGetCursorPos(UIMNG::mainWindow, &mouseX, &mouseY);
+	glfwGetCursorPos(mainWindow, &mouseX, &mouseY);
 	ImGuiIO &io = ImGui::GetIO();
 	io.MousePos = ImVec2((float)mouseX / WRatio, (float)mouseY / HRatio);
 	io.MouseDown[0] = glfwGetMouseButton(mainWindow, 0) == GLFW_PRESS;

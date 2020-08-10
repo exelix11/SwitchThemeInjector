@@ -21,10 +21,19 @@ constexpr uint32_t SCR_H = 720;
 
 const ImVec2 TabPageArea = { 900, 552 };
 
-typedef intptr_t LoadedImage;
+typedef unsigned int LoadedImage;
+
+namespace Image 
+{
+	void Free(LoadedImage img);
+	LoadedImage Load(const std::vector<u8>& data);
+	//TODO: LoadedImage Load(const std::string path);
+}
 
 namespace ImageCache {
+	void Clear();
 	void FreeImage(const std::string& img);
+	//Cache automatically frees old images, no need to do it manually
 	LoadedImage LoadDDS(const std::vector<u8>& data, const std::string& name);
 };
 

@@ -110,7 +110,7 @@ vector<u8> fs::OpenFile(const string &name)
 	FILE* f = fopen(name.c_str(),"rb");
 	if (!f){
 		DialogBlocking(
-			"Reading file " + name + "failed !\n" 
+			"Reading file " + name + " failed !\n" 
 			"This can be caused by sd corruption with exfat or the archive bit, especially if you used this sd card with a mac.\n"
 			"Try removing the archive bit from the themes folder on a windows pc or with hekate, alternatively delete themes folder and copy the files via FTP");
 		return {};

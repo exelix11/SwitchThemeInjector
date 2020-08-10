@@ -7,6 +7,8 @@
 class ThemeEntry 
 {
 	public:
+		static void DisplayInstallDialog(const std::string& path);
+
 		enum class UserAction 
 		{
 			None,
@@ -15,7 +17,7 @@ class ThemeEntry
 		};
 
 		static std::unique_ptr<ThemeEntry> FromFile(const std::string& fileName);
-		static std::unique_ptr<ThemeEntry> FromSARC(const std::vector<u8>& RawData);
+		static std::unique_ptr<ThemeEntry> FromSZS(const std::vector<u8>& RawData);
 
 		virtual ~ThemeEntry();
 		

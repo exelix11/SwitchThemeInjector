@@ -43,7 +43,9 @@ static void clear_iram(void) {
 }
 #endif
 
-extern void SetAppShouldClose();
+namespace App {
+    extern void Quit();
+}
 
 void PayloadReboot::Reboot(void) {	
 #if __SWITCH__
@@ -57,7 +59,7 @@ void PayloadReboot::Reboot(void) {
     splSetConfig((SplConfigItem)65001, 2);
 	splExit();
 #endif
-	SetAppShouldClose();
+	App::Quit();
 }
 
 bool PayloadReboot::Init()
