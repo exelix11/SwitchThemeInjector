@@ -12,6 +12,8 @@
 #include "imgui/imgui_internal.h"
 #include "../ViewFunctions.hpp"
 
+static_assert(std::is_same<GLuint, LoadedImage>::value);
+
 //moved here from ViewFunctions as it needs static variables
 void Utils::ImGuiDragWithLastElement()
 {
@@ -36,6 +38,24 @@ void Utils::ImGuiDragWithLastElement()
 		scrollY = 0;
 		PrevItem = 0;
 	}
+}
+
+void Image::Free(LoadedImage img)
+{
+	if (img)
+		glDeleteTextures(1, &img);
+}
+
+LoadedImage Image::Load(const std::vector<u8>& data)
+{
+	return SOIL_load_OGL_texture_from_memory
+	(
+		data.data(),
+		data.size(),
+		SOIL_LOAD_AUTO,
+		SOIL_CREATE_NEW_ID,
+		0
+	);
 }
 
 using namespace std;
@@ -64,11 +84,19 @@ static void AddValue(const string& str, LoadedImage img)
 		PopFirst();
 }
 
+void ImageCache::Clear()
+{
+	for (const auto& i : ImagePool)
+		Image::Free(i.second);
+
+	ImagePool.clear();
+}
+
 void ImageCache::FreeImage(const string &img)
 {
 	auto res = HasString(img);
 	if (res == ImagePool.end()) return;
-	glDeleteTextures(1, (GLuint*)&res->second);
+	Image::Free(res->second);
 	ImagePool.erase(res);
 }
 
@@ -78,14 +106,7 @@ LoadedImage ImageCache::LoadDDS(const vector<u8> &data, const string &name)
 	if (res != ImagePool.end())
 		return res->second;
 
-	GLuint tex = SOIL_load_OGL_texture_from_memory
-	(
-		data.data(),
-		data.size(),
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		0
-	);
+	GLuint tex = Image::Load(data);
 
 	if (tex)
 		AddValue(name, tex);

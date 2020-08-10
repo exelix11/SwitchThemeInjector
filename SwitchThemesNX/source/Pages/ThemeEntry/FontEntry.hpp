@@ -23,7 +23,7 @@ protected:
 	bool DoInstall(bool ShowDialogs = true) override
 	{
 		if (ShowDialogs)
-			ThemesPage::DisplayInstallDialog(FileName);
+			ThemeEntry::DisplayInstallDialog(FileName);
 
 		fs::CreateFsMitmStructure("0100000000000811");
 		fs::CreateRomfsDir("0100000000000811");

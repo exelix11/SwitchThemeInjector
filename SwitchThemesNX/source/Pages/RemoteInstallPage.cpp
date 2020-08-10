@@ -185,7 +185,7 @@ void RemoteInstallPage::SocketUpdate()
 			else
 			{
 				write(curSock,"ok",2);
-				entry = ThemeEntry::FromSARC(data);
+				entry = ThemeEntry::FromSZS(data);
 				StopSocketing();
 			}
 		}
@@ -196,7 +196,7 @@ void RemoteInstallPage::SocketUpdate()
 	{
 		data = fs::OpenFile("F:/RemoteFile.bin");
 		ThemeSize = data.size();
-		entry = ThemeEntry::FromSARC(data);
+		entry = ThemeEntry::FromSZS(data);
 		StopSocketing();
 	}
 #endif

@@ -36,7 +36,7 @@ protected:
 	bool DoInstall(bool ShowDialogs = true) override
 	{
 		if (ShowDialogs)
-			ThemesPage::DisplayInstallDialog(FileName);
+			ThemeEntry::DisplayInstallDialog(FileName);
 		PatchTemplate patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
 
 		if (!PatchMng::ExefsCompatAsk(patch.szsName))

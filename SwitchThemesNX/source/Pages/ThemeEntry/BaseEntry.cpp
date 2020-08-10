@@ -5,12 +5,18 @@
 #include <filesystem>
 #include "../../Platform/Platform.hpp"
 
+#include "ImagePreview.hpp"
 #include "FontEntry.hpp"
 #include "LegacyEntry.hpp"
 #include "NxEntry.hpp"
 
 using namespace std;
 using namespace SwitchThemesCommon;
+
+void ThemeEntry::DisplayInstallDialog(const std::string& path)
+{
+	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::GetCfwFolder() });
+}
 
 class DummyEntry : public ThemeEntry 
 {
@@ -92,7 +98,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 	return make_unique<DummyEntry>(fileName, "Unknown file type", fileName, "ERROR");
 }
 
-unique_ptr<ThemeEntry> ThemeEntry::FromSARC(const std::vector<u8>& RawData)
+unique_ptr<ThemeEntry> ThemeEntry::FromSZS(const std::vector<u8>& RawData)
 {
 	auto &&DecompressedFile = Yaz0::Decompress(RawData);
 	auto &&sarc = SARC::Unpack(DecompressedFile);
@@ -145,15 +151,12 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderNavHighlight(bb, id);
 	RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 	
-	//Ew but works for me(TM)
-	if (HasPreview() && (hovered || held) && gamepad.buttons[GLFW_GAMEPAD_BUTTON_X])
+	if (HasPreview() && (hovered || held) && KeyPressed(GLFW_GAMEPAD_BUTTON_X))
 	{
 		auto Preview = GetPreview();
 		if (Preview)
 		{
-			ImGui::GetOverlayDrawList()->AddImage(
-				(ImTextureID)Preview,
-				{ 0,0 }, { SCR_W, SCR_H });
+			PushPage(new ImagePreview(Preview));
 			return UserAction::Preview;
 		}
 	}

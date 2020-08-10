@@ -38,7 +38,7 @@ void ExternalInstallPage::Render(int X, int Y)
 		Utils::ImGuiSelectItemOnce(true);
 		if (res == 0)
 		{
-			SetAppShouldClose();
+			App::Quit();
 		}
 		if (res == 1)
 		{
@@ -52,7 +52,7 @@ void ExternalInstallPage::Render(int X, int Y)
 				bpcInitialize();
 				bpcRebootSystem();
 #else
-				SetAppShouldClose();
+				App::Quit();
 #endif
 			}
 		}
@@ -112,7 +112,7 @@ void ExternalInstallPage::Update()
         }
 		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 		{
-			SetAppShouldClose();
+			App::Quit();
 		}
     }
 }

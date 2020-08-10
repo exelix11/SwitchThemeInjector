@@ -5,13 +5,12 @@
 
 #include "../Platform/Platform.hpp"
 
-using namespace UIMNG;
+using namespace GFX;
 
-GLFWwindow* UIMNG::mainWindow = nullptr;
+GLFWwindow* GFX::mainWindow = nullptr;
+float GFX::WRatio, GFX::HRatio;
 
-float UIMNG::WRatio, UIMNG::HRatio;
-
-void windowFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+static void windowFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	if (!width || !height)
 		return;
@@ -27,7 +26,7 @@ ImFont* font30;
 ImFont* font40;
 
 #include "../fs.hpp"
-bool ImguiInit()
+static bool ImguiInit()
 {
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
@@ -63,7 +62,7 @@ bool ImguiInit()
 	colors[ImGuiCol_CheckMark] = ImVec4(0.04f, 1.00f, 0.82f, 1.00f);
 	colors[ImGuiCol_SliderGrab] = ImVec4(0.24f, 0.52f, 0.88f, 1.00f);
 	colors[ImGuiCol_SliderGrabActive] = ImVec4(0.26f, 0.59f, 0.98f, 1.00f);
-	colors[ImGuiCol_Button] = ImVec4(0.35f, 0.35f, 0.35f, 1.00f);
+	colors[ImGuiCol_Button] = ImVec4(0.25f, 0.25f, 0.25f, 1.00f);
 	colors[ImGuiCol_ButtonHovered] = ImVec4(0.21f, 0.40f, 0.39f, 0.30f);
 	colors[ImGuiCol_ButtonActive] = ImVec4(0.21f, 0.40f, 0.39f, 0.00f);
 	colors[ImGuiCol_Header] = ImVec4(0.04f, 1.00f, 0.82f, 0.31f);
@@ -99,6 +98,9 @@ bool ImguiInit()
 	style.ScrollbarRounding = 8;
 	style.ScrollbarSize = 8;
 
+	style.WindowPadding = {};
+	style.WindowBorderSize = 0;
+
 	return ImGui_ImplOpenGL3_Init();
 }
 
@@ -108,13 +110,13 @@ void ImguiExit()
 	ImGui::DestroyContext();
 }
 
-void UIMNG::ExitUI()
+void GFX::Exit()
 {
 	ImguiExit();
 	glfwTerminate();
 }
 
-bool UIMNG::InitUI()
+bool GFX::Init()
 {
 	if (!glfwInit())
 	{
@@ -161,12 +163,12 @@ bool UIMNG::InitUI()
 		glfwSetFramebufferSizeCallback(mainWindow, windowFramebufferSizeCallback);
 		windowFramebufferSizeCallback(mainWindow, SCR_W,SCR_H);
 	}
-	else ExitUI();
+	else GFX::Exit();
 
 	return res;
 }
 
-bool AppMainLoop()
+bool App::MainLoop()
 {
 	bool is_active;
 	do
@@ -182,18 +184,18 @@ bool AppMainLoop()
 	return true;
 }
 
-void SetAppShouldClose() 
+void App::Quit() 
 {
 	glfwSetWindowShouldClose(mainWindow, GLFW_TRUE);
 }
 
-void UiStartFrame()
+void GFX::StartFrame()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui::NewFrame();
 }
 
-void UiEndFrame() 
+void GFX::EndFrame()
 {
 	glClearColor(0.18f, 0.18f, 0.18f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);

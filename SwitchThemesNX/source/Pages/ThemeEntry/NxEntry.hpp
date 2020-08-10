@@ -5,8 +5,8 @@
 #include "../SettingsPage.hpp"
 #include "../../SwitchThemesCommon/Bntx/DDSconv/DDSConv.hpp"
 #include "../../SwitchTools/hactool.hpp"
-using namespace SwitchThemesCommon;
 
+using namespace SwitchThemesCommon;
 using namespace std;
 
 class NxEntry : public ThemeEntry
@@ -58,7 +58,7 @@ protected:
 	CONTINUE_INSTALL:
 
 		if (ShowDialogs)
-			ThemesPage::DisplayInstallDialog(FileName);
+			ThemeEntry::DisplayInstallDialog(FileName);
 
 		//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout
 		//On <= 5.0 apply the background image for the applets
