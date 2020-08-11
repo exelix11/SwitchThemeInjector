@@ -7,30 +7,75 @@
 
 using namespace std;
 
-ThemesPage::ThemesPage(const std::vector<std::string> &files) : 
+ThemesPage* ThemesPage::Instance = nullptr;
+const ImVec2 TabPageSize = { 900, 552 };
+
+ThemesPage::ThemesPage() : 
 lblPage(""),
 NoThemesLbl(
 	"There's nothing here, copy your themes in the themes folder on your sd and try again.\n"
 	"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue if you use a mac or sd corruption if you use exfat, you can find more about those on google or ask for support on discord.")
 {
+	if (Instance)
+		throw std::runtime_error("ThemePage::Instance should not be set");
+	Instance = this;
+
 	if (UseLowMemory)
 		LimitLoad = 15;
 
 	Name = "Themes";
-	ThemeFiles = files;
 	lblCommands = CommandsTextNormal;
+
+	RefreshThemesList();
+}
+
+void ThemesPage::RefreshThemesList()
+{
+	DisplayLoading("Loading theme list...");
+	ClearSelection();
+	SetPage(-1);
+	CursorMemory.clear();
+
+	ThemeFiles = fs::theme::ScanThemeFiles();
 	std::sort(ThemeFiles.begin(), ThemeFiles.end());
-	SetDir(SD_PREFIX "/themes");
+
+	if (SelectOnRescanTarget != "")
+	{
+		SelectElementByPath(SelectOnRescanTarget);
+		SelectOnRescanTarget = "";
+	}
+	else SetDir(fs::path::ThemesFolder);
+}
+
+void ThemesPage::SelectElementByPath(const std::string& path)
+{	
+	if (std::find(ThemeFiles.begin(), ThemeFiles.end(), path) == ThemeFiles.end())
+		return; // File not in index
+
+	SetDir(fs::GetPath(path));
+
+	auto f = std::find(CurrentFiles.begin(), CurrentFiles.end(), path);
+	if (f == CurrentFiles.end())
+		return; // Can this ever happen ?
+
+	size_t index = f - CurrentFiles.begin();
+
+	int page = index / pageCount;
+	int pageindex = index % pageCount;
+
+	SetPage(page, pageindex);
 }
 
 ThemesPage::~ThemesPage()
 {
+	Instance = nullptr;
 	SetPage(-1);
 }
 
 void ThemesPage::SetDir(const string &dir)
 {
-	LastPageMap[CurrentDir] = tuple<int,int>(pageNum, menuIndex);
+	if (pageNum != -1)
+		CursorMemory[CurrentDir] = tuple<int,int>(pageNum, menuIndex);
 
 	CurrentDir = dir;
 	if (!StrEndsWith(dir, "/"))
@@ -46,9 +91,9 @@ void ThemesPage::SetDir(const string &dir)
 		pageCount--;
 
 	pageNum = -1; //force setpage to reload the entries even if in the same page as the path changed
-	if (LastPageMap.count(dir))
+	if (CursorMemory.count(dir))
 	{
-		const auto& [num, index] = LastPageMap[dir];
+		const auto& [num, index] = CursorMemory[dir];
 		SetPage(num, index);
 	}
 	else SetPage(0);
@@ -74,9 +119,6 @@ void ThemesPage::SetPage(int num, int index)
 		return;
 	}
 	
-	//if (CurrentFiles.size() > 10)
-	//	DisplayLoading("Loading...");
-	
 	int imax = CurrentFiles.size() - baseIndex;
 	if (imax > LimitLoad) imax = LimitLoad;
 	for (int i = 0; i < imax; i++)
@@ -95,6 +137,9 @@ void ThemesPage::Render(int X, int Y)
 	Utils::ImGuiSetupPage("ThemesPageContainer", X, Y, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushFont(font25);
 
+	if (ImGui::GetCurrentWindow()->Appearing && fs::theme::ShouldRescanThemeList())
+		PushFunction([this]() { RefreshThemesList(); });
+
 	if (DisplayEntries.size() == 0)
 		ImGui::TextWrapped(NoThemesLbl.c_str());
 
@@ -108,7 +153,8 @@ void ThemesPage::Render(int X, int Y)
 	ImGui::TextUnformatted(lblCommands.c_str());
 
 	{
-		Utils::ImGuiSetupPage(this, X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+		ImGui::SetNextWindowSize(TabPageSize);
+		Utils::ImGuiSetupWin("ThemesList", X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
 		if (ResetScroll || ImGui::GetCurrentWindow()->Appearing)
 		{
@@ -117,8 +163,7 @@ void ThemesPage::Render(int X, int Y)
 			ImGui::SetScrollY(0);
 			FocusEvent.Set();
 			ResetScroll = false;
-		}
-		ImGui::SetWindowSize(TabPageArea);
+		}		
 		{
 			int count = 0;
 			for (auto& e : DisplayEntries)
@@ -184,6 +229,12 @@ inline bool ThemesPage::IsSelected(const std::string &fname)
 	return (std::find(SelectedFiles.begin(), SelectedFiles.end(), fname) != SelectedFiles.end());
 }
 
+void ThemesPage::ClearSelection()
+{
+	SelectedFiles.clear();
+	lblCommands = CommandsTextNormal;
+}
+
 void ThemesPage::SelectCurrent()
 {
 	if (DisplayEntries[menuIndex]->IsFolder() || !DisplayEntries[menuIndex]->CanInstall()) return;
@@ -208,7 +259,7 @@ void ThemesPage::Update()
 		Parent->PageLeaveFocus(this);
 	if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
 	{
-		if (CurrentDir != SD_PREFIX "/themes/")
+		if (CurrentDir != fs::path::ThemesFolder)
 			SetDir(fs::GetParentDir(CurrentDir));
 		else 
 			Parent->PageLeaveFocus(this);
@@ -254,8 +305,7 @@ void ThemesPage::Update()
 		if (SelectedFiles.size() == 0 && menuIndex >= 0)
 			SelectCurrent();
 		else {
-			SelectedFiles.clear();
-			lblCommands = CommandsTextNormal;
+			ClearSelection();
 		}
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
@@ -269,8 +319,12 @@ void ThemesPage::Update()
 				break;
 			}
 		}
-		SelectedFiles.clear();
-		lblCommands = CommandsTextNormal;
+		ClearSelection();
 		SetPage(pageNum);		
 	}
+}
+
+void ThemesPage::SelectElementOnRescan(const std::string& path)
+{
+	SelectOnRescanTarget = path;
 }
