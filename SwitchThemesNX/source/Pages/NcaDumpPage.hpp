@@ -16,6 +16,7 @@ class NcaDumpPage : public IPage
 		void Update() override;
 		
 		static void CheckHomeMenuVer();
+		static void WriteHomeNcaVersion();
 	private:	
 		std::string guideText;
 		std::string dumpNca;

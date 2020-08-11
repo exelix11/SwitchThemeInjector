@@ -48,11 +48,11 @@ static bool HasLatestPatches = true;
 
 static string GetExefsPatchesPath()
 {
-	if (fs::GetCfwFolder() == SD_PREFIX ATMOS_DIR)
+	if (fs::path::CfwFolder() == SD_PREFIX ATMOS_DIR)
 		return SD_PREFIX ATMOS_DIR "exefs_patches/";
-	else if (fs::GetCfwFolder() == SD_PREFIX REINX_DIR)
+	else if (fs::path::CfwFolder() == SD_PREFIX REINX_DIR)
 		return SD_PREFIX REINX_DIR "patches/";
-	else if (fs::GetCfwFolder() == SD_PREFIX SX_DIR)
+	else if (fs::path::CfwFolder() == SD_PREFIX SX_DIR)
 		return SD_PREFIX SX_DIR "exefs_patches/";
 	else return "";
 }
@@ -138,7 +138,7 @@ const char* PatchMng::EnsureInstalled()
 		return WarningFWVer;
 	}
 
-	if (fs::GetCfwFolder() == SD_PREFIX SX_DIR)
+	if (fs::path::CfwFolder() == SD_PREFIX SX_DIR)
 	{
 		HasLatestPatches = false;
 		return WarningSX;

@@ -15,7 +15,7 @@ using namespace SwitchThemesCommon;
 
 void ThemeEntry::DisplayInstallDialog(const std::string& path)
 {
-	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::GetCfwFolder() });
+	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::path::CfwFolder() });
 }
 
 class DummyEntry : public ThemeEntry 

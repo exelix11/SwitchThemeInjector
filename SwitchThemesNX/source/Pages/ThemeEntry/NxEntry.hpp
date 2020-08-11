@@ -91,8 +91,8 @@ protected:
 					return false;
 			}
 
-			fs::CreateThemeStructure("0100000000001000");
-			fs::WriteFile(fs::GetFsMitmFolder() + "0100000000001000/romfs/lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
+			fs::theme::CreateStructure("0100000000001000");
+			fs::WriteFile(fs::path::RomfsFolder("0100000000001000") + "lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
 		}
 
 		//Actual file patching code 
@@ -100,12 +100,12 @@ protected:
 		SARC::SarcData sarc;
 		if (!SarcOpen(BaseSzs, &sarc)) return false;
 		SzsPatcher Patcher(sarc);
-		string TitleId = "0100000000001000";
+		string ContentID = "0100000000001000";
 		string SzsName = ThemeTargetToFileName[themeInfo.Target];
 		auto patch = Patcher.DetectSarc();
 		if (patch.FirmName != "")
 		{
-			TitleId = patch.TitleId;
+			ContentID = patch.TitleId;
 			SzsName = patch.szsName;
 		}
 
@@ -191,8 +191,8 @@ if (SData.files.count("layout.json"))\
 
 		if (FileHasBeenPatched)
 		{			
-			fs::CreateThemeStructure(TitleId);
-			fs::WriteFile(fs::GetFsMitmFolder() + TitleId + "/romfs/lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
+			fs::theme::CreateStructure(ContentID);
+			fs::WriteFile(fs::path::RomfsFolder(ContentID) +  "lyt/" + SzsName, SarcPack(Patcher.GetFinalSarc()));
 		}
 
 		return true;

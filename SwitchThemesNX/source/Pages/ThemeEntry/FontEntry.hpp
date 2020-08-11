@@ -25,12 +25,12 @@ protected:
 		if (ShowDialogs)
 			ThemeEntry::DisplayInstallDialog(FileName);
 
-		fs::CreateFsMitmStructure("0100000000000811");
-		fs::CreateRomfsDir("0100000000000811");
-		fs::WriteFile(fs::GetFsMitmFolder() + "0100000000000811/romfs/nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
-		fs::CreateFsMitmStructure("0100000000000039");
-		fs::CreateRomfsDir("0100000000000039");
-		fs::WriteFile(fs::GetFsMitmFolder() + "0100000000000039/romfs/dummy.bin", { 0x70,0x61,0x70,0x65,0x20,0x53,0x61,0x74,0x61,0x6E,0x20,0x41,0x6C,0x65,0x70,0x70,0x65,0x21 });
+		fs::theme::CreateMitmStructure("0100000000000811");
+		fs::theme::CreateRomfsDir("0100000000000811");
+		fs::WriteFile(fs::path::RomfsFolder("0100000000000811") + "nintendo_udsg-r_std_003.bfttf", SwitchThemesCommon::TTF::ConvertToBFTTF(file));
+		fs::theme::CreateMitmStructure("0100000000000039");
+		fs::theme::CreateRomfsDir("0100000000000039");
+		fs::WriteFile(fs::path::RomfsFolder("0100000000000039") + "dummy.bin", { 0x70,0x61,0x70,0x65,0x20,0x53,0x61,0x74,0x61,0x6E,0x20,0x41,0x6C,0x65,0x70,0x70,0x65,0x21 });
 		return true;
 	}
 private:

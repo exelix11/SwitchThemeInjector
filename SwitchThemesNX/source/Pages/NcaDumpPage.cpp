@@ -31,7 +31,7 @@ void NcaDumpPage::Render(int X, int Y)
 			{
 				DialogBlocking("Super secret combination entered, only the home menu NCA will be dumped (it won't be extracted)");
 				DisplayLoading("Extracting NCA...");
-				if (fs::DumpHomeMenuNca())
+				if (fs::theme::DumpHomeMenuNca())
 					Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
 				return;
 			}
@@ -86,14 +86,14 @@ void NcaDumpPage::CheckHomeMenuVer()
 		else goto ASK_DUMP;
 	}
 	else if (HOSVer.major >= 7) goto ASK_DUMP;
-	else fs::WriteHomeDumpVer();
+	else WriteHomeNcaVersion();
 	return;
 	
 ASK_DUMP:
 	if (!YesNoPage::Ask("The current firmware version is different than the one of the extracted home menu, do you want to extract the home menu again ?\nIf the extracted home menu doesn't match with the installed one themes will crash."))
 	{
 		DialogBlocking("You won't see this message again, in case of crashes you can extract the home menu manually from the `Extract home menu` option in the main menu");
-		fs::WriteHomeDumpVer();
+		WriteHomeNcaVersion();
 		return;
 	}
 	
@@ -107,6 +107,15 @@ DUMP_HOMEMENU:
 	{
 		DialogBlocking("Error while extracting the home menu: " + string(err.what()));
 	}
+}
+
+void NcaDumpPage::WriteHomeNcaVersion()
+{
+	FILE* ver = fopen(fs::path::NcaVersionCfg.c_str(), "w");
+	if (!ver)
+		return;
+	fprintf(ver, "%s", SystemVer.c_str());
+	fclose(ver);
 }
 
 

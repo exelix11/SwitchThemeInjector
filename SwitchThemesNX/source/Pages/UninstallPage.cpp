@@ -26,7 +26,7 @@ void UninstallPage::Render(int X, int Y)
 			if (FullUninstall)
 			{
 				DisplayLoading("Clearing LayeredFS dir...");
-				fs::UninstallTheme(true);
+				fs::theme::UninstallTheme(true);
 				PatchMng::RemoveAll();
 				Dialog(
 					"Done, everything theme-related has been removed, restart your console to see the changes.\n"
@@ -36,7 +36,7 @@ void UninstallPage::Render(int X, int Y)
 			else
 			{
 				DisplayLoading("Loading...");
-				fs::UninstallTheme(false);
+				fs::theme::UninstallTheme(false);
 				Dialog("Done, all the installed themes have been removed, restart your console to see the changes");
 			}
 		});

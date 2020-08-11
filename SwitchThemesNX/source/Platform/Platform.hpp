@@ -1,17 +1,8 @@
 #pragma once
+#include "PlatformFs.hpp"
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-
-#ifndef __SWITCH__
-#define ASSET(_str) "./romfs/" _str
-#define SD_PREFIX "F:"
-#else
-#include <switch.h>
-#define ASSET(_str) "romfs:/" _str
-#define SD_PREFIX "sdmc:"
-#endif
-
-#define LOGf(...) printf(__VA_ARGS__)
 
 extern GLFWgamepadstate gamepad;
 extern GLFWgamepadstate OldGamepad;

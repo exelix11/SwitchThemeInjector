@@ -181,7 +181,7 @@ static bool NcaExtractSingleFile(const string &file, u64 titleid, const string &
 	g_filter = file.c_str();
 
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
-	if (HactoolExtractNCA(GetNcaPath(titleid),"sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
+	if (HactoolExtractNCA(fs::path:Nca(titleid),"sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/" + file))
 		{			
@@ -271,7 +271,7 @@ bool hactool::ExtractHomeMenu()
 	DisplayLoading("Extracting home menu...");
 	RecursiveDeleteFolder("sdmc:/themes/systemData/tmp");
 	g_filter = "lyt/";
-	if (HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
+	if (HactoolExtractNCA(fs::path:Nca(0x0100000000001000), "sdmc:/themes/systemData/tmp", ExtractionTarget::RomFS))
 	{
 		if (!filesystem::exists("sdmc:/themes/systemData/tmp/lyt/ResidentMenu.szs"))
 		{			
@@ -300,7 +300,7 @@ bool hactool::ExtractTitle(u64 titleID, const string& Path) {
 	DisplayLoading("Extracting ...");
 	RecursiveDeleteFolder(Path);
 	g_filter = nullptr;
-	if (HactoolExtractNCA(GetNcaPath(titleID), Path, ExtractionTarget::RomFS))
+	if (HactoolExtractNCA(fs::path:Nca(titleID), Path, ExtractionTarget::RomFS))
 		DialogBlocking("Done");
 	else
 	{
@@ -318,7 +318,7 @@ bool hactool::ExtractHomeExefs()
 	if (!GetKeys()) return false;
 	
 	g_filter = nullptr;
-	return HactoolExtractNCA(GetNcaPath(0x0100000000001000), "sdmc:/themes/systemData/", ExtractionTarget::ExeFS);
+	return HactoolExtractNCA(fs::path:Nca(0x0100000000001000), "sdmc:/themes/systemData/", ExtractionTarget::ExeFS);
 }
 
 #else
