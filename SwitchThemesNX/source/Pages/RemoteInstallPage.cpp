@@ -109,7 +109,7 @@ void RemoteInstallPage::StartSocketing()
 	
 #else
 	sock = 66;
-	const char* hostname = "F:\remoteFile.bin";
+	const char* hostname = "F:\\remoteFile.bin";
 #endif
 	BtnStart = ("IP: " + string(hostname) + " - Press to stop###InstallBtn");
 }
