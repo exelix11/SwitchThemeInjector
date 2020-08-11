@@ -19,8 +19,6 @@ extern ImFont* font40;
 constexpr uint32_t SCR_W = 1280;
 constexpr uint32_t SCR_H = 720;
 
-const ImVec2 TabPageArea = { 900, 552 };
-
 typedef unsigned int LoadedImage;
 
 namespace Image 
@@ -28,6 +26,9 @@ namespace Image
 	void Free(LoadedImage img);
 	LoadedImage Load(const std::vector<u8>& data);
 	//TODO: LoadedImage Load(const std::string path);
+	namespace Internal {
+		void AssertOnLeaks();
+	}
 }
 
 namespace ImageCache {

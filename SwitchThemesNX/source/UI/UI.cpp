@@ -40,15 +40,20 @@ void Utils::ImGuiDragWithLastElement()
 	}
 }
 
+static size_t ImageCount = 0;
+
 void Image::Free(LoadedImage img)
 {
 	if (img)
+	{
+		ImageCount--;
 		glDeleteTextures(1, &img);
+	}
 }
 
 LoadedImage Image::Load(const std::vector<u8>& data)
 {
-	return SOIL_load_OGL_texture_from_memory
+	auto img = SOIL_load_OGL_texture_from_memory
 	(
 		data.data(),
 		data.size(),
@@ -56,6 +61,14 @@ LoadedImage Image::Load(const std::vector<u8>& data)
 		SOIL_CREATE_NEW_ID,
 		0
 	);
+	if (img) ImageCount++;
+	return img;
+}
+
+void Image::Internal::AssertOnLeaks()
+{
+	if (ImageCount)
+		throw std::runtime_error("Leaking images !");
 }
 
 using namespace std;
