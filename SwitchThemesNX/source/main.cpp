@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <filesystem>
-#include <stack>
 #include <variant>
 
 #include "UI/UIManagement.hpp"
@@ -28,7 +27,6 @@
 #include "SwitchTools/PatchMng.hpp"
 
 //#define DEBUG
-using namespace std;
 
 static inline void ImguiBindController()
 {
@@ -52,36 +50,40 @@ static inline void ImguiBindController()
 }
 
 static bool IsRendering = false;
-stack<IUIControlObj*> views;
-bool doPopPage = false;
+static std::vector<IUIControlObj*> Pages;
+static std::vector<IUIControlObj*> PopList;
 
-IUIControlObj *ViewObj = nullptr;
+static IUIControlObj *ViewObj = nullptr;
 
-void PopPage()
+void PopPage(IUIControlObj* page)
 {
-	doPopPage = true;
+	PopList.push_back(page);
 }
 
 static void _PopPage()
 {
-	doPopPage = false;
-	delete views.top();
-	views.pop();
-	if (views.size() == 0)
+	auto ShouldRemove = [](IUIControlObj* obj) -> bool 
 	{
-		//Dialog("Error: Can't pop last page");
-		return;
-	}
-	ViewObj = views.top();
+		auto p = std::find(PopList.begin(), PopList.end(), obj);
+		if (p == PopList.end()) return false;
+		delete *p;
+		return true;
+	};
+
+	Pages.erase(std::remove_if(Pages.begin(), Pages.end(), ShouldRemove));
+	PopList.clear();
+
+	ViewObj = Pages.size() ? Pages.back() : nullptr;
 }
 
-void PushPage(IUIControlObj* page) //All pages must be dynamically allocated
+//All pages must be dynamically allocated
+void PushPage(IUIControlObj* page)
 {
-	views.push(page);
+	Pages.push_back(page);
 	ViewObj = page;
 }
 
-vector<function<void()>> DeferredFunctions;
+vector<std::function<void()>> DeferredFunctions;
 void PushFunction(const std::function<void()>& fun)
 {
 	DeferredFunctions.push_back(fun);
@@ -95,63 +97,19 @@ static void ExecuteDeferredFunctions()
 		fun();
 }
 
-void PushPageBlocking(IUIControlObj* page)
-{
-	if (IsRendering)
-	{
-		LOGf("Attempted to push a blocking page while rendering");
-		PushFunction([page]() {PushPageBlocking(page); });
-		return;
-	}
-
-	PushPage(page);
-	while (AppMainLoop() && ViewObj)
-	{
-		PlatformGetInputs();
-		ImguiBindController();
-		PlatformImguiBinds();
-		
-		IUIControlObj* CurObj = ViewObj;
-
-		IsRendering = true;
-		UiStartFrame();
-		CurObj->Render(0,0);
-		UiEndFrame();
-		IsRendering = false;
-
-		if (CurObj == ViewObj)
-			CurObj->Update();
-		
-		ExecuteDeferredFunctions();
-		if (doPopPage)
-		{
-			_PopPage();
-			break;
-		}
-
-		PlatformSleep(1 / 30.0f * 1000);
-	}
-}
-
-void Dialog(const string &msg)
+void Dialog(const std::string &msg)
 {
 	PushPage(new DialogPage(msg));
 }
 
-//TODO less hacky way
-void DialogBlocking(const string &msg)
-{
-	PushPageBlocking(new DialogPage(msg));
-}
-
 static inline void DisplayLoading(LoadingOverlay &&o)
 {
-	UiStartFrame();
+	GFX::StartFrame();
 	o.Render(0, 0);
-	UiEndFrame();
+	GFX::EndFrame();
 }
 
-void DisplayLoading(const string& msg)
+void DisplayLoading(const std::string& msg)
 {
 	DisplayLoading(LoadingOverlay(msg));
 }
@@ -186,9 +144,9 @@ static void calcFPS()
 }
 #endif
 
-static void MainLoop()
+static inline void MainLoop(bool BreakOnPop = false)
 {
-	while (AppMainLoop() && ViewObj)
+	while (App::MainLoop() && ViewObj)
 	{
 		PlatformGetInputs();
 		ImguiBindController();
@@ -198,23 +156,44 @@ static void MainLoop()
 		IUIControlObj* CurObj = ViewObj;
 
 		IsRendering = true;
-		UiStartFrame();		
+		GFX::StartFrame();
 		CurObj->Render(0,0);
 #ifdef DEBUG
 		calcFPS();
 #endif
-		UiEndFrame();
+		GFX::EndFrame();
 		IsRendering = false;
 
 		if (CurObj == ViewObj)
 			CurObj->Update();
 		
 		ExecuteDeferredFunctions();
-		if (doPopPage)
+		if (PopList.size())
+		{
 			_PopPage();
+			if (BreakOnPop)
+				break;
+		}
 
 		PlatformSleep(1 / 30.0f * 1000);
 	}
+}
+
+
+void PushPageBlocking(IUIControlObj* page)
+{
+	if (IsRendering)
+	{
+		throw std::runtime_error("Attempted to push a blocking page while rendering");
+	}
+
+	PushPage(page);
+	MainLoop(true);
+}
+
+void DialogBlocking(const std::string& msg)
+{
+	PushPageBlocking(new DialogPage(msg));
 }
 
 class QuitPage : public IPage
@@ -229,27 +208,30 @@ class QuitPage : public IPage
 		
 		void Update() override
 		{
-			SetAppShouldClose();
+			App::Quit();
 		}
 };
 
 void ShowFirstTimeHelp(bool WelcomeScr)
 {	
-//these are shown from the last to the first
-	Dialog("You can find some themes on the /r/NXThemes subreddit and in the Qcean Discord server (invite: CUnHJgb) where you can also ask for support. \n\n"
-"To make your own themes download the windows app at: https://git.io/fpxAS\n"
-"Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/v2\n"
-"\n"
-"That's all, have fun with custom themes :)");
-	Dialog(
-	"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"
-	"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/contents (/titles on reinx and sxos)'.\n\n"
-	"When you change the firmware your console (upgrade or downgrade) you must uninstall the theme first because the installed files on the sd are firmware-dependent.\n"
-	"If the firmware you installed supports themes you can install them back after the update.\n\n"
-	"Lockscreen themes after firmware version 9.0 are not supported on all CFWs because some lack support for patching titles via IPS."
-	);
 	if (WelcomeScr)
-		Dialog("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab." );
+		DialogBlocking("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab.");
+
+	DialogBlocking(
+		"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"
+		"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/contents (/titles on reinx and sxos)'.\n\n"
+		"When you change the firmware your console (upgrade or downgrade) you must uninstall the theme first because the installed files on the sd are firmware-dependent.\n"
+		"If the firmware you installed supports themes you can install them back after the update.\n\n"
+		"Lockscreen themes after firmware version 9.0 are not supported on all CFWs because some lack support for patching titles via IPS."
+	);
+
+	DialogBlocking(
+		"You can find some themes on the /r/NXThemes subreddit and in the Qcean Discord server (invite: CUnHJgb) where you can also ask for support. \n\n"
+		"To make your own themes download the windows app at: https://git.io/fpxAS\n"
+		"Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/v2\n"
+		"\n"
+		"That's all, have fun with custom themes :)"
+	);
 }
 
 // Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
@@ -260,19 +242,19 @@ static void CheckCFWDir()
 		PushPageBlocking(new CfwSelectPage(f));
 }
 
-static vector<string> GetArgsInstallList(int argc, char** argv)
+static std::vector<std::string> GetArgsInstallList(int argc, char** argv)
 {
 	if (argc <= 1) return {};
 
-	vector<string> Args(argc - 1);
+	std::vector<std::string> Args(argc - 1);
 	for (size_t i = 0; i < Args.size(); i++)
-		Args[i] = string(argv[i + 1]);
+		Args[i] = std::string(argv[i + 1]);
 
 	//Appstore-style args
 	if (StrStartsWith(Args[0], "installtheme="))
 	{
-		string key = "installtheme=";
-		string pathss;
+		std::string key = "installtheme=";
+		std::string pathss;
 		std::vector<std::string> paths;
 		for (auto argvs : Args)
 		{
@@ -289,10 +271,11 @@ static vector<string> GetArgsInstallList(int argc, char** argv)
 
 			if (!pathss.empty())
 			{
-				string path;
-				stringstream stream(pathss);
+				std::string path;
+				std::stringstream stream(pathss);
 				while (getline(stream, path, ',')) {
-					paths.push_back(path);
+					if (filesystem::exists(path) && filesystem::is_regular_file(path))
+						paths.push_back(path);
 				}
 			}
 		}
@@ -300,7 +283,7 @@ static vector<string> GetArgsInstallList(int argc, char** argv)
 	}
 	else //File args from nx-hbloader
 	{
-		vector<string> res;
+		std::vector<std::string> res;
 
 		for (auto& s : Args)
 			if (filesystem::exists(s) && filesystem::is_regular_file(s))
@@ -345,7 +328,7 @@ int main(int argc, char **argv)
 {
 	PlatformInit();
 
-	if (!UIMNG::InitUI())
+	if (!GFX::Init())
 	{
 		PlatformExit();
 		return -1;
@@ -354,8 +337,8 @@ int main(int argc, char **argv)
 
 	SetupSysVer();
 	DisplayLoading("Loading system info...");
-	
-	bool ThemesFolderExists = fs::CheckThemesFolder();
+
+	bool ThemesFolderExists = fs::EnsureThemesFolderExists();
 	NcaDumpPage::CheckHomeMenuVer();
 	CheckCFWDir();
 
@@ -393,9 +376,7 @@ int main(int argc, char **argv)
 			t->AddPage(PatchFailedWarning);
 		}
 
-		DisplayLoading("Loading theme list...");
-		auto ThemeFiles = fs::GetThemeFiles();
-		ThemesPage *p = new ThemesPage(ThemeFiles);
+		ThemesPage *p = new ThemesPage();
 		t->AddPage(p);
 		UninstallPage *up = new UninstallPage();
 		t->AddPage(up);
@@ -427,13 +408,14 @@ int main(int argc, char **argv)
 	
 APP_QUIT:
 
-	while (views.size() != 0)
+	while (Pages.size() != 0)
 	{
-		delete views.top();
-		views.pop();
+		delete Pages.back();
+		Pages.pop_back();
 	}
 
-	UIMNG::ExitUI();
+	GFX::Exit();
+	Image::Internal::AssertOnLeaks();
 	PlatformExit();
 	
     return 0;
