@@ -42,8 +42,8 @@ protected:
 		if (!PatchMng::ExefsCompatAsk(patch.szsName))
 			return false;
 
-		fs::CreateThemeStructure(patch.TitleId);;
-		fs::WriteFile(fs::GetFsMitmFolder() + patch.TitleId + "/romfs/lyt/" + patch.szsName, file);
+		fs::theme::CreateStructure(patch.TitleId);;
+		fs::WriteFile(fs::path::RomfsFolder(patch.TitleId) + "lyt/" + patch.szsName, file);
 
 		return true;
 	}
