@@ -12,9 +12,9 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
-
-
+    
 #define IMGUI_CUSTOM_NO_SETTINGS
+#define IMGUI_DEFINE_MATH_OPERATORS
 
 //---- Define assertion handler. Defaults to calling assert().
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
