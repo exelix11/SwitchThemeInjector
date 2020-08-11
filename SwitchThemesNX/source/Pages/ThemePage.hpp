@@ -11,12 +11,19 @@
 class ThemesPage : public IPage
 {
 	public:
-		ThemesPage(const std::vector<std::string> &files);	
+		static ThemesPage* Instance;
+
+		ThemesPage();	
 		~ThemesPage();
 		
 		void Render(int X, int Y) override;
 		void Update() override;
+
+		void SelectElementOnRescan(const std::string& path);
 	private:
+		void RefreshThemesList();
+		void SelectElementByPath(const std::string& path);
+
 		void SetDir(const std::string &dir);
 		void SetPage(int num, int index = 0);
 		void SelectCurrent();
@@ -25,7 +32,8 @@ class ThemesPage : public IPage
 		
 		std::vector<std::string> ThemeFiles;
 		bool IsSelected(const std::string &fname);
-		
+		void ClearSelection();
+
 		std::string CurrentDir;
 		std::vector<std::string> CurrentFiles;
 		
@@ -48,5 +56,7 @@ class ThemesPage : public IPage
 
 		int LimitLoad = 25;
 
-		std::unordered_map<std::string, std::tuple<int,int>> LastPageMap;
+		std::unordered_map<std::string, std::tuple<int,int>> CursorMemory;
+
+		std::string SelectOnRescanTarget;
 };
