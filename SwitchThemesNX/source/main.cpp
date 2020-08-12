@@ -91,8 +91,8 @@ void PushFunction(const std::function<void()>& fun)
 
 static void ExecuteDeferredFunctions() 
 {
-	auto vec = DeferredFunctions;
-	DeferredFunctions.clear();
+	auto vec = std::move(DeferredFunctions);
+	DeferredFunctions = {};
 	for (auto& fun : vec)
 		fun();
 }
