@@ -14,6 +14,8 @@ RemoteInstall::Worker::BaseWorker::BaseWorker(const std::vector<std::string>& ur
         CURL* transfer = RemoteInstall::API::Util::EasyGET(urls[i], Results[i], i);
         curl_multi_add_handle(cm, transfer);
     }
+
+    UpdateStatusMessage();
 }
 
 void RemoteInstall::Worker::BaseWorker::Update()
@@ -49,7 +51,8 @@ void RemoteInstall::Worker::BaseWorker::Update()
                 OnError(index);
             }
 
-            CompletedOneStatusMessage();
+            Completed++;
+            UpdateStatusMessage();
             curl_multi_remove_handle(cm, e);
             curl_easy_cleanup(e);
         }
@@ -88,10 +91,15 @@ RemoteInstall::Worker::BaseWorker::~BaseWorker()
         curl_multi_cleanup(cm);
 }
 
-void RemoteInstall::Worker::BaseWorker::CompletedOneStatusMessage()
+void RemoteInstall::Worker::BaseWorker::Dialog(const std::string& msg)
+{
+    DialogBlocking(msg);
+}
+
+void RemoteInstall::Worker::BaseWorker::UpdateStatusMessage()
 {
     std::stringstream msg;
-    msg << "Downloading data (" << ++Completed << " of " << urls.size() << ") ...";
+    msg << "Downloading data (" << Completed << " of " << urls.size() << ") ...";
     LoadingLine = msg.str();
 }
 

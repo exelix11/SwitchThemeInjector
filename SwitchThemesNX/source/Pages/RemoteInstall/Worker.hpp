@@ -22,6 +22,8 @@ namespace RemoteInstall::Worker
 
 		virtual void OnComplete() = 0;
 
+		void Dialog(const std::string& msg);
+
 		const std::vector<std::string> urls;
 		std::vector<std::vector<u8>> Results;
 
@@ -29,7 +31,7 @@ namespace RemoteInstall::Worker
 		
 		std::stringstream Errors;
 	private:
-		void CompletedOneStatusMessage();
+		void UpdateStatusMessage();
 
 		int Completed = 0;
 		bool Done = false;
@@ -80,7 +82,7 @@ namespace RemoteInstall::Worker
 		{
 			const auto& str = Errors.str();
 			if (str.length())
-				DialogBlocking(str);
+				Dialog(str);
 		}
 		
 		bool OnFinished(uintptr_t index) override
