@@ -13,6 +13,7 @@
 #include <netinet/in.h>
 #include <fcntl.h>
 #endif
+#include "RemoteInstall/RemoteInstall.hpp"
 
 class RemoteInstallPage : public IPage
 {
@@ -29,17 +30,22 @@ class RemoteInstallPage : public IPage
 		
 		void DialogError(const std::string &msg);
 		
-		int sock = -1;
-	
+		std::string RemoteInstallCode;
+		std::string RemoteInstallBtnText;
+		void SetRemoteInstallCode(const char* input);
+		void StartRemoteInstall(const RemoteInstall::Provider& provider);
+
+		int sock = -1;	
 		//For SocketUpdate:
 		int curSock = -1;
 		u32 ThemeSize = 0;
 		std::vector<u8> data;
 		
-		std::string lblInfo;
-		std::string lblConfirm;
 		std::unique_ptr<ThemeEntry> entry = 0;
 		std::string BtnStart;
 
 		bool AutoInstall = false;
+		
+		void CurItemBlockLeft();
+		bool AllowLeft = true;
 };

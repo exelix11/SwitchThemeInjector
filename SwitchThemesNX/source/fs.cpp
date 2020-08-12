@@ -1,6 +1,10 @@
 #include "fs.hpp"
-
 #include <sys/stat.h>
+#include <cstring>
+
+#define FS_TROUBLESHOOT_MSG \
+	"Make sure the file exists, this can also be caused by sd corruption with exfat or the archive bit, especially if you used this sd card with a mac.\n" \
+	"Try removing the archive bit from the themes folder on a windows pc or with hekate, alternatively delete themes folder and copy the files via FTP"
 
 using namespace std;
 using namespace fs;
@@ -35,16 +39,16 @@ string fs::path::Nca(u64 id)
 	char path[FS_MAX_PATH] = { 0 };
 	auto rc = lrInitialize();
 	if (R_FAILED(rc))
-		DialogBlocking((string)"lrInitialize : " + to_string(rc));
+		throw std::runtime_error("lrInitialize : "s + std::to_string(rc));
 
 	LrLocationResolver res;
 	rc = lrOpenLocationResolver(NcmStorageId_BuiltInSystem, &res);
 	if (R_FAILED(rc))
-		DialogBlocking((string)"lrOpenLocationResolver :" + to_string(rc));
+		throw std::runtime_error("lrOpenLocationResolver :"s + std::to_string(rc));
 
 	rc = lrLrResolveProgramPath(&res, id, path);
 	if (R_FAILED(rc))
-		DialogBlocking((string)"lrLrResolveDataPath : " + to_string(rc));
+		throw std::runtime_error("lrLrResolveDataPath : "s + std::to_string(rc));
 
 	std::string result(path);
 	result.erase(0, ((std::string)"@SystemContent://").length());
@@ -102,23 +106,21 @@ vector<u8> fs::OpenFile(const string &name)
 {
 	FILE* f = fopen(name.c_str(),"rb");
 	if (!f)
-		throw std::runtime_error(
-			"Opening file " + name + " failed !\n"
-			"Make sure the file exists, this can also be caused by sd corruption with exfat or the archive bit, especially if you used this sd card with a mac.\n"
-			"Try removing the archive bit from the themes folder on a windows pc or with hekate, alternatively delete themes folder and copy the files via FTP"
-		);
+		throw std::runtime_error("Opening file " + name + " failed !\n" FS_TROUBLESHOOT_MSG);
 
 	fseek(f,0,SEEK_END);
-	auto len = ftell(f);
+	size_t len = 0;
+	{
+		auto fsz = ftell(f);
+		if (fsz < 0)
+			throw std::runtime_error("Reading file size for " + name + " failed !\n" FS_TROUBLESHOOT_MSG);
+		len = fsz;
+	}
 	rewind(f);
 
 	vector<u8> coll(len);
 	if (fread(coll.data(), 1, len, f) != len)
-		throw std::runtime_error(
-			"Reading from file " + name + " failed !\n"
-			"This can be caused by sd corruption with exfat or the archive bit, especially if you used this sd card with a mac.\n"
-			"Try removing the archive bit from the themes folder on a windows pc or with hekate, alternatively delete themes folder and copy the files via FTP"
-		);
+		throw std::runtime_error("Reading from file " + name + " failed !\n" FS_TROUBLESHOOT_MSG);
 
 	fclose(f);
 	return coll;
@@ -315,10 +317,10 @@ bool fs::theme::DumpHomeMenuNca()
     fsOpenBisFileSystem(&sys, FsBisPartitionId_System, "");
 	fsdevMountDevice("System", sys);
 	try {		
-		auto targetNca = GetNcaPath(0x0100000000001000);
-		WriteFile(path::SystemDataFolder() + "home.nca",OpenFile(targetNca));
-		targetNca = GetNcaPath(0x0100000000001013);
-		WriteFile(path::SystemDataFolder() + "user.nca",OpenFile(targetNca));
+		auto targetNca = path::Nca(0x0100000000001000);
+		WriteFile(path::SystemDataFolder + "home.nca",OpenFile(targetNca));
+		targetNca = path::Nca(0x0100000000001013);
+		WriteFile(path::SystemDataFolder + "user.nca",OpenFile(targetNca));
 	}
 	catch (...)
 	{

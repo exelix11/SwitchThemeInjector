@@ -12,7 +12,7 @@ class ImagePreview : public IUIControlObj
 			Utils::ImGuiNextFullScreen();
 			ImGui::Begin("ImagePreview", nullptr, DefaultWinFlags);
 			
-			ImGui::Image((ImTextureID)img, { SCR_W, SCR_H });
+			ImGui::Image((ImTextureID)(uintptr_t)img, { SCR_W, SCR_H });
 
 			if (ImGui::IsItemClicked() || Utils::PageLeaveFocusInput())
 				PopPage(this);

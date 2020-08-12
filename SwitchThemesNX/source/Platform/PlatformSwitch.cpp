@@ -1,12 +1,12 @@
-#ifdef __SWITCH__
-
 #include "Platform.hpp"
 #include <iostream>
-#include <switch.h>
-#include <unistd.h>
 #include "../UI/UIManagement.hpp"
 #include "../UI/UI.hpp"
+#include <cstring>
 
+#ifdef __SWITCH__
+#include <switch.h>
+#include <unistd.h>
 //#define __NXLINK_ENABLE__
 
 #ifdef __NXLINK_ENABLE__
@@ -66,7 +66,7 @@ void PlatformImguiBinds()
 	{
 		touchPosition touch;
 		hidTouchRead(&touch, 0);
-		io.MousePos = ImVec2(touch.px / UIMNG::WRatio, touch.py / UIMNG::HRatio);
+		io.MousePos = ImVec2(touch.px / GFX::WRatio, touch.py / GFX::HRatio);
 		io.MouseDown[0] = true;
 	}
 	else io.MouseDown[0] = false;
@@ -75,5 +75,33 @@ void PlatformImguiBinds()
 void PlatformSleep(float time)
 {
 	usleep(time * 1000);
+}
+
+char InputBuffer[32];
+const char* PlatformTextInput(const char* current)
+{
+	std::memset(InputBuffer, 0, sizeof(InputBuffer));
+
+	SwkbdConfig kbd;
+
+	Result rc = swkbdCreate(&kbd, 0);
+	if (R_FAILED(rc))
+		throw std::runtime_error("swkbdCreate failed : " + std::to_string(rc));
+
+	swkbdConfigMakePresetDefault(&kbd);
+	swkbdConfigSetTextDrawType(&kbd, SwkbdTextDrawType_Line);
+	
+	if (current)
+		swkbdConfigSetInitialText(&kbd, current);
+
+	swkbdConfigSetStringLenMax(&kbd, sizeof(InputBuffer) - 1);
+	if (R_FAILED(swkbdShow(&kbd, InputBuffer, sizeof(InputBuffer))))
+	{
+		std::strncpy(InputBuffer, current, sizeof(InputBuffer));
+		InputBuffer[sizeof(InputBuffer) - 1] = 0;
+	}
+
+	swkbdClose(&kbd);
+	return InputBuffer;
 }
 #endif
