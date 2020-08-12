@@ -7,10 +7,10 @@
 class FontEntry : public ThemeEntry
 {
 public:
-	FontEntry(const string& fileName, vector<u8>&& RawData)
+	FontEntry(const std::string& fileName, std::vector<u8>&& RawData)
 	{
 		FileName = fileName;
-		file = move(RawData);
+		file = RawData;
 		ParseFont();
 	}
 
@@ -36,7 +36,7 @@ private:
 
 	LoadedImage GetPreview() override
 	{
-		throw runtime_error("Preview is not implemented for fonts");
+		throw std::runtime_error("Preview is not implemented for fonts");
 	}
 
 	void ParseFont()

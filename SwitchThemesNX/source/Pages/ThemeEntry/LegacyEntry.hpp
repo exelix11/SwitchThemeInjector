@@ -9,22 +9,22 @@
 class LegacyEntry : public ThemeEntry
 {
 public:
-	LegacyEntry(const string& fileName, vector<u8>&& RawData)
+	LegacyEntry(const std::string& fileName, std::vector<u8>&& RawData)
 	{
 		FileName = fileName;
-		file = move(RawData);
+		file = RawData;
 		auto DecompressedFile = Yaz0::Decompress(file);
 		ParseLegacyTheme(SARC::Unpack(DecompressedFile));
 	}
 
-	LegacyEntry(const string& fileName, SARC::SarcData&& _SData)
+	LegacyEntry(const std::string& fileName, SARC::SarcData&& _SData)
 	{
 		FileName = fileName;
 
 		auto packed = SARC::Pack(_SData);
 		file = move(Yaz0::Compress(packed.data));
 
-		ParseLegacyTheme(move(_SData));
+		ParseLegacyTheme(std::move(_SData));
 	}
 
 	bool IsFolder() override { return false; }
@@ -52,12 +52,12 @@ private:
 
 	LoadedImage GetPreview() override
 	{
-		throw runtime_error("Preview is not implemented for szs themes");
+		throw std::runtime_error("Preview is not implemented for szs themes");
 	}
 
 	void ParseLegacyTheme(SARC::SarcData&& _Sdata)
 	{	
-		SData = move(_Sdata);
+		SData = _Sdata;
 		if (FileName == "")
 		{
 			lblFname = ("Unknown.szs");
