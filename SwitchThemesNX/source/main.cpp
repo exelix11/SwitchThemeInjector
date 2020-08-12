@@ -83,7 +83,7 @@ void PushPage(IUIControlObj* page)
 	ViewObj = page;
 }
 
-vector<std::function<void()>> DeferredFunctions;
+std::vector<std::function<void()>> DeferredFunctions;
 void PushFunction(const std::function<void()>& fun)
 {
 	DeferredFunctions.push_back(fun);
@@ -274,7 +274,7 @@ static std::vector<std::string> GetArgsInstallList(int argc, char** argv)
 				std::string path;
 				std::stringstream stream(pathss);
 				while (getline(stream, path, ',')) {
-					if (filesystem::exists(path) && filesystem::is_regular_file(path))
+					if (fs::Exists(path) && std::filesystem::is_regular_file(path))
 						paths.push_back(path);
 				}
 			}
@@ -286,7 +286,7 @@ static std::vector<std::string> GetArgsInstallList(int argc, char** argv)
 		std::vector<std::string> res;
 
 		for (auto& s : Args)
-			if (filesystem::exists(s) && filesystem::is_regular_file(s))
+			if (fs::Exists(s) && std::filesystem::is_regular_file(s))
 				res.push_back(move(s));
 
 		return res;
@@ -321,7 +321,7 @@ static void SetupSysVer()
 		ThemeTargetToName = ThemeTargetToName6X;
 		ThemeTargetToFileName = ThemeTargetToFileName6X;
 	}
-	SystemVer = to_string(HOSVer.major) + "." + to_string(HOSVer.minor) + "." + to_string(HOSVer.micro);
+	SystemVer = std::to_string(HOSVer.major) + "." + std::to_string(HOSVer.minor) + "." + std::to_string(HOSVer.micro);
 }
 
 int main(int argc, char **argv)
