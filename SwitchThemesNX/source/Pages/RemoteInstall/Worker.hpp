@@ -18,7 +18,7 @@ namespace RemoteInstall::Worker
 		virtual ~BaseWorker();
 	protected:
 		virtual void OnError(uintptr_t index) {}
-		virtual void OnFinished(uintptr_t index) {}
+		virtual bool OnFinished(uintptr_t index) { return true; }
 
 		virtual void OnComplete() = 0;
 
@@ -74,12 +74,18 @@ namespace RemoteInstall::Worker
 			Failed = 0;
 		}
 	protected:
-		void OnComplete() override {}
 		void OnError(uintptr_t index) override { Failed++; }
 
-		void OnFinished(uintptr_t index) override
+		void OnComplete() override 
 		{
-			Action(std::move(Results[index]), index);
+			const auto& str = Errors.str();
+			if (str.length())
+				DialogBlocking(str);
+		}
+		
+		bool OnFinished(uintptr_t index) override
+		{
+			return Action(std::move(Results[index]), index);
 		}
 
 		size_t& Failed;

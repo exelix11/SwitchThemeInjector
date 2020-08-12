@@ -149,15 +149,18 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 			std::string folderName = fs::path::DownloadsFolder + fs::SanitizeName(response.GroupName);
 
-			if (fs::Exists(fs::path::DownloadsFolder + folderName)) {
-				if (!YesNoPage::Ask("The themes will be downloaded to " + folderName + " but this folder already exists, existing files will be overwritten.\nDo you want to continue ?"))
+			if (fs::Exists(folderName)) {
+				if (!YesNoPage::Ask("The themes will be downloaded to `" + folderName + "` but this folder already exists, existing files will be overwritten.\nDo you want to continue ?"))
 					return;
+			
+				if (!std::filesystem::is_directory(folderName))
+				{
+					fs::Delete(folderName);
+					fs::CreateDirectory(folderName);
+				}
 			}
 			else
 			{
-				if (!std::filesystem::is_directory(folderName))
-					fs::Delete(folderName);
-
 				fs::CreateDirectory(folderName);
 			}
 
@@ -167,7 +170,7 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 			size_t numFailed;			
 			std::string OutFirstFilaName = "";			
-			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName](std::vector<u8>&& vec, uintptr_t index) {
+			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName](std::vector<u8>&& vec, uintptr_t index) -> bool {
 				std::string name = folderName + std::to_string(index) + ".nxtheme";
 
 				try {
@@ -175,11 +178,13 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 					if (OutFirstFilaName == "")
 						OutFirstFilaName = name;
+					
+					return true;
 				}
 				catch (...)
 				{
 					// Unlikely but an exception here will probably leak CURL handles
-					Dialog("Failed saving theme " + name);
+					return false;
 				}
 			});
 			
@@ -189,6 +194,9 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 			if (OutFirstFilaName != "")
 				ThemesPage::Instance->SelectElementOnRescan(OutFirstFilaName);
+
+			if (numFailed != urls.size())
+				DialogBlocking("Themes have been downloaded to your sd card, you can install them from the Themes page in the main menu");
 
 			PopPage(this);
 		});

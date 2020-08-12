@@ -100,8 +100,5 @@ std::vector<u8> RemoteInstall::DetailPage::DownloadData()
 
 	PushPageBlocking(new Worker::DownloadSingle(entry.Url, DownloadedTheme));
 
-	if (DownloadedTheme.size() == 0)
-		DialogBlocking("Couldn't download the theme :(");
-
 	return DownloadedTheme;
 }
