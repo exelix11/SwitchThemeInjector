@@ -142,7 +142,7 @@ std::string fs::SanitizeName(const std::string& name)
 {
 	const char* forbiddenChars = "/?<>\\:*|\".";
 
-	std::string res = name.length() > 39 ? name.substr(0,30) : name;
+	std::string res = name.length() > 30 ? name.substr(0,30) : name;
 	char* c = res.data();
 	while (*c)
 	{

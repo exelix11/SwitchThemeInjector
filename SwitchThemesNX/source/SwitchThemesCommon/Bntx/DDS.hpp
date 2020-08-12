@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include "../MyTypes.h"
 #include "../BinaryReadWrite/Buffer.hpp"
-using namespace std;
+
 namespace DDSEncoder 
 {
 	struct DDSLoadResult 
