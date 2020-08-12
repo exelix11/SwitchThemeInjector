@@ -261,7 +261,6 @@ bool fs::theme::ShouldRescanThemeList()
 	return ThemeListDirty;
 }
 
-
 void fs::theme::UninstallTheme(bool full)
 {
 	#define DelDirFromCfw(x) if (filesystem::exists(path::FsMitmFolder() + x)) \

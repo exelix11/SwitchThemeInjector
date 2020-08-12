@@ -52,6 +52,9 @@
     <Filter Include="Pages\ThemeEntry">
       <UniqueIdentifier>{6142e731-eb3b-4607-98e4-68a455d6ef3f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pages\RemoteInstall">
+      <UniqueIdentifier>{42b9a74b-11e4-48fe-9abc-7185427ace50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -227,6 +230,30 @@
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp">
       <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry\ImagePreview.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\ApiUtil.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\Worker.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\List.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\Detail.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\API.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\RemoteInstall.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Platform\PlatformFs.hpp">
+      <Filter>Platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -374,6 +401,21 @@
     </ClCompile>
     <ClCompile Include="source\Pages\ThemeEntry\LegacyEntry.hpp">
       <Filter>Pages\ThemeEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstall\Worker.cpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstall\List.cpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstall\Detail.cpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstall\API.cpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\RemoteInstall\RemoteInstall.cpp">
+      <Filter>Pages\RemoteInstall</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
