@@ -60,7 +60,7 @@ void ThemesPage::SelectElementByPath(const std::string& path)
 
 	size_t index = f - CurrentFiles.begin();
 
-	int page = index / pageCount;
+	int page = index / pageCount - 1;
 	int pageindex = index % pageCount;
 
 	SetPage(page, pageindex);
