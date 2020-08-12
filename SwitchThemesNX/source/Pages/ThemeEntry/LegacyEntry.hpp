@@ -6,8 +6,6 @@
 #include "../../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../ThemePage.hpp"
 
-using namespace std;
-
 class LegacyEntry : public ThemeEntry
 {
 public:

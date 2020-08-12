@@ -16,8 +16,8 @@ public:
 	QuickBntx(Buffer &Reader);
 
 	std::vector<u8> Write();
-	void ReplaceTex(const string &name, const DDSEncoder::DDSLoadResult &tex);
-	Bntxx::BRTI* FindTex(const string &name);
+	void ReplaceTex(const std::string &name, const DDSEncoder::DDSLoadResult &tex);
+	Bntxx::BRTI* FindTex(const std::string &name);
 private:
 	std::vector<u8> Head;
 };

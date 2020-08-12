@@ -4,8 +4,6 @@
 #include "../../ViewFunctions.hpp"
 #include "../ThemePage.hpp"
 
-using namespace std;
-
 class FontEntry : public ThemeEntry
 {
 public:
