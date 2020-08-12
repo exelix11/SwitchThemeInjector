@@ -31,7 +31,7 @@ void RemoteInstall::Worker::BaseWorker::Update()
             uintptr_t index = 0;
             curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &index);
             
-            if (msg->data.result != CURLE_OK)
+            if (msg->data.result != CURLE_OK || !OnFinished(index))
             {
                 if (index < urls.size())
                 {
@@ -41,11 +41,13 @@ void RemoteInstall::Worker::BaseWorker::Update()
                 else
                     Errors << "Unknown id " << index; //Can this ever happen ?
 
-                Errors << " failed: " << curl_easy_strerror(msg->data.result) << std::endl;
+                if (msg->data.result != CURLE_OK)
+                    Errors << " failed: " << curl_easy_strerror(msg->data.result) << std::endl;
+                else
+                    Errors << " failed due to handler error" << std::endl;
+
                 OnError(index);
             }
-            else 
-                OnFinished(index);
 
             CompletedOneStatusMessage();
             curl_multi_remove_handle(cm, e);
@@ -110,5 +112,11 @@ void RemoteInstall::Worker::ImageFetch::OnComplete()
 
 void RemoteInstall::Worker::DownloadSingle::OnComplete()
 {
-    OutBuffer = Results[0];
+    const auto& str = Errors.str();
+    if (str.length())
+    {
+        OutBuffer = {};
+        DialogBlocking(str);
+    }
+    else OutBuffer = std::move(Results[0]);
 }
