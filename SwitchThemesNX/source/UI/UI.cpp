@@ -67,6 +67,7 @@ LoadedImage Image::Load(const std::vector<u8>& data)
 
 void Image::Internal::AssertOnLeaks()
 {
+	ImageCache::Clear();
 	if (ImageCount)
 		throw std::runtime_error("Leaking images !");
 }
