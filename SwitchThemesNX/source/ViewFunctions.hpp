@@ -80,13 +80,13 @@ namespace Utils
 		return ImGui::GetMouseDragDelta(0).y == 0;
 	}
 
-	static inline void ImGuiCenterString(const std::string& str)
+	static inline void ImGuiCenterString(std::string_view str)
 	{
 		auto win = ImGui::GetWindowWidth();
-		auto sz = ImGui::CalcTextSize(str.c_str(), nullptr, false, win);
+		auto sz = ImGui::CalcTextSize(str.data(), str.data() + str.size(), false, win);
 
 		ImGui::SetCursorPosX(win/ 2 - sz.x / 2);
-		ImGui::TextUnformatted(str.c_str());
+		ImGui::TextUnformatted(str.data(), str.data() + str.size());
 	}
 
 	template <size_t N, typename T>
@@ -125,10 +125,10 @@ namespace Utils
 		return ImGuiCenterButtons({ button });
 	}
 
-	static inline void ImGuiRightString(const std::string& str)
+	static inline void ImGuiRightString(std::string_view str)
 	{
-		ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize(str.c_str()).x - 2);
-		ImGui::TextUnformatted(str.c_str());
+		ImGui::SetCursorPosX(ImGui::GetWindowWidth() - ImGui::CalcTextSize(str.data(), str.data() + str.size()).x - 2);
+		ImGui::TextUnformatted(str.data(), str.data() + str.size());
 	}
 
 	static inline bool PageLeaveFocusInput(bool AllowLeft = true)

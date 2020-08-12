@@ -6,29 +6,31 @@
 #include "../../SwitchThemesCommon/Bntx/DDSconv/DDSConv.hpp"
 #include "../../SwitchTools/hactool.hpp"
 
-using namespace SwitchThemesCommon;
-using namespace std;
-
 class NxEntry : public ThemeEntry
 {
 public:
-	NxEntry(const string& fileName, vector<u8>&& RawData)
+	NxEntry(const std::string& fileName, std::vector<u8>&& RawData)
 	{
 		FileName = fileName;
 		auto DecompressedFile = Yaz0::Decompress(RawData);
 		ParseNxTheme(SARC::Unpack(DecompressedFile));
 	}
 
-	NxEntry(const string& fileName, SARC::SarcData&& _SData)
+	NxEntry(const std::string& fileName, SARC::SarcData&& _SData)
 	{
 		FileName = fileName;
-		ParseNxTheme(move(_SData));
+		ParseNxTheme(std::move(_SData));
 	}
 
 	bool IsFolder() override { return false; }
 	bool CanInstall() override { return _CanInstall; }
 	bool HasPreview() override { return _HasPreview; }
 protected:
+
+	const std::string_view StringFromVec(const std::vector<u8>& vec)
+	{
+		return std::string_view(reinterpret_cast<const char*>(vec.data()), vec.size());
+	}
 
 	bool DoInstall(bool ShowDialogs = true) override
 	{
@@ -37,8 +39,8 @@ protected:
 		if (!PatchMng::ExefsCompatAsk(ThemeTargetToFileName[themeInfo.Target]))
 			return false;
 
-		string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
-		if (!filesystem::exists(BaseSzs))
+		std::string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
+		if (!fs::Exists(BaseSzs))
 		{
 			try {
 				if (themeInfo.Target == "user" && hactool::ExtractUserPage())
@@ -48,7 +50,7 @@ protected:
 			}
 			catch (std::runtime_error& err)
 			{
-				DialogBlocking("Error while extracting the requested title: " + string(err.what()));
+				DialogBlocking("Error while extracting the requested title: " + std::string(err.what()));
 				return false;
 			}
 
@@ -65,8 +67,8 @@ protected:
 		bool ShouldPatchBGInCommon = HOSVer.major <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
 		if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || ShouldPatchBGInCommon)
 		{
-			string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
-			if (!filesystem::exists(CommonSzs))
+			std::string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
+			if (!fs::Exists(CommonSzs))
 			{
 				MissingFileErrorDialog("common.szs");
 				return false;
@@ -74,7 +76,7 @@ protected:
 
 			SARC::SarcData sarc;
 			if (!SarcOpen(CommonSzs, &sarc)) return false;
-			SzsPatcher Patcher(sarc);
+			SwitchThemesCommon::SzsPatcher Patcher(sarc);
 
 			if (ShouldPatchBGInCommon)
 			{
@@ -86,8 +88,7 @@ protected:
 			if (SData.files.count("common.json") && themeInfo.Target == "home" && Settings::UseCommon)
 			{
 				auto JsonBinary = SData.files["common.json"];
-				string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());
-				if (!PatchLayout(Patcher, JSON, "common.szs"))
+				if (!PatchLayout(Patcher, StringFromVec(JsonBinary), "common.szs"))
 					return false;
 			}
 
@@ -99,9 +100,9 @@ protected:
 		bool FileHasBeenPatched = false;
 		SARC::SarcData sarc;
 		if (!SarcOpen(BaseSzs, &sarc)) return false;
-		SzsPatcher Patcher(sarc);
-		string ContentID = "0100000000001000";
-		string SzsName = ThemeTargetToFileName[themeInfo.Target];
+		SwitchThemesCommon::SzsPatcher Patcher(sarc);
+		std::string ContentID = "0100000000001000";
+		std::string SzsName = ThemeTargetToFileName[themeInfo.Target];
 		auto patch = Patcher.DetectSarc();
 		if (patch.FirmName != "")
 		{
@@ -133,8 +134,7 @@ protected:
 if (SData.files.count("layout.json"))\
 	{\
 		auto JsonBinary = SData.files["layout.json"];\
-		string JSON(reinterpret_cast<char*>(JsonBinary.data()), JsonBinary.size());\
-		if (!PatchLayout(Patcher, JSON, themeInfo.Target))	return false;\
+		if (!PatchLayout(Patcher, StringFromVec(JsonBinary), themeInfo.Target))	return false;\
 		FileHasBeenPatched = true;\
 	} \
 } while (0)
@@ -218,7 +218,7 @@ private:
 	bool _HasPreview = false;
 	int NXThemeVer = 0;
 
-	const vector<u8>& NxThemeGetBgImage()
+	const std::vector<u8>& NxThemeGetBgImage()
 	{
 		if (!_HasPreview || !CanInstall()) return ThemeEntry::_emtptyVec;
 		if (SData.files.count("image.dds"))
@@ -246,7 +246,7 @@ private:
 
 	void ParseNxTheme(SARC::SarcData&& _Sdata)
 	{
-		SData = move(_Sdata);
+		SData = std::move(_Sdata);
 		file.clear(); //we don't need the full file for nxthemes
 		auto themeInfo = ParseNXThemeFile(SData);
 		if (themeInfo.Version == -1)
@@ -271,14 +271,14 @@ private:
 		}
 		else if (_CanInstall)
 		{
-			string targetStr = ThemeTargetToName[themeInfo.Target];
+			std::string targetStr = ThemeTargetToName[themeInfo.Target];
 			if (_HasPreview)
 				targetStr += " - press X for preview";
 			lblLine2 = (targetStr);
 		}
 
 		lblFname = (themeInfo.ThemeName);
-		string l1 = "";
+		std::string l1 = "";
 		if (themeInfo.Author != "")
 			l1 += "by " + themeInfo.Author;
 		if (themeInfo.LayoutInfo != "")
@@ -292,7 +292,7 @@ private:
 	}
 
 
-	static bool PatchBG(SzsPatcher& Patcher, const vector<u8>& data, const string& SzsName)
+	static bool PatchBG(SwitchThemesCommon::SzsPatcher& Patcher, const std::vector<u8>& data, const std::string& SzsName)
 	{
 		if (!Patcher.PatchMainBG(data))
 		{
@@ -302,7 +302,7 @@ private:
 		return true;
 	}
 
-	static bool PatchLayout(SzsPatcher& Patcher, const string& JSON, const string& PartName)
+	static bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
 	{
 		auto patch = Patches::LoadLayout(JSON);
 		if (!patch.IsCompatible(Patcher.GetSarc()))
@@ -327,13 +327,13 @@ private:
 		return true;
 	}
 
-	static void MissingFileErrorDialog(const string& name)
+	static void MissingFileErrorDialog(const std::string& name)
 	{
 		DialogBlocking("Can't install this theme because the original " + name + " is missing from systemData.\n"
 			"To install theme packs (.nxtheme files) you need to dump the home menu romfs following the guide in the \"Extract home menu\" tab");
 	}
 
-	static inline bool SarcOpen(const string& path, SARC::SarcData* out)
+	static inline bool SarcOpen(const std::string& path, SARC::SarcData* out)
 	{
 		auto f = fs::OpenFile(path);
 		if (f.size() == 0) return false;
@@ -342,7 +342,7 @@ private:
 		return true;
 	}
 
-	static inline vector<u8> SarcPack(SARC::SarcData& data)
+	static inline std::vector<u8> SarcPack(SARC::SarcData& data)
 	{
 		auto packed = SARC::Pack(data);
 		return Yaz0::Compress(packed.data, 3, packed.align);

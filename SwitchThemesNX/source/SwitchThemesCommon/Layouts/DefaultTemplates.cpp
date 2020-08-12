@@ -135,7 +135,7 @@ static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
 	return p;
 }
 
-LayoutPatch Patches::LoadLayout(const string &jsn)
+LayoutPatch Patches::LoadLayout(const string_view jsn)
 {
 	LayoutPatch res;
 	auto j = json::parse(jsn);
