@@ -159,7 +159,7 @@ namespace Patches {
 		extern std::unordered_map < std::string, std::vector<TextureReplacement>> NxNameToList;
 	}
 
-	LayoutPatch LoadLayout(const std::string &json);
+	LayoutPatch LoadLayout(const std::string_view json);
 }
 
 namespace NewFirmFixes 
