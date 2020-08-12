@@ -303,7 +303,7 @@ static void SetupSysVer()
 	if (R_FAILED(res))
 	{
 		setsysExit();
-		DialogBlocking("Could not get sys ver res=" + to_string(res));
+		DialogBlocking("Could not get sys ver res=" + std::to_string(res));
 		return;
 	}
 	HOSVer = { firmware.major,firmware.minor,firmware.micro };
@@ -378,12 +378,12 @@ int main(int argc, char **argv)
 
 		ThemesPage *p = new ThemesPage();
 		t->AddPage(p);
+		RemoteInstallPage* rmi = new RemoteInstallPage();
+		t->AddPage(rmi);
 		UninstallPage *up = new UninstallPage();
 		t->AddPage(up);
 		NcaDumpPage *dp = new NcaDumpPage();
 		t->AddPage(dp);
-		RemoteInstallPage *rmi = new RemoteInstallPage();
-		t->AddPage(rmi);
 		SettingsPage *sf = new SettingsPage();
 		t->AddPage(sf);
 		CreditsPage *credits = new CreditsPage();
@@ -392,7 +392,7 @@ int main(int argc, char **argv)
 		t->AddPage(reboot);
 		QuitPage *q = new QuitPage();
 		t->AddPage(q);
-		
+
 		MainLoop();
 		
 		if (PatchFailedWarning)

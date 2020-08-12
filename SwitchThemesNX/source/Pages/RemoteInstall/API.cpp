@@ -103,6 +103,16 @@ const std::vector<RemoteInstall::Provider>& RemoteInstall::API::GetProviders()
     return Providers;
 }
 
+const RemoteInstall::Provider& RemoteInstall::API::GetProvider(size_t index)
+{
+    return Providers.at(index);
+}
+
+size_t RemoteInstall::API::ProviderCount()
+{
+    return Providers.size();
+}
+
 bool RemoteInstall::API::IsInitialized()
 {
     return Initialized;

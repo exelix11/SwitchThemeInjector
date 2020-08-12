@@ -39,3 +39,5 @@ void PlatformAfterInit();
 void PlatformGetInputs();
 void PlatformImguiBinds();
 void PlatformSleep(float time);
+
+const char* PlatformTextInput(const char* current = nullptr);

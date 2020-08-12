@@ -14,7 +14,7 @@ namespace RemoteInstall
 	void Finalize();
 	bool IsInitialized();
 
-	void Begin(const std::string& provider, const std::string& ID);
+	void Begin(const RemoteInstall::Provider& provider, const std::string& ID);
 
 	const std::vector<Provider>& GetProviders();
 }

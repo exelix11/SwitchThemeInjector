@@ -26,6 +26,8 @@ namespace RemoteInstall::API
 
 	void ReloadProviders();
 	const std::vector<Provider>& GetProviders();
+	const Provider& GetProvider(size_t index);
+	size_t ProviderCount();
 
 	bool IsInitialized();
 	void Initialize();

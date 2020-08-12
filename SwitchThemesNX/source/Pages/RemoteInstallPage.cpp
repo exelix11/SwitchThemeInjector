@@ -9,34 +9,88 @@
 #include <fcntl.h>
 #endif
 #include "../SwitchTools/PayloadReboot.hpp"
+#include <numeric>
+#include "RemoteInstall/API.hpp"
 
 using namespace std;
+
+static bool ComboBoxApiProviderGetter(void*, int index, const char** str)
+{
+	if (index < 0 || (size_t)index >= RemoteInstall::API::ProviderCount())
+		return false;
+	
+	*str = RemoteInstall::API::GetProvider(index).Name.c_str();
+	return true;
+}
 
 RemoteInstallPage::~RemoteInstallPage()
 {
 	StopSocketing();
+	if (!UseLowMemory)
+		RemoteInstall::Finalize();
 }
 
 RemoteInstallPage::RemoteInstallPage() : 
-lblInfo("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'"),
-lblConfirm("Press A to install, B to cancel."),
 BtnStart("Start remote install###InstallBtn")
 {
-	Name = "Remote Install";
+	Name = "Download themes";
+	if (!UseLowMemory)
+	{
+		SetRemoteInstallCode("");
+		RemoteInstall::Initialize();
+	}
 }
 
 void RemoteInstallPage::Render(int X, int Y)
 {
+	AllowLeft = true;
+	int CurItem = 0;
+
 	Utils::ImGuiSetupPage(this, X, Y);
-	ImGui::PushFont(font30);
+	
+	ImGui::PushFont(font40);
+	ImGui::Text("Download from the internet");
+	ImGui::PopFont();
+
+	if (UseLowMemory)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+		ImGui::TextWrapped("This feature is not available while running in applet mode, launch with title takeover.");
+		ImGui::PopStyleColor();
+	}
+	else
+	{
+		ImGui::TextWrapped("Select a provider from the list and enter the theme name or code");
+		ImGui::Combo("###ProviderSelection", &CurItem, ComboBoxApiProviderGetter, nullptr, RemoteInstall::API::ProviderCount());
+		ImGui::TextWrapped("You can add custom providers by editing the TBD file on your sd card"); //TODO
+		ImGui::PushStyleColor(ImGuiCol_Button, 0xDFDFDFDF);
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, 0xEFEFEFEF);
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, 0xFFFFFFFF);
+		ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0, 0, 0, 255));
+		if (ImGui::Button(RemoteInstallBtnText.c_str(), { 300, 0 }))
+			SetRemoteInstallCode(PlatformTextInput(RemoteInstallCode.c_str()));
+		ImGui::PopStyleColor(4);
+		ImGui::SameLine(0, 20);
+		if (ImGui::Button("Search###SearchBtn", {150, 0}) && RemoteInstallCode != "")
+			StartRemoteInstall(RemoteInstall::API::GetProvider(CurItem));
+		CurItemBlockLeft();
+	}
+
+	ImGui::Spacing();
+	ImGui::Separator();
+	ImGui::Spacing();
+	ImGui::PushFont(font40);
+	ImGui::Text("Remote install from the theme injector");
+	ImGui::PopFont();
+
 	if (entry)
 	{
 		entry->Render();
-		ImGui::TextWrapped(lblConfirm.c_str());
+		ImGui::TextWrapped("Press A to install, B to cancel");
 	}
 	else 
 	{
-		ImGui::TextWrapped(lblInfo.c_str());
+		ImGui::TextWrapped("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'");
 		if (ImGui::Button(BtnStart.c_str()))
 		{
 			if (sock >= 0)
@@ -48,8 +102,72 @@ void RemoteInstallPage::Render(int X, int Y)
 		ImGui::TextWrapped("Keep the menu focus on this page or requests won't be executed");
 		ImGui::Checkbox("Automatically install and reboot", &AutoInstall);
 	}
-	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
+}
+
+void RemoteInstallPage::StartRemoteInstall(const RemoteInstall::Provider& provider)
+{
+	PushFunction([this, provider]() {
+		try {
+			RemoteInstall::Begin(provider, RemoteInstallCode);
+		}
+		catch (std::exception& ex) {
+			DialogBlocking("There was an error processing the request, make sure that the code is valid, and your're connected to the internet.\n\nError message:\n"s + ex.what());
+		}
+	});
+}
+
+void RemoteInstallPage::CurItemBlockLeft() 
+{
+	AllowLeft &= !ImGui::IsItemFocused();
+}
+
+void RemoteInstallPage::Update()
+{
+	if (entry)
+	{
+		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A) || AutoInstall)
+		{
+			entry->Install(!AutoInstall);
+			entry = nullptr;
+			StopSocketing();
+
+			if (AutoInstall)
+			{
+				if (PayloadReboot::Init())
+					PayloadReboot::Reboot();
+				else
+					Dialog("Couldn't initialize reboot to payload !");
+			}
+
+			return;
+		}
+		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
+		{
+			entry = nullptr;
+			StopSocketing();
+			return;
+		}
+	}
+
+	if (Utils::PageLeaveFocusInput(AllowLeft)) {
+		Parent->PageLeaveFocus(this);
+		return;
+	}
+
+	if (entry) return;
+
+	if (sock >= 0)
+		SocketUpdate();
+}
+
+void RemoteInstallPage::SetRemoteInstallCode(const char* input)
+{
+	RemoteInstallCode = std::string(input);
+	if (RemoteInstallCode == "")
+		RemoteInstallBtnText = "Input text###themeIDinput";
+	else
+		RemoteInstallBtnText = RemoteInstallCode + "###themeIDinput";
 }
 
 void RemoteInstallPage::StartSocketing()
@@ -125,7 +243,7 @@ void RemoteInstallPage::StopSocketing()
 	curSock = -1;
 	ThemeSize = 0;
 	sock = -1;
-	BtnStart = ("Start remote install###InstallBtn");
+	BtnStart = "Start remote install###InstallBtn";
 }
 
 void RemoteInstallPage::DialogError(const std::string &msg)
@@ -200,43 +318,4 @@ void RemoteInstallPage::SocketUpdate()
 		StopSocketing();
 	}
 #endif
-}
-
-void RemoteInstallPage::Update()
-{
-	if (entry)
-	{
-		if (KeyPressed(GLFW_GAMEPAD_BUTTON_A) || AutoInstall)
-		{
-			entry->Install(!AutoInstall);
-			entry = nullptr;
-			StopSocketing();
-			
-			if (AutoInstall)
-			{
-				if (PayloadReboot::Init())
-					PayloadReboot::Reboot();
-				else
-					Dialog("Couldn't initialize reboot to payload !");
-			}
-			
-			return;
-		}
-		else if (KeyPressed(GLFW_GAMEPAD_BUTTON_B))
-		{
-			entry = nullptr;			
-			StopSocketing();
-			return;			
-		}
-	}
-	
-	if (Utils::PageLeaveFocusInput()){
-		Parent->PageLeaveFocus(this);
-		return;
-	}
-	
-	if (entry) return;
-	
-	if (sock >= 0)
-		SocketUpdate();
 }

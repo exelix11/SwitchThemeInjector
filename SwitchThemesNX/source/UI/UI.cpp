@@ -13,6 +13,7 @@
 #include "../ViewFunctions.hpp"
 
 static_assert(std::is_same<GLuint, LoadedImage>::value);
+static_assert(sizeof(LoadedImage) <= sizeof(ImTextureID)); //We must not lose data when passing the image to ImGui
 
 //moved here from ViewFunctions as it needs static variables
 void Utils::ImGuiDragWithLastElement()

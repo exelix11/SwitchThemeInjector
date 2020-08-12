@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/Pages/ThemeEntry source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Layouts/Bflyt source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/Bntx/DDSConv source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
+SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/Pages/ThemeEntry source/Pages/RemoteInstall source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Layouts/Bflyt source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/Bntx/DDSConv source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
 DATA		:=	data
 INCLUDES	:=	include Libs
 EXEFS_SRC	:=	exefs_src
@@ -57,9 +57,11 @@ ASFLAGS	:=	 -g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs
 
 # We need to use our own libmbedtls cause the portlibs one has been compiled without MBEDTLS_CMAC_C 
-LIBS	:= -lhactool $(CURDIR)/../Libs/mbedtls/lib/libmbedtls.a \
+LIBS	:=	-lhactool $(CURDIR)/../Libs/mbedtls/lib/libmbedtls.a \
 			-lstdc++fs \
-			-lglfw3 -lEGL -lglapi -ldrm_nouveau -lnx -lm
+			-lcurl -lz \
+			-lglfw3 -lEGL -lglapi -ldrm_nouveau \
+			-lnx -lm
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib

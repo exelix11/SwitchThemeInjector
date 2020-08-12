@@ -6,7 +6,7 @@
 #include "../ThemeEntry/ThemeEntry.hpp"
 #include "../ThemePage.hpp"
 
-RemoteInstall::DetailPage::DetailPage(const RemoteInstall::API::Entry& entry, LoadedImage i) : img(i), entry(entry)
+RemoteInstall::DetailPage::DetailPage(const RemoteInstall::API::Entry& entry, LoadedImage i) : entry(entry), img(i)
 {
 	PartName = ThemeTargetToName.count(entry.Target) ? ThemeTargetToName[entry.Target] : "Unknown part name";
 }
@@ -24,7 +24,7 @@ void RemoteInstall::DetailPage::Render(int X, int Y)
 	Utils::ImGuiCenterString(PartName);
 
 	ImGui::SetCursorPosX(SCR_W / 4.0f);
-	if (ImGui::ImageButton((ImTextureID)img, ImVec2(SCR_W, SCR_H) / 2))
+	if (ImGui::ImageButton((ImTextureID)(uintptr_t)img, ImVec2(SCR_W, SCR_H) / 2))
 		PushPage(new ImagePreview(img));
 
 	const float BtnW = SCR_W / 3.0f;

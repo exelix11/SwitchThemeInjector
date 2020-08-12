@@ -27,9 +27,9 @@ const std::vector<RemoteInstall::Provider>& RemoteInstall::GetProviders()
     return API::GetProviders();
 }
 
-void RemoteInstall::Begin(const std::string& provider, const std::string& ID)
+void RemoteInstall::Begin(const Provider& provider, const std::string& ID)
 {
-    auto URL = API::MakeUrl(provider, ID);
+    auto URL = API::MakeUrl(provider.UrlTemplate, ID);
 
     auto res = API::GetManifest(URL);
     if (res.Entries.size() == 0) return;

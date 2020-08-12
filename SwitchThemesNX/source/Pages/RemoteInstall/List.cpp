@@ -89,9 +89,9 @@ RemoteInstall::ListPage::~ListPage()
 		Image::Free(i);
 }
 
-int RemoteInstall::ListPage::SelectedCount() const
+size_t RemoteInstall::ListPage::SelectedCount() const
 {
-	int count = 0;
+	size_t count = 0;
 	for (auto b : Selection)
 		if (b) count++;
 	return count;
@@ -237,7 +237,7 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(bool selec
 	ImGui::RenderNavHighlight(bb, id);
 	ImGui::RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 
-	window->DrawList->AddImage((ImTextureID)img, imageBox.Min, imageBox.Max);
+	window->DrawList->AddImage((ImTextureID)(uintptr_t)img, imageBox.Min, imageBox.Max);
 
 	const float Checkboxsz = 35;
 	window->DrawList->AddRectFilled(pos, pos + ImVec2(Checkboxsz, Checkboxsz), ImGui::GetColorU32(ImGuiCol_FrameBg));

@@ -29,7 +29,7 @@ namespace RemoteInstall
 		Worker::ImageFetch::Result images;
 
 		std::vector<bool> Selection;
-		int SelectedCount() const;
+		size_t SelectedCount() const;
 		void ApplySelection(bool all);
 		void ToggleSelected(size_t i);
 		bool IsSelected(size_t i);

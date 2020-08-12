@@ -84,4 +84,10 @@ void PlatformSleep(float time)
 {
 	_sleep((unsigned long)time);
 }
+
+static const char* FixedInput = "t56";
+const char* PlatformTextInput(const char* current)
+{
+	return FixedInput;
+}
 #endif
