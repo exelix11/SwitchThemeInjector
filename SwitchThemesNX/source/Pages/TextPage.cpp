@@ -35,17 +35,7 @@ void TextPage::Update()
 CreditsPage::CreditsPage() :
 	creditsText("NXThemes installer by exelix - " + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
 		"\nhttps://github.com/exelix11/SwitchThemeInjector"+
-		"\nhttps://ko-fi.com/exelix11\n\n"),
-	creditsText2(
-		"Thanks to:\n"
-		"Syroot for BinaryData lib\n"
-		"AboodXD for Bntx editor and sarc lib\n"
-		"shchmue for Lockpick\n"
-		"ScriesM for hactool\n"
-		"Everyone from Atmosphere and libnx\n"
-		"switch-stuff on github for the font converter\n"
-		"Fincs for the hybrid_app template\n"
-		"Everyone from the DearImgui github repo")
+		"\nhttps://ko-fi.com/exelix11\n\n")
 {
 	Name = "Credits";
 }
@@ -60,19 +50,21 @@ void CreditsPage::Render(int X, int Y)
 	ImGui::PopFont();
 
 	ImGui::PushFont(font25);
-	ImGui::TextWrapped(creditsText2.c_str());
+	ImGui::TextWrapped(
+		"Thanks to:\n"
+		"Syroot for BinaryData lib\n"
+		"AboodXD for Bntx editor and sarc lib\n"
+		"shchmue for Lockpick\n"
+		"ScriesM for hactool\n"
+		"Everyone from Atmosphere and libnx\n"
+		"switch-stuff on github for the font converter\n"
+		"Fincs for the hybrid_app template\n"
+		"Everyone from the DearImgui github repo"
+	);
 
 	if (ImGui::Button("Show first startup info"))
 		ShowFirstTimeHelp(false);
 	PAGE_RESET_FOCUS;
-	//ImGui::SameLine();
-	//if (ImGui::Button("Show licenses"))
-	//{
-	//	auto f = fs::OpenFile(ASSET("licenses.txt"));
-	//	Dialog(string((char*)f.data(), f.size()));
-	//}
-
-	IsLayoutBlockingLeft = GImGui->NavId == ImGui::GetCurrentWindow()->GetID("Show licenses");
 
 	ImGui::PopFont();
 	Utils::ImGuiSetWindowScrollable();
@@ -81,7 +73,7 @@ void CreditsPage::Render(int X, int Y)
 
 void CreditsPage::Update()
 {
-	if (Utils::PageLeaveFocusInput(!IsLayoutBlockingLeft))
+	if (Utils::PageLeaveFocusInput())
 		Parent->PageLeaveFocus(this);
 }
 

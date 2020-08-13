@@ -22,9 +22,8 @@ class ExternalInstallPage : public IUIControlObj
 		int RenderStartIndex = 0;
 		int SelectedIndex = 0;
 	
-		std::string Title;
-		std::string Install;
-        bool isInstalled = false;		
+        bool isInstalled = false;	
+		bool installSuccess = true;
 		std::vector <std::unique_ptr<ThemeEntry>> ArgEntries; 
 		const u32 GRAY = 0x808080FF;
 };

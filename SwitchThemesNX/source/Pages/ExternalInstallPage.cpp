@@ -7,9 +7,7 @@
 
 using namespace std;
 
-ExternalInstallPage::ExternalInstallPage(const vector<string> &paths) :
-Title("Install theme(s) from external source"),
-Install("Press + to install, B to cancel")
+ExternalInstallPage::ExternalInstallPage(const vector<string> &paths)
 {
     for (int i=0; i < (int)paths.size(); i++)
     {
@@ -31,7 +29,11 @@ void ExternalInstallPage::Render(int X, int Y)
 	if (isInstalled)
 	{
 		ImGui::SetCursorPosY(80);
-		Utils::ImGuiCenterString(Title);
+
+		if (!installSuccess)
+			Utils::ImGuiCenterString("Theme(s) may have failed to install");
+		else
+			Utils::ImGuiCenterString("Installation completed.");
 
 		ImGui::SetCursorPosY(SCR_H - 180);
 		auto res = Utils::ImGuiCenterButtons({ "Exit to homebrew launcher" ,"Reboot" });
@@ -60,10 +62,10 @@ void ExternalInstallPage::Render(int X, int Y)
 	else
 	{
 		ImGui::SetCursorPosY(10);
-		Utils::ImGuiCenterString(Title);
+		Utils::ImGuiCenterString("Install theme(s) from external source");
 
 		ImGui::SetCursorPosY(SCR_H - 50);
-		Utils::ImGuiCenterString(Install);
+		Utils::ImGuiCenterString("Press + to install, B to cancel");
 
 		Utils::ImGuiSetupWin("ExtInstallPageContent", 20, 60, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		ImGui::SetWindowSize({ SCR_W - 20, SCR_H - 110 });
@@ -97,16 +99,9 @@ void ExternalInstallPage::Update()
         if (KeyPressed(GLFW_GAMEPAD_BUTTON_START))
         {
             DisplayLoading("Installing...");
-            bool installSuccess = true;
             for (int i=0; i < (int)ArgEntries.size(); i++)
             {
                 if(!ArgEntries[i]->Install(false)) installSuccess = false;
-            }
-            if(!installSuccess)
-            {
-                Title = ("Theme(s) may have failed to install");
-            }else{
-                Title = "Installation completed.";
             }
 			isInstalled = true;
         }

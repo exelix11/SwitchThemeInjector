@@ -11,13 +11,11 @@
 class CfwSelectPage : public IUIControlObj
 {
 	public:
-		CfwSelectPage(std::vector<std::string> &folders);	
+		CfwSelectPage(const std::vector<std::string> &folders);	
 		~CfwSelectPage();
 		
 		void Render(int X, int Y) override;
 		void Update() override;
-	private:
-		
+	private:		
 		std::vector<std::string> Folders;
-		std::string Title;
 };

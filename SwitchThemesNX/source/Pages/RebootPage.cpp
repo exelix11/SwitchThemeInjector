@@ -16,11 +16,7 @@ const u32 RED_ERROR = 0xff3419ff;
 class RebootPage : public IPage
 {
 	public:
-		RebootPage() :
-		DescriptionLbl("Reboot to payload allows you to reboot your console without having to inject a payload again. Currently it's supported only on atmosphere."),
-		ErrorLbl("This feature isn't available with your current setup, you need to use Atmosphere >= 0.8.3 and the reboot payload placed in your sd card at /atmosphere/reboot_payload.bin" ),
-		WarningLbl("Reboot to payload is properly setup but multiple CFWs were detected on your sd card, this may not work if you're not running atmosphere "),
-		RebootBtn("Reboot")
+		RebootPage()
 		{
 			Name = "Reboot to payload";
 			
@@ -51,22 +47,22 @@ class RebootPage : public IPage
 			ImGui::PushFont(font30);
 			ImGui::SetCursorPos({ 5, 10 });
 
-			ImGui::TextWrapped(DescriptionLbl.c_str());
+			ImGui::TextWrapped("Reboot to payload allows you to reboot your console without having to inject a payload again. Currently it's supported only on atmosphere.");
 			if (ShowError)
 			{
 				ImGui::PushStyleColor(ImGuiCol_Text, RED_ERROR);
-				ImGui::TextWrapped(ErrorLbl.c_str());
+				ImGui::TextWrapped("This feature isn't available with your current setup, you need to use Atmosphere >= 0.8.3 and the reboot payload placed in your sd card at /atmosphere/reboot_payload.bin");
 				ImGui::PopStyleColor();
 			}
 			if (ShowWarning)
 			{
 				ImGui::PushStyleColor(ImGuiCol_Text, YELLOW_WARN);
-				ImGui::TextWrapped(WarningLbl.c_str());
+				ImGui::TextWrapped("Reboot to payload is properly setup but multiple CFWs were detected on your sd card, this may not work if you're not running atmosphere ");
 				ImGui::PopStyleColor();
 			}
 			if (CanReboot)
 			{
-				if (ImGui::Button(RebootBtn.c_str()))
+				if (ImGui::Button("Reboot"))
 				{
 					PayloadReboot::Reboot();
 				}
@@ -89,9 +85,4 @@ class RebootPage : public IPage
 		bool CanReboot = false;
 		bool ShowError = true;
 		bool ShowWarning = false;
-	
-		std::string DescriptionLbl;
-		std::string ErrorLbl;
-		std::string WarningLbl;
-		std::string RebootBtn;
 };
