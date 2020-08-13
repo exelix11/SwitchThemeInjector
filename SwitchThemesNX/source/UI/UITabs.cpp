@@ -30,9 +30,9 @@ const ImVec2 SideLine = { SideRect.z + 1, (SCR_H) / 2 - SideLineLen / 2 };
 
 void TabRenderer::Render(int X, int Y)
 {
+	ImGui::SetNextWindowSize(ImVec2(SideRect.z, SideRect.w));
 	Utils::ImGuiSetupWin("TabRenderer", 0, 0, DefaultWinFlags);
-	ImGui::SetWindowSize(ImVec2(SideRect.z, SideRect.w));
-	
+
 	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, SideRect.y }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) / 2 }, 0xff2d2d2d, 0xff2d2d2d, 0xff353535, 0xff353535);
 	ImGui::GetCurrentWindow()->DrawList->AddRectFilledMultiColor({ SideRect.x, (SideRect.y + SideRect.w) / 2 }, { (SideRect.x + SideRect.z), (SideRect.y + SideRect.w) }, 0xff353535, 0xff353535, 0xff2d2d2d, 0xff2d2d2d);
 
@@ -66,8 +66,10 @@ void TabRenderer::Render(int X, int Y)
 			SetFocused(count);
 			selectedIndex = count;
 		}
-		if (count == 0) Utils::ImGuiSelectItemOnce();
-	
+
+		if (ImGui::GetCurrentWindow()->Appearing && count == selectedIndex)
+			Utils::ImGuiSelectItem();
+
 		if (CurrentSelected)
 		{
 			ImGui::PopStyleColor();
@@ -76,7 +78,7 @@ void TabRenderer::Render(int X, int Y)
 
 		if (!ControlHasFocus && GImGui->NavId == ImGui::GetID(page->Name.c_str()))
 			selectedIndex = count;
-	
+
 		++count;
 		ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 5);
 	}
