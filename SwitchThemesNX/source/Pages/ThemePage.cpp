@@ -9,11 +9,7 @@ using namespace std;
 
 ThemesPage* ThemesPage::Instance = nullptr;
 
-ThemesPage::ThemesPage() : 
-lblPage(""),
-NoThemesLbl(
-	"There's nothing here, copy your themes in the themes folder on your sd and try again.\n"
-	"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue if you use a mac or sd corruption if you use exfat, you can find more about those on google or ask for support on discord.")
+ThemesPage::ThemesPage() : lblPage("")
 {
 	if (Instance)
 		throw std::runtime_error("ThemePage::Instance should not be set");
@@ -30,12 +26,12 @@ NoThemesLbl(
 
 void ThemesPage::RefreshThemesList()
 {
-	DisplayLoading("Loading theme list...");
+	DisplayLoading("Loading themes list...");
 	ClearSelection();
 	SetPage(-1);
 	CursorMemory.clear();
 
-	ThemeFiles = fs::theme::ScanThemeFiles();
+	ThemeFiles = std::move(fs::theme::ScanThemeFiles());
 	std::sort(ThemeFiles.begin(), ThemeFiles.end());
 
 	if (SelectOnRescanTarget != "")
@@ -53,14 +49,19 @@ void ThemesPage::SelectElementByPath(const std::string& path)
 
 	SetDir(fs::GetPath(path));
 
-	auto f = std::find(CurrentFiles.begin(), CurrentFiles.end(), path);
-	if (f == CurrentFiles.end())
+	auto f = std::find(DirectoryFiles.begin(), DirectoryFiles.end(), path);
+	if (f == DirectoryFiles.end())
 		return; // Can this ever happen ?
 
-	size_t index = f - CurrentFiles.begin();
+	size_t index = f - DirectoryFiles.begin();
 
-	int page = index / pageCount - 1;
-	int pageindex = index % pageCount;
+	// Find in which page is the file
+	int page = 0;
+	for (; page < pageCount; page++)
+		if (index <= (page + 1) * LimitLoad) // Pages are 0-indexed
+			break;
+
+	int pageindex = index - (page * LimitLoad); // Start index of the current page
 
 	SetPage(page, pageindex);
 }
@@ -73,20 +74,20 @@ ThemesPage::~ThemesPage()
 
 void ThemesPage::SetDir(const string &dir)
 {
-	if (pageNum != -1)
+	if (pageNum >= 0)
 		CursorMemory[CurrentDir] = tuple<int,int>(pageNum, menuIndex);
 
 	CurrentDir = dir;
 	if (!StrEndsWith(dir, "/"))
 		CurrentDir += "/";
 	
-	CurrentFiles.clear();
+	DirectoryFiles.clear();
 	for (auto f : ThemeFiles)
 		if (fs::GetPath(f) == CurrentDir)
-			CurrentFiles.push_back(f);
+			DirectoryFiles.push_back(f);
 	
-	pageCount = CurrentFiles.size() / LimitLoad + 1;
-	if (CurrentFiles.size() % LimitLoad == 0)
+	pageCount = DirectoryFiles.size() / LimitLoad + 1;
+	if (DirectoryFiles.size() % LimitLoad == 0)
 		pageCount--;
 
 	pageNum = -1; //force setpage to reload the entries even if in the same page as the path changed
@@ -98,37 +99,47 @@ void ThemesPage::SetDir(const string &dir)
 	else SetPage(0);
 }
 
+/*
+	Set page number.
+	if num < 0 just clear current page and don't load anything
+	if index < 0 select last item of the page that's being set
+*/
 void ThemesPage::SetPage(int num, int index)
 {
 	ImGui::NavMoveRequestCancel();
-	if (pageNum != num || index != 0)
+
+	// Reset scroll if we're changing the page or the menu index
+	ResetScroll = num != pageNum || index != menuIndex;
+
+	if (num < 0) // Just clear the current page
 	{
-		menuIndex = index;
-		ResetScroll = true;
+		DisplayEntries.clear();
+		pageNum = num;
+	}
+	else if (num >= 0 && num != pageNum) // If the page is valid and different than the current one load the new entries
+	{
+		DisplayEntries.clear();
+		pageNum = num;
+
+		size_t baseIndex = num * LimitLoad;
+		if (baseIndex >= DirectoryFiles.size())
+		{
+			// This shouldn't happen
+			lblPage = "Error page out of bounds";
+			return;
+		}
+
+		int imax = DirectoryFiles.size() - baseIndex;
+		if (imax > LimitLoad) imax = LimitLoad;
+
+		for (int i = 0; i < imax; i++)
+			DisplayEntries.push_back(ThemeEntry::FromFile(DirectoryFiles[baseIndex + i]));
+
+		UpdateBottomText();
 	}
 
-	if (pageNum == num)	return;
-	DisplayEntries.clear();
-	
-	size_t baseIndex = num * LimitLoad;
-	if (num < 0 || baseIndex >= CurrentFiles.size())  
-	{
-		lblPage = (CurrentDir + " - Empty");
-		pageNum = num;
-		return;
-	}
-	
-	int imax = CurrentFiles.size() - baseIndex;
-	if (imax > LimitLoad) imax = LimitLoad;
-	for (int i = 0; i < imax; i++)
-		DisplayEntries.push_back(ThemeEntry::FromFile(CurrentFiles[baseIndex + i]));
-	
-	pageNum = num;
-	auto LblPStr = CurrentDir + " - Page " + to_string(num + 1) + "/" + to_string(pageCount);
-	if (SelectedFiles.size() != 0)
-		LblPStr = "("+ to_string(SelectedFiles.size()) + " selected) " + LblPStr;
-	lblPage = LblPStr;
-	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
+	// Set the menu index
+	menuIndex = index < 0 ? PageItemsCount() - 1 : index;
 }
 
 void ThemesPage::Render(int X, int Y)
@@ -140,7 +151,10 @@ void ThemesPage::Render(int X, int Y)
 		PushFunction([this]() { RefreshThemesList(); });
 
 	if (DisplayEntries.size() == 0)
-		ImGui::TextWrapped(NoThemesLbl.c_str());
+		ImGui::TextWrapped(
+			"There's nothing here, copy your themes in the themes folder on your sd and try again.\n"
+			"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue if you use a mac or sd corruption if you use exfat, you can find more about those on google or ask for support on discord."
+		);
 
 	ImGui::SetCursorPosY(600);
 	Utils::ImGuiRightString(lblPage);
@@ -172,11 +186,15 @@ void ThemesPage::Render(int X, int Y)
 
 				if (e->IsHighlighted())
 					menuIndex = count;
+				
 				auto res = e->Render(Selected);
 
 				if (Selected)
 					ImGui::PopStyleColor();
-				if (count == setNewMenuIndex && FocusEvent.Reset()) Utils::ImGuiSelectItem(true);
+				
+				if (count == setNewMenuIndex && FocusEvent.Reset())
+					Utils::ImGuiSelectItem(true);
+				
 				Utils::ImGuiDragWithLastElement();
 
 				if (res == ThemeEntry::UserAction::Preview)
@@ -189,9 +207,7 @@ void ThemesPage::Render(int X, int Y)
 							else
 							{
 								if (SelectedFiles.size() == 0)
-								{
-										e->Install();
-								}
+									e->Install();
 								else
 								{
 									if (menuIndex != count)
@@ -215,11 +231,12 @@ QUIT_RENDERING:
 
 int ThemesPage::PageItemsCount()
 {
-	int menuCount = CurrentFiles.size() - pageNum * LimitLoad;
-	if (menuCount > LimitLoad)
-		menuCount = LimitLoad;
-	if (menuCount < 0) return 0;
-	return menuCount;
+	if (pageNum < 0)
+		return 0;
+
+	int menuCount = DirectoryFiles.size() - pageNum * LimitLoad;
+
+	return menuCount > LimitLoad ? LimitLoad : menuCount;
 }
 
 inline bool ThemesPage::IsSelected(const std::string &fname)
@@ -230,23 +247,36 @@ inline bool ThemesPage::IsSelected(const std::string &fname)
 void ThemesPage::ClearSelection()
 {
 	SelectedFiles.clear();
-	lblCommands = CommandsTextNormal;
+	UpdateBottomText();
+}
+
+void ThemesPage::UpdateBottomText()
+{
+	std::stringstream ss;
+
+	if (SelectedFiles.size() != 0)
+		ss << "(" << SelectedFiles.size() << " selected) ";
+
+	ss << CurrentDir << " - Page " << pageNum + 1 << "/" << pageCount;
+	
+	lblPage = ss.str();
+
+	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
 }
 
 void ThemesPage::SelectCurrent()
 {
 	if (DisplayEntries[menuIndex]->IsFolder() || !DisplayEntries[menuIndex]->CanInstall()) return;
+
 	auto fname = DisplayEntries[menuIndex]->GetPath();
 	auto position = std::find(SelectedFiles.begin(), SelectedFiles.end(), fname);
+
 	if (position != SelectedFiles.end())
-	{
 		SelectedFiles.erase(position);
-	}
 	else 
-	{
 		SelectedFiles.push_back(fname);
-	}
-	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
+	
+	UpdateBottomText();
 }
 
 void ThemesPage::Update()
@@ -263,48 +293,31 @@ void ThemesPage::Update()
 			Parent->PageLeaveFocus(this);
 	}
 	
-	if (menuCount <= 0)
+	if (menuCount <= 0 || pageNum < 0)
 		return;
 
 	if ((NAV_UP && menuIndex <= 0) || KeyPressed(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
 	{
-		if (pageNum > 0)
-		{
-			SetPage(pageNum - 1);
-			menuIndex = PageItemsCount() - 1;
-			return;
-		}
-		else if (pageCount > 1)
-		{
-			SetPage(pageCount - 1);
-			menuIndex = PageItemsCount() - 1;
-			return;
-		}
-		else
-		{
-			menuIndex = PageItemsCount() - 1;
-			ResetScroll = true;
-		}
+		if (pageNum != 0) // If not the first page go to the previous
+			SetPage(pageNum - 1, -1);
+		else if (pageCount > 1) // If the first page and we have more pages go to the last
+			SetPage(pageCount - 1 , -1);
+		else // If there's only one page go to the last entry
+			SetPage(pageNum, -1);
 	}
 	else if ((NAV_DOWN && menuIndex >= PageItemsCount() - 1) || KeyPressed(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
 	{
-		if (pageCount > pageNum + 1)
+		if (pageNum + 1 < pageCount) // If we can go to the next page 
 			SetPage(pageNum + 1);
-		else if (pageNum != 0)
+		else // Else go to the first page, this happens both if we're at the last one or at the end of the first and only page
 			SetPage(0);
-		else
-		{
-			menuIndex = 0;
-			ResetScroll = true;
-		}
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_Y))
 	{
 		if (SelectedFiles.size() == 0 && menuIndex >= 0)
 			SelectCurrent();
-		else {
+		else
 			ClearSelection();
-		}
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{
