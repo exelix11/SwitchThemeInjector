@@ -254,6 +254,9 @@
     <ClInclude Include="source\Platform\PlatformFs.hpp">
       <Filter>Platform</Filter>
     </ClInclude>
+    <ClInclude Include="source\SwitchTools\InjectorInstall.hpp">
+      <Filter>SwitchTools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -416,6 +419,9 @@
     </ClCompile>
     <ClCompile Include="source\Pages\RemoteInstall\RemoteInstall.cpp">
       <Filter>Pages\RemoteInstall</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchTools\InjectorInstall.cpp">
+      <Filter>SwitchTools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
