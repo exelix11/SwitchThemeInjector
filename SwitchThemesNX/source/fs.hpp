@@ -30,6 +30,8 @@ namespace fs::path
 	std::string FsMitmFolder();
 	std::string RomfsFolder(const std::string& contentID);
 
+	std::string GetFreeDownloadFolder();
+
 #ifdef __SWITCH__
 	std::string Nca(u64 contentID);
 #endif

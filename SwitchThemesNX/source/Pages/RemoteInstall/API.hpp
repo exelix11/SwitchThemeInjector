@@ -68,6 +68,7 @@ namespace RemoteInstall::API
 		}
 
 		The groupname field is used as the name for the folder that will contain the downloaded files.
+		If the response doesn't contain a groupname a random one will be generated, to keep this user friendly always provide a group name.
 
 	- Error handling
 		Error messages from the server are not planned, the installer will display a generic error in case of any unexpected HTTP status code, network error, or malformed JSON.

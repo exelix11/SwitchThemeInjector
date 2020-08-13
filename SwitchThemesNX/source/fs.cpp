@@ -1,6 +1,7 @@
 #include "fs.hpp"
 #include <sys/stat.h>
 #include <cstring>
+#include <sstream>
 
 #define FS_TROUBLESHOOT_MSG \
 	"Make sure the file exists, this can also be caused by sd corruption with exfat or the archive bit, especially if you used this sd card with a mac.\n" \
@@ -31,6 +32,20 @@ std::string fs::path::FsMitmFolder() { return ::CfwFolder + TitlesFolder; }
 std::string fs::path::RomfsFolder(const std::string& contentID)
 {
 	return path::FsMitmFolder() + contentID + "/romfs/";
+}
+
+std::string fs::path::GetFreeDownloadFolder()
+{
+	std::stringstream ss;
+
+	for (size_t i = 1; i < std::numeric_limits<size_t>::max(); i++) {
+		ss.clear();
+		ss << DownloadsFolder << "Group " << i;
+		if (!fs::Exists(ss.str()))
+			return ss.str();
+	}
+
+	return "";
 }
 
 #ifdef __SWITCH__

@@ -28,10 +28,11 @@ namespace RemoteInstall::API
     void from_json(const nlohmann::json& j, APIResponse& p) {
         j.at("themes").get_to(p.Entries);
 
-        if (p.Entries.size() > 1) {
+        if (p.Entries.size() == 0)
+            throw std::runtime_error("The server did not return any themes");
+
+        if (j.count("groupname") && j["groupname"].is_string()) {
             j.at("groupname").get_to(p.GroupName);
-            if (p.GroupName.size() == 0)
-                throw new std::runtime_error("Group name is not valid");
         }
     }
 }
