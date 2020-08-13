@@ -55,7 +55,7 @@ bool ThemeEntry::Install(bool ShowDialogs)
 	}
 
 	if (ShowDialogs)
-		DialogBlocking("Done, restart the console to see the changes");
+		DialogBlocking("Done, restart the console to apply the changes");
 	return true;
 }
 

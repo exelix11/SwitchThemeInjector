@@ -33,9 +33,10 @@ class ThemesPage : public IPage
 		std::vector<std::string> ThemeFiles;
 		bool IsSelected(const std::string &fname);
 		void ClearSelection();
+		void UpdateBottomText();
 
 		std::string CurrentDir;
-		std::vector<std::string> CurrentFiles;
+		std::vector<std::string> DirectoryFiles;
 		
 		std::vector<std::unique_ptr<ThemeEntry>> DisplayEntries;
 		std::string lblPage;
@@ -48,8 +49,6 @@ class ThemesPage : public IPage
 		int menuIndex = 0;
 
 		std::vector<std::string> SelectedFiles;
-		
-		std::string NoThemesLbl;
 		
 		const std::string CommandsTextNormal = "A: Install theme  Y: Multiselect  L/R: Previous/Next page";
 		const std::string CommandsTextSelected = "A: Add/Remove to selection  Y: Clear selection  `+`: Install selected";
