@@ -51,3 +51,23 @@ void RemoteInstall::Begin(const Provider& provider, const std::string& ID)
         PushPage(new ListPage(std::move(res), std::move(ImageLoadResult)));
     }
 }
+
+void RemoteInstall::BeginType(const RemoteInstall::Provider& provider, FixedTypes type)
+{
+    if (type == FixedTypes::Random)
+        BeginRandom(provider);
+    else if (type == FixedTypes::Recent)
+        BeginRecent(provider);
+    else
+        throw std::runtime_error("Unsupported remote install type");
+}
+
+void RemoteInstall::BeginRandom(const RemoteInstall::Provider& provider)
+{
+    Begin(provider, "random");
+}
+
+void RemoteInstall::BeginRecent(const RemoteInstall::Provider& provider)
+{
+    Begin(provider, "recent");
+}
