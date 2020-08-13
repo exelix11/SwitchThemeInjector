@@ -11,6 +11,7 @@
 #include "../SwitchTools/PayloadReboot.hpp"
 #include <numeric>
 #include "RemoteInstall/API.hpp"
+#include "../SwitchThemesCommon/Layouts/json.hpp"
 
 using namespace std;
 
@@ -44,9 +45,8 @@ BtnStart("Start remote install###InstallBtn")
 void RemoteInstallPage::Render(int X, int Y)
 {
 	AllowLeft = true;
-	int CurItem = 0;
 
-	Utils::ImGuiSetupPage(this, X, Y);
+	Utils::ImGuiSetupPage(this, X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 	
 	ImGui::PushFont(font40);
 	ImGui::Text("Download from the internet");
@@ -60,9 +60,21 @@ void RemoteInstallPage::Render(int X, int Y)
 	}
 	else
 	{
-		ImGui::TextWrapped("Select a provider from the list and enter the theme name or code");
-		ImGui::Combo("###ProviderSelection", &CurItem, ComboBoxApiProviderGetter, nullptr, RemoteInstall::API::ProviderCount());
-		ImGui::TextWrapped("You can add custom providers by editing the TBD file on your sd card"); //TODO
+		ImGui::TextWrapped("Select a provider from the list to download themes.\nYou can add custom providers by editing the TBD file on your sd card."); //TODO
+		ImGui::PushItemWidth(500);
+		ImGui::Combo("###ProviderSelection", &ProviderIndex, ComboBoxApiProviderGetter, nullptr, RemoteInstall::API::ProviderCount());
+		PAGE_RESET_FOCUS;
+
+		ImGui::SameLine();
+		if (ImGui::Button("Random themes"))
+			StartRemoteInstallFixed(RemoteInstall::FixedTypes::Random);
+		CurItemBlockLeft();
+		ImGui::SameLine();
+		if (ImGui::Button("New themes"))
+			StartRemoteInstallFixed(RemoteInstall::FixedTypes::Recent);
+		CurItemBlockLeft();
+
+		ImGui::TextWrapped("Or search a theme by ID");
 		ImGui::PushStyleColor(ImGuiCol_Button, 0xDFDFDFDF);
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, 0xEFEFEFEF);
 		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, 0xFFFFFFFF);
@@ -72,8 +84,9 @@ void RemoteInstallPage::Render(int X, int Y)
 		ImGui::PopStyleColor(4);
 		ImGui::SameLine(0, 20);
 		if (ImGui::Button("Search###SearchBtn", {150, 0}) && RemoteInstallCode != "")
-			StartRemoteInstall(RemoteInstall::API::GetProvider(CurItem));
+			StartRemoteInstallByCode();
 		CurItemBlockLeft();
+		ImGui::TextWrapped("IDs are not names, searching a theme by name won't work, open your provider in the browser, select a theme and it should show its unique ID.");
 	}
 
 	ImGui::Spacing();
@@ -98,21 +111,38 @@ void RemoteInstallPage::Render(int X, int Y)
 			else
 				StartSocketing();
 		}
-		PAGE_RESET_FOCUS;
+		if (UseLowMemory) PAGE_RESET_FOCUS;
 		ImGui::TextWrapped("Keep the menu focus on this page or requests won't be executed");
 		ImGui::Checkbox("Automatically install and reboot", &AutoInstall);
 	}
+	Utils::ImGuiSetWindowScrollable();
+
 	Utils::ImGuiCloseWin();
 }
 
-void RemoteInstallPage::StartRemoteInstall(const RemoteInstall::Provider& provider)
+void RemoteInstallPage::StartRemoteInstallByCode()
 {
-	PushFunction([this, provider]() {
+	PushFunction([this]() {
 		try {
-			RemoteInstall::Begin(provider, RemoteInstallCode);
+			RemoteInstall::Begin(SelectedProvider(), RemoteInstallCode);
+		}
+		catch (nlohmann::json::type_error& ex)	{
+			DialogBlocking("There was an error parsing the response from the server, this often mean that the code you requested could not be found, make sure that the code is valid.\n\nError message:\n"s + ex.what());
 		}
 		catch (std::exception& ex) {
-			DialogBlocking("There was an error processing the request, make sure that the code is valid, and your're connected to the internet.\n\nError message:\n"s + ex.what());
+			DialogBlocking("There was an error processing the request, make sure that the code is valid and that you are connected to the internet.\n\nError message:\n"s + ex.what());
+		}
+	});
+}
+
+void RemoteInstallPage::StartRemoteInstallFixed(RemoteInstall::FixedTypes type)
+{
+	PushFunction([this, type]() {
+		try {
+			RemoteInstall::BeginType(SelectedProvider(), type);
+		}
+		catch (std::exception& ex) {
+			DialogBlocking("There was an error processing the request, make sure you are connected to the internet and try again in a bit, if it still doesn't work it's possible that the selected provider doesn't support this option.\n\nError message:\n"s + ex.what());
 		}
 	});
 }
@@ -249,6 +279,11 @@ void RemoteInstallPage::StopSocketing()
 void RemoteInstallPage::DialogError(const std::string &msg)
 {
 	Dialog("There was an error, try again.\n" + msg);
+}
+
+const RemoteInstall::Provider& RemoteInstallPage::SelectedProvider()
+{
+	return RemoteInstall::API::GetProvider(ProviderIndex);
 }
 
 void RemoteInstallPage::SocketUpdate()

@@ -30,10 +30,13 @@ class RemoteInstallPage : public IPage
 		
 		void DialogError(const std::string &msg);
 		
+		int ProviderIndex = 0;
+		const RemoteInstall::Provider& SelectedProvider();
 		std::string RemoteInstallCode;
 		std::string RemoteInstallBtnText;
 		void SetRemoteInstallCode(const char* input);
-		void StartRemoteInstall(const RemoteInstall::Provider& provider);
+		void StartRemoteInstallByCode();
+		void StartRemoteInstallFixed(RemoteInstall::FixedTypes type);
 
 		int sock = -1;	
 		//For SocketUpdate:
