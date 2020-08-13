@@ -53,7 +53,7 @@ void ThemesPage::SelectElementByPath(const std::string& path)
 	if (f == DirectoryFiles.end())
 		return; // Can this ever happen ?
 
-	size_t index = f - DirectoryFiles.begin();
+	int index = (int)(f - DirectoryFiles.begin());
 
 	// Find in which page is the file
 	int page = 0;
