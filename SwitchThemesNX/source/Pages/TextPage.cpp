@@ -63,7 +63,7 @@ void CreditsPage::Render(int X, int Y)
 	);
 
 	if (ImGui::Button("Show first startup info"))
-		ShowFirstTimeHelp(false);
+		PushFunction([]() {ShowFirstTimeHelp(false); });
 	PAGE_RESET_FOCUS;
 
 	ImGui::PopFont();
