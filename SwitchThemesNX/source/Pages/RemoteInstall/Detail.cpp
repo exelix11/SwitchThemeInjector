@@ -44,7 +44,8 @@ void RemoteInstall::DetailPage::Render(int X, int Y)
 	
 	ImGui::NewLine();
 	ImGui::SetCursorPosX(SCR_W / 2 - BtnW / 2);
-	ImGui::Button("Cancel", ImVec2(BtnW, 0));
+	if (ImGui::Button("Cancel", ImVec2(BtnW, 0)))
+		PopPage(this);
 
 	ImGui::End();
 	ImGui::PopFont();
