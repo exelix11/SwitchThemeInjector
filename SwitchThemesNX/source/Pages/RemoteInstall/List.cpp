@@ -13,6 +13,7 @@ RemoteInstall::ListPage::ListPage(API::APIResponse&& res, Worker::ImageFetch::Re
 	: response(res), images(img)
 {
 	Selection.resize(response.Entries.size());
+	PopulateScrollIDs();
 	ApplySelection(true);
 }
 
@@ -37,7 +38,7 @@ void RemoteInstall::ListPage::Render(int X, int Y)
 	int lineIndex = 0;
 	for (size_t i = 0; i < response.Entries.size(); i++)
 	{
-		auto res = RenderWidget(IsSelected(i), response.Entries[i].Name, images.List[i]);
+		auto res = RenderWidget(i);
 		if (res == Result::Clicked)
 			ToggleSelected(i);
 		else if (res == Result::Preview)
@@ -147,7 +148,15 @@ void RemoteInstall::ListPage::DownloadClicked()
 		PushFunction([this]() {
 			fs::EnsureDownloadsFolderExists();
 
-			std::string folderName = fs::path::DownloadsFolder + fs::SanitizeName(response.GroupName);
+			std::string folderName = response.GroupName == "" ?
+				fs::path::GetFreeDownloadFolder() :
+				fs::path::DownloadsFolder + fs::SanitizeName(response.GroupName);
+
+			if (folderName == "")
+			{
+				DialogBlocking("Couldn't create a folder on the SD card to download");
+				return;
+			}
 
 			if (fs::Exists(folderName)) {
 				if (!YesNoPage::Ask("The themes will be downloaded to `" + folderName + "` but this folder already exists, existing files will be overwritten.\nDo you want to continue ?"))
@@ -203,15 +212,31 @@ void RemoteInstall::ListPage::DownloadClicked()
 	}
 }
 
-RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(bool selected, const std::string& Name, LoadedImage img)
+void RemoteInstall::ListPage::PopulateScrollIDs()
+{	
+	ScrollIDs.clear();
+	std::stringstream ss;
+	for (size_t i = 0; i < response.Entries.size(); i++)
+	{
+		ss.clear();
+		ss << "S" << i;
+		ScrollIDs.push_back(ss.str());
+	}
+}
+
+RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t index)
 {
+	const bool selected = IsSelected(index);
+	const std::string& Name = response.Entries[index].Name;
+	const LoadedImage img = images.List[index];
+
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
 	if (window->SkipItems)
 		return Result::None;
 
 	ImGuiContext& g = *GImGui;
 	const ImGuiStyle& style = g.Style;
-	const ImGuiID id = window->GetID(Name.c_str()) + img;
+	const ImGuiID id = window->GetID(ScrollIDs[index].c_str());
 
 	const ImVec2 name_size = ImGui::CalcTextSize(Name.c_str(), NULL, false, ImageSize.x - 6);
 

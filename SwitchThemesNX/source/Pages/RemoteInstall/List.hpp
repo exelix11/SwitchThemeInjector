@@ -23,7 +23,7 @@ namespace RemoteInstall
 			Preview
 		};
 
-		Result RenderWidget(bool selected, const std::string& name, LoadedImage img);
+		Result RenderWidget(size_t index);
 
 		API::APIResponse response;
 		Worker::ImageFetch::Result images;
@@ -39,5 +39,8 @@ namespace RemoteInstall
 		void SelectionChanged();
 
 		void DownloadClicked();
+
+		void PopulateScrollIDs();
+		std::vector<std::string> ScrollIDs;
 	};
 }
