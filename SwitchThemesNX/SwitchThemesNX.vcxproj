@@ -60,6 +60,7 @@
     <ClInclude Include="source\SwitchThemesCommon\SarcLib\Yaz0.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\SwitchThemesCommon.hpp" />
     <ClInclude Include="source\SwitchTools\hactool.hpp" />
+    <ClInclude Include="source\SwitchTools\InjectorInstall.hpp" />
     <ClInclude Include="source\SwitchTools\PatchMng.hpp" />
     <ClInclude Include="source\SwitchTools\PayloadReboot.hpp" />
     <ClInclude Include="source\UI\DialogPages.hpp" />
@@ -119,6 +120,7 @@
     <ClCompile Include="source\SwitchThemesCommon\SarcLib\Yaz0.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\SwitchThemesCommon.cpp" />
     <ClCompile Include="source\SwitchTools\hactool.cpp" />
+    <ClCompile Include="source\SwitchTools\InjectorInstall.cpp" />
     <ClCompile Include="source\SwitchTools\PatchMng.cpp" />
     <ClCompile Include="source\SwitchTools\PayloadReboot.cpp" />
     <ClCompile Include="source\UI\DialogPages.cpp" />
