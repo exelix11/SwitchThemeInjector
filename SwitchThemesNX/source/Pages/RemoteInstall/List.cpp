@@ -228,6 +228,10 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 {
 	const bool selected = IsSelected(index);
 	const std::string& Name = response.Entries[index].Name;
+
+	const char* Target = ThemeTargetToName.count(response.Entries[index].Target) ? 
+		ThemeTargetToName[response.Entries[index].Target].c_str() : nullptr;
+
 	const LoadedImage img = images.List[index];
 
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -239,9 +243,12 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 	const ImGuiID id = window->GetID(ScrollIDs[index].c_str());
 
 	const ImVec2 name_size = ImGui::CalcTextSize(Name.c_str(), NULL, false, ImageSize.x - 6);
+	const ImVec2 target_size = ImGui::CalcTextSize(Target, NULL, false, ImageSize.x - 6);
 
 	ImVec2 pos = window->DC.CursorPos;
 	ImVec2 sz = { ImageSize.x, ImageSize.y + 6 + name_size.y };
+
+	if (Target)	sz += {0, target_size.y + 6};
 
 	const ImRect imageBox(pos, pos + ImageSize);
 
@@ -271,6 +278,8 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 
 	ImGui::PushFont(font25);
 	ImGui::RenderTextWrapped({ pos.x + 3, pos.y + ImageSize.y + 3 }, Name.c_str(), 0, ImageSize.x - 6);
+	if (Target)
+		ImGui::RenderTextWrapped({ pos.x + 3, pos.y + ImageSize.y + name_size.y + 6 }, Target, 0, ImageSize.x - 6);
 	ImGui::PopFont();
 
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
