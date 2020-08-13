@@ -4,8 +4,7 @@
 
 using namespace std;
 
-UninstallPage::UninstallPage() : 
-lblText("Use this to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory and home menu patches by pressing L+R as well.")
+UninstallPage::UninstallPage()
 {
 	Name = "Uninstall theme";
 }
@@ -15,7 +14,7 @@ void UninstallPage::Render(int X, int Y)
 	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
-	ImGui::TextWrapped(lblText.c_str());
+	ImGui::TextWrapped("Use this to uninstall the currently installed themes.\nIf you have issues, try fully removing the LayeredFS directory and home menu patches by pressing L+R as well.");
 
 	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
 	if (ImGui::Button("Uninstall"))

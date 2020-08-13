@@ -29,8 +29,5 @@ class CreditsPage : public IPage
 		void Render(int X, int Y) override;
 		void Update() override;
 	private:
-	
-		std::string creditsText;
-		std::string creditsText2;
-		bool IsLayoutBlockingLeft = false;
+		const std::string creditsText;
 };

@@ -14,7 +14,4 @@ class UninstallPage : public IPage
 		
 		void Render(int X, int Y) override;
 		void Update() override;
-	private:
-	
-		std::string lblText;
 };

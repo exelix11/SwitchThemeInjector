@@ -4,15 +4,7 @@
 
 using namespace std;
 
-CfwSelectPage::CfwSelectPage(vector<string> &folders)
-{
-	Folders = folders;
-	if (folders.size() == 0)
-		Title = "Couldn't find any cfw folder. Make sure you have either the \"atmosphere\", \"reinx\" or \"sxos\" folder in the root of your sd card as some cfws don't create it automatically. The folder name must be lowercase and without spaces.\nif your cfw isn't supported open an issue on Github.\nPress + to quit";
-	else 
-		Title = "Multiple cfw folders were detected, which one do you want to use ?";
-
-}
+CfwSelectPage::CfwSelectPage(const vector<string>& folders) : Folders(folders) {}
 
 CfwSelectPage::~CfwSelectPage()
 {
@@ -29,22 +21,26 @@ void CfwSelectPage::Render(int X, int Y)
 	ImGui::SetWindowFocus();
 
 	ImGui::PushFont(font40);
-	ImGui::TextWrapped(Title.c_str());
-	ImGui::PopFont();
+	if (Folders.size() == 0)
+		ImGui::TextWrapped("Couldn't find any cfw folder. Make sure you have either the \"atmosphere\", \"reinx\" or \"sxos\" folder in the root of your sd card as some cfws don't create it automatically.The folder name must be lowercase and without spaces.\nif your cfw isn't supported open an issue on Github.\nPress + to quit");
+	else {
+		ImGui::TextWrapped("Multiple cfw folders were detected, which one do you want to use ?");
 
-	ImGui::PushFont(font30);
-	ImGui::SetCursorPos({ (float)XCursorBtn, ImGui::GetCursorPosY() + 30 });
+		ImGui::PushFont(font30);
+		ImGui::SetCursorPos({ (float)XCursorBtn, ImGui::GetCursorPosY() + 30 });
 
-	int count = 0;
-	for (const auto &e : Folders)
-	{
-		ImGui::SetCursorPosX((float)XCursorBtn);
-		if (ImGui::Button(e.c_str(), { BtnWidth, 50 }))
+		int count = 0;
+		for (const auto& e : Folders)
 		{
-			fs::SetCfwFolder(e);
-			PopPage(this);
+			ImGui::SetCursorPosX((float)XCursorBtn);
+			if (ImGui::Button(e.c_str(), { BtnWidth, 50 }))
+			{
+				fs::SetCfwFolder(e);
+				PopPage(this);
+			}
+			count++;
 		}
-		count++;
+		ImGui::PopFont();
 	}
 
 	ImGui::PopFont();

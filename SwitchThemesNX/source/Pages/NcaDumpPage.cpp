@@ -8,14 +8,9 @@
 
 using namespace std;
 
-NcaDumpPage::NcaDumpPage() : 
- dumpNca("Extract home menu")
+NcaDumpPage::NcaDumpPage()
 {
 	Name = "Extract home menu";
-	guideText = ("To install .nxtheme files you need to extract the home menu first.\n"
-		"This is needed every time the firmware changes, both for updates and downgrades.\n"
-		"When the extracted version doesn't match with your firmware you will be prompted to do it.\n\n"
-		"Usually you don't need to extract it manually but in case you're facing issues you can try doing so here.");
 }
 
 void NcaDumpPage::Render(int X, int Y)
@@ -23,8 +18,12 @@ void NcaDumpPage::Render(int X, int Y)
 	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
-	ImGui::TextWrapped(guideText.c_str());
-	if (ImGui::Button(dumpNca.c_str()))
+	ImGui::TextWrapped("To install .nxtheme files you need to extract the home menu first.\n"
+		"This is needed every time the firmware changes, both for updates and downgrades.\n"
+		"When the extracted version doesn't match with your firmware you will be prompted to do it.\n\n"
+		"Usually you don't need to extract it manually but in case you're facing issues you can try doing so here.");
+
+	if (ImGui::Button("Extract home menu"))
 	{
 		PushFunction([]() {
 			if ((gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] && gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER]))
