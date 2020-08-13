@@ -23,6 +23,7 @@ class RemoteInstallPage : public IPage
 		
 		// Download install
 		int ProviderIndex = 0;
+		bool SelectedProviderStatic = false;
 		const RemoteInstall::Provider& SelectedProvider();
 		std::string RemoteInstallCode;
 		std::string RemoteInstallBtnText;

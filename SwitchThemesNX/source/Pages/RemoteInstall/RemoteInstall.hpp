@@ -8,6 +8,7 @@ namespace RemoteInstall
 	{
 		std::string Name;
 		std::string UrlTemplate;
+		bool Static;
 	};
 
 	enum class FixedTypes

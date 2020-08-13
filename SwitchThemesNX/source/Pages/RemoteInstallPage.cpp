@@ -53,21 +53,25 @@ void RemoteInstallPage::Render(int X, int Y)
 		}
 		else
 		{
-			ImGui::TextWrapped("Select a provider from the list to download themes.\nYou can add custom providers by editing the TBD file on your sd card."); //TODO
+			ImGui::TextWrapped("Select a provider from the list to download themes.\nYou can add custom providers as explained in the wiki on Github.");
 			ImGui::PushItemWidth(500);
-			ImGui::Combo("###ProviderSelection", &ProviderIndex, ComboBoxApiProviderGetter, nullptr, RemoteInstall::API::ProviderCount());
+			if (ImGui::Combo("###ProviderSelection", &ProviderIndex, ComboBoxApiProviderGetter, nullptr, RemoteInstall::API::ProviderCount()))
+				SelectedProviderStatic = RemoteInstall::API::GetProvider(ProviderIndex).Static;
+			
 			PAGE_RESET_FOCUS;
 			if (ImGui::IsItemFocused())
 				ImGui::SetScrollY(0);
 
-			ImGui::SameLine();
-			if (ImGui::Button("Random themes"))
-				StartRemoteInstallFixed(RemoteInstall::FixedTypes::Random);
-			CurItemBlockLeft();
-			ImGui::SameLine();
-			if (ImGui::Button("New themes"))
-				StartRemoteInstallFixed(RemoteInstall::FixedTypes::Recent);
-			CurItemBlockLeft();
+			if (!SelectedProviderStatic) {
+				ImGui::SameLine();
+				if (ImGui::Button("Random themes"))
+					StartRemoteInstallFixed(RemoteInstall::FixedTypes::Random);
+				CurItemBlockLeft();
+				ImGui::SameLine();
+				if (ImGui::Button("New themes"))
+					StartRemoteInstallFixed(RemoteInstall::FixedTypes::Recent);
+				CurItemBlockLeft();
+			}
 
 			ImGui::TextWrapped("Or search a theme by ID");
 			ImGui::PushStyleColor(ImGuiCol_Button, 0xDFDFDFDF);
