@@ -15,6 +15,7 @@
 #define THEMES_PATH SD_PREFIX "/" THEMES_DIR "/"
 #define SYSTEMDATA_DIR "systemData"
 #define SYSTEMDATA_PATH THEMES_PATH SYSTEMDATA_DIR "/"
+#define PROVIDERS_NAME "providers.json"
 
 bool StrEndsWith(const std::string &str, const std::string &suffix);
 bool StrStartsWith(const std::string& str, const std::string& prefix);
@@ -25,6 +26,7 @@ namespace fs::path
 	const std::string SystemDataFolder = SYSTEMDATA_PATH;
 	const std::string DownloadsFolder = THEMES_PATH "Downloads/";
 	const std::string NcaVersionCfg = SYSTEMDATA_PATH "ver.cfg";
+	const std::string ProvidersFile = THEMES_PATH PROVIDERS_NAME;
 
 	std::string CfwFolder();
 	std::string FsMitmFolder();
