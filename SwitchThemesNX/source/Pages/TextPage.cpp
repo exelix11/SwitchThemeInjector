@@ -64,7 +64,7 @@ void CreditsPage::Render(int X, int Y)
 
 	if (ImGui::Button("Show first startup info"))
 		ShowFirstTimeHelp(false);
-	PAGE_RESET_FOCUS
+	PAGE_RESET_FOCUS;
 	//ImGui::SameLine();
 	//if (ImGui::Button("Show licenses"))
 	//{

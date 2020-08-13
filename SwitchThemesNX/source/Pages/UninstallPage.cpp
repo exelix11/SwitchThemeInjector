@@ -41,7 +41,7 @@ void UninstallPage::Render(int X, int Y)
 			}
 		});
 	}
-	PAGE_RESET_FOCUS
+	PAGE_RESET_FOCUS;
 	ImGui::PopStyleColor();
 
 	ImGui::PopFont();

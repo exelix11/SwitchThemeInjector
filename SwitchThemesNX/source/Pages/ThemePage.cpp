@@ -8,7 +8,6 @@
 using namespace std;
 
 ThemesPage* ThemesPage::Instance = nullptr;
-const ImVec2 TabPageSize = { 900, 552 };
 
 ThemesPage::ThemesPage() : 
 lblPage(""),
@@ -134,7 +133,7 @@ void ThemesPage::SetPage(int num, int index)
 
 void ThemesPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupPage("ThemesPageContainer", X, Y, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
+	Utils::ImGuiSetupPageFullscreen("ThemesPageContainer", X, Y, DefaultWinFlags | ImGuiWindowFlags_NoBringToFrontOnFocus);
 	ImGui::PushFont(font25);
 
 	if (ImGui::GetCurrentWindow()->Appearing && fs::theme::ShouldRescanThemeList())
@@ -153,8 +152,7 @@ void ThemesPage::Render(int X, int Y)
 	ImGui::TextUnformatted(lblCommands.c_str());
 
 	{
-		ImGui::SetNextWindowSize(TabPageSize);
-		Utils::ImGuiSetupWin("ThemesList", X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
+		Utils::ImGuiSetupPage("ThemesList", X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
 		if (ResetScroll || ImGui::GetCurrentWindow()->Appearing)
 		{

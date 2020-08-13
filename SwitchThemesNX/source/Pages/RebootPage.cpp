@@ -70,7 +70,7 @@ class RebootPage : public IPage
 				{
 					PayloadReboot::Reboot();
 				}
-				PAGE_RESET_FOCUS
+				PAGE_RESET_FOCUS;
 			}
 			ImGui::PopFont();
 			Utils::ImGuiCloseWin();
