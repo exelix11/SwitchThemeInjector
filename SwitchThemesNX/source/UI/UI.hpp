@@ -11,6 +11,7 @@
 #endif
 
 constexpr ImGuiWindowFlags DefaultWinFlags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove;
+const ImVec2 TabPageSize = { 900, 552 };
 
 extern ImFont* font25;
 extern ImFont* font30;

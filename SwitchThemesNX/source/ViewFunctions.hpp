@@ -43,16 +43,21 @@ namespace Utils
 		ImGui::Begin(name, 0, flags);
 	}
 
-	static inline void ImGuiSetupPage(const char *name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
+	static inline void ImGuiSetupPageFullscreen(const char* name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
-		ImGui::SetNextWindowSize({ SCR_W - (float)x, SCR_H - (float)y }, ImGuiCond_Always);
+		ImGui::SetNextWindowSize({ SCR_W - (float)x - 20, SCR_H - (float)y });
+		ImGuiSetupWin(name, x, y, flags);
+	}
+
+	static inline void ImGuiSetupPage(const char* name, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
+	{
+		ImGui::SetNextWindowSize(TabPageSize, ImGuiCond_Always);
 		ImGuiSetupWin(name, x, y, flags);
 	}
 
 	static inline void ImGuiSetupPage(const IPage* page, int x, int y, ImGuiWindowFlags flags = DefaultWinFlags)
 	{
-		ImGui::SetNextWindowSize({ SCR_W - (float)x - 20, SCR_H - (float)y });
-		ImGuiSetupWin(page->Name.c_str(), x, y, flags);
+		ImGuiSetupPage(page->Name.c_str(), x, y, flags);
 	}
 
 	static inline void ImGuiCloseWin()
@@ -147,7 +152,7 @@ namespace Utils
 	}
 
 #define PAGE_RESET_FOCUS \
-	if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(true);
+	do {if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(true); } while (0)
 
 	static inline bool ImGuiSelectItemOnce(bool isFocused = true)
 	{

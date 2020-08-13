@@ -50,7 +50,7 @@ void NcaDumpPage::Render(int X, int Y)
 			}
 		});
 	}
-	PAGE_RESET_FOCUS
+	PAGE_RESET_FOCUS;
 	
 	ImGui::PopFont();
 	Utils::ImGuiCloseWin();
