@@ -108,6 +108,9 @@ void ThemesPage::SetPage(int num, int index)
 {
 	ImGui::NavMoveRequestCancel();
 
+	// There are no files, nothing to do here
+	if (DirectoryFiles.size() == 0) return;
+
 	// Reset scroll if we're changing the page or the menu index
 	ResetScroll = num != pageNum || index != menuIndex;
 
@@ -115,6 +118,7 @@ void ThemesPage::SetPage(int num, int index)
 	{
 		DisplayEntries.clear();
 		pageNum = num;
+		lblPage = "";
 	}
 	else if (num >= 0 && num != pageNum) // If the page is valid and different than the current one load the new entries
 	{
@@ -252,6 +256,12 @@ void ThemesPage::ClearSelection()
 
 void ThemesPage::UpdateBottomText()
 {
+	if (pageCount <= 0)
+	{
+		lblPage = "";
+		return;
+	}
+
 	std::stringstream ss;
 
 	if (SelectedFiles.size() != 0)
