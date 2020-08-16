@@ -48,12 +48,10 @@ static bool HasLatestPatches = true;
 
 static string GetExefsPatchesPath()
 {
-	if (fs::path::CfwFolder() == SD_PREFIX ATMOS_DIR)
-		return SD_PREFIX ATMOS_DIR "exefs_patches/";
-	else if (fs::path::CfwFolder() == SD_PREFIX REINX_DIR)
-		return SD_PREFIX REINX_DIR "patches/";
-	else if (fs::path::CfwFolder() == SD_PREFIX SX_DIR)
-		return SD_PREFIX SX_DIR "exefs_patches/";
+	if (fs::cfw::IsAms() || fs::cfw::IsSX())
+		return fs::path::CfwFolder() + "exefs_patches/";
+	else if (fs::cfw::IsRnx())
+		return fs::path::CfwFolder() + "patches/";
 	else return "";
 }
 

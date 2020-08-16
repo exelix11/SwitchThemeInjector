@@ -235,11 +235,13 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 }
 
 // Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
-static void CheckCFWDir()
+static void SetCfwFolder()
 {
-	auto f = fs::SearchCfwFolders();
+	auto f = fs::cfw::SearchFolders();
 	if (f.size() != 1)
 		PushPageBlocking(new CfwSelectPage(f));
+	else
+		fs::cfw::SetFolder(f[0]);
 }
 
 static std::vector<std::string> GetArgsInstallList(int argc, char** argv)
@@ -340,17 +342,13 @@ int main(int argc, char **argv)
 
 	bool ThemesFolderExists = fs::EnsureThemesFolderExists();
 	NcaDumpPage::CheckHomeMenuVer();
-	CheckCFWDir();
+	SetCfwFolder();
 
 	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
 	if (!PatchErrorMsg && UseLowMemory) // if patches are fine, check if applet mode
 		PatchErrorMsg = "You're running in applet mode, when launching homebrew from album they have less memory available.\n\nThis app should work fine but in case you encounter crashes try launching via title takeover by opening a game from the home menu and pressing R at the same time.";
 
-	if (
-#ifdef __SWITCH__
-		envHasArgv() &&
-#endif
-		argc > 1)
+	if (envHasArgv() && argc > 1)
 	{
 		auto paths = GetArgsInstallList(argc,argv);
 		if (paths.size() == 0)

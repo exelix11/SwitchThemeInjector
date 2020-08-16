@@ -20,7 +20,7 @@ class RebootPage : public IPage
 		{
 			Name = "Reboot to payload";
 			
-			auto v = fs::SearchCfwFolders();
+			auto v = fs::cfw::SearchFolders();
 			bool hasAtmos = false;
 			if (std::find(v.begin(), v.end(), SD_PREFIX ATMOS_DIR ) != v.end())
 			{

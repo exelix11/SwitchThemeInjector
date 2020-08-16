@@ -16,15 +16,23 @@ static const int XCursorBtn = SCR_W / 2 - BtnWidth / 2;
 
 void CfwSelectPage::Render(int X, int Y)
 {
-	Utils::ImGuiSetupWin("CfwSelectPage", 10, 10);
-	ImGui::SetWindowSize({SCR_W - 20, SCR_H - 20});
+	Utils::ImGuiSetupPageFullscreen("CfwSelectPage", 10, 10);
 	ImGui::SetWindowFocus();
 
-	ImGui::PushFont(font40);
 	if (Folders.size() == 0)
-		ImGui::TextWrapped("Couldn't find any cfw folder. Make sure you have either the \"atmosphere\", \"reinx\" or \"sxos\" folder in the root of your sd card as some cfws don't create it automatically.The folder name must be lowercase and without spaces.\nif your cfw isn't supported open an issue on Github.\nPress + to quit");
+	{
+		ImGui::PushFont(font30);
+		Utils::ImGuiCenterString("Couldn't find any cfw folder.");
+		ImGui::PopFont();
+		ImGui::NewLine();
+		ImGui::TextWrapped(
+			"Make sure you have either the \"atmosphere\", \"reinx\" or \"sxos\" folder in the root of your sd card.\n\n"
+			"Some cfws don't create this folder automatically so you should do it manually.\n"
+			"If you do have the cfw folder but still see this screen make sure it's written correctly, without spaces and all lowercase.");
+		
+	}	
 	else {
-		ImGui::TextWrapped("Multiple cfw folders were detected, which one do you want to use ?");
+		Utils::ImGuiCenterString("Multiple cfw folders detected, which one do you want to use ?");
 
 		ImGui::PushFont(font30);
 		ImGui::SetCursorPos({ (float)XCursorBtn, ImGui::GetCursorPosY() + 30 });
@@ -35,15 +43,20 @@ void CfwSelectPage::Render(int X, int Y)
 			ImGui::SetCursorPosX((float)XCursorBtn);
 			if (ImGui::Button(e.c_str(), { BtnWidth, 50 }))
 			{
-				fs::SetCfwFolder(e);
+				fs::cfw::SetFolder(e);
 				PopPage(this);
 			}
 			count++;
 		}
+
 		ImGui::PopFont();
 	}
 
-	ImGui::PopFont();
+	ImGui::NewLine();
+	Utils::ImGuiCenterString("if your cfw isn't supported open an issue on Github.");
+	if (Utils::ImGuiCenterButton("Close this application"))
+		App::Quit();
+
 	Utils::ImGuiSetWindowScrollable();
 	Utils::ImGuiCloseWin();
 }
@@ -53,7 +66,5 @@ void CfwSelectPage::Update()
 	if (gamepad.buttons[GLFW_GAMEPAD_BUTTON_START])
 		App::Quit();
 }
-
-
 
 

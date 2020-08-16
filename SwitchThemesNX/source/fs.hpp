@@ -28,7 +28,7 @@ namespace fs::path
 	const std::string NcaVersionCfg = SYSTEMDATA_PATH "ver.cfg";
 	const std::string ProvidersFile = THEMES_PATH PROVIDERS_NAME;
 
-	std::string CfwFolder();
+	const std::string& CfwFolder();
 	std::string FsMitmFolder();
 	std::string RomfsFolder(const std::string& contentID);
 
@@ -37,11 +37,13 @@ namespace fs::path
 #ifdef __SWITCH__
 	std::string Nca(u64 contentID);
 #endif
+
+	const std::string Atmosphere = SD_PREFIX ATMOS_DIR;
+	const std::string Reinx = SD_PREFIX REINX_DIR;
+	const std::string SX = SD_PREFIX SX_DIR;
 }
 
 namespace fs {
-	void SetCfwFolder(const std::string&);
-
 	std::vector<u8> OpenFile(const std::string& name);
 	void WriteFile(const std::string& name, const std::vector<u8>& data);
 
@@ -63,8 +65,15 @@ namespace fs {
 	bool EnsureThemesFolderExists();
 	void EnsureDownloadsFolderExists();
 	void RemoveSystemDataDir();
+}
 
-	std::vector<std::string> SearchCfwFolders();
+namespace fs::cfw {
+	bool IsAms();
+	bool IsSX();
+	bool IsRnx();
+
+	std::vector<std::string> SearchFolders();
+	void SetFolder(const std::string&);
 }
 
 namespace fs::theme {
