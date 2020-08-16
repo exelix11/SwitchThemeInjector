@@ -77,6 +77,9 @@ static nlohmann::json ApiGet(const std::string& url)
     if (result[0] != '{')
         throw std::runtime_error("Received invalid JSON");
 
+#ifndef __SWITCH__
+    std::string StringResponse(result.begin(), result.end());
+#endif
     return nlohmann::json::parse(result);
 }
 

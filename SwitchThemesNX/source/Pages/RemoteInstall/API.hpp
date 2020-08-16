@@ -36,8 +36,19 @@ namespace RemoteInstall::API
 	/*
 		API for remote install:
 	
+	- URLs and Querys
+		The remote servers also called providers offer an url formatted like this: http://example.provider/q?id=%%ID%%
+		The %%ID%% part is replaced with the text the user inputs in the download screen.
+		The format for the user input is not specified, how it's used is up the server.
+		> In themezer it's used first as an ID lookup to find specific themes and then as a search query.
+		
+		There are special queries that the installer issues automatically and those are:
+		`__special_random` and `__special_recent` which are used to retrieve random and recent themes from the provider.
+		In general strings starting with `__special` should be considered reserved for future features even though it's unlikely.
+		When defining a custom provider these can be disabled by setting `Static` to true
+
 	- Base scheme
-		The installer issues a GET request to the server, replacing the user-provided ID in the template URL, the server replies with OK status and a json response.
+		The installer issues a GET request to the server, the server replies with OK status and a json response.
 		In case the user provided ID refers to a single nxtheme file the response looks like this:
 		{
 		   "themes":[

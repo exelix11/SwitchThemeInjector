@@ -64,10 +64,10 @@ void RemoteInstall::BeginType(const RemoteInstall::Provider& provider, FixedType
 
 void RemoteInstall::BeginRandom(const RemoteInstall::Provider& provider)
 {
-    Begin(provider, "random");
+    Begin(provider, "__special_random");
 }
 
 void RemoteInstall::BeginRecent(const RemoteInstall::Provider& provider)
 {
-    Begin(provider, "recent");
+    Begin(provider, "__special_recent");
 }
