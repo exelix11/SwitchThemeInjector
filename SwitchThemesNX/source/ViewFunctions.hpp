@@ -127,7 +127,7 @@ namespace Utils
 
 	static inline bool ImGuiCenterButton(const std::string& button)
 	{
-		return ImGuiCenterButtons({ button });
+		return ImGuiCenterButtons({ button }) == 0;
 	}
 
 	static inline void ImGuiRightString(std::string_view str)
