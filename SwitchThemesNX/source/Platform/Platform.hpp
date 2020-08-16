@@ -41,3 +41,7 @@ void PlatformImguiBinds();
 void PlatformSleep(float time);
 
 const char* PlatformTextInput(const char* current = nullptr);
+
+#ifndef __SWITCH__
+static constexpr bool envHasArgv() { return true; }
+#endif

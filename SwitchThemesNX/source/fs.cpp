@@ -26,7 +26,7 @@ static string CfwFolder = "";
 static string TitlesFolder = "";
 static bool ThemeListDirty = true;
 
-std::string fs::path::CfwFolder() { return ::CfwFolder; }
+const std::string& fs::path::CfwFolder() { return ::CfwFolder; }
 std::string fs::path::FsMitmFolder() { return ::CfwFolder + TitlesFolder; }
 
 std::string fs::path::RomfsFolder(const std::string& contentID)
@@ -70,15 +70,6 @@ string fs::path::Nca(u64 id)
 	return (std::string)"System:/Contents/" + result;
 }
 #endif
-
-void fs::SetCfwFolder(const string& s)
-{
-	CfwFolder = s;
-	if ((CfwFolder == SD_PREFIX ATMOS_DIR || CfwFolder == SD_PREFIX REINX_DIR) && filesystem::exists(CfwFolder + "contents/"))
-		TitlesFolder = "contents/";
-	else
-		TitlesFolder = "titles/";
-}
 
 static string &replaceWindowsPathChar(string& str)
 {
@@ -235,21 +226,6 @@ void fs::RemoveSystemDataDir()
 	CreateDirectory(path::SystemDataFolder);
 }
 
-vector<string> fs::SearchCfwFolders()
-{
-	vector<string> res;
-	DIR* dir = nullptr;
-#define CHECKFOLDER(f) dir = opendir(f); \
-	if (dir) { res.push_back(f); closedir(dir); dir = nullptr;}
-	CHECKFOLDER(SD_PREFIX ATMOS_DIR)
-		CHECKFOLDER(SD_PREFIX REINX_DIR)
-		CHECKFOLDER(SD_PREFIX SX_DIR)
-#undef CHECKFOLDER
-		if (res.size() == 1)
-			SetCfwFolder(res[0]);
-	return res;
-}
-
 vector<string> fs::theme::ScanThemeFiles()
 {
 	vector<string> res;
@@ -349,4 +325,40 @@ bool fs::theme::DumpHomeMenuNca()
 #else
 	return false;
 #endif
+}
+
+bool fs::cfw::IsAms()
+{
+	return CfwFolder == path::Atmosphere;
+}
+
+bool fs::cfw::IsSX()
+{
+	return CfwFolder == path::SX;
+}
+
+bool fs::cfw::IsRnx()
+{
+	return CfwFolder == path::Reinx;
+}
+
+std::vector<std::string> fs::cfw::SearchFolders()
+{
+	vector<string> res;
+#define CHECKFOLDER(f) \
+	if (fs::Exists(f) && std::filesystem::is_directory(f)) res.push_back(f)
+		CHECKFOLDER(path::Atmosphere);
+		CHECKFOLDER(path::Reinx);
+		CHECKFOLDER(path::SX);
+#undef CHECKFOLDER
+	return res;
+}
+
+void fs::cfw::SetFolder(const std::string& s)
+{
+	CfwFolder = std::strchr("/\\", s[s.size() - 1]) ? s : s + '/';
+	if ((cfw::IsAms() || cfw::IsRnx()) && filesystem::exists(CfwFolder + "contents/"))
+		TitlesFolder = "contents/";
+	else
+		TitlesFolder = "titles/";
 }
