@@ -11,6 +11,8 @@ namespace RemoteInstall::Worker
 	class BaseWorker : public IUIControlObj
 	{
 	public:
+		static constexpr long MaxSessions = 6;
+
 		BaseWorker(const std::vector<std::string>& urls);
 
 		void Update() override;
