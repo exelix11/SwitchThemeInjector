@@ -9,6 +9,10 @@ RemoteInstall::Worker::BaseWorker::BaseWorker(const std::vector<std::string>& ur
     if (!cm)
         throw std::runtime_error("curl_multi_init failed");
 
+    curl_multi_setopt(cm, CURLMOPT_MAXCONNECTS, MaxSessions * 4);
+    curl_multi_setopt(cm, CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxSessions);
+    curl_multi_setopt(cm, CURLMOPT_PIPELINING, CURLPIPE_MULTIPLEX);
+
     for (size_t i = 0; i < urls.size(); i++)
     {
         CURL* transfer = RemoteInstall::API::Util::EasyGET(urls[i], Results[i], i);
@@ -44,7 +48,7 @@ void RemoteInstall::Worker::BaseWorker::Update()
                     Errors << "Unknown id " << index; //Can this ever happen ?
 
                 if (msg->data.result != CURLE_OK)
-                    Errors << " failed: " << curl_easy_strerror(msg->data.result) << std::endl;
+                    Errors << " failed: " << curl_easy_strerror(msg->data.result) << "(" << msg->data.result << ")" << std::endl;
                 else
                     Errors << " failed due to handler error" << std::endl;
 
