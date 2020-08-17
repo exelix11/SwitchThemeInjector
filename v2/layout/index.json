@@ -31,6 +31,14 @@
       {
          "Prev":"ZnHm.jpg",
          "File":"ZnHm.json"
+      },
+      {
+         "Prev":"JAG Layout.jpg",
+         "File":"JAG Layout.json"
+      },
+      {
+         "Prev":"RoundedSmallCompact.jpg",
+         "File":"RoundedSmallCompact.json"
       }
    ],
    "lock":[
@@ -45,6 +53,10 @@
       {
          "Prev":"GleLk.jpg",
          "File":"GleLk.json"
+      },
+      {
+         "Prev":"Side Lock.jpg",
+         "File":"Side Lock.json"
       }
    ],
    "psl":[
@@ -63,6 +75,10 @@
       {
          "Prev":"Transparant Playerselect.jpg",
          "File":"Transparant Playerselect.json"
+      },
+      {
+         "Prev":"Transparant Playerselect 90% Scale top.jpg",
+         "File":"Transparant Playerselect 90% Scale top.json"
       }
    ],
    "apps":[
@@ -71,7 +87,7 @@
          "File":"FlaunchRounded.json"
       },
       {
-         "Prev":"DogeFl.png",
+         "Prev":"DogeFl.jpg",
          "File":"DogeFl.json"
       }
    ]
