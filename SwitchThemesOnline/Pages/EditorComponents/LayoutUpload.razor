@@ -37,8 +37,8 @@ else
 
 @if (state.MainLayout != null)
 {
-	<p>
-		Selected layout: @state.MainLayout.PatchName by @state.MainLayout.AuthorName
+	<p style="text-align:center">
+		@state.MainLayout.PatchName by @state.MainLayout.AuthorName
 	</p>
 	<button class="btn--raised btn--red buttonCenter" @onclick="@(() => state.MainLayout = null)">Remove</button>
 }
