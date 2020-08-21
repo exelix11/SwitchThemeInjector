@@ -41,7 +41,9 @@ void RemoteInstall::ListPage::Render(int X, int Y)
 		auto res = RenderWidget(i);
 		if (res == Result::Clicked)
 			ToggleSelected(i);
-		else if (res == Result::Preview)
+		// Don't allow previewing if have the lowres image
+		// TODO: downlaod the full size preview on request
+		else if (res == Result::Preview && response.Entries[i].ThumbUrl() == response.Entries[i]._Preview)
 			PushPage(new ImagePreview(images.List[i]));
 		else 
 			Utils::ImGuiDragWithLastElement();
@@ -179,7 +181,8 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 			size_t numFailed;			
 			std::string OutFirstFilaName = "";			
-			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName](std::vector<u8>&& vec, uintptr_t index) -> bool {
+			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName](std::vector<u8>&& _invec, uintptr_t index) -> bool {
+				std::vector<u8> vec = _invec;
 				std::string name = folderName + std::to_string(index) + ".nxtheme";
 
 				try {
@@ -218,6 +221,7 @@ void RemoteInstall::ListPage::PopulateScrollIDs()
 	std::stringstream ss;
 	for (size_t i = 0; i < response.Entries.size(); i++)
 	{
+		ss.str("");
 		ss.clear();
 		ss << "S" << i;
 		ScrollIDs.push_back(ss.str());

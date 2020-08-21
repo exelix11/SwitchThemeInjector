@@ -11,7 +11,14 @@ namespace RemoteInstall::API
 		std::string Name;
 		std::string Target;
 		std::string Url;
-		std::string Preview;
+
+		// At least one of those must be a valid URL
+		const std::string& PreviewUrl() const { return _Preview == "" ? _Thumbnail : _Preview; }
+		const std::string& ThumbUrl() const { return _Thumbnail == "" ? _Preview : _Thumbnail; }
+
+		// Accessing these directly shouldn't be needed
+		std::string _Preview;
+		std::string _Thumbnail;
 	};
 
 	struct APIResponse 
@@ -57,6 +64,7 @@ namespace RemoteInstall::API
 		           "target":"home",
 		           "url":"http://.../file.nxtheme",
 		           "preview":"http://.../file.jpg",
+				   "thumbnail":"http://.../file.jpg"
 		       }
 		   ]
 		}
@@ -64,6 +72,11 @@ namespace RemoteInstall::API
 		The name should be a short name describing the theme, layout info and author name are already part of the NXTheme file and not needed there.
 		When saving on the sd card the installer will normalize and, if needed, shorten the name obtained from the NXTheme manifest.
 	
+		The entry must have at least one preview image between `preview` and `thumbnail`, having both is ideal but not needed.
+		`preview` is downloaded for full screen previewing, `thumbnail` for lists.
+		If just `preview` is present loading many themes at the same time could be slow, having just `thumbnail` would scale baldly for full screen previews.
+		The images don't have a set size but it makes no sense to have files bigger than 1280x720
+
 		In case the user provided ID refers to multiple nxthemes file the response looks like this:
 		{
 		   "groupname" : "group name"
