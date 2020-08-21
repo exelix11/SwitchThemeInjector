@@ -99,7 +99,7 @@ void RemoteInstall::API::ReloadProviders()
 {
     Providers.clear();
     // Builtin providers -- should this be in romfs ?
-    Providers.push_back({ "Themezer.ga", "https://api.themezer.ga/?query=query($id:String!){nxinstaller(id:$id){groupname,themes{id,name,target,url,preview}}}&variables={\"id\":\"%%ID%%\"}", false });
+    Providers.push_back({ "Themezer.net", "https://api.themezer.net/?query=query($id:String!){nxinstaller(id:$id){groupname,themes{id,name,target,url,preview}}}&variables={\"id\":\"%%ID%%\"}", false });
     // Load extra providers from sd
     try
     {
