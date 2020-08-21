@@ -114,7 +114,7 @@ namespace SwitchThemes
 
 			try
 			{
-				Form1.ExtractNxTheme(args[1], args[2]);
+				Form1.DoExtractNxTheme(args[1], args[2]);
 				Console.WriteLine("Done !");
 			}
 			catch (Exception ex)

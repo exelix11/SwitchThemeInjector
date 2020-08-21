@@ -71,6 +71,7 @@
 			// 
 			// RemoteInstallForm
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(320, 123);
@@ -83,6 +84,8 @@
 			this.MinimizeBox = false;
 			this.Name = "RemoteInstallForm";
 			this.Text = "Remote install";
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.RemoteInstallForm_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.RemoteInstallForm_DragEnter);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
