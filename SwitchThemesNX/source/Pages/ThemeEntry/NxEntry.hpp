@@ -246,6 +246,7 @@ private:
 				_HasPreview = false;
 				_CanInstall = false;
 				lblLine2 = DDSConv::GetError();
+				InstallFailReason = "Couldn't convert the included image " + lblLine2;
 				return  ThemeEntry::_emtptyVec;
 			}
 		}
@@ -259,13 +260,15 @@ private:
 		auto themeInfo = ParseNXThemeFile(SData);
 		if (themeInfo.Version == -1)
 		{
-			lblLine1 = ("Invalid theme");
+			lblLine1 = "Invalid theme";
+			InstallFailReason = "Invalid theme";
 			_CanInstall = false;
 		}
 		NXThemeVer = themeInfo.Version;
 		if (themeInfo.Version > SwitchThemesCommon::NXThemeVer)
 		{
-			lblLine2 = ("New version, update the installer !");
+			lblLine2 = "New version, update the installer !";
+			InstallFailReason = "This theme requres a newer version of the theme installer. Download latest version from GitHub.";
 			_CanInstall = false;
 		}
 		if (_CanInstall) {
@@ -274,7 +277,8 @@ private:
 		}
 		if (!ThemeTargetToName.count(themeInfo.Target))
 		{
-			lblLine2 = ("Error: target not found");
+			lblLine2 = "Error: invalid target";
+			InstallFailReason = "The target home menu part is not valid";
 			_CanInstall = false;
 		}
 		else if (_CanInstall)
