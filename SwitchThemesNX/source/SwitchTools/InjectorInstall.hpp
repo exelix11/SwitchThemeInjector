@@ -18,7 +18,7 @@ namespace InjectorInstall{
 		std::string GetHostname();
 
 		const std::vector<u8>& Buffer();
-		bool IsFinished() { return Finished; }
+		bool HasFinished() { return Finished; }
 	private:
 		bool Finished = false;
 		std::vector<u8> Data;
