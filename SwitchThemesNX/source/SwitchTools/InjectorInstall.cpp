@@ -74,13 +74,14 @@ void InjectorInstall::Server::StopHosting()
 #endif
 
 	hostSock = -1;
-	clientSock = 1;
+	clientSock = -1;
 	PayloadSize = 0;
 }
 
 void InjectorInstall::Server::Clear()
 {
 	Finished = false;
+	PayloadSize = 0;
 	Data.clear();
 }
 
@@ -92,6 +93,8 @@ void InjectorInstall::Server::HostUpdate()
 	int size = -1;
 	if (clientSock == -1 && (clientSock = accept(hostSock, 0, 0)) != -1)
 	{
+		fcntl(clientSock, F_SETFL, O_NONBLOCK);
+
 		u8 buf[12];
 		memset(buf, 0, sizeof(buf));
 		if ((size = recv(clientSock, (char*)buf, sizeof(buf), 0)) < 0)
@@ -119,12 +122,13 @@ void InjectorInstall::Server::HostUpdate()
 
 	if (PayloadSize && clientSock != -1)
 	{
-		u8 tmp[10];
-		while ((size = recv(clientSock, (char*)tmp, 10, 0)) > 0)
+		u8 tmp[0x10];
+		while ((size = recv(clientSock, (char*)tmp, sizeof(tmp), 0)) > 0)
 		{
 			for (int i = 0; i < size; i++)
 				Data.push_back(tmp[i]);
 		}
+
 		if (Data.size() == PayloadSize || size == 0 || (size == -1 && errno != EWOULDBLOCK)) {
 			if (Data.size() != PayloadSize)
 				throw std::runtime_error("Unexpected data count: " + std::to_string(size));

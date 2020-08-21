@@ -230,7 +230,7 @@ void RemoteInstallPage::UpdateServer()
 	try 
 	{
 		server.HostUpdate();
-		if (server.IsFinished())
+		if (server.HasFinished())
 		{
 			RemoteInstallFile = ThemeEntry::FromSZS(server.Buffer());
 			server.Clear();
@@ -240,5 +240,6 @@ void RemoteInstallPage::UpdateServer()
 	catch (std::exception& ex)
 	{
 		Dialog(ex.what());
+		StopServer();
 	}
 }
