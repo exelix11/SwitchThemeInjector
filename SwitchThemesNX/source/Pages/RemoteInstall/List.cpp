@@ -261,12 +261,17 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 	if (!ImGui::ItemAdd(bb, id))
 		return Result::None;
 
+	Result result = Result::None;
+
 	bool hovered, held;
 	bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held, 0) && !ImGui::GetMouseDragDelta(0).y;
 	if (pressed)
+	{
 		ImGui::MarkItemEdited(id);
+		result = Result::Clicked;
+	}
 	else if (hovered && KeyPressed(GLFW_GAMEPAD_BUTTON_X) && img)
-		return Result::Preview;
+		result = Result::Preview;
 
 	// Render
 	const ImU32 col = ImGui::GetColorU32((held && hovered) ? ImGuiCol_ButtonActive : hovered ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
@@ -288,5 +293,5 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);
 
-	return pressed ? Result::Clicked : Result::None;
+	return result;
 }
