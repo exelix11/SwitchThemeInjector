@@ -36,8 +36,12 @@ void RemoteInstall::Begin(const Provider& provider, const std::string& ID)
 
     std::vector<std::string> imageUrls;
 
-    for (const auto& res : res.Entries)
-        imageUrls.push_back(res.Preview);
+    if (res.Entries.size() == 1)
+        imageUrls.push_back(res.Entries[0].PreviewUrl());
+    else {
+        for (const auto& res : res.Entries)
+            imageUrls.push_back(res.ThumbUrl());
+    }
 
     Worker::ImageFetch::Result ImageLoadResult;
     PushPageBlocking(new Worker::ImageFetch(imageUrls, ImageLoadResult));

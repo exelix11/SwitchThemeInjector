@@ -23,7 +23,14 @@ namespace RemoteInstall::API
         j.at("name").get_to(p.Name);
         j.at("target").get_to(p.Target);
         j.at("url").get_to(p.Url);
-        j.at("preview").get_to(p.Preview);
+
+        if (j.count("preview"))
+            j.at("preview").get_to(p._Preview);
+
+        if (j.count("thumbnail"))
+            j.at("thumbnail").get_to(p._Thumbnail);
+
+        // Enforce image links ? Doesn't really matter cause empty strings will just cause a black square
     }
 
     void from_json(const nlohmann::json& j, APIResponse& p) {
@@ -99,7 +106,7 @@ void RemoteInstall::API::ReloadProviders()
 {
     Providers.clear();
     // Builtin providers -- should this be in romfs ?
-    Providers.push_back({ "Themezer.net", "https://api.themezer.net/?query=query($id:String!){nxinstaller(id:$id){groupname,themes{id,name,target,url,preview}}}&variables={\"id\":\"%%ID%%\"}", false });
+    Providers.push_back({ "Themezer.net", "https://api.themezer.net/?query=query($id:String!){nxinstaller(id:$id){groupname,themes{id,name,target,url,preview,thumbnail}}}&variables={\"id\":\"%%ID%%\"}", false });
     // Load extra providers from sd
     try
     {
