@@ -39,6 +39,12 @@ namespace SwitchThemes
 			{"Player select", "psl"},
 		};
 
+		public string BgImage 
+		{
+			get => tbImageFile.Text;
+			set => tbImageFile.Text = tbImageFile2.Text = value;
+		}
+
 		public Form1()
 		{
 			MaterialSkin.MaterialSkinManager.Instance.Theme = MaterialSkin.MaterialSkinManager.Themes.DARK;
@@ -276,23 +282,15 @@ namespace SwitchThemes
 			}
 		}
 
-		private void materialFlatButton1_Click(object sender, EventArgs e)
+		private void BgImageSelectBtn_Click(object sender, EventArgs e)
 		{
 			OpenFileDialog opn = new OpenFileDialog()
 			{
 				Title = "open a picture",
 				Filter = "Supported files (DDS,JPG)|*.dds;*.jpg;*.jpeg|all files|*.*",
 			};
-			if (opn.ShowDialog() != DialogResult.OK)
-			{
-				tbImageFile.Text = "";
-				tbImageFile2.Text = "";
-			}
-			else
-			{
-				tbImageFile.Text = opn.FileName;
-				tbImageFile2.Text = opn.FileName;
-			}
+
+			BgImage = opn.ShowDialog() != DialogResult.OK ? "" : opn.FileName;
 		}
 
 		private void OpenSzsButton(object sender, EventArgs e)
@@ -367,7 +365,7 @@ namespace SwitchThemes
 				return;
 			}
 
-			bool HasImage = tbImageFile.Text.Trim() != "";
+			bool HasImage = BgImage.Trim() != "";
 
 			if (!HasImage)
 			{
@@ -380,12 +378,12 @@ namespace SwitchThemes
 				if (MessageBox.Show("Are you sure you want to continue without selecting a background image ?", "", MessageBoxButtons.YesNo) == DialogResult.No)
 					return;
 			}
-			else if (!File.Exists(tbImageFile.Text))
+			else if (!File.Exists(BgImage))
 			{
-				MessageBox.Show($"{tbImageFile.Text} not found!");
+				MessageBox.Show($"{BgImage} not found!");
 				return;
 			}
-			else if (!tbImageFile.Text.ToLower().EndsWith("dds"))
+			else if (!BgImage.ToLower().EndsWith("dds"))
 			{
 				MessageBox.Show($"For szs patching only dds images are supported");
 				return;
@@ -393,7 +391,7 @@ namespace SwitchThemes
 			
 			if (HasImage)
 			{
-				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(tbImageFile.Text));
+				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(BgImage));
 				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
 				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}
@@ -410,7 +408,7 @@ namespace SwitchThemes
 			var res = true;
 			if (HasImage)
 			{
-				res = Patcher.PatchMainBG(File.ReadAllBytes(tbImageFile.Text));
+				res = Patcher.PatchMainBG(File.ReadAllBytes(BgImage));
 				if (!res)
 				{
 					MessageBox.Show("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
@@ -481,7 +479,7 @@ namespace SwitchThemes
 		string LockCustomIcon = null;
 		private void NnBuilderBuild_Click(object sender, EventArgs e)
 		{
-			if (tbImageFile.Text.Trim() == "")
+			if (BgImage.Trim() == "")
 			{
 				if (AllLayoutsBox.SelectedIndex == 0)
 				{
@@ -509,8 +507,8 @@ namespace SwitchThemes
 				if (layout != null)
 					builder.AddMainLayout(layout);
 
-				if (tbImageFile.Text != "")
-					builder.AddMainBg(File.ReadAllBytes(tbImageFile.Text));
+				if (BgImage != "")
+					builder.AddMainBg(File.ReadAllBytes(BgImage));
 
 				if (ExtraCommonLyt != null)
 					builder.AddFile("common.json", ExtraCommonLyt.AsByteArray());
@@ -564,6 +562,12 @@ namespace SwitchThemes
 			MessageBox.Show(".nxtheme files are a new file format for custom themes, they work pretty much like SZS files but they are legal to share and work on every firmware. To install .nxtheme files you need to download the NXThemes Installer on your console");
 		}
 
+		private void LayoutPatchList_OpenFile(string path, ComboBox comboBox)
+		{
+			comboBox.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(path)));
+			comboBox.SelectedIndex = 1;
+		}
+
 		private void LayoutPatchList_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			ComboBox comboBox = (ComboBox)sender;
@@ -575,8 +579,7 @@ namespace SwitchThemes
 					comboBox.SelectedIndex = 0;
 					return;
 				}
-				comboBox.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName)));
-				comboBox.SelectedIndex = 1;
+				LayoutPatchList_OpenFile(opn.FileName, comboBox);
 			}
 		}
 
@@ -678,15 +681,33 @@ namespace SwitchThemes
 				MessageBox.Show("---ALL YOUR THEMES ARE BELONG TO US---");
 		}
 
-		private void ExtractNxTheme_Click(object sender, EventArgs e)
+		public static void DoExtractNxTheme(string FilePath, string OutDir)
+		{
+			var data = SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(FilePath)));
+			foreach (var f in data.Files.Where(x => x.Key != "info.json"))
+				File.WriteAllBytes(Path.Combine(OutDir, f.Key), f.Value);
+		}
+
+		private void ExtractNxTheme(string FilePath = null, string OutDir = null) 
 		{
 			try
 			{
-				OpenFileDialog opn = new OpenFileDialog() { Filter = "nxtheme files|*.nxtheme" };
-				if (opn.ShowDialog() != DialogResult.OK) return;
-				FolderBrowserDialog fld = new FolderBrowserDialog() { Description = "Extract the theme to.." };
-				if (fld.ShowDialog() != DialogResult.OK) return;
-				ExtractNxTheme(opn.FileName, fld.SelectedPath);
+				if (FilePath == null)
+				{
+					OpenFileDialog opn = new OpenFileDialog() { Filter = "nxtheme files|*.nxtheme" };
+					if (opn.ShowDialog() != DialogResult.OK) return;
+					FilePath = opn.FileName;	
+				}
+
+				if (OutDir == null)
+				{
+					FolderBrowserDialog fld = new FolderBrowserDialog() { Description = "Extract the theme to.." };
+					if (fld.ShowDialog() != DialogResult.OK) return;
+					OutDir = fld.SelectedPath;
+				}
+
+				DoExtractNxTheme(FilePath, OutDir);
+
 				MessageBox.Show("Done");
 			}
 			catch (Exception ex)
@@ -695,11 +716,46 @@ namespace SwitchThemes
 			}
 		}
 
-		public static void ExtractNxTheme(string theme, string path)
+		private void ExtractNxTheme_Click(object sender, EventArgs e)
 		{
-		 	var data = SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(theme)));
-			foreach (var f in data.Files.Where(x => x.Key != "info.json"))
-				File.WriteAllBytes(Path.Combine(path, f.Key), f.Value);	
+			ExtractNxTheme();
+		}
+
+		private void ExtractNxthemeBtn_DragDrop(object sender, DragEventArgs e)
+		{
+			ExtractNxTheme(e.GetFiles().FirstOrDefault());
+		}
+
+		private void Shared_FileDragEnter(object sender, DragEventArgs e)
+		{
+			if (e.GetFiles()?.Length == 1)
+				e.Effect = DragDropEffects.Copy;
+		}
+
+		private void BgImage_DragDrop(object sender, DragEventArgs e) =>
+			BgImage = e.GetFiles().FirstOrDefault();
+
+		private void LayoutPatchList_DragDrop(object sender, DragEventArgs e)
+		{
+			string file = e.GetFiles().FirstOrDefault();
+			if (string.IsNullOrWhiteSpace(file)) return;
+
+			ComboBox comboBox = (ComboBox)sender;
+			LayoutPatchList_OpenFile(file, comboBox);
+		}
+
+		private void RemoteInstal_DragDrop(object sender, DragEventArgs e) =>
+			new RemoteInstallForm(e.GetFiles().FirstOrDefault()).ShowDialog();
+	}
+
+	internal static class Exten 
+	{
+		public static string[] GetFiles(this DragEventArgs e)
+		{
+			if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+				return null;
+
+			return (string[])e.Data.GetData(DataFormats.FileDrop);
 		}
 	}
 }

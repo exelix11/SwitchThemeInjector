@@ -180,7 +180,9 @@
 			this.materialFlatButton2.TabIndex = 2;
 			this.materialFlatButton2.Text = "...";
 			this.materialFlatButton2.UseVisualStyleBackColor = true;
-			this.materialFlatButton2.Click += new System.EventHandler(this.materialFlatButton1_Click);
+			this.materialFlatButton2.Click += new System.EventHandler(this.BgImageSelectBtn_Click);
+			this.materialFlatButton2.DragDrop += new System.Windows.Forms.DragEventHandler(this.BgImage_DragDrop);
+			this.materialFlatButton2.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// linkLabel2
 			// 
@@ -197,6 +199,7 @@
 			// 
 			// AllLayoutsBox
 			// 
+			this.AllLayoutsBox.AllowDrop = true;
 			this.AllLayoutsBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.AllLayoutsBox.BackColor = System.Drawing.Color.White;
@@ -209,6 +212,8 @@
 			this.AllLayoutsBox.Size = new System.Drawing.Size(432, 21);
 			this.AllLayoutsBox.TabIndex = 3;
 			this.AllLayoutsBox.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
+			this.AllLayoutsBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.LayoutPatchList_DragDrop);
+			this.AllLayoutsBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel9
 			// 
@@ -253,6 +258,7 @@
 			// 
 			// materialRaisedButton9
 			// 
+			this.materialRaisedButton9.AllowDrop = true;
 			this.materialRaisedButton9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.materialRaisedButton9.AutoSize = true;
 			this.materialRaisedButton9.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -267,6 +273,8 @@
 			this.materialRaisedButton9.Text = "Remote install...";
 			this.materialRaisedButton9.UseVisualStyleBackColor = true;
 			this.materialRaisedButton9.Click += new System.EventHandler(this.materialRaisedButton9_Click);
+			this.materialRaisedButton9.DragDrop += new System.Windows.Forms.DragEventHandler(this.RemoteInstal_DragDrop);
+			this.materialRaisedButton9.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// NxBuilderBuild
 			// 
@@ -325,6 +333,7 @@
 			// 
 			// tbImageFile2
 			// 
+			this.tbImageFile2.AllowDrop = true;
 			this.tbImageFile2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbImageFile2.Location = new System.Drawing.Point(67, 90);
@@ -332,6 +341,8 @@
 			this.tbImageFile2.ReadOnly = true;
 			this.tbImageFile2.Size = new System.Drawing.Size(537, 20);
 			this.tbImageFile2.TabIndex = 1;
+			this.tbImageFile2.DragDrop += new System.Windows.Forms.DragEventHandler(this.BgImage_DragDrop);
+			this.tbImageFile2.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel11
 			// 
@@ -601,6 +612,7 @@
 			// 
 			// ExtractNxthemeBtn
 			// 
+			this.ExtractNxthemeBtn.AllowDrop = true;
 			this.ExtractNxthemeBtn.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.ExtractNxthemeBtn.AutoSize = true;
 			this.ExtractNxthemeBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -615,6 +627,8 @@
 			this.ExtractNxthemeBtn.Text = "Open nxtheme";
 			this.ExtractNxthemeBtn.UseVisualStyleBackColor = true;
 			this.ExtractNxthemeBtn.Click += new System.EventHandler(this.ExtractNxTheme_Click);
+			this.ExtractNxthemeBtn.DragDrop += new System.Windows.Forms.DragEventHandler(this.ExtractNxthemeBtn_DragDrop);
+			this.ExtractNxthemeBtn.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel14
 			// 
@@ -693,7 +707,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.DiscordLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
 			this.DiscordLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
-			this.DiscordLinkLbl.Location = new System.Drawing.Point(274, 38);
+			this.DiscordLinkLbl.Location = new System.Drawing.Point(271, 38);
 			this.DiscordLinkLbl.Name = "DiscordLinkLbl";
 			this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 21);
 			this.DiscordLinkLbl.TabIndex = 18;
@@ -712,7 +726,7 @@
 			this.SupportLinkLbl.Size = new System.Drawing.Size(174, 21);
 			this.SupportLinkLbl.TabIndex = 17;
 			this.SupportLinkLbl.TabStop = true;
-			this.SupportLinkLbl.Text = "Ko-fi❤";
+			this.SupportLinkLbl.Text = "Donate ❤";
 			this.SupportLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.SupportLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.SupportLinkLbl_LinkClicked);
 			// 
@@ -725,7 +739,7 @@
 			this.GithubLinkLbl.Size = new System.Drawing.Size(199, 21);
 			this.GithubLinkLbl.TabIndex = 16;
 			this.GithubLinkLbl.TabStop = true;
-			this.GithubLinkLbl.Text = "Updates/NXThemes Installer";
+			this.GithubLinkLbl.Text = "Updates on GitHub";
 			this.GithubLinkLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.GithubLinkLbl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.GithubLinkLbl_LinkClicked);
 			// 
@@ -833,6 +847,7 @@
 			// 
 			// tbImageFile
 			// 
+			this.tbImageFile.AllowDrop = true;
 			this.tbImageFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.tbImageFile.Location = new System.Drawing.Point(65, 98);
@@ -840,6 +855,8 @@
 			this.tbImageFile.ReadOnly = true;
 			this.tbImageFile.Size = new System.Drawing.Size(530, 20);
 			this.tbImageFile.TabIndex = 1;
+			this.tbImageFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.BgImage_DragDrop);
+			this.tbImageFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel7
 			// 
@@ -868,6 +885,7 @@
 			// 
 			// LayoutPatchList
 			// 
+			this.LayoutPatchList.AllowDrop = true;
 			this.LayoutPatchList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.LayoutPatchList.BackColor = System.Drawing.Color.White;
@@ -878,6 +896,8 @@
 			this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
 			this.LayoutPatchList.TabIndex = 3;
 			this.LayoutPatchList.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
+			this.LayoutPatchList.DragDrop += new System.Windows.Forms.DragEventHandler(this.LayoutPatchList_DragDrop);
+			this.LayoutPatchList.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel6
 			// 
@@ -908,7 +928,9 @@
 			this.materialFlatButton1.TabIndex = 2;
 			this.materialFlatButton1.Text = "...";
 			this.materialFlatButton1.UseVisualStyleBackColor = true;
-			this.materialFlatButton1.Click += new System.EventHandler(this.materialFlatButton1_Click);
+			this.materialFlatButton1.Click += new System.EventHandler(this.BgImageSelectBtn_Click);
+			this.materialFlatButton1.DragDrop += new System.Windows.Forms.DragEventHandler(this.BgImage_DragDrop);
+			this.materialFlatButton1.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
 			// 
 			// materialLabel2
 			// 

@@ -16,9 +16,12 @@ namespace SwitchThemes
 {
 	public partial class RemoteInstallForm : Form
 	{
-		public RemoteInstallForm()
+		public string DefaultFileName;
+
+		public RemoteInstallForm(string DefaultName = "")
 		{
 			InitializeComponent();
+			DefaultFileName = DefaultName;
 		}
 
 		public static string DoRemoteInstall(string Ip, byte[] theme)
@@ -66,10 +69,24 @@ namespace SwitchThemes
 				MessageBox.Show("Enter a valid address");
 				return;
 			}
-			OpenFileDialog opn = new OpenFileDialog() { Filter = "theme files (*.nxtheme,*.szs)|*.nxtheme;*.szs"};
+			OpenFileDialog opn = new OpenFileDialog() { Filter = "theme files (*.nxtheme,*.szs)|*.nxtheme;*.szs", FileName = DefaultFileName };
 			if (opn.ShowDialog() != DialogResult.OK) return;
 			byte[] theme = System.IO.File.ReadAllBytes(opn.FileName);
 
+			string res = DoRemoteInstall(textBox1.Text, theme);
+			if (res != null)
+				MessageBox.Show(res);
+		}
+
+		private void RemoteInstallForm_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.GetFiles()?.Length == 1)
+				e.Effect = DragDropEffects.Copy;
+		}
+
+		private void RemoteInstallForm_DragDrop(object sender, DragEventArgs e)
+		{
+			byte[] theme = System.IO.File.ReadAllBytes(e.GetFiles().First());
 			string res = DoRemoteInstall(textBox1.Text, theme);
 			if (res != null)
 				MessageBox.Show(res);
