@@ -42,7 +42,12 @@ protected:
 bool ThemeEntry::Install(bool ShowDialogs)
 {
 	if (!CanInstall())
+	{
+		// Sometimes ::Install is called automatically eg RemoteInstall/Detail.cpp, it would fail silently if CanInstall() == false
+		DialogBlocking(InstallFailReason == "" ? "This theme can't be installed." : InstallFailReason);
 		return false;
+	}
+
 	try 
 	{
 		if (!DoInstall(ShowDialogs))

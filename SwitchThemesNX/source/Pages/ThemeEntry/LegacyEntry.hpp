@@ -60,18 +60,19 @@ private:
 		SData = _Sdata;
 		if (FileName == "")
 		{
-			lblFname = ("Unknown.szs");
-			lblLine1 = ("Remote install");
+			lblFname = "Unknown.szs";
+			lblLine1 = "Remote install";
 		}
 		else
 		{
-			lblFname = (fs::GetFileName(FileName));
-			lblLine1 = (FileName);
+			lblFname = fs::GetFileName(FileName);
+			lblLine1 = FileName;
 		}
 		auto patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
 		if (patch.FirmName == "")
 		{
-			lblLine2 = ("Invalid theme");
+			lblLine2 = "Invalid theme";
+			InstallFailReason = "Invalid theme";
 			_CanInstall = false;
 		}
 		else lblLine2 = (patch.TemplateName + " for " + patch.FirmName);
