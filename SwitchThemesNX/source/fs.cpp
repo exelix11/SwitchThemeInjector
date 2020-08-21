@@ -39,6 +39,7 @@ std::string fs::path::GetFreeDownloadFolder()
 	std::stringstream ss;
 
 	for (size_t i = 1; i < std::numeric_limits<size_t>::max(); i++) {
+		ss.str("");
 		ss.clear();
 		ss << DownloadsFolder << "Group " << i;
 		if (!fs::Exists(ss.str()))
