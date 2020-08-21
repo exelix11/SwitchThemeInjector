@@ -62,10 +62,18 @@ protected:
 		if (ShowDialogs)
 			ThemeEntry::DisplayInstallDialog(FileName);
 
-		//common.szs patching code. Called if we are patching applets on <= 5.0 or there's a common layout
-		//On <= 5.0 apply the background image for the applets
+		const std::string CommonDestPath = fs::path::RomfsFolder("0100000000001000") + "lyt/common.szs";
+		// If we're installing a resident menu theme delete the common.szs file that could be a leftover from a previous theme
+		if (themeInfo.Target == "home" && fs::Exists(CommonDestPath))
+			fs::Delete(CommonDestPath);
+
+		// common.szs is patched in the following cases: 
+		//	On <= 5.0 apply the background image for the applets
 		bool ShouldPatchBGInCommon = HOSVer.major <= 5 && (themeInfo.Target == "news" || themeInfo.Target == "apps" || themeInfo.Target == "set");
-		if ((themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon) || ShouldPatchBGInCommon)
+		//	If we have a common layout and it's enabled in the settings 
+		bool HasCommonLayout = themeInfo.Target == "home" && SData.files.count("common.json") && Settings::UseCommon;
+
+		if (HasCommonLayout || ShouldPatchBGInCommon)
 		{
 			std::string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
 			if (!fs::Exists(CommonSzs))
@@ -85,7 +93,7 @@ protected:
 						return false;
 			}
 
-			if (SData.files.count("common.json") && themeInfo.Target == "home" && Settings::UseCommon)
+			if (HasCommonLayout)
 			{
 				auto JsonBinary = SData.files["common.json"];
 				if (!PatchLayout(Patcher, StringFromVec(JsonBinary), "common.szs"))
@@ -93,7 +101,7 @@ protected:
 			}
 
 			fs::theme::CreateStructure("0100000000001000");
-			fs::WriteFile(fs::path::RomfsFolder("0100000000001000") + "lyt/common.szs", SarcPack(Patcher.GetFinalSarc()));
+			fs::WriteFile(CommonDestPath, SarcPack(Patcher.GetFinalSarc()));
 		}
 
 		//Actual file patching code 
