@@ -8,7 +8,7 @@
 #include "UI/DialogPages.hpp"
 #include "Platform/Platform.hpp"
 
-const std::string VersionString = "Ver. 2.4";
+const std::string VersionString = "Ver. 2.5";
 extern std::string SystemVer;
 
 void PushPage(IUIControlObj* page);
