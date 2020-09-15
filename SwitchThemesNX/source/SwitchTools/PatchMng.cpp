@@ -6,33 +6,36 @@
 #include "../Platform/Platform.hpp"
 #include <unordered_map>
 #include "../UI/DialogPages.hpp"
+#include "hactool.hpp"
+#include "../Dialogs.hpp"
 
 using namespace std;
 
 static const u32 PatchSetVer = 5;
-#define LastSupportedVerSTR "10.1.1"
-static const SystemVersion LastSupportedVer = { 10,1,1 };
+#define LastSupportedVerSTR "10.2.0"
+//static const SystemVersion LastSupportedVer = { 10,1,1 };
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
 #define WarnIntro "Since 9.0 some parts of the home menu require a custom code patch (exefs patch) to run properly.\n"
-#define WarnOutro "\n\nWithout the correct patches some themes may crash, you will be warned when installing a theme that's known to cause issues"
+#define WarnOutro "\n\nWithout the correct patches you can still install themes but some may crash, you will be warned when installing a theme that's known to cause issues"
 
 //Is there even another CFW ?
 const char* WarningCFW = WarnIntro "Unfortunately your CFW doesn't seem to suppot ips patches for titles." WarnOutro;
 
-static const char* WarningSX = 
-	WarnIntro "\nIt seems you're using SX OS, support for these patches has been added only in version 2.9.4 beta.\n"
-			  "This means that if you're running an older version your CFW is not compatible, you're seeing this warning because this application cannot detect which is your current version.\n"
-			  "When installing a lockscreen theme you will be warned about missing patches, if you know for sure that you have a supported version you can safely install the theme.\n\n"
-			  "In case you don't have the right version and install the theme anyway your console will crash on boot, the warning before install also displays the instructions to fix it.";
+static const char* WarningSX = WarnIntro
+		"\nIt seems you're using SX OS, support for these patches has been added only in version 2.9.4 beta.\n"
+		"This means that if you're running an older version your CFW is not compatible, you're seeing this warning because this application cannot detect which is your current version.\n"
+		"When installing a lockscreen theme you will be warned about missing patches, if you know for sure that you have a supported version you can safely install the theme.\n\n"
+		"In case you don't have the right version and install the theme anyway your console will crash on boot, the warning before install also displays the instructions to fix it.";
 
-static const char* WarningFWVer =
-	WarnIntro "You're running a newer firmware version that may be not supported by this installer. This build supports up to " LastSupportedVerSTR ".\n"
-			  "If the home menu was updated the built-in patches won't work, if that's the case you should check for updates of the theme installer.\n\n"
-			  "In case of `micro` updates eg 9.0.0 -> 9.0.1 it's possible that home menu was not updated and you can safely ignore this warning." WarnOutro;
+static const char* WarningMissingPatch = WarnIntro
+	 "You're running a firmware version that is not supported by this installer. The latest firmware at the time of this release is " LastSupportedVerSTR ".\n"
+	 "The home menu has been updated and there's no matching patch, please check for updates on github." WarnOutro;
 
 static const char* WarningSDFail = WarnIntro "There was an error accessing the patches directory on your sd card, you could be affected by sd corruption (likely on exFat) or the archive bit issue." WarnOutro;
+
+static const char* ErrorHactool = "Couldn't detect the home menu version you're running. Hactool failed to extract the home menu version info. Please open an issue on github.";
 
 const char* PatchMng::InstallWarnStr = 
 	"The theme you're trying to install is known to crash without an home menu patch and you don't seem to have a compatible one installed,"
@@ -107,14 +110,15 @@ static bool ExtractPatches()
 	return true;
 }
 
-const char* PatchMng::EnsureInstalled()
+PatchMng::ErrorPage PatchMng::EnsureInstalled()
 {
-	if (HOSVer.major < 9) return nullptr;
+	if (HOSVer.major < 9) return { };
+
 	auto&& outDir = GetExefsPatchesPath();
 	if (outDir == "")
 	{
 		HasLatestPatches = false;
-		return WarningCFW;
+		return {"Warning", WarningCFW };
 	}
 
 	FILE* f = fopen((outDir + ThemePatchesDir "ver.txt").c_str(), "r");
@@ -129,19 +133,34 @@ const char* PatchMng::EnsureInstalled()
 			HasLatestPatches = ExtractPatches();
 	}
 	if (!HasLatestPatches)
-		return WarningSDFail;
+		return { "Warning" , WarningSDFail };
 
-	if (HOSVer.IsGreater(LastSupportedVer)) {
-		HasLatestPatches = false;
-		return WarningFWVer;
+	try 
+	{
+		auto id = hactool::QlaunchBuildID();
+		LOGf("Qlaunch build ID is %s\n", id.c_str());
+
+		if (!fs::Exists(std::string(ASSET("patches/")) + id + ".ips"))
+			return { "Warning" , WarningMissingPatch };
+	}	
+	catch (std::exception& ex)
+	{
+		DialogBlocking(ex.what());
+		return { "Error", ErrorHactool };
 	}
+
+	// TOOD: Should show a firmware warning even if compatible ?
+	//if (HOSVer.IsGreater(LastSupportedVer)) {
+	//	HasLatestPatches = false;
+	//	return { "Info", WarningFWVer };
+	//}
 
 	if (fs::path::CfwFolder() == SD_PREFIX SX_DIR)
 	{
 		HasLatestPatches = false;
-		return WarningSX;
+		return { "Warning", WarningSX };
 	}
 
-	return nullptr;
+	return {};
 }
 

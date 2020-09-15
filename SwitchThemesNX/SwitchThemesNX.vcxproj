@@ -13,6 +13,7 @@
     <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h" />
     <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h" />
     <ClInclude Include="Libs\SOIL\stb_image_aug.h" />
+    <ClInclude Include="source\Dialogs.hpp" />
     <ClInclude Include="source\fs.hpp" />
     <ClInclude Include="source\Pages\CfwSelectPage.hpp" />
     <ClInclude Include="source\Pages\ExternalInstallPage.hpp" />
@@ -175,7 +176,7 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <EnableModules>false</EnableModules>
       <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
-      <AdditionalIncludeDirectories>D:\$(USERNAME)\Projects\VM\libnx\nx\include;$(ProjectDir)Libs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\$(USERNAME)\Projects\VM\libnx\nx\include;$(ProjectDir)Libs;$(ProjectDir)Libs\hactool\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>

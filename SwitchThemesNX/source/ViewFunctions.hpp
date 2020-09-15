@@ -1,6 +1,5 @@
 #pragma once
-#include <iostream>
-#include <string>
+#include "Dialogs.hpp"
 
 #include "UI/imgui/imgui.h"
 #include "UI/imgui/imgui_internal.h"
@@ -13,16 +12,9 @@ extern std::string SystemVer;
 
 void PushPage(IUIControlObj* page);
 void PopPage(IUIControlObj* page);
-void Dialog(const std::string &msg);
 
-//executes a function after the drawing loop is terminated
-void PushFunction(const std::function<void()>& fun);
-
-//These functions can only be called during the update function as they need to draw outside of the main loop
+//This function can only be called during the update function as they need to draw outside of the main loop
 void PushPageBlocking(IUIControlObj* page);
-void DialogBlocking(const std::string &msg);
-void DisplayLoading(const std::string &msg);
-void DisplayLoading(std::initializer_list<std::string> lines);
 
 namespace Utils
 {

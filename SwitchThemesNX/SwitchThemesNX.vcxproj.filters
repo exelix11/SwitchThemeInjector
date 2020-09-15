@@ -257,6 +257,7 @@
     <ClInclude Include="source\SwitchTools\InjectorInstall.hpp">
       <Filter>SwitchTools</Filter>
     </ClInclude>
+    <ClInclude Include="source\Dialogs.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">

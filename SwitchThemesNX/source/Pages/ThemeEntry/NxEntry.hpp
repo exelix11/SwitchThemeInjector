@@ -39,14 +39,16 @@ protected:
 		if (!PatchMng::ExefsCompatAsk(ThemeTargetToFileName[themeInfo.Target]))
 			return false;
 
-		std::string BaseSzs = SD_PREFIX "/themes/systemData/" + ThemeTargetToFileName[themeInfo.Target];
+		std::string BaseSzs = fs::path::SystemDataFolder + ThemeTargetToFileName[themeInfo.Target];
 		if (!fs::Exists(BaseSzs))
 		{
 			try {
-				if (themeInfo.Target == "user" && hactool::ExtractUserPage())
-					goto CONTINUE_INSTALL;
-				if (themeInfo.Target == "psl" && hactool::ExtractPlayerSelectMenu())
-					goto CONTINUE_INSTALL;
+				if (themeInfo.Target == "user")
+					hactool::ExtractUserPage();
+				else if (themeInfo.Target == "psl")
+					hactool::ExtractPlayerSelectMenu();
+				
+				goto CONTINUE_INSTALL;
 			}
 			catch (std::runtime_error& err)
 			{
@@ -75,7 +77,7 @@ protected:
 
 		if (HasCommonLayout || ShouldPatchBGInCommon)
 		{
-			std::string CommonSzs = SD_PREFIX "/themes/systemData/common.szs";
+			std::string CommonSzs = SYSTEMDATA_PATH "common.szs";
 			if (!fs::Exists(CommonSzs))
 			{
 				MissingFileErrorDialog("common.szs");
