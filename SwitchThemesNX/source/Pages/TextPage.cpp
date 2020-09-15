@@ -34,8 +34,9 @@ void TextPage::Update()
 
 CreditsPage::CreditsPage() :
 	creditsText("NXThemes installer by exelix - " + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
-		"\nhttps://github.com/exelix11/SwitchThemeInjector"+
-		"\nhttps://ko-fi.com/exelix11\n\n")
+		"\nCommit: " GITVER +
+		"\nSource: github.com/exelix11/SwitchThemeInjector"+
+		"\nDonations: ko-fi.com/exelix11\n\n")
 {
 	Name = "Credits";
 }
