@@ -34,9 +34,7 @@ namespace fs::path
 
 	std::string GetFreeDownloadFolder();
 
-#ifdef __SWITCH__
 	std::string Nca(u64 contentID);
-#endif
 
 	const std::string Atmosphere = SD_PREFIX ATMOS_DIR;
 	const std::string Reinx = SD_PREFIX REINX_DIR;

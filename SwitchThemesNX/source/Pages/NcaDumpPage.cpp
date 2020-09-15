@@ -40,8 +40,8 @@ void NcaDumpPage::Render(int X, int Y)
 			fs::RemoveSystemDataDir();
 			try
 			{				
-				if (hactool::ExtractHomeMenu())
-					Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
+				hactool::ExtractHomeMenu();
+				Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
 			}
 			catch (std::runtime_error &err)
 			{

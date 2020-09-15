@@ -49,9 +49,9 @@ std::string fs::path::GetFreeDownloadFolder()
 	return "";
 }
 
-#ifdef __SWITCH__
 string fs::path::Nca(u64 id)
 {
+#ifdef __SWITCH__
 	char path[FS_MAX_PATH] = { 0 };
 	auto rc = lrInitialize();
 	if (R_FAILED(rc))
@@ -69,8 +69,10 @@ string fs::path::Nca(u64 id)
 	std::string result(path);
 	result.erase(0, ((std::string)"@SystemContent://").length());
 	return (std::string)"System:/Contents/" + result;
-}
+#else
+	return "";
 #endif
+}
 
 static string &replaceWindowsPathChar(string& str)
 {

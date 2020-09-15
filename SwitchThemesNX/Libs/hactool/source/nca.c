@@ -988,6 +988,40 @@ static void nca_save_pfs0_file(nca_section_ctx_t *ctx, uint32_t i, filepath_t *d
     nca_save_section_file(ctx, ofs, cur_file->size, &filepath);
 }
 
+static uint8_t* nca_copy_pfs0_file(nca_section_ctx_t *ctx, const char* file_name, uint64_t *size) {
+    for (uint32_t i = 0; i < ctx->pfs0_ctx.header->num_files; i++)
+    {
+        if (strcmp(pfs0_get_file_name(ctx->pfs0_ctx.header, i), file_name))
+            continue;
+
+        pfs0_file_entry_t *cur_file = pfs0_get_file_entry(ctx->pfs0_ctx.header, i);
+        if (cur_file->size >= ctx->size) {
+            fprintf(stderr, "File %"PRId32" too big in PFS0 (section %"PRId32")!\n", i, ctx->section_num);
+            exit(EXIT_FAILURE);
+        }
+
+        uint8_t* result = malloc(cur_file->size);
+        if (!result) {
+            fprintf(stderr, "Couldn't allocate buffer of size %"PRIu64"s\n", cur_file->size);        
+            return NULL;
+        }
+
+        uint64_t ofs = ctx->pfs0_ctx.superblock->pfs0_offset + pfs0_get_header_size(ctx->pfs0_ctx.header) + cur_file->offset;
+        nca_section_fseek(ctx, ofs);
+        if (nca_section_fread(ctx, result, cur_file->size) != cur_file->size) {
+            fprintf(stderr, "Failed to read file!\n");
+            exit(EXIT_FAILURE);
+        }
+
+        if (size)
+            *size = cur_file->size;
+
+        return result;
+    }
+
+    fprintf(stderr, "Couldn't find file named %s\n", file_name);
+    return NULL;
+}
 
 void nca_process_pfs0_section(nca_section_ctx_t *ctx) {
     pfs0_superblock_t *sb = ctx->pfs0_ctx.superblock;
@@ -1487,6 +1521,12 @@ void nca_save_section(nca_section_ctx_t *ctx) {
 
 void nca_save_pfs0_section(nca_section_ctx_t *ctx) {
     if (ctx->superblock_hash_validity == VALIDITY_VALID && ctx->pfs0_ctx.header->magic == MAGIC_PFS0) {
+        /* Extract single file to buffer */
+        if (ctx->pfs0_ctx.is_exefs && ctx->tool_ctx->settings.exefs_main_out)
+        {
+            ctx->tool_ctx->settings.exefs_main_out->data = nca_copy_pfs0_file(ctx, "main", &ctx->tool_ctx->settings.exefs_main_out->size);
+        }
+        
         /* Extract to directory. */
         filepath_t *dirpath = NULL;
         if (ctx->pfs0_ctx.is_exefs && ctx->tool_ctx->settings.exefs_dir_path.enabled) {
@@ -1512,7 +1552,7 @@ void nca_save_pfs0_section(nca_section_ctx_t *ctx) {
             for (uint32_t i = 0; i < ctx->pfs0_ctx.header->num_files; i++) {
                 nca_save_pfs0_file(ctx, i, dirpath);
             }
-        }
+        }        
     } else {
         fprintf(stderr, "Error: section %"PRId32" is corrupted!\n", ctx->section_num);
         return;

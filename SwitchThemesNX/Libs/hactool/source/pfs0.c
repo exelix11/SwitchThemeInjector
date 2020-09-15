@@ -90,8 +90,43 @@ static void pfs0_save_file(pfs0_ctx_t *ctx, uint32_t i, filepath_t *dirpath) {
     save_file_section(ctx->file, ofs, cur_file->size, &filepath);
 }
 
+static uint8_t* pfs0_copy_file(pfs0_ctx_t *ctx, const char* file_name, uint64_t *size) {
+    for (uint32_t i = 0; i < ctx->header->num_files; i++) {
+        if (strcmp(pfs0_get_file_name(ctx->header, i), file_name))
+            continue;
+
+        pfs0_file_entry_t *cur_file = pfs0_get_file_entry(ctx->header, i);
+
+        uint8_t* result = malloc(cur_file->size);
+        if (!result) {
+            fprintf(stderr, "Couldn't allocate buffer of size %"PRIu64"s\n", cur_file->size);        
+            return NULL;
+        }
+
+        uint64_t ofs = pfs0_get_header_size(ctx->header) + cur_file->offset;
+        fseeko64(ctx->file, ofs, SEEK_SET);
+        if (fread(result, 1, cur_file->size, ctx->file) != cur_file->size) {
+            fprintf(stderr, "Failed to read file!\n");
+            exit(EXIT_FAILURE);
+        }
+
+        if (size)
+            *size = cur_file->size;
+
+        return result;
+    }   
+
+    fprintf(stderr, "Couldn't find file named %s\n", file_name);
+    return NULL; 
+}
 
 void pfs0_save(pfs0_ctx_t *ctx) {
+    /* Extract single file to buffer */
+    if (ctx->is_exefs && ctx->tool_ctx->settings.exefs_main_out)
+    {
+        ctx->tool_ctx->settings.exefs_main_out->data = pfs0_copy_file(ctx, "main", &ctx->tool_ctx->settings.exefs_main_out->size);
+    }
+
     /* Extract to directory. */
     filepath_t *dirpath = NULL;
     if (ctx->is_exefs && ctx->tool_ctx->settings.exefs_dir_path.enabled) {

@@ -344,22 +344,23 @@ int main(int argc, char **argv)
 	NcaDumpPage::CheckHomeMenuVer();
 	SetCfwFolder();
 
-	const char* PatchErrorMsg = PatchMng::EnsureInstalled();
+	auto PatchErrorMsg = PatchMng::EnsureInstalled();
 	if (!PatchErrorMsg && UseLowMemory) // if patches are fine, check if applet mode
-		PatchErrorMsg = "You're running in applet mode, when launching homebrew from album they have less memory available.\n\nThis app should work fine but in case you encounter crashes try launching via title takeover by opening a game from the home menu and pressing R at the same time.";
+	{
+		PatchErrorMsg.Title = "Warning";
+		PatchErrorMsg.Content = "You're running in applet mode, when launching homebrew from album they have less memory available.\n\nThis app should work fine but in case you encounter crashes try launching via title takeover by opening a game from the home menu and pressing R at the same time.";
+	}
 
 	if (envHasArgv() && argc > 1)
 	{
 		auto paths = GetArgsInstallList(argc,argv);
-		if (paths.size() == 0)
-			goto APP_QUIT;
-
-		PushPage(new ExternalInstallPage(paths));	
-		MainLoop();
-		
-		goto APP_QUIT;
+		if (paths.size() != 0)
+		{
+			PushPage(new ExternalInstallPage(paths));
+			MainLoop();
+		}
 	}	
-
+	else
 	{
 		TabRenderer *t = new TabRenderer();
 		PushPage(t);
@@ -370,7 +371,7 @@ int main(int argc, char **argv)
 		TextPage* PatchFailedWarning = nullptr;
 		if (PatchErrorMsg)
 		{
-			PatchFailedWarning = new TextPage("Warning", PatchErrorMsg);
+			PatchFailedWarning = new TextPage(PatchErrorMsg.Title, PatchErrorMsg.Content);
 			t->AddPage(PatchFailedWarning);
 		}
 
@@ -403,8 +404,6 @@ int main(int argc, char **argv)
 		delete credits;
 		delete q;
 	}
-	
-APP_QUIT:
 
 	while (Pages.size() != 0)
 	{
