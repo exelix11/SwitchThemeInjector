@@ -41,6 +41,8 @@ ROMFS	:=	romfs
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
 APP_VERSION := 2.5
+
+GITVER ?= Unknown
 #---------------------------------------------------------------------------------
 # options for code generation
 #---------------------------------------------------------------------------------
@@ -49,7 +51,7 @@ ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror -DGITVER=\"$(GITVER)\"
 
 CXXFLAGS	:= $(CFLAGS) -std=gnu++17
 
@@ -155,16 +157,23 @@ ifneq ($(ROMFS),)
 	export NROFLAGS += --romfsdir=$(CURDIR)/$(ROMFS)
 endif
 
-.PHONY: $(BUILD) clean all
-
+.PHONY: $(BUILD) clean libs cleanlibs cleanall all 
+.DEFAULT_GOAL := $(BUILD)
 #---------------------------------------------------------------------------------
-all: $(BUILD)
+all: libs $(BUILD)
 
-$(BUILD):
+libs:
+	$(MAKE) -C $(CURDIR)/Libs
+
+$(BUILD):	
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
+
 #---------------------------------------------------------------------------------
+cleanlibs:
+	$(MAKE) -C $(CURDIR)/Libs clean
+
 clean:
 	@echo clean ...
 ifeq ($(strip $(APP_JSON)),)
@@ -173,6 +182,7 @@ else
 	@rm -fr $(BUILD) $(TARGET).nsp $(TARGET).nso $(TARGET).npdm $(TARGET).elf
 endif
 
+cleanall: cleanlibs clean
 
 #---------------------------------------------------------------------------------
 else
