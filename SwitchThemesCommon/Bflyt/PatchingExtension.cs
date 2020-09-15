@@ -32,6 +32,11 @@ namespace SwitchThemes.Common.Bflyt
 			{
 				var p = Patches[i];
 				var e = f[Patches[i].PaneName] as Pan1Pane;
+				
+				// The layout patching has been made less strict to allow some 8.x layouts to work on lower firmwares, not sure if this is a good idea in the layout editor as a way to detect layout incompatibilities may be desiderable.
+				if (e == null)
+					continue;
+
 				if (p.Visible != null)
 					e.Visible = p.Visible.Value;
 				#region ChangeTransform
