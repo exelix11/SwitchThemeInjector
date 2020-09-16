@@ -35,6 +35,9 @@ static inline float StickAsButton(int index)
 
 void PlatformInit();
 void PlatformExit();
+
+void PlatformReboot();
+
 void PlatformAfterInit();
 void PlatformGetInputs();
 void PlatformImguiBinds();

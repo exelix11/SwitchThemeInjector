@@ -164,9 +164,6 @@
     </ClInclude>
     <ClInclude Include="source\fs.hpp" />
     <ClInclude Include="source\ViewFunctions.hpp" />
-    <ClInclude Include="source\SwitchTools\PayloadReboot.hpp">
-      <Filter>SwitchTools</Filter>
-    </ClInclude>
     <ClInclude Include="source\SwitchTools\hactool.hpp">
       <Filter>SwitchTools</Filter>
     </ClInclude>
@@ -363,9 +360,6 @@
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\UI\UI.cpp">
       <Filter>UI</Filter>
-    </ClCompile>
-    <ClCompile Include="source\SwitchTools\PayloadReboot.cpp">
-      <Filter>SwitchTools</Filter>
     </ClCompile>
     <ClCompile Include="source\SwitchTools\hactool.cpp">
       <Filter>SwitchTools</Filter>

@@ -63,7 +63,6 @@
     <ClInclude Include="source\SwitchTools\hactool.hpp" />
     <ClInclude Include="source\SwitchTools\InjectorInstall.hpp" />
     <ClInclude Include="source\SwitchTools\PatchMng.hpp" />
-    <ClInclude Include="source\SwitchTools\PayloadReboot.hpp" />
     <ClInclude Include="source\UI\DialogPages.hpp" />
     <ClInclude Include="source\UI\glad.h" />
     <ClInclude Include="source\UI\imgui\imconfig.h" />
@@ -123,7 +122,6 @@
     <ClCompile Include="source\SwitchTools\hactool.cpp" />
     <ClCompile Include="source\SwitchTools\InjectorInstall.cpp" />
     <ClCompile Include="source\SwitchTools\PatchMng.cpp" />
-    <ClCompile Include="source\SwitchTools\PayloadReboot.cpp" />
     <ClCompile Include="source\UI\DialogPages.cpp" />
     <ClCompile Include="source\UI\glad.c" />
     <ClCompile Include="source\UI\imgui\imgui.cpp" />

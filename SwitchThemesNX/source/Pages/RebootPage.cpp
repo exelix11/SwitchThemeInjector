@@ -5,40 +5,16 @@
 #include "../SwitchThemesCommon/SwitchThemesCommon.hpp"
 #include "../UI/UI.hpp"
 #include "../fs.hpp"
-#include "../SwitchTools/PayloadReboot.hpp"
 
 #include "../Platform/Platform.hpp"
 #include "../ViewFunctions.hpp"
-
-const u32 YELLOW_WARN = 0xffce0aff;
-const u32 RED_ERROR = 0xff3419ff;
 
 class RebootPage : public IPage
 {
 	public:
 		RebootPage()
 		{
-			Name = "Reboot to payload";
-			
-			auto v = fs::cfw::SearchFolders();
-			bool hasAtmos = false;
-			if (std::find(v.begin(), v.end(), SD_PREFIX ATMOS_DIR ) != v.end())
-			{
-				ShowError = false;
-				hasAtmos = true;
-			}
-						
-			if (!hasAtmos) return;			
-			
-			if (!PayloadReboot::Init())
-			{				
-				ShowError = true;
-				return;
-			}
-			else CanReboot = true;
-			
-			if (hasAtmos && v.size() != 1)
-				ShowWarning = true;
+			Name = "Reboot";
 		}
 		
 		void Render(int X, int Y) 
@@ -47,42 +23,21 @@ class RebootPage : public IPage
 			ImGui::PushFont(font30);
 			ImGui::SetCursorPos({ 5, 10 });
 
-			ImGui::TextWrapped("Reboot to payload allows you to reboot your console without having to inject a payload again. Currently it's supported only on atmosphere.");
-			if (ShowError)
+			ImGui::TextUnformatted("Rebooting your console will apply the changes you made.");
+			ImGui::TextWrapped("This is a shortcut to the system's reboot button. If your CFW doesn't provide reboot to payload you will need a way to inject a payload from RCM.");
+			if (ImGui::Button("Reboot"))
 			{
-				ImGui::PushStyleColor(ImGuiCol_Text, RED_ERROR);
-				ImGui::TextWrapped("This feature isn't available with your current setup, you need to use Atmosphere >= 0.8.3 and the reboot payload placed in your sd card at /atmosphere/reboot_payload.bin");
-				ImGui::PopStyleColor();
+				PlatformReboot();
 			}
-			if (ShowWarning)
-			{
-				ImGui::PushStyleColor(ImGuiCol_Text, YELLOW_WARN);
-				ImGui::TextWrapped("Reboot to payload is properly setup but multiple CFWs were detected on your sd card, this may not work if you're not running atmosphere ");
-				ImGui::PopStyleColor();
-			}
-			if (CanReboot)
-			{
-				if (ImGui::Button("Reboot"))
-				{
-					PayloadReboot::Reboot();
-				}
-				PAGE_RESET_FOCUS;
-			}
+			PAGE_RESET_FOCUS;
+			
 			ImGui::PopFont();
 			Utils::ImGuiCloseWin();
 		}
 		
 		void Update() override
 		{
-			if (!CanReboot)
-				Parent->PageLeaveFocus(this);			
-			
-			else if (Utils::PageLeaveFocusInput()){
+			if (Utils::PageLeaveFocusInput())
 				Parent->PageLeaveFocus(this);
-			}
 		}
-	private:
-		bool CanReboot = false;
-		bool ShowError = true;
-		bool ShowWarning = false;
 };

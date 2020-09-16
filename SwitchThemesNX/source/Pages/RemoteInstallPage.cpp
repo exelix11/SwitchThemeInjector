@@ -1,6 +1,5 @@
 #include "RemoteInstallPage.hpp"
 #include "../ViewFunctions.hpp"
-#include "../SwitchTools/PayloadReboot.hpp"
 #include <numeric>
 #include "RemoteInstall/API.hpp"
 #include "../SwitchThemesCommon/Layouts/json.hpp"
@@ -104,12 +103,7 @@ void RemoteInstallPage::Render(int X, int Y)
 				RemoteInstallFile = nullptr;
 
 				if (AutoInstall)
-				{
-					if (PayloadReboot::Init())
-						PayloadReboot::Reboot();
-					else
-						Dialog("Couldn't initialize reboot to payload !");
-				}
+					PlatformReboot();
 			});
 		if (ImGui::IsWindowFocused())
 			Utils::ImGuiSelectItem();
