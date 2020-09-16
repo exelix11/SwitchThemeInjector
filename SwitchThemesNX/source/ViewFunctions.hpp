@@ -11,7 +11,7 @@
 #define GITVER "Unknown version"
 #endif
 
-const std::string VersionString = "Ver. 2.5";
+const std::string VersionString = "Ver. 2.5.1";
 extern std::string SystemVer;
 
 void PushPage(IUIControlObj* page);
