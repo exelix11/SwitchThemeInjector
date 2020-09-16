@@ -40,7 +40,7 @@ ROMFS	:=	romfs
 
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
-APP_VERSION := 2.5
+APP_VERSION := 2.5.1
 
 GITVER ?= Unknown
 #---------------------------------------------------------------------------------
