@@ -2,7 +2,6 @@
 #include "../ViewFunctions.hpp"
 #include "ThemeEntry/ThemeEntry.hpp"
 #include "CfwSelectPage.hpp"
-#include "../SwitchTools/PayloadReboot.hpp"
 #include "../UI/UIManagement.hpp"
 
 using namespace std;
@@ -44,19 +43,7 @@ void ExternalInstallPage::Render(int X, int Y)
 		}
 		if (res == 1)
 		{
-			if (PayloadReboot::Init())
-			{
-				PayloadReboot::Reboot();
-			}
-			else
-			{
-#if __SWITCH__
-				bpcInitialize();
-				bpcRebootSystem();
-#else
-				App::Quit();
-#endif
-			}
+			PlatformReboot();
 		}
     }
 	else

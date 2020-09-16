@@ -104,4 +104,10 @@ const char* PlatformTextInput(const char* current)
 	swkbdClose(&kbd);
 	return InputBuffer;
 }
+
+void PlatformReboot() 
+{
+	bpcInitialize();
+	bpcRebootSystem();
+}
 #endif

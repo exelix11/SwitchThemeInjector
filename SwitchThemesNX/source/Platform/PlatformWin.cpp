@@ -90,4 +90,9 @@ const char* PlatformTextInput(const char* current)
 {
 	return FixedInput;
 }
+
+void PlatformReboot()
+{
+	PlatformExit();
+}
 #endif
