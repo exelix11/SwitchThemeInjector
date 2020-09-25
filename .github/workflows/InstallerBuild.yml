@@ -1,0 +1,26 @@
+name: InstallerBuild
+on:
+  push:
+    branches: [ master, githubCI ]
+    paths:
+      - SwitchThemesNX/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - SwitchThemesNX/**
+jobs:
+  InstallerBuild:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+    steps:
+    - name: Checkout master branch
+      run: git clone --recursive https://github.com/exelix11/SwitchThemeInjector.git $GITHUB_WORKSPACE
+
+    - name: Launch build script
+      run: |
+        cd $GITHUB_WORKSPACE/SwitchThemesNX/
+        scripts/cibuild.sh -j4
+    - uses: actions/upload-artifact@master
+      with:
+        name: Built
+        path: Built.7z
