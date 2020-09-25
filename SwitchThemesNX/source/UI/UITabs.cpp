@@ -1,5 +1,6 @@
 #include "UI.hpp"
 #include "../ViewFunctions.hpp"
+#include "../Version.hpp"
 #include "../Platform/Platform.hpp"
 
 using namespace std;
@@ -107,7 +108,7 @@ void TabRenderer::Render(int X, int Y)
 }
 
 TabRenderer::TabRenderer() :
-Title("NXThemes Installer " + VersionString)
+Title("NXThemes Installer " + Version::Name)
 {
 	CurrentControl = nullptr;
 }
