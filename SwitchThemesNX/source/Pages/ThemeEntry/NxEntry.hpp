@@ -3,7 +3,7 @@
 #include "../../SwitchTools/PatchMng.hpp"
 #include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../SettingsPage.hpp"
-#include "../../SwitchThemesCommon/Bntx/DDSconv/DDSConv.hpp"
+#include "../../SwitchThemesCommon/Bntx/DDSConv/DDSConv.hpp"
 #include "../../SwitchTools/hactool.hpp"
 
 class NxEntry : public ThemeEntry
