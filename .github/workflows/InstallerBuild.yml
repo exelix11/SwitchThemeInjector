@@ -1,7 +1,9 @@
 name: NXThemesInstaller
 on:
   push:
-    branches: [ master, githubCI ]
+    branches: [ master ]
+    paths:
+      - SwitchThemesNX/**
   pull_request:
     branches: [ master ]
     paths:
