@@ -1,4 +1,4 @@
-name: InstallerBuild
+name: NXThemesInstaller
 on:
   push:
     branches: [ master, githubCI ]
@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     container: devkitpro/devkita64:latest
     steps:
-    - name: Checkout master branch
-      run: git clone --recursive https://github.com/exelix11/SwitchThemeInjector.git $GITHUB_WORKSPACE
+    - name: Check out repository
+        uses: actions/checkout@v2
 
     - name: Launch build script
       run: |
