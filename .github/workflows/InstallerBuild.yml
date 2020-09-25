@@ -15,7 +15,6 @@ jobs:
     steps:
     - name: Check out repository
         uses: actions/checkout@v2
-
     - name: Launch build script
       run: |
         cd $GITHUB_WORKSPACE/SwitchThemesNX/
