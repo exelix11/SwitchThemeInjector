@@ -15,6 +15,7 @@ jobs:
     - name: Launch build script
       run: |
         cd $GITHUB_WORKSPACE/SwitchThemesNX/
+        chmod +x scripts/cibuild.sh
         scripts/cibuild.sh -j4
     - uses: actions/upload-artifact@master
       with:
