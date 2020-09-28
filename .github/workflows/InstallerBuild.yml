@@ -1,7 +1,7 @@
 name: NXThemesInstaller
 on:
   push:
-    branches: [ master ]
+    branches: [ master, githubCI ]
     paths:
       - SwitchThemesNX/**
   pull_request:
@@ -21,7 +21,9 @@ jobs:
         cd $GITHUB_WORKSPACE/SwitchThemesNX/
         chmod +x scripts/cibuild.sh
         scripts/cibuild.sh -j4
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v2
       with:
-        name: Built
-        path: ${{ github.workspace }}/SwitchThemesNX/Built.7z
+        name: InstallerBuild
+        path: |
+          ${{ github.workspace }}/SwitchThemesNX/SwitchThemesNX.elf
+          ${{ github.workspace }}/SwitchThemesNX/SwitchThemesNX.nro
