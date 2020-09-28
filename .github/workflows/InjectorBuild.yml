@@ -16,10 +16,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build project
       run: |
-        cd $GITHUB_WORKSPACE\SwitchThemes\
+        cd %GITHUB_WORKSPACE%\SwitchThemes\
         msbuild -p:Configuration=CIRelease
         del bin\CIRelease\*.xml
         7z a -t7z Injector.7z .\bin\CIRelease\*
+      shell: cmd
     - uses: actions/upload-artifact@master
       with:
         name: Built
