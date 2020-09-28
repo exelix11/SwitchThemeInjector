@@ -14,10 +14,16 @@ jobs:
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v1.0.1
     - uses: actions/checkout@v2
+    - name: Restore packages
+      run: |
+        cd %GITHUB_WORKSPACE%
+        mkdir packages
+        cd packages
+        nuget install %GITHUB_WORKSPACE%\SwitchThemes\packages.config
+      shell: cmd
     - name: Build project
       run: |
         cd %GITHUB_WORKSPACE%\SwitchThemes\
-        msbuild -t:restore
         msbuild -p:Configuration=CIRelease
         del bin\CIRelease\*.xml
         7z a -t7z Injector.7z .\bin\CIRelease\*
