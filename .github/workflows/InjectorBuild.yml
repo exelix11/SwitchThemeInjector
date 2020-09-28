@@ -13,9 +13,10 @@ jobs:
     steps:
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v1.0.1
+    - uses: actions/checkout@v2
     - name: Build project
       run: |
-        cd SwitchThemes
+        cd $GITHUB_WORKSPACE\SwitchThemes\
         msbuild -p:Configuration=CIRelease
         del bin\CIRelease\*.xml
         7z a -t7z Injector.7z .\bin\CIRelease\*
