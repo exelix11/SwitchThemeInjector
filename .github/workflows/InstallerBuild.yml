@@ -21,9 +21,13 @@ jobs:
         cd $GITHUB_WORKSPACE/SwitchThemesNX/
         chmod +x scripts/cibuild.sh
         scripts/cibuild.sh -j4
+    - name: Package artifacts
+      run: |
+        cd $GITHUB_WORKSPACE/SwitchThemesNX/
+        7z a -y -mx=7 SwitchThemesNX.elf.7z SwitchThemesNX.elf
+        mkdir artifacts
+        mv SwitchThemesNX.nro SwitchThemesNX.elf.7z artifacts/
     - uses: actions/upload-artifact@v2
       with:
         name: InstallerBuild
-        path: |
-          ${{ github.workspace }}/SwitchThemesNX/SwitchThemesNX.elf
-          ${{ github.workspace }}/SwitchThemesNX/SwitchThemesNX.nro
+        path: ${{ github.workspace }}/SwitchThemesNX/artifacts/
