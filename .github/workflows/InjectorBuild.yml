@@ -26,9 +26,8 @@ jobs:
         cd %GITHUB_WORKSPACE%\SwitchThemes\
         msbuild -p:Configuration=CIRelease
         del bin\CIRelease\*.xml
-        7z a -t7z Injector.7z .\bin\CIRelease\*
       shell: cmd
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v2
       with:
-        name: Built
-        path: ${{ github.workspace }}/SwitchThemes/Injector.7z
+        name: InstallerBuild
+        path: ${{ github.workspace }}/SwitchThemes/bin/CIRelease/
