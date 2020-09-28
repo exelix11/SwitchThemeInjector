@@ -2,6 +2,7 @@ name: SwitchThemes
 on:
   push:
     branches: [ master, githubCI ]
+    paths:
       - SwitchThemesCommon/**
       - SwitchThemes/**
   pull_request:
