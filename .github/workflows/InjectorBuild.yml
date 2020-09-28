@@ -2,6 +2,8 @@ name: SwitchThemes
 on:
   push:
     branches: [ master, githubCI ]
+      - SwitchThemesCommon/**
+      - SwitchThemes/**
   pull_request:
     branches: [ master ]
     paths:
@@ -29,5 +31,5 @@ jobs:
       shell: cmd
     - uses: actions/upload-artifact@v2
       with:
-        name: InstallerBuild
+        name: InjectorBuild
         path: ${{ github.workspace }}/SwitchThemes/bin/CIRelease/
