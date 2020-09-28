@@ -1,0 +1,25 @@
+name: SwitchThemes
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    paths:
+      - SwitchThemesCommon/**
+      - SwitchThemes/**
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1.0.1
+    - name: Build project
+      run: |
+        cd SwitchThemes
+        msbuild -p:Configuration=CIRelease
+        del bin\CIRelease\*.xml
+        7z a -t7z Injector.7z .\bin\CIRelease\*
+    - uses: actions/upload-artifact@master
+      with:
+        name: Built
+        path: ${{ github.workspace }}/SwitchThemes/Injector.7z
