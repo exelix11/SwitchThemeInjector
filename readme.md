@@ -14,9 +14,11 @@ The Switch theme injector project is split into three parts:
 
 The main objective is to develop a complete toolset to create and install custom themes on the switch. As the console os doesn't implement custom themes natively most of this is done by patching system SZS files to get the desidered aspect.\
 \
-Unfortunately SZS files from the switch os contain copyrighted data so to make theme sharing legal the **nxtheme format** has been developed, it's 100% legal and works on every firmware >= 5.0, unless you're dealing with making your own patches and custom layouts you should only use nxtheme files.
+Unfortunately SZS files from the switch os contain copyrighted data and can't be shared online that's why the **nxtheme format** has been developed, it contains only differential info and can be freely shared. Unless you're dealing with making your own patches and custom layouts you should only use nxtheme files.
 
 # Getting started
+To use custom themes you need an hacked switch that's at least on firmware 5.0
+
 ## Installing themes
 This is the most common scenario, you just need the theme installer homebrew. \
 Make a folder called `themes` in the root of your sd card and copy your themes in either nxtheme or szs format in it. Then launch the theme installer and you should be able to select and install them. \
@@ -33,7 +35,7 @@ When a new firmware comes out **before upgrading (or downgrading) remember to un
 ## Making themes
 To make themes you need either the Theme injector application or the web version.
 ### Format differences
-In the past themes have been distributed as szs files, this is now not supported anymore as these szs files also contain copyrighted data, now you should only use the **nxtheme** format.
+In the past themes have been distributed as szs files, this is not supported anymore as these szs files also contain copyrighted data, now you should only use the **nxtheme** format.
 ### Making an nxtheme
 Open the injector and go to the NXThemes builder tab, open any **720p JPG image** (1280x720 pixels), select a custom layout and click on build nxtheme.
 
