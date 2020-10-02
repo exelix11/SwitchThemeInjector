@@ -7,8 +7,8 @@
 
 SystemVersion HOSVer = { 0,0,0 };
 
-std::unordered_map<std::string,std::string> ThemeTargetToName {};
-std::unordered_map<std::string,std::string> ThemeTargetToFileName {};
+std::unordered_map<std::string,std::string> ThemeTargetToName = ThemeTargetToName6X;
+std::unordered_map<std::string,std::string> ThemeTargetToFileName = ThemeTargetToFileName6X;
 
 using namespace std;
 using json = nlohmann::json;
