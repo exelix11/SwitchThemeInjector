@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Compression.cpp" />
+    <ClCompile Include="SyntheticTests.cpp" />
+    <ClCompile Include="RealTests.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Sarc.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Yaz0.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesCommon.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\DDSConv.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflan.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="picosha2.h" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Sarc.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Yaz0.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\MyTypes.h">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesCommon.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\DDSConv.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\stb_dxt.h">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Base64.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflan.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BasePane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Grp1Pane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Pan1Pane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Pic1Pane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\json.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Patches.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="SwitchThemesCommon">
+      <UniqueIdentifier>{35922621-d0a5-4bd8-9334-09ca22041550}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Util.hpp" />
+  </ItemGroup>
+</Project>

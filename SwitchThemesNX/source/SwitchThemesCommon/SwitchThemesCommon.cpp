@@ -109,6 +109,19 @@ bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
 	return true;
 }
 
+// TODO
+bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
+{
+	auto szs = DetectSarc().szsName;
+
+	auto t = std::find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(), [&szs](const auto &e)
+	{
+		return e.second == szs;
+	});
+
+	return PatchLayouts(patch, t->first);
+}
+
 bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
