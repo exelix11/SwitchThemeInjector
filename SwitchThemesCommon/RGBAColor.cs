@@ -60,7 +60,7 @@ namespace SwitchThemes.Common
 	[TypeConverter(typeof(ArgbConverter))]
 	[Editor(typeof(RGBAEditor),typeof(System.Drawing.Design.UITypeEditor))]
 #endif
-	public class RGBAColor : IEquatable<RGBAColor>
+	public struct RGBAColor : IEquatable<RGBAColor>
 	{
 		public byte R, G, B, A;
 		public RGBAColor(byte r, byte g, byte b, byte a = 255)
@@ -82,7 +82,10 @@ namespace SwitchThemes.Common
 #if LYTEDITOR
 		public RGBAColor(System.Drawing.Color c)
 		{
-			Color = c;
+			R = c.R;
+			G = c.G;
+			B = c.B;
+			A = c.A;
 		}
 
 		public System.Drawing.Color Color {
@@ -119,7 +122,10 @@ namespace SwitchThemes.Common
 			if (obj is System.Drawing.Color)
 				return (System.Drawing.Color)obj == Color;
 #endif
-			return Equals(obj as RGBAColor);
+			if (obj is RGBAColor)
+				return Equals((RGBAColor)obj);
+
+			return false;
 		}
 
 		public bool Equals(RGBAColor other)
