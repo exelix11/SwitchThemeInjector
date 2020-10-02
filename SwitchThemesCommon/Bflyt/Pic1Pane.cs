@@ -29,7 +29,18 @@ namespace SwitchThemes.Common.Bflyt
 		}
 		public UVCoord[] UVCoords { get; set; }
 
-		public Pic1Pane(ByteOrder b) : base("pic1",b, 0x68) {	}
+		public Pic1Pane(ByteOrder b) : base("pic1", b, 0x68) { }
+
+		protected override void InitializeNewPane()
+		{
+			base.InitializeNewPane();
+			UVCoords = new UVCoord[] { new UVCoord {
+				TopLeft = (0,0),
+				TopRight = (1,0),
+				BottomLeft = (0,1),
+				BottomRight = (1,1)
+			} };
+		}
 
 		public Pic1Pane(byte[] data, ByteOrder b) : base(data,"pic1",b)
 		{

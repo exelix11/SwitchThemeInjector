@@ -128,12 +128,23 @@ namespace Syroot.BinaryData
         // ---- METHODS (PUBLIC) ---------------------------------------------------------------------------------------
 
         /// <summary>
-        /// Aligns the reader to the next given byte multiple.
+        /// Aligns the reader to the next given byte multiple, uses seek.
         /// </summary>
         /// <param name="alignment">The byte multiple.</param>
         public void Align(int alignment)
         {
             Seek((-Position % alignment + alignment) % alignment);
+        }
+
+        /// <summary>
+        /// Aligns the reader to the next given byte multiple by writing the provided value.
+        /// </summary>
+        /// <param name="alignment">The byte multiple.</param>
+        /// <param name="value">The value to write.</param>
+        public void WriteAlign(int alignment, byte value = 0)
+        {
+            while ((Position % alignment) != 0)
+                Write(value);
         }
 
         /// <summary>

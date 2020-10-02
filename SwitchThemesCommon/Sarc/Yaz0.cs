@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections;
 namespace SwitchThemes.Common
 {
-	partial class ManagedYaz0
+	static class ManagedYaz0
 	{
 		public static byte[] Compress(string FileName, int level = 3, int res1 = 0, int res2 = 0) => Compress(File.ReadAllBytes(FileName), level, res1, res2);
 		public static byte[] Compress(byte[] Data, int level = 3, int reserved1 = 0, int reserved2 = 0)

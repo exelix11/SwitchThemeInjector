@@ -205,18 +205,23 @@ namespace SwitchThemes.Common.Bflyt
 			}
 		}
 
-		//public uint[] ColorData = null; //only for pic1 panes
+		protected override void InitializeNewPane()
+		{
+			base.InitializeNewPane();
+			Visible = true;
+		}
 
-		public Pan1Pane(string paneName, ByteOrder b, int size = 0x54) : base(paneName, size)
+		public Pan1Pane(string paneName, ByteOrder b, int size = 0x54) : base(paneName)
 		{
 			order = b;
 			PaneName = "new pane";
+			data = new byte[size];
+
 			MemoryStream mem = new MemoryStream();
 			BinaryDataWriter dataWriter = new BinaryDataWriter(mem);
 			dataWriter.ByteOrder = b;
 			ApplyChanges(dataWriter);
 			data = mem.ToArray();
-			Visible = true;
 		}
 
 		public Pan1Pane(byte[] data, string name, ByteOrder b) : base(name, data)
