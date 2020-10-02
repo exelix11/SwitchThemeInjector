@@ -70,6 +70,13 @@ namespace SwitchThemes.Common.Bflyt
 
 			public byte[] GetData() => data;
 
+			// New pane constructor
+			public BasePane(string _name)
+			{
+				name = _name;
+				InitializeNewPane();
+			}
+
 			public BasePane(string _name, int len)
 			{
 				name = _name;
@@ -122,6 +129,8 @@ namespace SwitchThemes.Common.Bflyt
 					res.UserData = (Usd1Pane)UserData.Clone();
 				return res;
 			}
+
+			protected virtual void InitializeNewPane() { }
 		}
 
 		public class TextureSection : BasePane
