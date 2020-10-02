@@ -68,8 +68,8 @@ namespace SwitchThemes
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Text += " Ver. " + SwitchThemesCommon.CoreVer;
-			materialLabel10.Text = $"Switch Theme Injector Ver {SwitchThemesCommon.CoreVer} by exelix";
+			Text += " Ver. " + Info.CoreVer;
+			materialLabel10.Text = $"Switch Theme Injector Ver {Info.CoreVer} by exelix";
 #if DEBUG
 			lblDebug.Visible = true;
 #endif
@@ -344,7 +344,7 @@ namespace SwitchThemes
 			AllLayoutsBox.Items.Add("Don't patch");
 			foreach (var l in Layouts.Values)
 			{
-				if (l.TargetName == null || l.TargetName.Contains(SwitchThemesCommon.PartToFileName[HomeMenuParts[HomeMenuPartBox.Text]]))
+				if (l.TargetName == null || l.TargetName.Contains(Info.PartToFileName[HomeMenuParts[HomeMenuPartBox.Text]]))
 					AllLayoutsBox.Items.Add(l);
 			}
 			AllLayoutsBox.Items.Add("Open from file...");
@@ -385,9 +385,9 @@ namespace SwitchThemes
 			
 			if (HasImage)
 			{
-				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(BgImage));
-				if (dds.Format != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-				if (dds.width != 1280 || dds.height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+				var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(BgImage));
+				if (dds.Encoding != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+				if (dds.Size.Width != 1280 || dds.Size.Height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}
 
 			SaveFileDialog sav = new SaveFileDialog()
@@ -442,7 +442,7 @@ namespace SwitchThemes
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
 				Patcher.EnableAnimations = !UseAnim.Checked;
-				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch, targetPatch);
+				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch);
 				if (!layoutres)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");

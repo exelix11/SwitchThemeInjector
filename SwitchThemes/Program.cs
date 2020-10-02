@@ -57,7 +57,7 @@ namespace SwitchThemes
 				else if (args[0].ToLower() == "help")
 				{
 					Console.WriteLine(
-						"Switch themes Injector V " + SwitchThemesCommon.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
+						"Switch themes Injector V " + Info.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
 						"Command line usage:\r\n" +
 						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						" instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n" +
@@ -161,9 +161,9 @@ namespace SwitchThemes
 				return false;
 
 			{
-				var dds = DDSEncoder.LoadDDS(File.ReadAllBytes(Image));
-				if (dds.Format != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-				if (dds.width != 1280 || dds.height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
+				var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(Image));
+				if (dds.Encoding != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+				if (dds.Size.Width != 1280 || dds.Size.Height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}
 
 			try
@@ -204,7 +204,7 @@ namespace SwitchThemes
 				{
 					Patcher.EnableAnimations = true;
 					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
-					var layoutres = Patcher.PatchLayouts(l, targetPatch);
+					var layoutres = Patcher.PatchLayouts(l);
 					if (!layoutres)
 					{
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");

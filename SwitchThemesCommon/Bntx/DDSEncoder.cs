@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SwitchThemes.Common.Images;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,48 +8,23 @@ using System.Threading.Tasks;
 namespace SwitchThemes.Common.Bntxx
 {
 	//mostly based on https://github.com/aboood40091/BNTX-Editor
-	public static class DDSEncoder
+	static class DDSEncoder
 	{
-		public class DDSLoadResult
-		{
-			public int width;
-			public int height;
-			public string Format;
-			public int size;
-			public int numMips;
-			public byte[] data;
-		}
-
-		public struct EncoderInfo
-		{
-			public int blkHeight;
-			public int blkWidth;
-			public int bpp;
-			public int formatCode;
-		}
-
-		static readonly Dictionary<string, EncoderInfo> EncoderTable = new Dictionary<string, EncoderInfo>() {
-			{ "DXT1", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 8 , formatCode = 0x1a01 } },
-			{ "DXT3", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1b01 } },
-			{ "DXT4", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
-			{ "DXT5", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
-		};
-
 		public class DDSEncoderResult
 		{
 			public byte[] Data;
-			public EncoderInfo format;
-			public int blockHeightLog2;
+			public DDS.EncoderInfo Encoding;
+			public int BlockHeightLog2;
 		}
 
-		public static DDSEncoderResult EncodeTex(DDSLoadResult img)
+		public static DDSEncoderResult EncodeTex(DDS img)
 		{
 			var numMips = 1;
 			var alignment = 512;
 
-			var fmt = EncoderTable[img.Format];
+			var fmt = DDS.EncoderTable[img.Info.Encoding];
 
-			var blockHeight = Utils.getBlockHeight(Utils.DIV_ROUND_UP(img.height, fmt.blkHeight));
+			var blockHeight = Utils.getBlockHeight(Utils.DIV_ROUND_UP(img.Height, fmt.blkHeight));
 			var blockHeightLog2 = Utils.Log2(blockHeight);
 			var linesPerBlockHeight = blockHeight * 8;
 
@@ -60,11 +36,11 @@ namespace SwitchThemes.Common.Bntxx
 
 			for (int mipLevel = 0; mipLevel < numMips; mipLevel++)
 			{
-				var offSize = getCurrentMipOffset_Size(img.width, img.height, fmt.blkWidth, fmt.blkHeight, fmt.bpp, mipLevel);
+				var offSize = getCurrentMipOffset_Size(img.Width, img.Height, fmt.blkWidth, fmt.blkHeight, fmt.bpp, mipLevel);
 				byte[] data = new byte[offSize.Item2];
-				Array.Copy(img.data, offSize.Item1, data, 0, offSize.Item2);
-				var width_ = Math.Max(1, img.width >> mipLevel);
-				var height_ = Math.Max(1, img.height >> mipLevel);
+				Array.Copy(img.Data, offSize.Item1, data, 0, offSize.Item2);
+				var width_ = Math.Max(1, img.Width >> mipLevel);
+				var height_ = Math.Max(1, img.Height >> mipLevel);
 				var width__ = Utils.DIV_ROUND_UP(width_, fmt.blkWidth);
 				var height__ = Utils.DIV_ROUND_UP(height_, fmt.blkHeight);
 				int dataAlignBytes = Utils.round_up(surfSize, alignment) - surfSize;
@@ -80,54 +56,27 @@ namespace SwitchThemes.Common.Bntxx
 				res.AddRange(Swizzle.swizzle(width_, height_, fmt.blkWidth, fmt.blkHeight, true, fmt.bpp, 0, Math.Max(0, blockHeightLog2 - blockHeightShift), data, true));
 			}
 
-			return new DDSEncoderResult { Data = res.ToArray(), blockHeightLog2 = blockHeightLog2, format = fmt };
+			return new DDSEncoderResult { Data = res.ToArray(), BlockHeightLog2 = blockHeightLog2, Encoding = fmt };
 		}
 
 		static Tuple<int, int> getCurrentMipOffset_Size(int width, int height, int blkWidth, int blkHeight, int bpp, int currLevel)
 		{
 			var offset = 0;
-			var width_ = 0;
-			var height_ = 0;
+			var w = 0;
+			var h = 0;
 
 			for (int mipLevel = 0; mipLevel < currLevel; mipLevel++)
 			{
-				width_ = Utils.DIV_ROUND_UP(Math.Max(1, width >> mipLevel), blkWidth);
-				height_ = Utils.DIV_ROUND_UP(Math.Max(1, height >> mipLevel), blkHeight);
-				offset += width_ * height_ * bpp;
+				w = Utils.DIV_ROUND_UP(Math.Max(1, width >> mipLevel), blkWidth);
+				h = Utils.DIV_ROUND_UP(Math.Max(1, height >> mipLevel), blkHeight);
+				offset += w * h * bpp;
 			}
 
-			width_ = Utils.DIV_ROUND_UP(Math.Max(1, width >> currLevel), blkWidth);
-			height_ = Utils.DIV_ROUND_UP(Math.Max(1, height >> currLevel), blkHeight);
-			var size = width_ * height_ * bpp;
+			w = Utils.DIV_ROUND_UP(Math.Max(1, width >> currLevel), blkWidth);
+			h = Utils.DIV_ROUND_UP(Math.Max(1, height >> currLevel), blkHeight);
+			var size = w * h * bpp;
 
 			return new Tuple<int, int>(offset, size);
-		}
-
-		public static DDSLoadResult LoadDDS(byte[] inb)
-		{
-			string FormatMagic = "" + (char)inb[0x54] + (char)inb[0x55] + (char)inb[0x56] + (char)inb[0x57];				
-
-			if (!EncoderTable.ContainsKey(FormatMagic))
-				throw new Exception("Unsupported format : only DXT1 and DXT5 encodings are supported for DDS");
-
-			int bpp = EncoderTable[FormatMagic].bpp;
-
-			var width = BitConverter.ToInt32(inb,0x10);
-			var height = BitConverter.ToInt32(inb, 0xC);
-			var size = ((width + 3) >> 2) * ((height + 3) >> 2) * bpp;
-			var numMips = 0;
-			var mipSize = 0;
-			byte[] res = new byte[size + mipSize];
-			Array.Copy(inb, 0x80, res, 0, size + mipSize);
-			return new DDSLoadResult()
-			{
-				width = width,
-				height = height,
-				Format = FormatMagic,
-				size = size,
-				numMips = numMips,
-				data = res
-			};
 		}
 
 		static class Utils
