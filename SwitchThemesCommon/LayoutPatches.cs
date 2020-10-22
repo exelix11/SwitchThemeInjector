@@ -79,7 +79,7 @@ namespace SwitchThemes.Common
 							new PanePatch()
 							{
 								PaneName = "L_BtnNoti",
-								Position = new NullableVector3{ X = 0, Y= -500},
+								Position = new Vector3{ Y= -500 },
 							}
 						}
 					}
@@ -125,10 +125,10 @@ namespace SwitchThemes.Common
 	public class PanePatch
 	{
 		public string PaneName;
-		public NullableVector3? Position = null;
-		public NullableVector3? Rotation = null;
-		public NullableVector2? Scale = null;
-		public NullableVector2? Size = null;
+		public Vector3? Position = null;
+		public Vector3? Rotation = null;
+		public Vector2? Scale = null;
+		public Vector2? Size = null;
 		public bool? Visible = null;
 
 		public List<UsdPatch> UsdPatches = null;
@@ -179,22 +179,6 @@ namespace SwitchThemes.Common
 		public string[] PropValues;
 		public int type;
 	}
-
-	public struct NullableVector3 
-	{
-		public float? X, Y, Z;
-		
-		public NullableVector3(float x, float y, float z) { X = x; Y = y; Z = z; }
-
-		public void Deconstruct(out float? x, out float? y, out float? z) =>
-			(x, y, z) = (X, Y, Z);
-
-		public static implicit operator NullableVector3((float, float, float) v)
-		{
-			var (x, y, z) = v;
-			return new NullableVector3(x, y, z);
-		}
-	}
 	
 	public struct Vector3 
 	{
@@ -209,22 +193,6 @@ namespace SwitchThemes.Common
 		{
 			var (x, y, z) = v;
 			return new Vector3(x, y, z);
-		}
-	}
-	
-	public struct NullableVector2
-	{
-		public float? X, Y;
-		
-		public NullableVector2(float x, float y) { X = x; Y = y;}
-
-		public void Deconstruct(out float? x, out float? y) =>
-			(x, y) = (X, Y);
-
-		public static implicit operator NullableVector2((float, float) v)
-		{
-			var (x, y) = v;
-			return new NullableVector2(x, y);
 		}
 	}
 	

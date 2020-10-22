@@ -37,36 +37,14 @@ namespace SwitchThemes.Common.Bflyt
 				if (e == null)
 					continue;
 
-				if (p.Visible != null)
-					e.Visible = p.Visible.Value;
-				#region ChangeTransform
-				if (p.Position != null)
-				{
-					e.Position = new Vector3(
-						p.Position.Value.X ?? e.Position.X,
-						p.Position.Value.Y ?? e.Position.Y,
-						p.Position.Value.Z ?? e.Position.Z);
-				}
-				if (p.Rotation != null)
-				{
-					e.Rotation = new Vector3(
-						p.Rotation.Value.X ?? e.Rotation.X,
-						p.Rotation.Value.Y ?? e.Rotation.Y,
-						p.Rotation.Value.Z ?? e.Rotation.Z);
-				}
-				if (p.Scale != null)
-				{
-					e.Scale = new Vector2(
-						p.Scale.Value.X ?? e.Scale.X,
-						p.Scale.Value.Y ?? e.Scale.Y);
-				}
-				if (p.Size != null)
-				{
-					e.Size = new Vector2(
-						p.Size.Value.X ?? e.Size.X,
-						p.Size.Value.Y ?? e.Size.Y);
-				}
-				#endregion
+
+				e.Visible = p.Visible ?? e.Visible;
+				
+				e.Position = p.Position ?? e.Position;
+				e.Rotation = p.Rotation ?? e.Rotation;
+				e.Scale = p.Scale ?? e.Scale;
+				e.Size = p.Size ?? e.Size;
+
 				#region Change other prperties
 				if (p.OriginX != null)
 					e.originX = (Pan1Pane.OriginX)p.OriginX.Value;
