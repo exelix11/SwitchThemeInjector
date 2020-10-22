@@ -70,9 +70,9 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 			e->SetOriginX((OriginX)p.OriginX);
 		if (p.ApplyFlags & (u32)PanePatch::Flags::OriginY)
 			e->SetOriginY((OriginY)p.OriginY);
-		if (p.ApplyFlags & (u32)PanePatch::Flags::P_OriginX)
+		if (p.ApplyFlags & (u32)PanePatch::Flags::ParentOriginX)
 			e->SetParentOriginX((OriginX)p.ParentOriginX);
-		if (p.ApplyFlags & (u32)PanePatch::Flags::P_OriginY)
+		if (p.ApplyFlags & (u32)PanePatch::Flags::ParentOriginY)
 			e->SetParentOriginY((OriginY)p.ParentOriginY);
 
 		if (e->name == "pic1")
@@ -103,7 +103,7 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 				ee->ShadowBottomColor = RGBAColor(p.PaneSpecific3());
 		}
 
-		if ((p.ApplyFlags & (u32)PanePatch::Flags::Usd1) && target->UserData)
+		if ((p.ApplyFlags & (u32)PanePatch::Flags::UsdPatches) && target->UserData)
 		{
 			auto usd = dynamic_cast<Usd1Pane*>(target->UserData.get());
 			for (const auto& patch : p.UsdPatches)

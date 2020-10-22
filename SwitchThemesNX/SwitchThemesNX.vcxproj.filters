@@ -255,6 +255,7 @@
       <Filter>SwitchTools</Filter>
     </ClInclude>
     <ClInclude Include="source\Dialogs.hpp" />
+    <ClInclude Include="source\Version.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -418,6 +419,7 @@
     <ClCompile Include="source\SwitchTools\InjectorInstall.cpp">
       <Filter>SwitchTools</Filter>
     </ClCompile>
+    <ClCompile Include="source\Version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

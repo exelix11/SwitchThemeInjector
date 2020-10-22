@@ -74,6 +74,7 @@
     <ClInclude Include="source\UI\imgui\imstb_truetype.h" />
     <ClInclude Include="source\UI\UI.hpp" />
     <ClInclude Include="source\UI\UIManagement.hpp" />
+    <ClInclude Include="source\Version.hpp" />
     <ClInclude Include="source\ViewFunctions.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -132,6 +133,7 @@
     <ClCompile Include="source\UI\UIManagement.cpp" />
     <ClCompile Include="source\UI\UI.cpp" />
     <ClCompile Include="source\UI\UITabs.cpp" />
+    <ClCompile Include="source\Version.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

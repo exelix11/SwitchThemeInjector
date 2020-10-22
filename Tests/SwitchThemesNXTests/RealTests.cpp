@@ -34,10 +34,10 @@ namespace SwitchThemesNXTests
 			for (const auto &[key, value] : a.files)
 			{
 				if (!b.files.count(key))
-					throw std::runtime_error("");
+					throw std::runtime_error("file missing: " + key);
 
 				if (b.files.at(key) != value)
-					throw std::runtime_error("");
+					throw std::runtime_error("file different: " + key);
 			}
 		}
 		
