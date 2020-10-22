@@ -160,7 +160,7 @@ namespace SwitchThemes.Common.Bflyt
 						bin.Write(float.Parse(AddedProperties[i].value[j]));
 				uint NameOffest = (uint)bin.BaseStream.Position;
 				bin.Write(AddedProperties[i].Name, BinaryStringFormat.ZeroTerminated);
-				bin.Align(4);
+				bin.WriteAlign(4);
 				uint entryStart = (uint)(4 + i * 0xC);
 				bin.BaseStream.Position = entryStart;
 				bin.Write(NameOffest - entryStart);

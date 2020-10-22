@@ -16,7 +16,7 @@ namespace SwitchThemes.Common
 
 		public bool UsesOldFixes => ID == null && !Ready8X;
 
-		[Obsolete("This was used to detect whether a layout would need patches to support 8.0+ qlaunch, ssince version 4.5 (TBD) prefer the ID value to detect layouts")]
+		[Obsolete("This was used to detect whether a layout would need patches to support 8.0+ qlaunch, since version 4.5 prefer the ID value to detect layouts")]
 		public bool Ready8X;
 		
 		[Obsolete("Editing C_W in the usd panes is a better way of achieving this")]
@@ -180,8 +180,67 @@ namespace SwitchThemes.Common
 		public int type;
 	}
 
-	public struct NullableVector3 { public float? X, Y, Z; public NullableVector3(float x, float y, float z) { X = x;Y = y;Z = z; } }
-	public struct Vector3 { public float X, Y, Z; public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; } }
-	public struct NullableVector2 { public float? X, Y; public NullableVector2(float x, float y) { X = x; Y = y;} }
-	public struct Vector2 { public float X, Y; public Vector2(float x, float y) { X = x; Y = y; } }
+	public struct NullableVector3 
+	{
+		public float? X, Y, Z;
+		
+		public NullableVector3(float x, float y, float z) { X = x; Y = y; Z = z; }
+
+		public void Deconstruct(out float? x, out float? y, out float? z) =>
+			(x, y, z) = (X, Y, Z);
+
+		public static implicit operator NullableVector3((float, float, float) v)
+		{
+			var (x, y, z) = v;
+			return new NullableVector3(x, y, z);
+		}
+	}
+	
+	public struct Vector3 
+	{
+		public float X, Y, Z;
+
+		public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; }
+
+		public void Deconstruct(out float x, out float y, out float z) =>
+			(x, y, z) = (X, Y, Z);
+
+		public static implicit operator Vector3((float, float, float) v)
+		{
+			var (x, y, z) = v;
+			return new Vector3(x, y, z);
+		}
+	}
+	
+	public struct NullableVector2
+	{
+		public float? X, Y;
+		
+		public NullableVector2(float x, float y) { X = x; Y = y;}
+
+		public void Deconstruct(out float? x, out float? y) =>
+			(x, y) = (X, Y);
+
+		public static implicit operator NullableVector2((float, float) v)
+		{
+			var (x, y) = v;
+			return new NullableVector2(x, y);
+		}
+	}
+	
+	public struct Vector2
+	{
+		public float X, Y;
+		
+		public Vector2(float x, float y) { X = x; Y = y; }
+
+		public void Deconstruct(out float x, out float y) =>
+			(x, y) = (X, Y);
+
+		public static implicit operator Vector2((float, float) v)
+		{
+			var (x, y) = v;
+			return new Vector2(x, y);
+		}
+	}
 }

@@ -1,3 +1,4 @@
+#ifndef SWITCHTHEMESCOMMON_TESTS
 #include "DDSConv.hpp"
 #define STB_DXT_IMPLEMENTATION
 #include "stb_dxt.h"
@@ -142,4 +143,4 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int Expecte
 
 	return bin.getBuffer();
 }
-
+#endif

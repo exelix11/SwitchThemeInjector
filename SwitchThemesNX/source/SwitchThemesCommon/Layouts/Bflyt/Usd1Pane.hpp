@@ -5,6 +5,7 @@
 #include "../../BinaryReadWrite/Buffer.hpp"
 #include "../../MyTypes.h"
 #include "BasePane.hpp"
+#include <sstream>
 
 namespace Panes 
 {
@@ -55,7 +56,7 @@ namespace Panes
 			bin.Write((u16)0);
 			for (size_t i = 0; i < 3 * AddedProperties.size(); i++) bin.Write((u32)0);
 			bin.Write(data, 4, data.size() - 4); //write rest of entries, adding new elements first doesn't break relative offets in the struct
-			for (const auto& m : Properties)
+			for (auto& m : Properties)
 			{
 				if (m.type != ValueType::int32 && m.type != ValueType::single) continue;
 				bin.Position = m.ValueOffset + 0xC * AddedProperties.size();
@@ -64,7 +65,7 @@ namespace Panes
 					if (m.type == ValueType::int32)
 						bin.Write(stoi(m.value[i]));
 					else
-						bin.Write(stof(m.value[i]));
+						bin.Write(ParseFloat(m.value[i]));
 				}
 			}
 			for (size_t i = 0; i < AddedProperties.size(); i++)
@@ -75,10 +76,10 @@ namespace Panes
 					if (AddedProperties[i].type == ValueType::int32)
 						bin.Write(stoi(AddedProperties[i].value[j]));
 					else
-						bin.Write(stof(AddedProperties[i].value[j]));
+						bin.Write(ParseFloat(AddedProperties[i].value[j]));
 				u32 NameOffest = (u32)bin.Position;
 				bin.Write(AddedProperties[i].Name, Buffer::BinaryString::NullTerminated);
-				while (bin.Position % 4) bin.Write((u8)0);
+				bin.WriteAlign(4);
 				u32 entryStart = (u32)(4 + i * 0xC);
 				bin.Position = entryStart;
 				bin.Write(NameOffest - entryStart);
@@ -128,7 +129,7 @@ namespace Panes
 					if (type == ValueType::int32)
 						values.push_back(std::to_string(dataReader.readInt32()));
 					else
-						values.push_back(std::to_string(dataReader.readFloat()));
+						values.push_back(to_string_with_precision<18>(dataReader.readFloat()));
 				}
 
 				Properties.push_back(EditableProperty
@@ -142,6 +143,25 @@ namespace Panes
 
 				dataReader.Position = pos;
 			}
+		}
+
+		// std::to_string will lose precision and cause the value to change slightly when writing the file, this should keep it unmodified
+		template <int Prec, typename T>
+		std::string to_string_with_precision(const T a_value)
+		{
+			std::ostringstream out;
+			out.precision(Prec);
+			out << std::fixed << a_value;
+			return out.str();
+		}
+
+		float ParseFloat(std::string& str)
+		{
+			auto p = str.find(',');
+			if (p != std::string::npos)
+				str[p] = '.';
+
+			return std::stof(str);
 		}
 	};
 }

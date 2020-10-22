@@ -1,0 +1,36 @@
+name: SwitchThemes
+on:
+  push:
+    branches: [ master, githubCI ]
+    paths:
+      - SwitchThemesCommon/**
+      - SwitchThemes/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - SwitchThemesCommon/**
+      - SwitchThemes/**
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v1.0.1
+    - uses: actions/checkout@v2
+    - name: Restore packages
+      run: |
+        cd %GITHUB_WORKSPACE%
+        mkdir packages
+        cd packages
+        nuget install %GITHUB_WORKSPACE%\SwitchThemes\packages.config
+      shell: cmd
+    - name: Build project
+      run: |
+        cd %GITHUB_WORKSPACE%\SwitchThemes\
+        msbuild -p:Configuration=CIRelease
+        del bin\CIRelease\*.xml
+      shell: cmd
+    - uses: actions/upload-artifact@v2
+      with:
+        name: InjectorBuild
+        path: ${{ github.workspace }}/SwitchThemes/bin/CIRelease/

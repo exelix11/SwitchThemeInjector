@@ -99,7 +99,7 @@ static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
 					usdPatch["PropName"].get<string>(),
 					usdPatch["PropValues"].get<vector<string>>(),
 					usdPatch["type"].get<int>(),
-					});
+				});
 			}
 
 		if (pp.UsdPatches.size() > 0)

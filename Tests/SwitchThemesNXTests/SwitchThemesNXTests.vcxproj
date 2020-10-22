@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{28D10DAC-B4F8-4205-BBE8-722C2687E2E1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>SwitchThemesNXTests</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectSubType>NativeUnitTestProject</ProjectSubType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>false</UseOfMfc>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;SWITCHTHEMESCOMMON_TESTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UseFullPaths>true</UseFullPaths>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <UseFullPaths>true</UseFullPaths>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\DDSConv.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflan.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Sarc.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Yaz0.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesCommon.cpp" />
+    <ClCompile Include="Compression.cpp" />
+    <ClCompile Include="RealTests.cpp" />
+    <ClCompile Include="SyntheticTests.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\DDSConv.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\stb_dxt.h" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Base64.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflan.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BasePane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Grp1Pane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Pan1Pane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Pic1Pane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\json.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Patches.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\MyTypes.h" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Sarc.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Yaz0.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesCommon.hpp" />
+    <ClInclude Include="picosha2.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Util.hpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

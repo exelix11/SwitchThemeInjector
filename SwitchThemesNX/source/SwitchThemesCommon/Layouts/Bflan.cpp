@@ -427,13 +427,14 @@ Bflan *BflanDeserializer::FromJson(std::string jsn)
 				t.TagType = Tag["TagType"];
 				for (auto& Entry : Tag["Entries"])
 				{
-					PaiTagEntry e;
-#define SetVal(x) e.x = Entry[#x]
-					SetVal(Index).get<u8>();
-					SetVal(AnimationTarget).get<u8>();
-					SetVal(DataType).get<u16>();
-					SetVal(FLEUUnknownInt).get<u32>();
-					SetVal(FLEUEntryName).get<string>();
+					PaiTagEntry e = {};
+					// TODO
+#define SetVal(x) do { if (!Entry[#x].is_null()) e.x = Entry[#x].get<decltype(e.x)>(); } while (0)
+					SetVal(Index);
+					SetVal(AnimationTarget);
+					SetVal(DataType);
+					SetVal(FLEUUnknownInt);
+					SetVal(FLEUEntryName);
 #undef SetVal
 					for (auto& key : Entry["KeyFrames"])
 					{
