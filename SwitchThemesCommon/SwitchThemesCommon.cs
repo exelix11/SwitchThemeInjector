@@ -13,7 +13,7 @@ using ExtensionMethods;
 
 namespace SwitchThemes.Common
 {
-	public static class SwitchThemesCommon
+	public static class Info
 	{
 		public const string CoreVer = "4.5.2";
 		public const int NxThemeFormatVersion = 14;
@@ -25,8 +25,18 @@ namespace SwitchThemes.Common
 			{"apps","Flaunch.szs"},
 			{"set","Set.szs"},
 			{"news","Notification.szs"},
-			//{ "opt","Option.szs" },
 			{ "psl","Psl.szs" },
+		};
+
+		public static Dictionary<string, string> PartToName = new Dictionary<string, string>()
+		{
+			{"home", "Home menu" },
+			{"lock", "Lock screen" },
+			{"user", "User page" },
+			{"apps", "All apps menu (All applets on 5.X)" },
+			{"set" , "Settings applet (All applets on 5.X)" },
+			{"news", "News applet (All applets on 5.X)" },
+			{"psl" , "Player select" },
 		};
 	}
 
@@ -39,7 +49,7 @@ namespace SwitchThemes.Common
 		{
 			info = new ThemeFileManifest()
 			{
-				Version = SwitchThemesCommon.NxThemeFormatVersion,
+				Version = Info.NxThemeFormatVersion,
 				ThemeName = name,
 				Author = author,
 				Target = target,
@@ -77,75 +87,11 @@ namespace SwitchThemes.Common
 			files.Add(name, data);
 		}
 
-		private static (UInt32, UInt32) GetPngSize(byte[] data)
-		{
-			UInt32 w, h;
-			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
-			{
-				bin.ByteOrder = ByteOrder.BigEndian;
-				bin.BaseStream.Position = 0x10;
-				w = bin.ReadUInt32();
-				h = bin.ReadUInt32();
-			}
-			return (w, h);
-		}
-
-		private static (UInt32, UInt32, bool) GetJpgInfo(byte[] data) //width, height, progressive
-		{
-			UInt32 w = 0, h = 0;
-			bool Progressive = false;
-			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
-			{
-				bin.ByteOrder = ByteOrder.BigEndian;
-				while (bin.BaseStream.Position < bin.BaseStream.Length)
-				{
-					byte marker = 0;
-					while ((marker = bin.ReadByte()) != 0xFF) ;
-					while ((marker = bin.ReadByte()) == 0xFF) ;
-
-					if (marker == 0xC0)
-					{
-
-						bin.ReadByte();
-						bin.ReadByte();
-						bin.ReadByte();
-
-						h = bin.ReadUInt16();
-						w = bin.ReadUInt16();
-					}
-					if (marker == 0xC2)
-					{
-						Progressive = true;
-					}
-				}
-			}
-			return (w, h, Progressive);
-		}
-
 		public void AddMainBg(byte[] data)
 		{
 			if (data == null) return;
-			string ext = "";
-			if (data.Matches("DDS "))
-			{
-				ext = "dds";
-				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != 1280 || img.height != 720 || img.Format != "DXT1")
-					throw new Exception("The background image must be 1280x720 and (if you're using a DDS) DXT1 encoded.");
-			}
-			else if (data.Matches(0,new byte[] { 0xFF, 0xD8, 0xFF }))
-			{
-				ext = "jpg";
-				(UInt32 w, UInt32 h, bool IsProgressive) = GetJpgInfo(data);
-
-				if (IsProgressive)
-					throw new Exception("Progressive JPG images are not currently supported for the background image, check the encoding settings in your image editor");
-
-				if (w != 1280 || h != 720)
-					throw new Exception("The background image must be 1280x720.");
-			}
-			else throw new Exception("Invalid image format: The background image can only be a DDS or JPG image");
-			AddFile("image." + ext, data);
+			var fmt = Images.Validation.AssertValidForBG(data);
+			AddFile("image." + fmt.Extension, data);
 		}
 
 		public void AddMainLayout(string text) =>
@@ -164,23 +110,9 @@ namespace SwitchThemes.Common
 			var item = TextureReplacement.NxNameToList[info.Target].Where(x => x.NxThemeName == name).FirstOrDefault();
 			if (item == null) throw new Exception($"{name} not supported for this target");
 
-			string ext = "";
-			if (data.Matches("DDS "))
-			{
-				ext = ".dds";
-				var img = DDSEncoder.LoadDDS(data);
-				if (img.width != item.W || img.height != item.H || (img.Format != "DXT1" && img.Format != "DXT4" && img.Format != "DXT5" && img.Format != "DXT3"))
-					throw new Exception("The applet image must be 64x56 and (if you're using a DDS) DXT1/3/4/5 encoded.");
-			}
-			else if (data.Matches(1, "PNG"))
-			{
-				ext = ".png";
-				(UInt32 w, UInt32 h) = GetPngSize(data);
-				if (w != item.W || h != item.H)
-					throw new Exception("The applet image must be 64x56.");
-			}
-			else throw new Exception("Invalid image format: Applet icons can only be DDS or PNG images");
-			AddFile(name + ext, data);
+			var img = Images.Validation.AssertValidForApplet(item, data);
+
+			AddFile($"{name}.{img.Extension}", data);
 		}
 	}
 
@@ -267,7 +199,10 @@ namespace SwitchThemes.Common
 			sarc.Files[p.FileName] = target.SaveFile();
 			return true;
 		}
-		
+
+		public bool PatchLayouts(LayoutPatch Patch) =>
+			PatchLayouts(Patch, PatchTemplate);
+
 		public bool PatchLayouts(LayoutPatch Patch, PatchTemplate context) =>
 			PatchLayouts(Patch, context?.NXThemeName ?? "", context?.PatchRevision ?? 0);
 		
@@ -338,13 +273,12 @@ namespace SwitchThemes.Common
 			return true;
 		}
 
-
 		public bool PatchMainBG(byte[] DDS)
 		{
-			return PatchMainBG(DDSEncoder.LoadDDS(DDS));
+			return PatchMainBG(new Images.DDS(DDS));
 		}
 
-		public bool PatchMainBG(DDSEncoder.DDSLoadResult DDS)
+		public bool PatchMainBG(Images.DDS DDS)
 		{
 			var template = PatchTemplate;
 			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);

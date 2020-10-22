@@ -148,13 +148,13 @@ namespace SARCExt
 			{
 				StringOffsets.Add((uint)bw.BaseStream.Position);
 				bw.Write(k, BinaryStringFormat.ZeroTerminated);
-				bw.Align(4);
+				bw.WriteAlign(4);
 			}
-			bw.Align(0x1000); //TODO: check if works in odyssey
+			bw.WriteAlign(0x1000); //TODO: check if works in odyssey
 			List<uint> FileOffsets = new List<uint>();
 			foreach (string k in SortedNames)
 			{
-				bw.Align((int)GuessFileAlignment(data.Files[k]));
+				bw.WriteAlign((int)GuessFileAlignment(data.Files[k]));
 				FileOffsets.Add((uint)bw.BaseStream.Position);
 				bw.Write(data.Files[k]);
 			}

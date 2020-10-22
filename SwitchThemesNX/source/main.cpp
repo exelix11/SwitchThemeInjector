@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <variant>
 
+#include "Version.hpp"
 #include "UI/UIManagement.hpp"
 #include "UI/UI.hpp"
 #include "Platform/Platform.hpp"
@@ -215,7 +216,7 @@ class QuitPage : public IPage
 void ShowFirstTimeHelp(bool WelcomeScr)
 {	
 	if (WelcomeScr)
-		DialogBlocking("Welcome to NXThemes Installer " + VersionString + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab.");
+		DialogBlocking("Welcome to NXThemes Installer " + Version::Name + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab.");
 
 	DialogBlocking(
 		"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"

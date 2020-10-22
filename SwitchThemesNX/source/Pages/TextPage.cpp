@@ -1,4 +1,5 @@
 #include "TextPage.hpp"
+#include "../Version.hpp"
 #include "../ViewFunctions.hpp"
 #include "../UI/imgui/imgui_internal.h"
 
@@ -33,8 +34,8 @@ void TextPage::Update()
 }
 
 CreditsPage::CreditsPage() :
-	creditsText("NXThemes installer by exelix - " + VersionString + " - Core Ver." + SwitchThemesCommon::CoreVer +
-		"\nCommit: " GITVER +
+	creditsText("NXThemes installer by exelix - " + Version::Name + " - Core Ver." + SwitchThemesCommon::CoreVer +
+		'\n' + Version::Commit +
 		"\nSource: github.com/exelix11/SwitchThemeInjector"+
 		"\nDonations: ko-fi.com/exelix11\n\n")
 {

@@ -160,12 +160,12 @@ endif
 .PHONY: $(BUILD) clean libs cleanlibs cleanall all 
 .DEFAULT_GOAL := $(BUILD)
 #---------------------------------------------------------------------------------
-all: libs $(BUILD)
+all: $(BUILD)
 
 libs:
 	$(MAKE) -C $(CURDIR)/Libs
 
-$(BUILD):	
+$(BUILD): libs
 	@[ -d $@ ] || mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 

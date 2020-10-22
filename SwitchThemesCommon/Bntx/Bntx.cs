@@ -54,22 +54,22 @@ namespace SwitchThemes.Common.Bntxx
 		//this will work only for a BC1 image, other formats are not implemented, sizes different than 720p haven't been tested
 		public void ReplaceTex(string texName, byte[] DDS)
 		{
-			var dds = DDSEncoder.LoadDDS(DDS);
+			var dds = new Images.DDS(DDS);
 			ReplaceTex(texName, dds);
 		}
 
 		public Bntxx.Texture FindTex(string texName) => Textures.Where(x => x.Name == texName).FirstOrDefault();
 
-		public void ReplaceTex(string texName, DDSEncoder.DDSLoadResult dds)
+		public void ReplaceTex(string texName, Images.DDS dds)
 		{
 			var target = Textures.Where(x => x.Name == texName).First();
 			var encoded = DDSEncoder.EncodeTex(dds);
 			target.Data = encoded.Data;
 			target.TextureType = (int)TextureType.Image2D;
-			target.Format = (uint)encoded.format.formatCode;
+			target.Format = (uint)encoded.Encoding.formatCode;
 			target.ChannelTypes = 0x05040302;
-			target.Width = dds.width;
-			target.Height = dds.height;
+			target.Width = dds.Width;
+			target.Height = dds.Height;
 			target.TileMode = 0;
 			target.SwizzleSize = 0;
 			target.Reversed1A = 0;
@@ -82,7 +82,7 @@ namespace SwitchThemes.Common.Bntxx
 			target.MipmapCount = 1;
 			target.Flags = 0x01;
 			target.Depth = 1;
-			target.BlockHeightLog2 = encoded.blockHeightLog2;
+			target.BlockHeightLog2 = encoded.BlockHeightLog2;
 			target.Alignment = 0x200;
 			target.AccessFlags = 0x20;
 		}
@@ -104,7 +104,7 @@ namespace SwitchThemes.Common.Bntxx
 			}
 			var DataStart = bin.BaseStream.Position;
 			List<long> TexDataPositions = new List<long>();
-			bin.Align(0x10);
+			bin.WriteAlign(0x10);
 			bin.Write("BRTD", BinaryStringFormat.NoPrefixOrTermination);
 			bin.Write((int)0);
 			bin.Write((int)0);
@@ -113,9 +113,9 @@ namespace SwitchThemes.Common.Bntxx
 			{
 				TexDataPositions.Add(bin.BaseStream.Position);
 				bin.Write(t.Data);
-				bin.Align(0x10);
+				bin.WriteAlign(0x10);
 			}
-			bin.Align(0x1000);
+			bin.WriteAlign(0x1000);
 			UInt32 rltPos = (UInt32)bin.BaseStream.Position;
 			bin.Write(Rlt);
 			//Update offsets

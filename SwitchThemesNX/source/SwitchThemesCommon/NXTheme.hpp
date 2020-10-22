@@ -51,7 +51,6 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName6X
 	{"apps","All apps menu"},
 	{"set","Settings applet"},
 	{"news","News applet" },
-	//{"opt","Options menu" },
 	{"psl","Player selection" },
 };
 
@@ -63,7 +62,6 @@ const std::unordered_map<std::string,std::string> ThemeTargetToFileName6X
 	{"apps","Flaunch.szs"},
 	{"set","Set.szs"},
 	{"news","Notification.szs"},
-	//{"opt","Option.szs" },
 	{"psl","Psl.szs" },
 };
 
@@ -75,7 +73,6 @@ const std::unordered_map<std::string,std::string> ThemeTargetToName5X
 	{"apps","All applets"},
 	{"set","All applets"},
 	{"news","All applets"},
-	//{"opt","Options menu" },
 	{"psl","Player selection" },
 };
 

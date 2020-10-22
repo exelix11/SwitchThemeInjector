@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RGBAColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LayoutDiff.cs" />
