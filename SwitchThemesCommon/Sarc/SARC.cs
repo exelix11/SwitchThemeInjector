@@ -94,7 +94,7 @@ namespace SARCExt
 			else if (f.Matches("BNTX") || f.Matches("BNSH") || f.Matches("FSHA")) return 0x1000;
 			else if (f.Matches("FFNT")) return 0x2000;
 			else if (f.Matches("CFNT")) return 0x80;
-			else if (f.Matches(1, "STM") /* *STM */ || f.Matches(1, "WAV") || f.Matches("FSTP")) return 0x20;
+			else if (f.Matches(1, "STM") || f.Matches(1, "WAV") || f.Matches("FSTP")) return 0x20;
 			else if (f.Matches("CTPK")) return 0x10;
 			else if (f.Matches("CGFX")) return 0x80;
 			else if (f.Matches("AAMP")) return 8;
@@ -102,12 +102,12 @@ namespace SARCExt
 			else return 0x4;
 		}
 
-		public static Tuple<int, byte[]> PackN(SarcData data, int _align = -1)
+		public static Tuple<int, byte[]> Pack(SarcData data, int _align = -1)
 		{
 			int align = _align >= 0 ? _align : (int)GuessAlignment(data.Files);
 
 			MemoryStream o = new MemoryStream();
-			BinaryDataWriter bw = new BinaryDataWriter(o, false);
+			BinaryDataWriter bw = new BinaryDataWriter(o);
 			bw.ByteOrder = data.endianness;
 			bw.Write("SARC", BinaryStringFormat.NoPrefixOrTermination);
 			bw.Write((UInt16)0x14); // Chunk length
@@ -175,13 +175,13 @@ namespace SARCExt
 			return new Tuple<int, byte[]>(align, o.ToArray());
 		}
 
-		public static SarcData UnpackRamN(byte[] src) =>
-			UnpackRamN(new MemoryStream(src));
+		public static SarcData Unpack(byte[] src) =>
+			Unpack(new MemoryStream(src));
 
-		public static SarcData UnpackRamN(Stream src)
+		public static SarcData Unpack(Stream src)
 		{
 			Dictionary<string, byte[]> res = new Dictionary<string, byte[]>();
-			BinaryDataReader br = new BinaryDataReader(src, false);
+			BinaryDataReader br = new BinaryDataReader(src);
 			br.ByteOrder = ByteOrder.LittleEndian;
 			br.BaseStream.Position = 6;
 			if (br.ReadUInt16() == 0xFFFE)
@@ -228,19 +228,7 @@ namespace SARCExt
 			return new SarcData() {endianness = br.ByteOrder, HashOnly = HashOnly, Files = res };
 		}
 
-		[Obsolete("This has been kept for compatibility, use PackN instead")]
-		public static byte[] pack(Dictionary<string, byte[]> files, int align = -1, ByteOrder endianness = ByteOrder.LittleEndian) =>
-			PackN(new SarcData() { Files = files, endianness = endianness, HashOnly = false }, align).Item2;
-
-		[Obsolete("This has been kept for compatibility, use UnpackRamN instead")]
-		public static Dictionary<string, byte[]> UnpackRam(byte[] src) =>
-			UnpackRamN(new MemoryStream(src)).Files;
-
-		[Obsolete("This has been kept for compatibility, use UnpackRamN instead")]
-		public static Dictionary<string, byte[]> UnpackRam(Stream src) =>
-			UnpackRamN(src).Files;
-				
-       public class SFAT
+		private class SFAT
         {
             public List<Node> nodes = new List<Node>();
             
@@ -283,7 +271,7 @@ namespace SARCExt
 
         }
 
-        public class SFNT
+        private class SFNT
         {
             public List<string> fileNames = new List<string>();
 

@@ -157,7 +157,7 @@ namespace SwitchThemes
 			var opn = new OpenFileDialog();
 			if (opn.ShowDialog() != DialogResult.OK)
 				return;
-			var szs2 = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			var szs2 = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			var filesIn1 = CommonSzs.Files.Keys.ToList();
 			var filesIn2 = szs2.Files.Keys.ToList();
 			var common = filesIn1.Intersect(filesIn2);
@@ -185,7 +185,7 @@ namespace SwitchThemes
 				Filter = "SZS file|*.szs"
 			};
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			var originalSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			LayoutPatch res = null;
 #if !DEBUG
 			try
@@ -236,7 +236,7 @@ namespace SwitchThemes
 			if (CommonSzs == null) return;
 			OpenFileDialog opn = new OpenFileDialog();
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			var originalSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			var originalSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			List<string> diffFiles = new List<string>();
 			foreach (string f in originalSzs.Files.Keys)
 				if (!originalSzs.Files[f].SequenceEqual(CommonSzs.Files[f]))
@@ -253,7 +253,7 @@ namespace SwitchThemes
 				Filter = "SZS file|*.szs",
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
-			var sarc = SARC.PackN(CommonSzs);
+			var sarc = SARC.Pack(CommonSzs);
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 		}
 
@@ -306,7 +306,7 @@ namespace SwitchThemes
 			LayoutPatchList.Items.Clear();
 			LayoutPatchList.Items.Add("Don't patch");
 			
-			CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
+			CommonSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
 			targetPatch = SzsPatcher.DetectSarc(CommonSzs, Templates);
 
 			if (targetPatch == null)
@@ -457,7 +457,7 @@ namespace SwitchThemes
 			}
 
 			CommonSzs = Patcher.GetFinalSarc();
-			var sarc = SARC.PackN(CommonSzs);
+			var sarc = SARC.Pack(CommonSzs);
 			
 			File.WriteAllBytes(sav.FileName, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 			GC.Collect();
@@ -677,7 +677,7 @@ namespace SwitchThemes
 
 		public static void DoExtractNxTheme(string FilePath, string OutDir)
 		{
-			var data = SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(FilePath)));
+			var data = SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(FilePath)));
 			foreach (var f in data.Files.Where(x => x.Key != "info.json"))
 				File.WriteAllBytes(Path.Combine(OutDir, f.Key), f.Value);
 		}

@@ -19,13 +19,13 @@ namespace SwitchThemes.Common
 		public const int NxThemeFormatVersion = 14;
 
 		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
-			{"home","ResidentMenu.szs"},
-			{"lock","Entrance.szs"},
-			{"user","MyPage.szs"},
-			{"apps","Flaunch.szs"},
-			{"set","Set.szs"},
-			{"news","Notification.szs"},
-			{ "psl","Psl.szs" },
+			{"home", "ResidentMenu.szs"},
+			{"lock", "Entrance.szs"},
+			{"user", "MyPage.szs"},
+			{"apps", "Flaunch.szs"},
+			{"set" , "Set.szs"},
+			{"news", "Notification.szs"},
+			{"psl" , "Psl.szs" },
 		};
 
 		public static Dictionary<string, string> PartToName = new Dictionary<string, string>()
@@ -64,26 +64,22 @@ namespace SwitchThemes.Common
 			if (!files.ContainsKey("info.json"))
 				AddFile("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
 
-			var sarc = SARCExt.SARC.PackN(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
+			var sarc = SARCExt.SARC.Pack(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
 #if WIN
-			return ManagedYaz0.Compress(sarc.Item2, 1, (int)sarc.Item1);
+			return ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1);
 #else
 			return ManagedYaz0.Compress(sarc.Item2, 0, (int)sarc.Item1);
 #endif
 		}
 
-		public void AddFile(string name, byte[] data)
+		private void AddFile(string name, byte[] data)
 		{
-			if (name == null || data == null) return;
-			if (info.Target != "home")
-			{
-				if (name == "common.json") return;
-				foreach (var s in TextureReplacement.ResidentMenu)
-					if (name == s.NxThemeName + ".dds" || name == s.NxThemeName + ".png") return;
-			}
-			if (info.Target != "lock")
-				foreach (var s in TextureReplacement.Entrance)
-					if (name == s.NxThemeName + ".dds" || name == s.NxThemeName + ".png") return;
+			if (name == null || data == null)
+				return;
+
+			if (info.Target != "home" && name == "common.json")
+				return;
+
 			files.Add(name, data);
 		}
 
@@ -131,6 +127,9 @@ namespace SwitchThemes.Common
 			templates = t;
 		}
 
+		public SzsPatcher(SarcData s) : this(s, DefaultTemplates.templates) 
+		{ }
+
 		void SaveBntx()
 		{
 			if (bntx == null) return;
@@ -141,7 +140,7 @@ namespace SwitchThemes.Common
 		QuickBntx GetBntx()
 		{
 			if (bntx != null) return bntx;
-			bntx = new QuickBntx(new BinaryDataReader(new MemoryStream(sarc.Files[@"timg/__Combined.bntx"])));
+			bntx = new QuickBntx(sarc.Files[@"timg/__Combined.bntx"]);
 			return bntx;
 		}
 

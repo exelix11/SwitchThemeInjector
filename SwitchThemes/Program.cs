@@ -138,7 +138,7 @@ namespace SwitchThemes
 				return false;
 
 			string Target = args[1];
-			var	CommonSzs = SARCExt.SARC.UnpackRamN(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
+			var	CommonSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
 			var targetPatch = SzsPatcher.DetectSarc(CommonSzs, DefaultTemplates.templates);
 
 			if (targetPatch == null)
@@ -214,7 +214,7 @@ namespace SwitchThemes
 				}
 
 				CommonSzs = Patcher.GetFinalSarc();
-				var sarc = SARC.PackN(CommonSzs);
+				var sarc = SARC.Pack(CommonSzs);
 
 				File.WriteAllBytes(Output, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 				GC.Collect();

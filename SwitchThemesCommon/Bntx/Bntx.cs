@@ -10,6 +10,11 @@ namespace SwitchThemes.Common.Bntxx
 {
 	class QuickBntx
 	{
+		public QuickBntx(byte[] data) : this(new BinaryDataReader(new MemoryStream(data)))
+		{
+		
+		}
+
 		public QuickBntx(BinaryDataReader Reader) 
 		{
 			if (Reader.ReadString(4) != "BNTX")
