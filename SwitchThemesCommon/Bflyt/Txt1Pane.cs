@@ -137,7 +137,7 @@ namespace SwitchThemes.Common.Bflyt
 			ShadowBottomColor = dataReader.ReadColorRGBA();
 			ShadowItalic = dataReader.ReadSingle();
 			dataReader.Position = TextOffset - 8;
-			Text = dataReader.ReadString(BinaryStringFormat.ZeroTerminated, Encoding.Unicode);
+			Text = dataReader.ReadString(TextLength, Encoding.Unicode);
 		}
 
         protected override void ApplyChanges(BinaryDataWriter bin)
