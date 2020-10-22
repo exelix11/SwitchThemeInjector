@@ -140,17 +140,7 @@ namespace SwitchThemes.Common.Images
 
 	public static class Util
 	{
-		//private readonly static Dictionary<ImageFormat, string> fmtToExt = new Dictionary<ImageFormat, string> 
-		//{
-		//	// exception on unknown
-		//	{ ImageFormat.Dds, "dds" },
-		//	{ ImageFormat.Jpg, "jpg" },
-		//	{ ImageFormat.Png, "png" },
-		//};
-		//
-		//public static string FormatToExtension(ImageFormat format) => fmtToExt[format];
-
-		public static ImageFormat GetFormat(byte[] data)
+		public static ImageFormat DetectFormat(byte[] data)
 		{
 			if (data.Matches("DDS "))
 				return ImageFormat.Dds;
@@ -163,7 +153,7 @@ namespace SwitchThemes.Common.Images
 
 		public static IImageInfo ParseImage(byte[] data)
 		{
-			switch (GetFormat(data))
+			switch (DetectFormat(data))
 			{
 				case ImageFormat.Dds:
 					return ParseDds(data);

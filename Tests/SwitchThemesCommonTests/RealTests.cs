@@ -30,8 +30,8 @@ namespace SwitchThemesCommonTests
 
 		private void ProcessSzs(string name)
 		{
-			SarcData src = SARC.UnpackRamN(ManagedYaz0.Decompress(Util.ReadData($"Source/{name}.szs")));
-			SarcData exp = SARC.UnpackRamN(ManagedYaz0.Decompress(Util.ReadData($"Expected/{name}.szs")));
+			SarcData src = SARC.Unpack(ManagedYaz0.Decompress(Util.ReadData($"Source/{name}.szs")));
+			SarcData exp = SARC.Unpack(ManagedYaz0.Decompress(Util.ReadData($"Expected/{name}.szs")));
 
 			string lyt = Util.Exists($"Source/{name}.json") ? Util.ReadString($"Source/{name}.json") : null;
 

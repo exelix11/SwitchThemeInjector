@@ -344,10 +344,10 @@ namespace SwitchThemes.Common
 		readonly public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
 		{
 			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x5050505, "blyt/RdtBtnPvr.bflyt",		"P_Pict_00",		64,56, AlbumPatch),
-			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",		"P_PictNtf_00",	64,56, NtfPatch),
-			new TextureReplacement("shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",		"P_Pict",		64,56, ShopPatch),
-			new TextureReplacement("controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",		64,56, CtrlPatch),
-			new TextureReplacement("settings",  "RdtIcoSet^s",      0x5050505, "blyt/RdtBtnSet.bflyt",		"P_Pict",		64,56, SetPatch),
+			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",		"P_PictNtf_00",		64,56, NtfPatch),
+			new TextureReplacement("shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",		"P_Pict",			64,56, ShopPatch),
+			new TextureReplacement("controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",			64,56, CtrlPatch),
+			new TextureReplacement("settings",  "RdtIcoSet^s",      0x5050505, "blyt/RdtBtnSet.bflyt",		"P_Pict",			64,56, SetPatch),
 			new TextureReplacement("power",     "RdtIcoPwrForm^s",  0x5050505, "blyt/RdtBtnPow.bflyt",		"P_Pict_00",		64,56, PowPatch),
 		};
 
