@@ -39,11 +39,11 @@ struct PanePatch
 		PaneSpecific1 = 1 << 6,
 		PaneSpecific2 = 1 << 7,
 		PaneSpecific3 = 1 << 8,
-		Usd1 = 1 << 9,
+		UsdPatches = 1 << 9,
 		OriginX = 1 << 10,
 		OriginY = 1 << 11,
-		P_OriginX = 1 << 12,
-		P_OriginY = 1 << 13,
+		ParentOriginX = 1 << 12,
+		ParentOriginY = 1 << 13,
 	};
 
 	std::vector<UsdPatch> UsdPatches;

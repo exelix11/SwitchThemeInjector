@@ -19,161 +19,110 @@ bool LayoutPatch::IsCompatible(const SARC::SarcData &sarc) const
 
 using json = nlohmann::json;
 
-#define ParseVec3(_n) {_n["X"],_n["Y"],_n["Z"]}
-#define ParseVec2(_n) {_n["X"],_n["Y"]}
-static LayoutFilePatch DeserializeFilePatch(const json &filePatch)
-{
-	if (!filePatch.count("FileName") || !filePatch.count("Patches"))
-		return {""};
-	LayoutFilePatch p;
-	p.FileName = filePatch["FileName"].get<string>();
-	for (auto panePatch : filePatch["Patches"])
-	{
-		if (!panePatch.count("PaneName"))
-			continue;
-		PanePatch pp;
-		pp.PaneName = panePatch["PaneName"].get<string>();
-		pp.ApplyFlags = 0;
-		if (panePatch.count("Position"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Position;
-			pp.Position = ParseVec3(panePatch["Position"]);
-		}if (panePatch.count("Rotation"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Rotation;
-			pp.Rotation = ParseVec3(panePatch["Rotation"]);
-		}if (panePatch.count("Scale"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Scale;
-			pp.Scale = ParseVec2(panePatch["Scale"]);
-		}if (panePatch.count("Size"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Size;
-			pp.Size = ParseVec2(panePatch["Size"]);
-		}if (panePatch.count("Visible"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Visible;
-			pp.Visible = panePatch["Visible"].get<bool>();
-		}
+using nlohmann::json;
 
-		if (panePatch.count("ColorTL"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific0;
-			pp.PaneSpecific0() = panePatch["ColorTL"].get<string>();
-		}if (panePatch.count("ColorTR"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific1;
-			pp.PaneSpecific1() = panePatch["ColorTR"].get<string>();
-		}if (panePatch.count("ColorBL"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific2;
-			pp.PaneSpecific2() = panePatch["ColorBL"].get<string>();
-		}if (panePatch.count("ColorBR"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::PaneSpecific3;
-			pp.PaneSpecific3() = panePatch["ColorBR"].get<string>();
-		}
-
-		if (panePatch.count("OriginX"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::OriginX;
-			pp.OriginX = panePatch["OriginX"].get<u8>();
-		}if (panePatch.count("OriginY"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::OriginY;
-			pp.OriginY = panePatch["OriginY"].get<u8>();
-		}if (panePatch.count("ParentOriginX"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::P_OriginX;
-			pp.ParentOriginX = panePatch["ParentOriginX"].get<u8>();
-		}if (panePatch.count("ParentOriginY"))
-		{
-			pp.ApplyFlags |= (u32)PanePatch::Flags::P_OriginY;
-			pp.ParentOriginY = panePatch["ParentOriginY"].get<u8>();
-		}
-
-		if (panePatch.count("UsdPatches") && panePatch["UsdPatches"].is_array())
-			for (auto& usdPatch : panePatch["UsdPatches"])
-			{
-				pp.UsdPatches.push_back({
-					usdPatch["PropName"].get<string>(),
-					usdPatch["PropValues"].get<vector<string>>(),
-					usdPatch["type"].get<int>(),
-				});
-			}
-
-		if (pp.UsdPatches.size() > 0)
-			pp.ApplyFlags |= (u32)PanePatch::Flags::Usd1;
-
-		p.Patches.push_back(pp);
-	}
-	if (filePatch.count("AddGroups") && filePatch["AddGroups"].is_array())
-		for (auto& g : filePatch["AddGroups"])
-		{
-			if (!g.count("GroupName") || !g.count("Panes"))
-				continue;
-			ExtraGroup grp;
-			grp.GroupName = g["GroupName"];
-			grp.Panes = g["Panes"].get<vector<string>>();
-			p.AddGroups.push_back(grp);
-		}
-	if (filePatch.count("Materials") && filePatch["Materials"].is_array())
-		for (auto& m : filePatch["Materials"])
-		{
-			if (!m.count("MaterialName")) continue;
-			MaterialPatch mat;
-			mat.MaterialName = m["MaterialName"];
-			mat.ForegroundColor = m.count("ForegroundColor") ? m["ForegroundColor"] : "";
-			mat.BackgroundColor = m.count("BackgroundColor") ? m["BackgroundColor"] : "";
-			p.Materials.push_back(mat);
-		}
-	if (filePatch.count("PushBackPanes"))
-		p.PushBackPanes = filePatch["PushBackPanes"].get<vector<string>>();
-	if (filePatch.count("PullFrontPanes"))
-		p.PullFrontPanes = filePatch["PullFrontPanes"].get<vector<string>>();
-
-	return p;
+void from_json(const json& j, Vector2& p) {
+	j.at("X").get_to(p.X);
+	j.at("Y").get_to(p.Y);
 }
+
+void from_json(const json& j, Vector3& p) {
+	j.at("X").get_to(p.X);
+	j.at("Y").get_to(p.Y);
+	j.at("Z").get_to(p.Z);
+}
+
+#define get_optional_s(s, f) if(j.count(s)) j.at(s).get_to(f)
+#define get_optional(n) get_optional_s(#n, p.n)
+
+void from_json(const json& j, UsdPatch& p) {
+	p = {};
+	get_optional_s("PropName", p.PropName);
+	get_optional_s("PropValues", p.PropValues);
+	get_optional_s("type", p.type);
+}
+
+void from_json(const json& j, PanePatch& p) {
+	p = {};
+	j.at("PaneName").get_to(p.PaneName);
+	p.ApplyFlags = 0;
+
+	#define get_assign_member(jname, field, flag) do { \
+		if (j.count(jname)) { \
+			j.at(jname).get_to(field); \
+			p.ApplyFlags |= (u32)PanePatch::Flags::flag; \
+		} } while(0)
+
+	#define get_assign(name) get_assign_member(#name, p.name, name)
+	
+	get_assign(Position);
+	get_assign(Rotation);
+	get_assign(Scale);
+	get_assign(Size);
+	get_assign(Visible);
+
+	get_assign(OriginX);
+	get_assign(OriginY);
+	get_assign(ParentOriginX);
+	get_assign(ParentOriginY);
+
+	get_assign_member("ColorTL", p.PaneSpecific0(), PaneSpecific0);
+	get_assign_member("ColorTR", p.PaneSpecific1(), PaneSpecific1);
+	get_assign_member("ColorBL", p.PaneSpecific2(), PaneSpecific2);
+	get_assign_member("ColorBR", p.PaneSpecific3(), PaneSpecific3);
+
+	get_assign(UsdPatches);
+
+	#undef get_assign
+	#undef get_assign_member
+}
+
+void from_json(const json& j, ExtraGroup& p) {
+	p = {};
+	get_optional_s("GroupName", p.GroupName);
+	get_optional_s("Panes", p.Panes);
+}
+
+void from_json(const json& j, MaterialPatch& p) {
+	p = {};
+	get_optional_s("MaterialName", p.MaterialName);
+	get_optional_s("ForegroundColor", p.ForegroundColor);
+	get_optional_s("BackgroundColor", p.BackgroundColor);
+}
+
+void from_json(const json& j, LayoutFilePatch& p) {
+	p = {};
+	get_optional_s("FileName", p.FileName);
+	get_optional_s("Patches", p.Patches);
+	get_optional_s("AddGroups", p.AddGroups);
+	get_optional_s("Materials", p.Materials);
+	get_optional_s("PushBackPanes", p.PushBackPanes);
+	get_optional_s("PullFrontPanes", p.PullFrontPanes);
+}
+
+void from_json(const json& j, AnimFilePatch& p) {
+	p = {};
+	get_optional_s("FileName", p.FileName);
+	get_optional_s("AnimJson", p.AnimJson);
+}
+
+void from_json(const json& j, LayoutPatch& p) {
+	p = {};
+	get_optional_s("PatchName", p.PatchName);
+	get_optional_s("AuthorName", p.AuthorName);
+	get_optional_s("Files", p.Files);
+	get_optional_s("Anims", p.Anims);
+	get_optional_s("PatchAppletColorAttrib", p.PatchAppletColorAttrib);
+	get_optional_s("ID", p.ID);
+	get_optional_s("Ready8X", p.Obsolete_Ready8X);
+}
+
+#undef get_optional
+#undef get_optional_s
 
 LayoutPatch Patches::LoadLayout(const string_view jsn)
 {
-	LayoutPatch res;
-	auto j = json::parse(jsn);
-	if (j.count("PatchName"))
-		res.PatchName = j["PatchName"].get<string>();
-	if (j.count("AuthorName"))
-		res.AuthorName = j["AuthorName"].get<string>();
-	if (j.count("Ready8X"))
-		res.Obsolete_Ready8X = j["Ready8X"].get<bool>();
-	else res.Obsolete_Ready8X = false;
-	if (j.count("ID"))
-		res.ID = j["ID"].get<string>();
-	else res.ID = "";
-
-	if (j.count("PatchAppletColorAttrib"))
-		res.PatchAppletColorAttrib = j["PatchAppletColorAttrib"].get<bool>();
-	else res.PatchAppletColorAttrib = false;
-
-	if (j.count("Anims") && j["Anims"].is_array())
-	{
-		for (auto& a : j["Anims"]) 
-		{
-			AnimFilePatch p;
-			p.FileName = a["FileName"];
-			p.AnimJson = a["AnimJson"];
-			res.Anims.push_back(p);
-		}
-	}
-	if (j.count("Files") && j["Files"].is_array())
-	{
-		for (auto& filePatch : j["Files"])
-		{
-			auto p = DeserializeFilePatch(filePatch);
-			if (p.FileName != "")
-				res.Files.push_back(p);
-		}
-	}
-	return res;
+	return json::parse(jsn).get<LayoutPatch>();
 }
 
 //this is so ugly but c#-like aggregate initialization comes with c++20
@@ -272,7 +221,6 @@ vector<PatchTemplate> Patches::DefaultTemplates{
 
 namespace Patches::textureReplacement {
 
-
 	//Do not manually edit, these are generated with the injector using TextureReplacement.GenerateJsonPatchesForInstaller()
 	static constexpr string_view AlbumPatch	= "{\"FileName\":\"blyt/RdtBtnPvr.bflyt\",\"Patches\":[{\"PaneName\":\"P_Pict_00\",\"Position\":{\"X\":22.0,\"Y\":13.0,\"Z\":0.0},\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]},{\"PaneName\":\"N_02\",\"Visible\":false},{\"PaneName\":\"N_01\",\"Visible\":false},{\"PaneName\":\"P_Pict_01\",\"Visible\":false},{\"PaneName\":\"P_Color\",\"Visible\":false}]}";
 	static constexpr string_view NtfPatch	= "{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictNtf_00\",\"Size\":{\"X\":64.0,\"Y\":56.0},\"UsdPatches\":[{\"PropName\":\"C_W\",\"PropValues\":[\"100\",\"100\",\"100\",\"100\"],\"type\":1}]},{\"PaneName\":\"P_PictNtf_01\",\"Visible\":false}]}";
@@ -284,7 +232,7 @@ namespace Patches::textureReplacement {
 
 	static LayoutFilePatch GetPatch(const string_view &str)
 	{
-		return DeserializeFilePatch(json::parse(str));
+		return json::parse(str).get<LayoutFilePatch>();
 	}
 
 	static vector<TextureReplacement> ResidentMenu
