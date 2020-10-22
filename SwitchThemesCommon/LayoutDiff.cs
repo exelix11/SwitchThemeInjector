@@ -53,13 +53,13 @@ namespace SwitchThemes.Common
 					}
 
 					if (!VecEqual(edPan.Position, orPan.Position))
-						curPatch.Position = ToNullVec(edPan.Position);
+						curPatch.Position = edPan.Position;
 					if (!VecEqual(edPan.Rotation, orPan.Rotation))
-						curPatch.Rotation = ToNullVec(edPan.Rotation);
+						curPatch.Rotation = edPan.Rotation;
 					if (!VecEqual(edPan.Scale, orPan.Scale))
-						curPatch.Scale = ToNullVec(edPan.Scale);
+						curPatch.Scale = edPan.Scale;
 					if (!VecEqual(edPan.Size, orPan.Size))
-						curPatch.Size = ToNullVec(edPan.Size);
+						curPatch.Size = edPan.Size;
 					if (edPan.Visible != orPan.Visible)
 						curPatch.Visible = edPan.Visible;
 
@@ -196,9 +196,7 @@ namespace SwitchThemes.Common
 		}
 
 		static bool VecEqual(Vector3 v, Vector3 v1) => v.X == v1.X && v.Y == v1.Y && v.Z == v1.Z;
-		static NullableVector3 ToNullVec(Vector3 v) => new NullableVector3() { X = v.X, Y = v.Y, Z = v.Z };
 		static bool VecEqual(Vector2 v, Vector2 v1) => v.X == v1.X && v.Y == v1.Y;
-		static NullableVector2 ToNullVec(Vector2 v) => new NullableVector2() { X = v.X, Y = v.Y };
 
 		public static bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
 		{
