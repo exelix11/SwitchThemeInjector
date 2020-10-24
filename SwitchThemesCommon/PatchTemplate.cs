@@ -243,7 +243,7 @@ namespace SwitchThemes.Common
 			Patches = new PanePatch[]
 			{
 				new PanePatch {
-					PaneName = "P_Form", Size = new NullableVector2(64,56),
+					PaneName = "P_Form", Size = new Vector2(64,56),
 					UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } } },
 				new PanePatch { PaneName = "P_Stick", Visible = false },
 				new PanePatch { PaneName = "P_Y", Visible = false },
@@ -258,7 +258,7 @@ namespace SwitchThemes.Common
 			FileName = "blyt/RdtBtnSet.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "P_Pict", Size = new NullableVector2(64,56),
+				new PanePatch { PaneName = "P_Pict", Size = new Vector2(64,56),
 					UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }}
 			}
 		};
@@ -268,7 +268,7 @@ namespace SwitchThemes.Common
 			FileName = "blyt/RdtBtnShop.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "P_Pict", Size = new NullableVector2(64,56),
+				new PanePatch { PaneName = "P_Pict", Size = new Vector2(64,56),
 				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }}
 			}
 		};
@@ -278,7 +278,7 @@ namespace SwitchThemes.Common
 			FileName = "blyt/RdtBtnPow.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56),
+				new PanePatch { PaneName = "P_Pict_00", Size = new Vector2(64,56),
 				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }}
 			}
 		};
@@ -288,7 +288,7 @@ namespace SwitchThemes.Common
 			FileName = "blyt/RdtBtnNtf.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "P_PictNtf_00", Size = new NullableVector2(64,56),
+				new PanePatch { PaneName = "P_PictNtf_00", Size = new Vector2(64,56),
 				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
 				new PanePatch { PaneName = "P_PictNtf_01", Visible = false }
 			}
@@ -303,7 +303,7 @@ namespace SwitchThemes.Common
 				  new PanePatch { PaneName = "N_00", Position = new NullableVector3(0,0,0) },
 				  Original values : N_00 is at -22; -13. P_Pict_00 is at 28;
 				*/			
-				new PanePatch { PaneName = "P_Pict_00", Size = new NullableVector2(64,56), Position = new NullableVector3(22,13,0),
+				new PanePatch { PaneName = "P_Pict_00", Size = new Vector2(64,56), Position = new Vector3(22,13,0),
 					UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
 				new PanePatch { PaneName = "N_02", Visible = false },
 				new PanePatch { PaneName = "N_01", Visible = false },
@@ -317,7 +317,7 @@ namespace SwitchThemes.Common
 			FileName = "blyt/EntBtnResumeSystemApplet.bflyt",
 			Patches = new PanePatch[]
 			{
-				new PanePatch { PaneName = "P_PictHome", Size = new NullableVector2(184,168), Position = new NullableVector3(0,0,0) }
+				new PanePatch { PaneName = "P_PictHome", Size = new Vector2(184,168), Position = new Vector3(0,0,0) }
 			}
 		};
 #endregion

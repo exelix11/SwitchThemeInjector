@@ -305,7 +305,7 @@ namespace SwitchThemes
 				if (Image != null)
 					builder.AddMainBg(File.ReadAllBytes(Image));
 				if (ExtraCommon != null)
-					builder.AddFile("common.json", File.ReadAllBytes(ExtraCommon));
+					builder.AddCommonLayout(File.ReadAllBytes(ExtraCommon));
 
 				foreach (var i in AppletIcons)
 					if (i.Value != null)

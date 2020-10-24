@@ -53,6 +53,10 @@ CFLAGS	:=	-O2 -ffunction-sections \
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror -DGITVER=\"$(GITVER)\"
 
+ifneq ($(DEVBUILD),)         
+	CFLAGS	+=	-DDEVBUILD=1
+endif
+
 CXXFLAGS	:= $(CFLAGS) -std=gnu++17
 
 ASFLAGS	:=	 -g $(ARCH)
