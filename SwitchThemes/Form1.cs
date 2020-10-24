@@ -70,7 +70,7 @@ namespace SwitchThemes
 		{
 			Text += " Ver. " + Info.CoreVer;
 			materialLabel10.Text = $"Switch Theme Injector Ver {Info.CoreVer} by exelix";
-#if DEBUG
+#if DEBUG || CIRelease
 			lblDebug.Visible = true;
 #endif
 		}
@@ -505,7 +505,7 @@ namespace SwitchThemes
 					builder.AddMainBg(File.ReadAllBytes(BgImage));
 
 				if (ExtraCommonLyt != null)
-					builder.AddFile("common.json", ExtraCommonLyt.AsByteArray());
+					builder.AddCommonLayout(ExtraCommonLyt.AsByteArray());
 
 				if (target == "home")
 				{

@@ -83,6 +83,9 @@ namespace SwitchThemes.Common
 			files.Add(name, data);
 		}
 
+		public void AddCommonLayout(byte[] data) => 
+			AddFile("common.json", data);
+
 		public void AddMainBg(byte[] data)
 		{
 			if (data == null) return;
