@@ -105,16 +105,54 @@ namespace SwitchThemes.Common.Bflyt
 		public static bool ApplyMaterialsPatch(this BflytFile f, MaterialPatch[] Patches)
 		{
 			if (Patches == null) return true;
-			var mats = f.GetMat;
+			var mats = f.Mat1;
 			if (mats == null) return false;
 			foreach (var p in Patches)
 			{
-				var target = mats.Materials.Where(x => x.Name == p.MaterialName).First();
+				var target = mats.Materials.Where(x => x.Name == p.MaterialName).FirstOrDefault();
 				if (target == null) continue; //Less strict patching
 				if (p.ForegroundColor != null)
 					target.ForegroundColor = new RGBAColor(p.ForegroundColor);
 				if (p.BackgroundColor != null)
 					target.BackgroundColor = new RGBAColor(p.BackgroundColor);
+
+				if (p.Refs == null && p.Transforms == null)
+					continue;
+
+				Dictionary<string, int> texToMadId = new Dictionary<string, int>();
+				for (int i = 0; i < target.Textures.Length; i++)
+				{
+					var id = target.Textures[i].TextureId;
+					texToMadId.Add(f.Tex1.Textures[id], i);
+				}
+
+				foreach (var rp in p.Refs)
+				{
+					if (!texToMadId.ContainsKey(rp.Name)) 
+						continue;
+
+					var tex = target.Textures[texToMadId[rp.Name]];
+
+					if (rp.WrapS != null)
+						tex.WrapS = (BflytMaterial.TextureReference.WRAPS)rp.WrapS.Value;
+
+					if (rp.WrapT != null)
+						tex.WrapT = (BflytMaterial.TextureReference.WRAPS)rp.WrapT.Value;
+				}
+
+				foreach (var tp in p.Transforms)
+				{
+					if (!texToMadId.ContainsKey(tp.Name))
+						continue;
+
+					var tf = target.TextureTransformations[texToMadId[tp.Name]];
+
+					tf.Rotation = tp.Rotation ?? tf.Rotation;
+					tf.ScaleX = tp.ScaleX ?? tf.ScaleX;
+					tf.ScaleY = tp.ScaleY ?? tf.ScaleY;
+					tf.X = tp.X ?? tf.X;
+					tf.Y = tp.Y ?? tf.Y;
+				}
 			}
 			return true;
 		}
@@ -141,7 +179,7 @@ namespace SwitchThemes.Common.Bflyt
 		public static bool PatchTextureName(this BflytFile f, string original, string _new)
 		{
 			bool patchedSomething = false;
-			var texSection = f.GetTex;
+			var texSection = f.Tex1;
 			if (texSection == null) return false;
 			for (int i = 0; i < texSection.Textures.Count; i++)
 			{
@@ -240,8 +278,8 @@ namespace SwitchThemes.Common.Bflyt
 				if (p != null)
 				{
 					f.RemovePane(p);
-					f.GetTex.Textures[0] = "White1x1^r";
-					f.GetMat.Materials.RemoveAt(1);
+					f.Tex1.Textures[0] = "White1x1^r";
+					f.Mat1.Materials.RemoveAt(1);
 				}
 			}
 			#endregion

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <optional>
 #include "../MyTypes.h"
 #include "../SarcLib/Sarc.hpp"
 
@@ -28,6 +29,7 @@ struct PanePatch
 
 	u32 ApplyFlags; //to disable the properties set to null in the json
 
+	// Todo: switch to std::optional
 	enum class Flags : u32 
 	{
 		Visible = 1,
@@ -82,9 +84,29 @@ struct ExtraGroup
 
 struct MaterialPatch
 {
+	struct TexReference
+	{
+		std::string Name;
+		std::optional<u8> WrapS;
+		std::optional<u8> WrapT;
+	};
+
+	struct TexTransform
+	{
+		std::string Name;
+		std::optional<float> X;
+		std::optional<float> Y;
+		std::optional<float> Rotation;
+		std::optional<float> ScaleX;
+		std::optional<float> ScaleY;
+	};
+
 	std::string MaterialName;
 	std::string ForegroundColor;
 	std::string BackgroundColor;
+
+	std::vector<TexReference> Refs;
+	std::vector<TexTransform> Transforms;
 };
 
 struct LayoutFilePatch 

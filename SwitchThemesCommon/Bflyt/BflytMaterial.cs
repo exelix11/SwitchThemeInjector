@@ -13,9 +13,30 @@ namespace SwitchThemes.Common.Bflyt
 	public class BflytMaterial : IInspectable
 	{
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public struct TextureReference
+		public class TextureReference : IEquatable<TextureReference>
 		{
 			public override string ToString() => $"{{Texture reference}}";
+
+			public override bool Equals(object obj)
+			{
+				return obj is TextureReference reference && Equals(reference);
+			}
+
+			public bool Equals(TextureReference other)
+			{
+				return TextureId == other.TextureId &&
+					   WrapS == other.WrapS &&
+					   WrapT == other.WrapT;
+			}
+
+			public override int GetHashCode()
+			{
+				int hashCode = 1910803454;
+				hashCode = hashCode * -1521134295 + TextureId.GetHashCode();
+				hashCode = hashCode * -1521134295 + WrapS.GetHashCode();
+				hashCode = hashCode * -1521134295 + WrapT.GetHashCode();
+				return hashCode;
+			}
 
 			public enum WRAPS : byte
 			{
@@ -32,18 +53,63 @@ namespace SwitchThemes.Common.Bflyt
 			public UInt16 TextureId { get; set; }
 			public WRAPS WrapS { get; set; }
 			public WRAPS WrapT { get; set; }
+
+			public static bool operator ==(TextureReference left, TextureReference right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(TextureReference left, TextureReference right)
+			{
+				return !(left == right);
+			}
 		}
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public struct TextureTransofrm
+		public class TextureTransofrm : IEquatable<TextureTransofrm>
 		{
 			public override string ToString() => $"transform ({X},{Y}) ({ScaleX}, {ScaleY}) {Rotation}";
+
+			public override bool Equals(object obj)
+			{
+				return obj is TextureTransofrm transofrm && Equals(transofrm);
+			}
+
+			public bool Equals(TextureTransofrm other)
+			{
+				return X == other.X &&
+					   Y == other.Y &&
+					   Rotation == other.Rotation &&
+					   ScaleX == other.ScaleX &&
+					   ScaleY == other.ScaleY;
+			}
+
+			public override int GetHashCode()
+			{
+				int hashCode = -1889935131;
+				hashCode = hashCode * -1521134295 + X.GetHashCode();
+				hashCode = hashCode * -1521134295 + Y.GetHashCode();
+				hashCode = hashCode * -1521134295 + Rotation.GetHashCode();
+				hashCode = hashCode * -1521134295 + ScaleX.GetHashCode();
+				hashCode = hashCode * -1521134295 + ScaleY.GetHashCode();
+				return hashCode;
+			}
 
 			public float X { get; set; }
 			public float Y { get; set; }
 			public float Rotation { get; set; }
 			public float ScaleX { get; set; }
 			public float ScaleY { get; set; }
+
+			public static bool operator ==(TextureTransofrm left, TextureTransofrm right)
+			{
+				return left.Equals(right);
+			}
+
+			public static bool operator !=(TextureTransofrm left, TextureTransofrm right)
+			{
+				return !(left == right);
+			}
 		}
 
 		public override bool Equals(object obj)
@@ -71,7 +137,7 @@ namespace SwitchThemes.Common.Bflyt
 
 		public RGBAColor ForegroundColor { get; set; }
 		public RGBAColor BackgroundColor { get; set; }
-		
+
 		//TODO: finish the implementation
 		//public bool HasAlphaComparisonConditions { get; set; }
 		//public bool HasIndirectAdjustment { get; set; }

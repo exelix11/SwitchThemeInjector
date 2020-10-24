@@ -134,6 +134,43 @@ bool BflytPatcher::ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches
 			(*target).ForegroundColor = (u32)std::stoul(p.ForegroundColor, 0, 16);
 		if (p.BackgroundColor != "")
 			(*target).BackgroundColor = (u32)std::stoul(p.BackgroundColor, 0, 16);
+
+		std::unordered_map<std::string, int> texToMapId;
+		for (u32 i = 0; i < target->Textures.size(); i++)
+		{
+			auto id = target->Textures[i].TextureId;
+			texToMapId[lyt.GetTexSection()->Textures.at(id)] = i;
+		}
+
+		for (const auto& rp : p.Refs)
+		{
+			if (!texToMapId.count(rp.Name))
+				continue;
+
+			auto& tex = target->Textures[texToMapId.at(rp.Name)];
+
+			if (rp.WrapS)
+				tex.WrapS = *rp.WrapS;
+
+			if (rp.WrapT)
+				tex.WrapT = *rp.WrapT;
+		}
+
+		for (const auto& tp : p.Transforms)
+		{
+			if (!texToMapId.count(tp.Name))
+				continue;
+
+			auto& tf = target->TextureTransformations[texToMapId.at(tp.Name)];
+
+			#define set(x) if (tp.x) tf.x = *tp.x
+			set(X);
+			set(Y);
+			set(ScaleX);
+			set(ScaleY);
+			set(Rotation);			
+			#undef set
+		}
 	}
 	return true;
 }
