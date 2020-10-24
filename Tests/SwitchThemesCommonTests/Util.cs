@@ -8,14 +8,17 @@ namespace SwitchThemesCommonTests
 {
 	static class Util 
 	{
+		public static string GetPath(string relativePath) =>
+			$"../../../../Cases/{relativePath}";
+
 		public static byte[] ReadData(string relativePath) =>
-			File.ReadAllBytes($"../../../../Cases/{relativePath}");
+			File.ReadAllBytes(GetPath(relativePath));
 
 		public static string ReadString(string relativePath) =>
-			File.ReadAllText($"../../../../Cases/{relativePath}");
+			File.ReadAllText(GetPath(relativePath));
 
 		public static bool Exists(string relativePath) =>
-			File.Exists($"../../../../Cases/{relativePath}");
+			File.Exists(GetPath(relativePath));
 	}
 
 	class HashUtil : IDisposable

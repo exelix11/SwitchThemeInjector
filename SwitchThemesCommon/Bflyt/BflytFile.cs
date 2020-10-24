@@ -269,14 +269,14 @@ namespace SwitchThemes.Common.Bflyt
 		}
 
 		//Getters will not add the section if it's missing
-		public TextureSection GetTex
+		public TextureSection Tex1
 		{
 			get => RootPanes.Find(x => x is TextureSection) as TextureSection;
 		}
 
 		public TextureSection GetTexturesSection()
 		{
-			if (GetTex != null) return GetTex;
+			if (Tex1 != null) return Tex1;
 			//the textures section is often after a fnl1 section
 			var res = new TextureSection();
 			var fnt = RootPanes.Find(x => x.name == "fnl1");
@@ -286,17 +286,17 @@ namespace SwitchThemes.Common.Bflyt
 			return res;
 		}
 
-		public MaterialsSection GetMat
+		public MaterialsSection Mat1
 		{
 			get => RootPanes.Find(x => x is MaterialsSection) as MaterialsSection;
 		}
 
 		public MaterialsSection GetMaterialsSection()
 		{
-			if (GetMat != null) return GetMat;
+			if (Mat1 != null) return Mat1;
 			//the materials section is often after the txl1 section
 			var res = new MaterialsSection();
-			var tex = GetTex;
+			var tex = Tex1;
 			if (tex == null)
 			{
 				var fnt = RootPanes.Find(x => x.name == "fnl1");

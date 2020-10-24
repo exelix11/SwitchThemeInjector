@@ -100,9 +100,45 @@ namespace SwitchThemes.Common
 
 	public class MaterialPatch
 	{
+		// Texture related fields are identified by texture name rather than index
+		public struct TexReference
+		{
+			public string Name;
+			public byte? WrapS, WrapT;
+		}
+
+		// I assume transforms are per-texture in the same order as references in the material, see the CheckMaterialTexturesAssumption test
+		// Not sure about this as the material has two separate counts for references and transforms
+		public struct TexTransform
+		{
+			public string Name; 
+			public float? X;
+			public float? Y;
+			public float? Rotation;
+			public float? ScaleX;
+			public float? ScaleY;
+		}
+
 		public string MaterialName;
 		public string ForegroundColor = null;
 		public string BackgroundColor = null;
+		
+		public TexReference[] Refs = null;
+		public TexTransform[] Transforms = null;
+
+		public bool IsEmpty() 
+		{
+			if (ForegroundColor != null || BackgroundColor != null)
+				return false;
+
+			if (Refs != null && Refs.Length > 0)
+				return false;
+
+			if (Transforms != null && Transforms.Length > 0)
+				return false;
+
+			return true;
+		}
 	}
 
 	public class LayoutFilePatch
@@ -180,7 +216,7 @@ namespace SwitchThemes.Common
 		public int type;
 	}
 	
-	public struct Vector3 
+	public struct Vector3 : IEquatable<Vector3>
 	{
 		public float X, Y, Z;
 
@@ -189,6 +225,28 @@ namespace SwitchThemes.Common
 		public void Deconstruct(out float x, out float y, out float z) =>
 			(x, y, z) = (X, Y, Z);
 
+		public override bool Equals(object obj)
+		{
+			return obj is Vector3 vector && Equals(vector);
+		}
+
+		public bool Equals(Vector3 other)
+		{
+			return X == other.X &&
+				   Y == other.Y &&
+				   Z == other.Z;
+		}
+
+		public static bool operator ==(Vector3 left, Vector3 right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(Vector3 left, Vector3 right)
+		{
+			return !(left == right);
+		}
+
 		public static implicit operator Vector3((float, float, float) v)
 		{
 			var (x, y, z) = v;
@@ -196,7 +254,7 @@ namespace SwitchThemes.Common
 		}
 	}
 	
-	public struct Vector2
+	public struct Vector2 : IEquatable<Vector2>
 	{
 		public float X, Y;
 		
@@ -204,6 +262,27 @@ namespace SwitchThemes.Common
 
 		public void Deconstruct(out float x, out float y) =>
 			(x, y) = (X, Y);
+
+		public override bool Equals(object obj)
+		{
+			return obj is Vector2 vector && Equals(vector);
+		}
+
+		public bool Equals(Vector2 other)
+		{
+			return X == other.X &&
+				   Y == other.Y;
+		}
+
+		public static bool operator ==(Vector2 left, Vector2 right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(Vector2 left, Vector2 right)
+		{
+			return !(left == right);
+		}
 
 		public static implicit operator Vector2((float, float) v)
 		{

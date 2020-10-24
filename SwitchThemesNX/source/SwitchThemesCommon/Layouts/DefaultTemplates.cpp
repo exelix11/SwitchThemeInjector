@@ -21,31 +21,44 @@ using json = nlohmann::json;
 
 using nlohmann::json;
 
+#define get_s(s, f) j.at(s).get_to(f)
+#define get(n) get_s(#n, p.n)
+
+#define get_if_s(s, f) if(j.count(s)) j.at(s).get_to(f)
+#define get_if(n) get_if_s(#n, p.n)
+
+template<typename T>
+static inline std::optional<T> GetOptionalHelper(const json& j, const char* name)
+{
+	if (j.count(name))
+		return j.at(name).get<T>();
+	return std::nullopt;
+}
+
+#define get_optional_s(s, f) f = GetOptionalHelper<decltype(f)::value_type>(j, s)
+#define get_optional(n) get_optional_s(#n, p.n)
+
 void from_json(const json& j, Vector2& p) {
-	j.at("X").get_to(p.X);
-	j.at("Y").get_to(p.Y);
+	get(X);
+	get(Y);
 }
 
 void from_json(const json& j, Vector3& p) {
-	j.at("X").get_to(p.X);
-	j.at("Y").get_to(p.Y);
-	j.at("Z").get_to(p.Z);
+	get(X);
+	get(Y);
+	get(Z);
 }
-
-#define get_optional_s(s, f) if(j.count(s)) j.at(s).get_to(f)
-#define get_optional(n) get_optional_s(#n, p.n)
 
 void from_json(const json& j, UsdPatch& p) {
 	p = {};
-	get_optional_s("PropName", p.PropName);
-	get_optional_s("PropValues", p.PropValues);
-	get_optional_s("type", p.type);
+	get(PropName);
+	get_if(PropValues);
+	get_if(type);
 }
 
 void from_json(const json& j, PanePatch& p) {
 	p = {};
-	j.at("PaneName").get_to(p.PaneName);
-	p.ApplyFlags = 0;
+	get(PaneName);
 
 	#define get_assign_member(jname, field, flag) do { \
 		if (j.count(jname)) { \
@@ -78,47 +91,70 @@ void from_json(const json& j, PanePatch& p) {
 }
 
 void from_json(const json& j, ExtraGroup& p) {
+	p = {};	
+	get(GroupName);
+	get_if(Panes);
+}
+
+void from_json(const json& j, MaterialPatch::TexReference& p) {
 	p = {};
-	get_optional_s("GroupName", p.GroupName);
-	get_optional_s("Panes", p.Panes);
+	get(Name);
+	get_optional(WrapS);
+	get_optional(WrapT);
+}
+
+void from_json(const json& j, MaterialPatch::TexTransform& p) {
+	p = {};
+	get(Name);
+	get_optional(X);
+	get_optional(Y);
+	get_optional(Rotation);
+	get_optional(ScaleX);
+	get_optional(ScaleY);
 }
 
 void from_json(const json& j, MaterialPatch& p) {
 	p = {};
-	get_optional_s("MaterialName", p.MaterialName);
-	get_optional_s("ForegroundColor", p.ForegroundColor);
-	get_optional_s("BackgroundColor", p.BackgroundColor);
+	get_if(MaterialName);
+	get_if(ForegroundColor);
+	get_if(BackgroundColor);
+	get_if(Refs);
+	get_if(Transforms);
 }
 
 void from_json(const json& j, LayoutFilePatch& p) {
 	p = {};
-	get_optional_s("FileName", p.FileName);
-	get_optional_s("Patches", p.Patches);
-	get_optional_s("AddGroups", p.AddGroups);
-	get_optional_s("Materials", p.Materials);
-	get_optional_s("PushBackPanes", p.PushBackPanes);
-	get_optional_s("PullFrontPanes", p.PullFrontPanes);
+	get_if(FileName);
+	get_if(Patches);
+	get_if(AddGroups);
+	get_if(Materials);
+	get_if(PushBackPanes);
+	get_if(PullFrontPanes);
 }
 
 void from_json(const json& j, AnimFilePatch& p) {
 	p = {};
-	get_optional_s("FileName", p.FileName);
-	get_optional_s("AnimJson", p.AnimJson);
+	get_if(FileName);
+	get_if(AnimJson);
 }
 
 void from_json(const json& j, LayoutPatch& p) {
 	p = {};
-	get_optional_s("PatchName", p.PatchName);
-	get_optional_s("AuthorName", p.AuthorName);
-	get_optional_s("Files", p.Files);
-	get_optional_s("Anims", p.Anims);
-	get_optional_s("PatchAppletColorAttrib", p.PatchAppletColorAttrib);
-	get_optional_s("ID", p.ID);
-	get_optional_s("Ready8X", p.Obsolete_Ready8X);
+	get_if(PatchName);
+	get_if(AuthorName);
+	get_if(Files);
+	get_if(Anims);
+	get_if(PatchAppletColorAttrib);
+	get_if(ID);
+	get_if(Obsolete_Ready8X);
 }
 
-#undef get_optional
+#undef get_s
+#undef get
+#undef get_if_s
+#undef get_if
 #undef get_optional_s
+#undef get_optional
 
 LayoutPatch Patches::LoadLayout(const string_view jsn)
 {
