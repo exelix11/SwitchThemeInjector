@@ -5,14 +5,16 @@
 #include "../MyTypes.h"
 #include "../SarcLib/Sarc.hpp"
 
-struct Vector3 { float X, Y, Z; };
-struct Vector2 { float X, Y; };
+struct Vector3 { float X, Y, Z; bool operator==(Vector3 const&) const = default; };
+struct Vector2 { float X, Y; bool operator==(Vector2 const&) const = default; };
 
 struct UsdPatch 
 {
 	std::string PropName;
 	std::vector<std::string> PropValues;
 	int type;
+
+	bool operator==(UsdPatch const&) const = default;
 };
 
 struct PanePatch
@@ -72,6 +74,8 @@ struct PanePatch
 	// PIC1 : Bottom right color
 	// TXT1 : Bottom shadow color
 	inline std::string& PaneSpecific3() { return PaneSpecific[3]; }
+
+	bool operator==(PanePatch const&) const = default;
 private:
 	std::string PaneSpecific[4];
 };
@@ -80,6 +84,8 @@ struct ExtraGroup
 {
 	std::string GroupName;
 	std::vector<std::string> Panes;
+
+	bool operator==(ExtraGroup const&) const = default;
 };
 
 struct MaterialPatch
@@ -89,6 +95,8 @@ struct MaterialPatch
 		std::string Name;
 		std::optional<u8> WrapS;
 		std::optional<u8> WrapT;
+
+		bool operator==(TexReference const&) const = default;
 	};
 
 	struct TexTransform
@@ -99,6 +107,8 @@ struct MaterialPatch
 		std::optional<float> Rotation;
 		std::optional<float> ScaleX;
 		std::optional<float> ScaleY;
+	
+		bool operator==(TexTransform const&) const = default;
 	};
 
 	std::string MaterialName;
@@ -107,6 +117,8 @@ struct MaterialPatch
 
 	std::vector<TexReference> Refs;
 	std::vector<TexTransform> Transforms;
+
+	bool operator==(MaterialPatch const&) const = default;
 };
 
 struct LayoutFilePatch 
@@ -118,12 +130,16 @@ struct LayoutFilePatch
 
 	std::vector<std::string> PushBackPanes;
 	std::vector<std::string> PullFrontPanes;
+
+	bool operator==(LayoutFilePatch const&) const = default;
 };
 
 struct AnimFilePatch
 {
 	std::string FileName;
 	std::string AnimJson;
+
+	bool operator==(AnimFilePatch const&) const = default;
 };
 
 struct LayoutPatch 
@@ -139,6 +155,8 @@ struct LayoutPatch
 	bool UsesOldFixes() const { return ID == "" && !Obsolete_Ready8X; }
 
 	bool IsCompatible(const SARC::SarcData &sarc) const;
+
+	bool operator==(LayoutPatch const&) const = default;
 };
 
 struct PatchTemplate 

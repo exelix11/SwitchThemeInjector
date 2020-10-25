@@ -61,7 +61,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;SWITCHTHEMESCOMMON_TESTS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +104,7 @@
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Yaz0.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SwitchThemesCommon.cpp" />
     <ClCompile Include="Compression.cpp" />
+    <ClCompile Include="Layouts.cpp" />
     <ClCompile Include="RealTests.cpp" />
     <ClCompile Include="SyntheticTests.cpp" />
   </ItemGroup>
