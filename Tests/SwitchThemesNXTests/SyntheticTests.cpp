@@ -15,7 +15,7 @@ namespace SwitchThemesNXTests
 	public:
 		TEST_METHOD(BflanDeserialize)
 		{
-			auto bflan = BflanDeserializer::FromJson(Util::ReadString("Synthetic/bflan.json"));
+			auto bflan = BflanDeserializer::FromJson(Util::ReadTestString("Synthetic/bflan.json"));
 			auto hash = Util::StringHash(bflan->WriteFile());
 			delete bflan;
 
@@ -25,7 +25,7 @@ namespace SwitchThemesNXTests
 
 		TEST_METHOD(BgPaneInjection)
 		{
-			auto bflyt = BflytFile(Util::ReadData("Synthetic/bginjection.bflyt"));
+			auto bflyt = BflytFile(Util::ReadTestData("Synthetic/bginjection.bflyt"));
 
 			BflytPatcher p(bflyt);
 			

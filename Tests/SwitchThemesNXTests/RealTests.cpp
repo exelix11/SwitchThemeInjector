@@ -43,11 +43,11 @@ namespace SwitchThemesNXTests
 		
 		void ProcessSzs(const std::string& name)
 		{
-			auto src = SARC::Unpack(Yaz0::Decompress(Util::ReadData("Source/" + name + ".szs")));
-			auto exp = SARC::Unpack(Yaz0::Decompress(Util::ReadData("Expected/" + name + ".szs")));
+			auto src = SARC::Unpack(Yaz0::Decompress(Util::ReadTestData("Source/" + name + ".szs")));
+			auto exp = SARC::Unpack(Yaz0::Decompress(Util::ReadTestData("Expected/" + name + ".szs")));
 		
-			std::string lyt = Util::Exists("Source/" + name + ".json") ? 
-				Util::ReadString("Source/" + name + ".json") : "";
+			std::string lyt = Util::ExistsTest("Source/" + name + ".json") ? 
+				Util::ReadTestString("Source/" + name + ".json") : "";
 
 			SwitchThemesCommon::SzsPatcher p(std::move(src));
 			if (!p.PatchMainBG(DDS))
@@ -67,6 +67,6 @@ namespace SwitchThemesNXTests
 			CompareSarc(exp, fin);
 		}
 
-		std::vector<u8> DDS = Util::ReadData("bg.dds");
+		std::vector<u8> DDS = Util::ReadTestData("bg.dds");
 	};
 }
