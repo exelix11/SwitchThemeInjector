@@ -56,9 +56,15 @@ class BflytFile
 {
 public:
 	//Maybe make this stl-comatible ?
-	class Iterator : public std::iterator<std::forward_iterator_tag,Panes::PanePtr, Panes::PanePtr, const Panes::PanePtr*, Panes::PanePtr&>
+	class Iterator
 	{
 	public:
+		using iterator_category = std::forward_iterator_tag;
+		using value_type = Panes::PanePtr;
+		using difference_type = std::ptrdiff_t;
+		using pointer = Panes::PanePtr*;
+		using reference = Panes::PanePtr&;
+
 		Iterator(BflytFile *file, std::vector<Panes::PanePtr>&& root) : _file(file) 
 		{
 			for (auto& p : root)

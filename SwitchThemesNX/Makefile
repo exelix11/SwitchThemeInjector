@@ -57,7 +57,7 @@ ifneq ($(DEVBUILD),)
 	CFLAGS	+=	-DDEVBUILD=1
 endif
 
-CXXFLAGS	:= $(CFLAGS) -std=gnu++17
+CXXFLAGS	:= $(CFLAGS) -std=gnu++20
 
 ASFLAGS	:=	 -g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map) -lstdc++fs
