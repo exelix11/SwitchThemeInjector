@@ -49,6 +49,7 @@
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClCompile>
+    <ClCompile Include="Layouts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="picosha2.h" />

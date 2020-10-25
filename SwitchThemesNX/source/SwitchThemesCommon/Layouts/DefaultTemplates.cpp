@@ -39,14 +39,16 @@ static inline std::optional<T> GetOptionalHelper(const json& j, const char* name
 #define get_optional(n) get_optional_s(#n, p.n)
 
 void from_json(const json& j, Vector2& p) {
-	get(X);
-	get(Y);
+	p = {};
+	get_if(X);
+	get_if(Y);
 }
 
 void from_json(const json& j, Vector3& p) {
-	get(X);
-	get(Y);
-	get(Z);
+	p = {};
+	get_if(X);
+	get_if(Y);
+	get_if(Z);
 }
 
 void from_json(const json& j, UsdPatch& p) {
@@ -115,7 +117,7 @@ void from_json(const json& j, MaterialPatch::TexTransform& p) {
 
 void from_json(const json& j, MaterialPatch& p) {
 	p = {};
-	get_if(MaterialName);
+	get(MaterialName);
 	get_if(ForegroundColor);
 	get_if(BackgroundColor);
 	get_if(Refs);
@@ -124,7 +126,7 @@ void from_json(const json& j, MaterialPatch& p) {
 
 void from_json(const json& j, LayoutFilePatch& p) {
 	p = {};
-	get_if(FileName);
+	get(FileName);
 	get_if(Patches);
 	get_if(AddGroups);
 	get_if(Materials);
@@ -134,13 +136,13 @@ void from_json(const json& j, LayoutFilePatch& p) {
 
 void from_json(const json& j, AnimFilePatch& p) {
 	p = {};
-	get_if(FileName);
-	get_if(AnimJson);
+	get(FileName);
+	get(AnimJson);
 }
 
 void from_json(const json& j, LayoutPatch& p) {
 	p = {};
-	get_if(PatchName);
+	get(PatchName);
 	get_if(AuthorName);
 	get_if(Files);
 	get_if(Anims);

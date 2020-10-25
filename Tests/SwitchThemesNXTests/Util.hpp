@@ -18,20 +18,20 @@ namespace Util
 		return h;
 	}
 
-	static inline void WriteFile(const std::string& name, const std::vector<unsigned char>& data)
-	{
-		FILE* f = fopen(name.c_str(), "wb");
-		if (!f)
-			throw std::runtime_error("Saving file " + name + "failed !");
+	//static inline void WriteFile(const std::string& name, const std::vector<unsigned char>& data)
+	//{
+	//	FILE* f = fopen(name.c_str(), "wb");
+	//	if (!f)
+	//		throw std::runtime_error("Saving file " + name + "failed !");
+	//
+	//	fwrite(data.data(), 1, data.size(), f);
+	//	fflush(f);
+	//	fclose(f);
+	//}
 
-		fwrite(data.data(), 1, data.size(), f);
-		fflush(f);
-		fclose(f);
-	}
-
-	static inline std::vector<unsigned char> ReadData(const std::string& name)
+	static inline std::vector<unsigned char> ReadFile(const std::string& name)
 	{
-		FILE* f = fopen(("../Tests/Cases/" + name).c_str(), "rb");
+		FILE* f = fopen(name.c_str(), "rb");
 		if (!f)
 			throw std::runtime_error("Opening file " + name + " failed !\n");
 
@@ -53,9 +53,9 @@ namespace Util
 		return coll;
 	}
 
-	static inline std::string ReadString(const std::string& name)
+	static inline std::string ReadAllText(const std::string& name)
 	{
-		std::ifstream t("../Tests/Cases/" + name);
+		std::ifstream t(name);
 		if (!t.good())
 			throw std::runtime_error("");
 
@@ -64,7 +64,17 @@ namespace Util
 		return str;
 	}
 
-	static inline bool Exists(const std::string& name)
+	static inline std::vector<unsigned char> ReadTestData(const std::string& name)
+	{
+		return ReadFile("../Tests/Cases/" + name);
+	}
+
+	static inline std::string ReadTestString(const std::string& name)
+	{
+		return ReadAllText("../Tests/Cases/" + name);
+	}
+
+	static inline bool ExistsTest(const std::string& name)
 	{
 		return std::filesystem::exists("../Tests/Cases/" + name);
 	}
