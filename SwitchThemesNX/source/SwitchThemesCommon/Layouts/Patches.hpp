@@ -150,6 +150,7 @@ struct LayoutPatch
 	std::vector<AnimFilePatch> Anims;
 	bool PatchAppletColorAttrib = false;
 	std::string ID;
+	bool HideOnlineBtn;
 
 	bool Obsolete_Ready8X = false;
 	bool UsesOldFixes() const { return ID == "" && !Obsolete_Ready8X; }
@@ -206,4 +207,8 @@ namespace NewFirmFixes
 {
 	std::vector<LayoutFilePatch> GetFixLegacy(const std::string& LayoutName, const std::string& NXThemeName);
 	std::vector<LayoutFilePatch> GetFix(const std::string& LayoutID, const std::string& NxPart);
+
+	// Since 11.0
+	std::vector<AnimFilePatch> GetNoOnlineButtonFix();
+	std::vector<AnimFilePatch> GetAppletsPositionFix();
 }

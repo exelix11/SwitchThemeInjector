@@ -217,14 +217,17 @@ namespace SwitchThemes.Common
 			if (Patch.Anims != null)
 				Anims.AddRange(Patch.Anims);
 
-			AnimFilePatch[] animExtra = null;
-			if (Patch.HideOnlineBtn ?? true)
-				animExtra = NewFirmFixes.GetNoOnlineButtonFix(fw);
-			else if (!Anims.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
-				animExtra = NewFirmFixes.GetAppletsPositionFix(fw);
+			if (PartName == "home")
+			{
+				AnimFilePatch[] animExtra = null;
+				if (Patch.HideOnlineBtn ?? true)
+					animExtra = NewFirmFixes.GetNoOnlineButtonFix(fw);
+				else if (!Anims.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
+					animExtra = NewFirmFixes.GetAppletsPositionFix(fw);
 
-			if (animExtra != null)
-				Anims.AddRange(animExtra);
+				if (animExtra != null)
+					Anims.AddRange(animExtra);
+			}
 
 			if (Anims.Any())
 			{

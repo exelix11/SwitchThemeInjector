@@ -26,7 +26,6 @@ namespace SwitchThemesCommon {
 		SzsPatcher(SARC::SarcData& s);
 		~SzsPatcher();
 		
-		bool PatchAnimations(const std::vector<AnimFilePatch>& files);
 		bool PatchLayouts(const LayoutPatch& patch);
 		bool PatchLayouts(const LayoutPatch& patch, const std::string& PartName);
 		bool PatchMainBG(const std::vector<u8>& DDS);
@@ -35,8 +34,6 @@ namespace SwitchThemesCommon {
 		bool PatchBntxTextureAttribs(const std::vector<BntxTexAttribPatch>& patches);
 		PatchTemplate DetectSarc();
 		static PatchTemplate DetectSarc(const SARC::SarcData&);
-
-		void SetPatchAnimations(bool);
 
 		const SARC::SarcData& GetSarc();
 		SARC::SarcData& GetFinalSarc();
@@ -53,5 +50,5 @@ namespace SwitchThemesCommon {
 		bool EnableAnimations = true;
 	};
 	
-	std::string GeneratePatchListString(const std::vector < PatchTemplate >& templates);
+	std::string GeneratePatchListString(const std::vector<PatchTemplate>& templates);
 }

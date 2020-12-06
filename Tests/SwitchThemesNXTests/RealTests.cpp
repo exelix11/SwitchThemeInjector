@@ -58,9 +58,6 @@ namespace SwitchThemesNXTests
 				auto l = Patches::LoadLayout(lyt);
 				if (!p.PatchLayouts(l))
 					throw std::runtime_error("");
-
-				if (!p.PatchAnimations(l.Anims)) 
-					throw std::runtime_error("");
 			}
 			
 			auto fin = p.GetFinalSarc();

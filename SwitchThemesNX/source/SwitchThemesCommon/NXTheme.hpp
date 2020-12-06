@@ -17,24 +17,15 @@ struct ThemeFileManifest
 
 struct SystemVersion { 
 	u32 major, minor, micro;
-	bool IsGreater(const SystemVersion& other) const 
+
+	constexpr auto operator<=>(const SystemVersion& other) const
 	{
-		if (major > other.major)
-			return true;
-		else if (major < other.major)
-			return false;
-		else
-		{
-			if (minor > other.minor)
-				return true;
-			else if (minor < other.minor)
-				return false;
-			else return micro > other.micro;
-		}
-	}
-	bool IsEqual(const SystemVersion& other) const
-	{
-		return other.major == major && other.minor == minor && other.micro == micro;
+		auto m = major <=> other.major;
+		if (m == std::strong_ordering::equal)
+			m = minor <=> other.minor;
+		if (m == std::strong_ordering::equal)
+			m = micro <=> other.micro;
+		return m;
 	}
 };
 

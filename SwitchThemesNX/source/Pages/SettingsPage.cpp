@@ -5,7 +5,6 @@
 using namespace std;
 
 namespace Settings {
-	bool UseAnimations = true;
 	bool UseIcons = true;
 	bool UseCommon = true;
 };
@@ -25,9 +24,8 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::TextUnformatted("NXTheme settings");
 	ImGui::PopFont();
 	ImGui::TextWrapped("These settings only apply for installing nxthemes and are not saved, you have to switch them back every time you launch this app");
-	ImGui::Checkbox("Enable animations", &Settings::UseAnimations);
-	PAGE_RESET_FOCUS;
 	ImGui::Checkbox("Enable custom icons", &Settings::UseIcons);
+	PAGE_RESET_FOCUS;
 	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
 	ImGui::NewLine();
 
