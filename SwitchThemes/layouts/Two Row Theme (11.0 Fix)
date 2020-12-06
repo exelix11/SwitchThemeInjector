@@ -1,0 +1,457 @@
+{
+  "PatchName": "Two Row Theme (11.0 Fix)",
+  "AuthorName": "Izy",
+  "TargetName": "ResidentMenu.szs",
+  "Files": [
+    {
+      "FileName": "blyt/RdtBtnCtrl.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnSet.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnPvr.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnMyPage.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Root",
+          "Position": {
+            "X": 588.0,
+            "Y": -545.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_Balloon",
+          "Scale": {
+            "X": 0.0,
+            "Y": 0.0
+          }
+        },
+        {
+          "PaneName": "B_Hit",
+          "Position": {
+            "X": 588.0,
+            "Y": -545.0,
+            "Z": -545.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnIconGame.bflyt",
+      "Patches": [
+        {
+          "PaneName": "RootPane",
+          "Scale": {
+            "X": 0.7,
+            "Y": 0.7
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBase.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_ScrollArea",
+          "Size": {
+            "X": 1210.0,
+            "Y": 384.0
+          }
+        },
+        {
+          "PaneName": "N_ScrollWindow",
+          "Size": {
+            "X": 740.0,
+            "Y": 322.0
+          }
+        },
+        {
+          "PaneName": "N_GameRoot",
+          "Position": {
+            "X": 0.0,
+            "Y": 50.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_Game",
+          "Scale": {
+            "X": 1.03,
+            "Y": 1.03
+          }
+        },
+        {
+          "PaneName": "N_Icon_00",
+          "Position": {
+            "X": -465.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_01",
+          "Position": {
+            "X": -280.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_02",
+          "Position": {
+            "X": -95.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_03",
+          "Position": {
+            "X": 90.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_04",
+          "Position": {
+            "X": 275.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_05",
+          "Position": {
+            "X": 460.0,
+            "Y": 130.0,
+            "Z": 130.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_06",
+          "Position": {
+            "X": -465.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_07",
+          "Position": {
+            "X": -280.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_08",
+          "Position": {
+            "X": -95.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_09",
+          "Position": {
+            "X": 90.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_10",
+          "Position": {
+            "X": 275.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_11",
+          "Position": {
+            "X": 460.0,
+            "Y": -90.0,
+            "Z": -90.0
+          }
+        },
+        {
+          "PaneName": "N_Icon_12",
+          "Position": {
+            "X": 578.0,
+            "Y": 20.0,
+            "Z": 0.0
+          },
+          "Scale": {
+            "X": 0.25,
+            "Y": 0.25
+          }
+        },
+        {
+          "PaneName": "N_System",
+          "Position": {
+            "X": 0.0,
+            "Y": -176.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnLR",
+          "Position": {
+            "X": -1000.0,
+            "Y": -500.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnNoti",
+          "Position": {
+            "X": -499.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnShop",
+          "Position": {
+            "X": -391.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnPvr",
+          "Position": {
+            "X": -283.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnCtrl",
+          "Position": {
+            "X": 175.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnSet",
+          "Position": {
+            "X": 283.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_BtnPow",
+          "Position": {
+            "X": 391.0,
+            "Y": -55.0,
+            "Z": -55.0
+          },
+          "Scale": {
+            "X": 0.8,
+            "Y": 0.8
+          }
+        },
+        {
+          "PaneName": "L_ChildLock",
+          "Position": {
+            "X": -9999.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "N_MyPage",
+          "Position": {
+            "X": -343.0,
+            "Y": 315.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_00",
+          "Position": {
+            "X": -248.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_01",
+          "Position": {
+            "X": -176.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_02",
+          "Position": {
+            "X": -320.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_03",
+          "Position": {
+            "X": -104.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_04",
+          "Position": {
+            "X": -392.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_05",
+          "Position": {
+            "X": -9999.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_06",
+          "Position": {
+            "X": -9999.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_BtnAccount_07",
+          "Position": {
+            "X": -9999.0,
+            "Y": 0.0,
+            "Z": 0.0
+          }
+        },
+        {
+          "PaneName": "L_Hud",
+          "Position": {
+            "X": 584.0,
+            "Y": 315.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/Hud.bflyt",
+      "Patches": [
+        {
+          "PaneName": "N_Root",
+          "Position": {
+            "X": -790.0,
+            "Y": -640.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnNtf.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnShop.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnPow.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_Balloon",
+          "Position": {
+            "X": 0.0,
+            "Y": 148.0,
+            "Z": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "UsesOldFixes": true
+}
