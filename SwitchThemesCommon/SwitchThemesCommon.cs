@@ -119,19 +119,13 @@ namespace SwitchThemes.Common
 	{
 		private SarcData sarc;
 		private QuickBntx bntx = null;
-		private IEnumerable<PatchTemplate> templates;
 
-		public bool EnableAnimations = true;
 		public bool EnablePaneOrderMod = true;
 
-		public SzsPatcher(SarcData s, IEnumerable<PatchTemplate> t)
+		public SzsPatcher(SarcData s) 
 		{
 			sarc = s;
-			templates = t;
 		}
-
-		public SzsPatcher(SarcData s) : this(s, DefaultTemplates.templates) 
-		{ }
 
 		void SaveBntx()
 		{
@@ -153,43 +147,21 @@ namespace SwitchThemes.Common
 			return sarc;
 		}
 
-		public bool PatchAnimations(AnimFilePatch[] files)
-		{
-			if (files == null) return true;
-			uint TargetVersion = 0;
-			foreach (var p in files)
-			{
-				if (!sarc.Files.ContainsKey(p.FileName))
-					continue; //return bool.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-
-				if (TargetVersion == 0)
-				{
-					BflanFile b = new BflanFile(sarc.Files[p.FileName]);
-					TargetVersion = b.Version;
-				}
-
-				var n = BflanSerializer.FromJson(p.AnimJson);
-				n.Version = TargetVersion;
-				n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
-				sarc.Files[p.FileName] = n.WriteFile();
-			}
-			return true;
-		}
-
 		private bool PatchSingleLayout(LayoutFilePatch p)
 		{
 			if (p == null || p.FileName == null) return true;
 			if (!sarc.Files.ContainsKey(p.FileName))
 				return false;
+			
 			var target = new BflytFile(sarc.Files[p.FileName]);
+			
 			target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
+			
 			var res = target.ApplyLayoutPatch(p.Patches);
 			if (!res) return res;
-			if (EnableAnimations)
-			{
-				res = target.AddGroupNames(p.AddGroups);
-				if (!res) return res;
-			}
+
+			res = target.AddGroupNames(p.AddGroups);
+			if (!res) return res;
 
 			if (p.PullFrontPanes != null)
 				foreach (var n in p.PullFrontPanes)
@@ -203,13 +175,12 @@ namespace SwitchThemes.Common
 		}
 
 		public bool PatchLayouts(LayoutPatch Patch) =>
-			PatchLayouts(Patch, PatchTemplate);
-
-		public bool PatchLayouts(LayoutPatch Patch, PatchTemplate context) =>
-			PatchLayouts(Patch, context?.NXThemeName ?? "", context?.PatchRevision ?? 0);
+			PatchLayouts(Patch, PatchTemplate?.NXThemeName ?? "");
 		
-		public bool PatchLayouts(LayoutPatch Patch, string PartName, int PatchRevision)
+		public bool PatchLayouts(LayoutPatch Patch, string PartName)
 		{
+			var fw = FirmwareDetection.Detect(PartName, sarc);
+
 			if (PartName == "home" && Patch.PatchAppletColorAttrib)
 				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
 				   new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),
@@ -222,16 +193,16 @@ namespace SwitchThemes.Common
 
 			LayoutFilePatch[] extra;
 			//Legacy fixes based on name and version
-			if (PatchRevision != 0 && Patch.UsesOldFixes)
+			if (fw != FirmwareDetection.Firmware.Invariant && Patch.UsesOldFixes)
 			{
-				extra = NewFirmFixes.GetFixLegacy(Patch.PatchName, PatchRevision, PartName);
+				extra = NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName);
 				if (extra != null)
 					Files.AddRange(extra);
 			}
 			//Modern fixes based on layout ID
 			else if (Patch.ID != null)
 			{
-				extra = NewFirmFixes.GetFix(PartName, Patch.ID, PatchRevision);
+				extra = NewFirmFixes.GetFix(PartName, Patch.ID, fw);
 				if (extra != null)
 					Files.AddRange(extra);
 			}
@@ -241,6 +212,39 @@ namespace SwitchThemes.Common
 				var res = PatchSingleLayout(p);
 				if (!res) return res;
 			}
+
+			List<AnimFilePatch> Anims = new List<AnimFilePatch>();
+			if (Patch.Anims != null)
+				Anims.AddRange(Patch.Anims);
+
+			AnimFilePatch[] animExtra = null;
+			if (Patch.HideOnlineBtn ?? true)
+				animExtra = NewFirmFixes.GetNoOnlineButtonFix(fw);
+			else if (!Anims.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
+				animExtra = NewFirmFixes.GetAppletsPositionFix(fw);
+
+			if (animExtra != null)
+				Anims.AddRange(animExtra);
+
+			if (Anims.Any())
+			{
+				// The bflan version varies between firmwares, load a file from the list to detect the right one
+				BflanFile b = new BflanFile(sarc.Files[Anims[0].FileName]);
+				var TargetVersion = b.Version;
+				b = null;
+
+				foreach (var p in Anims)
+				{
+					if (!sarc.Files.ContainsKey(p.FileName))
+						continue;
+
+					var n = BflanSerializer.FromJson(p.AnimJson);
+					n.Version = TargetVersion;
+					n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
+					sarc.Files[p.FileName] = n.WriteFile();
+				}
+			}
+
 			return true;
 		}
 
@@ -334,44 +338,9 @@ namespace SwitchThemes.Common
 			get
 			{
 				if (_patch != null) return _patch;
-				_patch = DetectSarc(sarc, templates);
+				_patch = DefaultTemplates.GetFor(sarc);
 				return _patch;
 			}
-		}
-
-		public static PatchTemplate DetectSarc(SarcData sarc, IEnumerable<PatchTemplate> Templates)
-		{
-			bool SzsHasKey(string key) => sarc.Files.ContainsKey(key);
-
-			if (!SzsHasKey(@"timg/__Combined.bntx"))
-				return null;
-
-			foreach (var p in Templates)
-			{
-				if (!SzsHasKey(p.MainLayoutName))
-					continue;
-				bool isTarget = true;
-				foreach (string s in p.FnameIdentifier)
-				{
-					if (!SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
-				foreach (string s in p.FnameNotIdentifier)
-				{
-					if (SzsHasKey(s))
-					{
-						isTarget = false;
-						break;
-					}
-				}
-				if (!isTarget) continue;
-				return p;
-			}
-			return null;
 		}
 	}
 }

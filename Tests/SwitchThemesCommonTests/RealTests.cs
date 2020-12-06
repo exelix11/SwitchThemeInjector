@@ -35,14 +35,13 @@ namespace SwitchThemesCommonTests
 
 			string lyt = Util.Exists($"Source/{name}.json") ? Util.ReadString($"Source/{name}.json") : null;
 
-			SzsPatcher patcher = new SzsPatcher(src, SwitchThemes.Common.DefaultTemplates.templates);
+			SzsPatcher patcher = new SzsPatcher(src);
 			Assert.IsTrue(patcher.PatchMainBG(DDS));
 
 			if (lyt != null)
 			{
 				var l = LayoutPatch.LoadTemplate(lyt);
-				patcher.PatchLayouts(l, patcher.PatchTemplate);
-				patcher.PatchAnimations(l.Anims);
+				patcher.PatchLayouts(l);
 			}
 
 			var final = patcher.GetFinalSarc();

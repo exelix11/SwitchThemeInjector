@@ -19,7 +19,12 @@ namespace SwitchThemes.Common
 	{
 		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1", "cnt1" };
 
-		public static (LayoutPatch,string) Diff(SarcData original, SarcData edited)
+		public struct DiffOptions 
+		{
+			public bool? HideOnlineButton;
+		}
+
+		public static (LayoutPatch,string) Diff(SarcData original, SarcData edited, DiffOptions? opt)
 		{
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
 			if (!ScrambledEquals<string>(original.Files.Keys, edited.Files.Keys))
@@ -43,10 +48,6 @@ namespace SwitchThemes.Common
 				if (curFile.Count > 0 || extraGroups?.Count > 0 || materials?.Count > 0)
 					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), Materials = materials?.ToArray(), AddGroups = extraGroups?.ToArray() });
 			}
-			if (Patches.Count == 0) //animation edits depend on bflyt changes so this is relevant
-			{
-				throw new Exception("Couldn't find any difference");
-			}
 
 			string Message = null;
 
@@ -61,7 +62,7 @@ namespace SwitchThemes.Common
 			else if (!hasAtLeastAnExtraGroup)
 				Message = "This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations";
 
-			var targetPatch = SzsPatcher.DetectSarc(original, DefaultTemplates.templates);
+			var targetPatch = DefaultTemplates.GetFor(original);
 
 			return (new LayoutPatch()
 			{
@@ -70,7 +71,8 @@ namespace SwitchThemes.Common
 				AuthorName = "autoDiff",
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
-				ID = $"Generated_{Guid.NewGuid()}"
+				ID = $"Generated_{Guid.NewGuid()}",
+				HideOnlineBtn = opt?.HideOnlineButton ?? false
 			}, Message);
 		}
 
@@ -141,7 +143,7 @@ namespace SwitchThemes.Common
 									WrapT = (byte)tx.WrapT
 								});
 						}
-						else throw new Exception($"A texture reference from the edited layout is missing in the original: {layoutname}");
+						else throw new Exception($"A texture reference to {tex} in the edited layout is not part of the original file: {layoutname}");
 					}
 
 					m.Transforms = transforms.Count == 0 ? null : transforms.ToArray();
