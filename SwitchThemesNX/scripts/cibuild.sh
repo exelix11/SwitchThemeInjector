@@ -2,4 +2,4 @@
 set -e
 
 ver=$GITHUB_SHA
-make all "GITVER=CI-${ver}" "DEVBUILD=1" $@
+make all "GITVER=CI-${ver}" $@
