@@ -62,8 +62,18 @@ namespace SwitchThemes.Common
 			else if (!hasAtLeastAnExtraGroup)
 				Message = "This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations";
 
+			if (AnimPatches != null && AnimPatches.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
+			{
+				if (opt == null || opt?.HideOnlineButton == null)
+					opt = new DiffOptions { HideOnlineButton = false };
+				else if (opt != null && opt.Value.HideOnlineButton.Value)
+				{
+					Message = "You chose to hide the 11.0+ \"Switch online\" button but manually edited the \"RdtBase_SystemAppletPos\" animation. HideOnlineButton will be disabled.";
+					opt = new DiffOptions { HideOnlineButton = false };
+				}
+			}
+				
 			var targetPatch = DefaultTemplates.GetFor(original);
-
 			return (new LayoutPatch()
 			{
 				PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
@@ -72,7 +82,7 @@ namespace SwitchThemes.Common
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
 				ID = $"Generated_{Guid.NewGuid()}",
-				HideOnlineBtn = opt?.HideOnlineButton ?? false
+				HideOnlineBtn = targetPatch?.NXThemeName != "home" ? null : opt?.HideOnlineButton
 			}, Message);
 		}
 
