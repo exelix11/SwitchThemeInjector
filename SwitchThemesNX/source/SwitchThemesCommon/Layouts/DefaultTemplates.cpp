@@ -24,8 +24,11 @@ using nlohmann::json;
 #define get_s(s, f) j.at(s).get_to(f)
 #define get(n) get_s(#n, p.n)
 
+#define get_if_s_else(s, f, def) do { if(j.count(s)) j.at(s).get_to(f); else def; } while (0)
 #define get_if_s(s, f) if(j.count(s)) j.at(s).get_to(f)
+
 #define get_if(n) get_if_s(#n, p.n)
+#define get_if_else(n, def) get_if_s_else(#n, p.n, p.n = def)
 
 template<typename T>
 static inline std::optional<T> GetOptionalHelper(const json& j, const char* name)
@@ -142,13 +145,14 @@ void from_json(const json& j, AnimFilePatch& p) {
 
 void from_json(const json& j, LayoutPatch& p) {
 	p = {};
-	get(PatchName);
+	get_if(PatchName);
 	get_if(AuthorName);
 	get_if(Files);
 	get_if(Anims);
 	get_if(PatchAppletColorAttrib);
 	get_if(ID);
-	get_if(Obsolete_Ready8X);
+	get_if_else(HideOnlineBtn, true);
+	get_if_s("Ready8X", p.Obsolete_Ready8X);
 }
 
 #undef get_s
@@ -177,15 +181,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         { "P_Bg_00" },
         "White1x1^r" },
 //Residentmenu:
-	PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", ">= 8.0",
-		{ "blyt/IconError.bflyt", "blyt/RdtIconPromotion.bflyt" },
-		{ "anim/RdtBtnShop_LimitB.bflan" },
-		"blyt/BgNml.bflyt",
-		"White1x1A128^s",
-		"exelixBG",
-		{ "P_Bg_00" },
-		"White1x1A64^t" },
-	PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", ">= 6.0, < 8.0",
+	PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", ">= 6.0",
 		{ "blyt/IconError.bflyt" },
 		{ "anim/RdtBtnShop_LimitB.bflan" },
 		"blyt/BgNml.bflyt",

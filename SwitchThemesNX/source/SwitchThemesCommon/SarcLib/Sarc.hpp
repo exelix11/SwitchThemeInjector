@@ -23,7 +23,7 @@ public:
 	};
 
 	static PackedSarc Pack(SarcData &data, s32 _align = -1);
-	static SarcData Unpack(std::vector<u8> &data);
+	static SarcData Unpack(const std::vector<u8> &data);
 
 private:
 	static u32 NameHash(const std::string &name);

@@ -27,7 +27,6 @@ string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& 
 
 SzsPatcher::SzsPatcher(SARC::SarcData&& s) : sarc(s) {}
 SzsPatcher::SzsPatcher(SARC::SarcData& s) : sarc(s) {}
-void SzsPatcher::SetPatchAnimations(bool enable) { EnableAnimations = enable; }
 
 SzsPatcher::~SzsPatcher()
 {
@@ -57,30 +56,6 @@ void SzsPatcher::SaveBntx()
 	sarc.files["timg/__Combined.bntx"] = bntx->Write();
 	delete bntx;
 	bntx = nullptr;
-}
-
-bool SzsPatcher::PatchAnimations(const std::vector<AnimFilePatch>& files)
-{
-	u32 TargetVersion = 0;
-	for (const auto& p : files)
-	{
-		if (!sarc.files.count(p.FileName))
-			continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-
-		if (TargetVersion == 0)
-		{
-			auto bflan = new Bflan(sarc.files[p.FileName]);
-			TargetVersion = bflan->Version;
-			delete bflan;
-		}
-
-		auto bflan = BflanDeserializer::FromJson(p.AnimJson);
-		bflan->Version = TargetVersion;
-		bflan->byteOrder = Endianness::LittleEndian;
-		sarc.files[p.FileName] = bflan->WriteFile();
-		delete bflan;
-	}
-	return true;
 }
 
 bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
@@ -132,10 +107,9 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 			{"RdtIcoCtrl_01^s", 0x2000000}, {"RdtIcoCtrl_02^s", 0x2000000}, {"RdtIcoPwrForm^s", 0x2000000},
 		});
 
-	vector<LayoutFilePatch> Files;
-	Files.insert(Files.end(), patch.Files.begin(), patch.Files.end());
+	vector<LayoutFilePatch> Files = patch.Files;
 
-	if (HOSVer.IsGreater({7,9,9}) && patch.UsesOldFixes())
+	if (patch.UsesOldFixes())
 	{
 		auto extra = NewFirmFixes::GetFixLegacy(patch.PatchName, partName);
 		if (extra.size() != 0)
@@ -154,6 +128,40 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 		if (res != true)
 			return res;
 	}
+
+	vector<AnimFilePatch> Anims = patch.Anims;
+
+	vector<AnimFilePatch> extra;
+
+	if (partName == "home") {
+		if (patch.HideOnlineBtn)
+			extra = NewFirmFixes::GetNoOnlineButtonFix();
+		else if (std::none_of(Anims.begin(), Anims.end(), [](const auto& a) { return a.FileName == "anim/RdtBase_SystemAppletPos.bflan"; }))
+			extra == NewFirmFixes::GetAppletsPositionFix();
+
+		if (extra.size())
+			Anims.insert(Anims.end(), extra.begin(), extra.end());
+	}
+
+	if (Anims.size())
+	{
+		auto bflan = new Bflan(sarc.files[Anims[0].FileName]);
+		auto TargetVersion = bflan->Version;
+		delete bflan;
+
+		for (const auto& p : Anims)
+		{
+			if (!sarc.files.count(p.FileName))
+				continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
+
+			auto bflan = BflanDeserializer::FromJson(p.AnimJson);
+			bflan->Version = TargetVersion;
+			bflan->byteOrder = Endianness::LittleEndian;
+			sarc.files[p.FileName] = bflan->WriteFile();
+			delete bflan;
+		}
+	}
+
 	return true;
 }
 

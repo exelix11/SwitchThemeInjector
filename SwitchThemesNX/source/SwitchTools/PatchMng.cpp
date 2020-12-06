@@ -11,9 +11,8 @@
 
 using namespace std;
 
-static const u32 PatchSetVer = 5;
-#define LastSupportedVerSTR "10.2.0"
-//static const SystemVersion LastSupportedVer = { 10,1,1 };
+static const u32 PatchSetVer = 6;
+#define LastSupportedVerSTR "11.0"
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
@@ -65,7 +64,7 @@ bool PatchMng::CanInstallTheme(const string& FileName)
 	
 	const auto& ver = PartsRequiringPatch.at(FileName);
 
-	if (HOSVer.IsGreater(ver) || HOSVer.IsEqual(ver))
+	if (HOSVer >= ver)
 		return HasLatestPatches;
 	else return true;
 
@@ -148,12 +147,6 @@ PatchMng::ErrorPage PatchMng::EnsureInstalled()
 		DialogBlocking(ex.what());
 		return { "Error", ErrorHactool };
 	}
-
-	// TOOD: Should show a firmware warning even if compatible ?
-	//if (HOSVer.IsGreater(LastSupportedVer)) {
-	//	HasLatestPatches = false;
-	//	return { "Info", WarningFWVer };
-	//}
 
 	if (fs::path::CfwFolder() == SD_PREFIX SX_DIR)
 	{

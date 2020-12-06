@@ -324,19 +324,10 @@ private:
 			DialogBlocking("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
 			return false;
 		}
-		Patcher.SetPatchAnimations(Settings::UseAnimations);
 		if (!Patcher.PatchLayouts(patch, PartName))
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 			return false;
-		}
-		if (Settings::UseAnimations)
-		{
-			if (!Patcher.PatchAnimations(patch.Anims))
-			{
-				DialogBlocking("PatchAnimations failed for " + PartName + "\nThe theme was not installed");
-				return false;
-			}
 		}
 		return true;
 	}
