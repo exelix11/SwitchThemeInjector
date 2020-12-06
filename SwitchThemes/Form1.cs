@@ -18,7 +18,6 @@ namespace SwitchThemes
 
 		bool Advanced = false;
 
-		List<PatchTemplate> Templates = new List<PatchTemplate>();
 		Dictionary<string,LayoutPatch> Layouts = new Dictionary<string, LayoutPatch>();
 
 		public static Dictionary<string, string> HomeMenuParts = new Dictionary<string, string>()
@@ -50,9 +49,6 @@ namespace SwitchThemes
 
 			//LayoutPatch.CreateTestTemplates();
 			//PatchTemplate.BuildTemplateFile();
-			Templates.AddRange(DefaultTemplates.templates);
-			if (File.Exists("ExtraTemplates.json"))
-				Templates.AddRange(PatchTemplate.LoadTemplates());
 			if (Directory.Exists("Layouts"))
 			{
 				foreach (var f in Directory.GetFiles("Layouts").Where(x => x.EndsWith(".json")))
@@ -192,7 +188,7 @@ namespace SwitchThemes
 			{
 #endif
 				string msg;
-				(res, msg) = LayoutDiff.Diff(originalSzs, CommonSzs);
+				(res, msg) = LayoutDiff.Diff(originalSzs, CommonSzs, null);
 				if (msg != null)
 					MessageBox.Show(msg);
 #if !DEBUG
@@ -307,7 +303,7 @@ namespace SwitchThemes
 			LayoutPatchList.Items.Add("Don't patch");
 			
 			CommonSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(opn.FileName)));
-			targetPatch = SzsPatcher.DetectSarc(CommonSzs, Templates);
+			targetPatch = DefaultTemplates.GetFor(CommonSzs);
 
 			if (targetPatch == null)
 			{
@@ -397,7 +393,7 @@ namespace SwitchThemes
 			};
 			if (sav.ShowDialog() != DialogResult.OK) return;
 
-			SzsPatcher Patcher = new SzsPatcher(CommonSzs, Templates);
+			SzsPatcher Patcher = new SzsPatcher(CommonSzs);
 
 			var res = true;
 			if (HasImage)
@@ -441,17 +437,10 @@ namespace SwitchThemes
 
 			if (LayoutPatchList.SelectedIndex != 0)
 			{
-				Patcher.EnableAnimations = !UseAnim.Checked;
 				var layoutres = Patcher.PatchLayouts(LayoutPatchList.SelectedItem as LayoutPatch);
 				if (!layoutres)
 				{
 					MessageBox.Show("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
-					return;
-				}
-				layoutres = Patcher.PatchAnimations((LayoutPatchList.SelectedItem as LayoutPatch).Anims);
-				if (!layoutres)
-				{
-					MessageBox.Show("Error while patching the animations !");
 					return;
 				}
 			}

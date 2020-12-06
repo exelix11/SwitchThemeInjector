@@ -13,7 +13,11 @@ namespace SwitchThemes.Common
 		public string AuthorName;
 		public string TargetName;
 		public string ID;
+		/*	11.0 added a new home menu button for online services, to show it it uses an animation that moves around all the applet buttons
+			if this flag is set to true or null the installer will automatically remove that animation emulating the layout of pre 11.0 qlaunch */
+		public bool? HideOnlineBtn;
 
+		[JsonIgnore]
 		public bool UsesOldFixes => ID == null && !Ready8X;
 
 		[Obsolete("This was used to detect whether a layout would need patches to support 8.0+ qlaunch, since version 4.5 prefer the ID value to detect layouts")]

@@ -26,7 +26,7 @@ namespace SwitchThemes.Common
 		
 		 Deprecated files:
 			Preview.png - an image used for previewing the dds, not supported anymore as the installer now can load the dds directly
-		 */
+	*/
 
 	public class ThemeFileManifest
 	{
@@ -76,7 +76,6 @@ namespace SwitchThemes.Common
 		//public PatchTemplate[] UnpatchTargets;
 
 		public bool RequiresCodePatch = false;
-		public int PatchRevision = 0;
 
 #if WIN
 #if DEBUG
@@ -90,7 +89,7 @@ namespace SwitchThemes.Common
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 			};
 
-			string json = JsonConvert.SerializeObject(DefaultTemplates.templates, settings);
+			string json = JsonConvert.SerializeObject(DefaultTemplates.Templates, settings);
 			System.IO.File.WriteAllText("DefaultTemplates.json", json);
 		}
 #endif
@@ -101,8 +100,21 @@ namespace SwitchThemes.Common
 
 	public static class DefaultTemplates
 	{
-		// Whenever a new firmware breaks compatibility or layouts add a way to detect the new file here and increase the PatchRevision value, this is used later to fix old layouts via NewFirmFixes.cs
-		public static readonly PatchTemplate[] templates =
+		public static PatchTemplate GetFor(SARCExt.SarcData sarc)
+		{
+			bool SzsHasKey(string key) => sarc.Files.ContainsKey(key);
+
+			if (!SzsHasKey(@"timg/__Combined.bntx"))
+				return null;
+
+			var t = Templates.Where(x =>
+				x.FnameIdentifier.All(SzsHasKey) &&
+				!x.FnameNotIdentifier.Any(SzsHasKey));
+
+			return t.FirstOrDefault();
+		}
+
+		public static readonly PatchTemplate[] Templates =
 		{
 		//Common:
 			new PatchTemplate() { TemplateName = "home and applets" , szsName = "common.szs", TitleId = "0100000000001000", FirmName = "<= 5.X",
@@ -116,17 +128,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "home",
 			},
 		//Residentmenu:
-			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 8.0", PatchRevision = 2,
-				FnameIdentifier = new string[] { @"blyt/IconError.bflyt", @"blyt/RdtIconPromotion.bflyt" },
-				FnameNotIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" } ,
-				MainLayoutName = @"blyt/BgNml.bflyt",
-				MaintextureName = "White1x1A128^s",
-				PatchIdentifier = "exelixBG",
-				targetPanels = new string[] { "P_Bg_00" },
-				SecondaryTexReplace = "White1x1A64^t",
-				NXThemeName = "home"
-			},
-			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0, < 8.0", PatchRevision = 1,
+			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/IconError.bflyt" },
 				FnameNotIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -147,7 +149,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "home"
 			},
 		//Entrance:
-			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = ">= 9.0", PatchRevision = 1,
+			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = ">= 9.0",
 				FnameIdentifier = new string[] {  @"blyt/PageindicatorAlarm.bflyt", @"blyt/EntBtnResumeSystemApplet.bflyt"},
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName =@"blyt/EntMain.bflyt",
@@ -158,7 +160,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "lock",
 				RequiresCodePatch = true,
 			},
-			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.X",
+			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.0",
 				FnameIdentifier = new string[] {  @"blyt/EntBtnResumeSystemApplet.bflyt"},
 				FnameNotIdentifier = new string[] { @"blyt/PageindicatorAlarm.bflyt" } ,
 				MainLayoutName =@"blyt/EntMain.bflyt",

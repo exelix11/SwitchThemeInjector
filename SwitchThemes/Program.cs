@@ -139,7 +139,7 @@ namespace SwitchThemes
 
 			string Target = args[1];
 			var	CommonSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
-			var targetPatch = SzsPatcher.DetectSarc(CommonSzs, DefaultTemplates.templates);
+			var targetPatch = DefaultTemplates.GetFor(CommonSzs);
 
 			if (targetPatch == null)
 			{
@@ -169,7 +169,7 @@ namespace SwitchThemes
 			try
 			{				
 				var res = true;
-				var Patcher = new SzsPatcher(CommonSzs, DefaultTemplates.templates);
+				var Patcher = new SzsPatcher(CommonSzs);
 
 				if (Image != null)
 				{
@@ -202,7 +202,6 @@ namespace SwitchThemes
 
 				if (Layout != null)
 				{
-					Patcher.EnableAnimations = true;
 					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
 					var layoutres = Patcher.PatchLayouts(l);
 					if (!layoutres)
@@ -210,7 +209,6 @@ namespace SwitchThemes
 						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
 						return false;
 					}
-					layoutres = Patcher.PatchAnimations(l.Anims);
 				}
 
 				CommonSzs = Patcher.GetFinalSarc();

@@ -28,7 +28,7 @@ namespace SwitchThemesCommonTests
 		public void BgPaneInjection() 
 		{
 			var bflyt = new BflytFile(Util.ReadData("Synthetic/bginjection.bflyt"));
-			var t = DefaultTemplates.templates.Where(x => x.szsName == "ResidentMenu.szs" && x.targetPanels.Contains("P_Bg_00")).First();
+			var t = DefaultTemplates.Templates.Where(x => x.szsName == "ResidentMenu.szs" && x.targetPanels.Contains("P_Bg_00")).First();
 			
 			Assert.IsTrue(bflyt.PatchBgLayout(t));
 			

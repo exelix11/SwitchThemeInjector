@@ -76,7 +76,6 @@
 			this.materialLabel10 = new MaterialSkin.Controls.MaterialLabel();
 			this.tbPatches = new System.Windows.Forms.TextBox();
 			this.InjectPage = new System.Windows.Forms.TabPage();
-			this.UseAnim = new System.Windows.Forms.CheckBox();
 			this.lblDetected = new MaterialSkin.Controls.MaterialLabel();
 			this.materialRaisedButton3 = new MaterialSkin.Controls.MaterialRaisedButton();
 			this.tbImageFile = new System.Windows.Forms.TextBox();
@@ -780,7 +779,6 @@
 			// InjectPage
 			// 
 			this.InjectPage.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(51)))));
-			this.InjectPage.Controls.Add(this.UseAnim);
 			this.InjectPage.Controls.Add(this.lblDetected);
 			this.InjectPage.Controls.Add(this.materialRaisedButton3);
 			this.InjectPage.Controls.Add(this.tbImageFile);
@@ -800,18 +798,6 @@
 			this.InjectPage.Size = new System.Drawing.Size(638, 331);
 			this.InjectPage.TabIndex = 1;
 			this.InjectPage.Text = "SZS";
-			// 
-			// UseAnim
-			// 
-			this.UseAnim.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.UseAnim.AutoSize = true;
-			this.UseAnim.ForeColor = System.Drawing.Color.White;
-			this.UseAnim.Location = new System.Drawing.Point(3, 301);
-			this.UseAnim.Name = "UseAnim";
-			this.UseAnim.Size = new System.Drawing.Size(338, 17);
-			this.UseAnim.TabIndex = 6;
-			this.UseAnim.Text = "Do NOT add animations (Use if you have crashes with animations)";
-			this.UseAnim.UseVisualStyleBackColor = true;
 			// 
 			// lblDetected
 			// 
@@ -1316,7 +1302,6 @@
 		private MaterialSkin.Controls.MaterialLabel lblAppletIcons;
 		private System.Windows.Forms.Label lblDebug;
 		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.CheckBox UseAnim;
 		private System.Windows.Forms.Button btnApplet6;
 		private System.Windows.Forms.Button btnApplet5;
 		private System.Windows.Forms.Button btnApplet4;
