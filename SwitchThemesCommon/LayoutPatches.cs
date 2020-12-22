@@ -224,6 +224,15 @@ namespace SwitchThemes.Common
 	{
 		public float X, Y, Z;
 
+		public static explicit operator Vector3(string obj)
+		{
+			string[] split = obj.Split(';');
+			float x = float.Parse(split[0]);
+			float y = float.Parse(split[1]);
+			float z = float.Parse(split[2]);
+			return new Vector3(x, y, z);
+		}
+
 		public Vector3(float x, float y, float z) { X = x; Y = y; Z = z; }
 
 		public void Deconstruct(out float x, out float y, out float z) =>
@@ -261,6 +270,14 @@ namespace SwitchThemes.Common
 	public struct Vector2 : IEquatable<Vector2>
 	{
 		public float X, Y;
+		
+		public static explicit operator Vector2(string obj)
+		{
+			string[] split = obj.Split(';');
+			float x = float.Parse(split[0]);
+			float y = float.Parse(split[1]);
+			return new Vector2(x, y);
+		}
 		
 		public Vector2(float x, float y) { X = x; Y = y; }
 
