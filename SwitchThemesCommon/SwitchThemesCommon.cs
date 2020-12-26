@@ -94,7 +94,7 @@ namespace SwitchThemes.Common
 		}
 
 		public void AddMainLayout(string text) =>
-			AddMainLayout(LayoutPatch.LoadTemplate(text));
+			AddMainLayout(LayoutPatch.Load(text));
 
 		public void AddMainLayout(LayoutPatch l) {
 			if (l == null) return;
