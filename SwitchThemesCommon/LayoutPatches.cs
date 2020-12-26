@@ -48,10 +48,10 @@ namespace SwitchThemes.Common
 
 		public byte[] AsByteArray()
 		{
-			return Encoding.UTF8.GetBytes(AsJson());
+			return Encoding.UTF8.GetBytes(AsJson(Formatting.None));
 		}
 
-		public string AsJson()
+		public string AsJson(Formatting format = Formatting.Indented)
 		{
 			if (ID == null && Ready8X) //Upgrade old layouts using Ready8X to a random ID
 				ID = $"updated_{Guid.NewGuid()}";
@@ -60,10 +60,7 @@ namespace SwitchThemes.Common
 			{
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
-#if WIN
-				Formatting = Formatting.Indented,
-				ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-#endif
+				Formatting = format,
 			};
 			return JsonConvert.SerializeObject(this, settings);
 		}
