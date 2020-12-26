@@ -202,7 +202,7 @@ namespace SwitchThemes
 
 				if (Layout != null)
 				{
-					var l = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
+					var l = LayoutPatch.Load(File.ReadAllText(Layout));
 					var layoutres = Patcher.PatchLayouts(l);
 					if (!layoutres)
 					{
@@ -279,7 +279,7 @@ namespace SwitchThemes
 
 			LayoutPatch layout = null;
 			if (Layout != null && File.Exists(Layout))
-				layout = LayoutPatch.LoadTemplate(File.ReadAllText(Layout));
+				layout = LayoutPatch.Load(File.ReadAllText(Layout));
 
 			Dictionary<string, string> AppletIcons = new Dictionary<string, string>();
 			void PopulateAppletIcons(List<TextureReplacement> l)

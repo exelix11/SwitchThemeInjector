@@ -52,7 +52,7 @@ namespace SwitchThemes
 			if (Directory.Exists("Layouts"))
 			{
 				foreach (var f in Directory.GetFiles("Layouts").Where(x => x.EndsWith(".json")))
-					Layouts.Add(f,LayoutPatch.LoadTemplate(File.ReadAllText(f)));
+					Layouts.Add(f,LayoutPatch.Load(File.ReadAllText(f)));
 			}
 
 			HomeMenuPartBox.Items.AddRange(HomeMenuParts.Keys.ToArray());
@@ -547,7 +547,7 @@ namespace SwitchThemes
 
 		private void LayoutPatchList_OpenFile(string path, ComboBox comboBox)
 		{
-			comboBox.Items.Insert(1, LayoutPatch.LoadTemplate(File.ReadAllText(path)));
+			comboBox.Items.Insert(1, LayoutPatch.Load(File.ReadAllText(path)));
 			comboBox.SelectedIndex = 1;
 		}
 
@@ -582,7 +582,7 @@ namespace SwitchThemes
 			}
 			OpenFileDialog opn = new OpenFileDialog() { Filter = "json layout|*.json" };
 			if (opn.ShowDialog() != DialogResult.OK) return;
-			ExtraCommonLyt = LayoutPatch.LoadTemplate(File.ReadAllText(opn.FileName));
+			ExtraCommonLyt = LayoutPatch.Load(File.ReadAllText(opn.FileName));
 			lblCustomCommonLyt.Text = $"Custom common layout: {ExtraCommonLyt.ToString()}";
 			btnOpenCustomLayout.Text = "X";
 		}
