@@ -494,7 +494,7 @@ namespace SwitchThemes
 					builder.AddMainBg(File.ReadAllBytes(BgImage));
 
 				if (ExtraCommonLyt != null)
-					builder.AddCommonLayout(ExtraCommonLyt.AsByteArray());
+					builder.AddCommonLayout(ExtraCommonLyt);
 
 				if (target == "home")
 				{
