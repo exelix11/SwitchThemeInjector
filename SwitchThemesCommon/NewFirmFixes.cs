@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using static SwitchThemes.Common.FirmwareDetection;
@@ -60,6 +61,10 @@ namespace SwitchThemes.Common
 
 			return null;
 		}
+
+		// Apply only if the layout is not overriding the target file
+		public static bool ShouldApplyAppletPositionFix(IEnumerable<AnimFilePatch> anims) =>
+			!anims.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan");
 
 		public static AnimFilePatch[] GetAppletsPositionFix(Firmware fw)
 		{

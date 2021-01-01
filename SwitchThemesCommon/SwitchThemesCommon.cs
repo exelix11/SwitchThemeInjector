@@ -180,7 +180,7 @@ namespace SwitchThemes.Common
 		public bool PatchLayouts(LayoutPatch Patch) =>
 			PatchLayouts(Patch, PatchTemplate?.NXThemeName ?? "");
 		
-		public bool PatchLayouts(LayoutPatch Patch, string PartName)
+		private bool PatchLayouts(LayoutPatch Patch, string PartName)
 		{
 			var fw = FirmwareDetection.Detect(PartName, sarc);
 
@@ -225,7 +225,7 @@ namespace SwitchThemes.Common
 				AnimFilePatch[] animExtra = null;
 				if (Patch.HideOnlineBtn ?? true)
 					animExtra = NewFirmFixes.GetNoOnlineButtonFix(fw);
-				else if (!Anims.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
+				else if (NewFirmFixes.ShouldApplyAppletPositionFix(Anims))
 					animExtra = NewFirmFixes.GetAppletsPositionFix(fw);
 
 				if (animExtra != null)
