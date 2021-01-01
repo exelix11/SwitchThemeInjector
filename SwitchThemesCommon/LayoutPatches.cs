@@ -65,7 +65,7 @@ namespace SwitchThemes.Common
 			return JsonConvert.SerializeObject(this, settings);
 		}
 
-#if (DEBUG && WIN) || LYTEDITOR
+#if DEBUG
 		public static string CreateTestPatches()
 		{
 			var p = new LayoutPatch()
@@ -220,6 +220,7 @@ namespace SwitchThemes.Common
 		public int type;
 	}
 	
+	[JsonObject]
 	public struct Vector3 : IEquatable<Vector3>
 	{
 		public float X, Y, Z;
@@ -268,6 +269,7 @@ namespace SwitchThemes.Common
 		#endregion
 	}
 
+	[JsonObject]
 	public struct Vector2 : IEquatable<Vector2>
 	{
 		public float X, Y;
