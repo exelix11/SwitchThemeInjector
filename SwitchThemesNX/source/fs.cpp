@@ -359,9 +359,20 @@ std::vector<std::string> fs::cfw::SearchFolders()
 
 void fs::cfw::SetFolder(const std::string& s)
 {
+	// Should probably normalize all path code to use unix style path separators
 	CfwFolder = std::strchr("/\\", s[s.size() - 1]) ? s : s + '/';
-	if ((cfw::IsAms() || cfw::IsRnx()) && filesystem::exists(CfwFolder + "contents/"))
-		TitlesFolder = "contents/";
-	else
-		TitlesFolder = "titles/";
+	
+	bool useContents = false;
+
+	if (cfw::IsAms())
+		// Since 0.19.0 ams doesn't come with a contents folder anymore, to simplify the logic support for the titles folder has been dropped.
+		useContents = true;
+	else if (cfw::IsRnx())
+		// Use contents if titles doesn't exist
+		useContents = !filesystem::exists(CfwFolder + "titles/");
+	else if (cfw::IsSX())
+		// Sx still uses titles
+		useContents = false;
+	
+	TitlesFolder = useContents ? "contents/" : "titles/";
 }
