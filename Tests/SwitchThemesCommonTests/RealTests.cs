@@ -40,7 +40,7 @@ namespace SwitchThemesCommonTests
 
 			if (lyt != null)
 			{
-				var l = LayoutPatch.LoadTemplate(lyt);
+				var l = LayoutPatch.Load(lyt);
 				patcher.PatchLayouts(l);
 			}
 

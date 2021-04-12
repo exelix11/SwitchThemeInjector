@@ -18,7 +18,7 @@ namespace SwitchThemesCommonTests
 			foreach (var f in Directory.EnumerateFiles("../../../../../SwitchThemes/layouts").Where(x => x.EndsWith(".json")))
 				File.WriteAllText(
 					Path.Combine(Util.GetPath("ParsedLayouts"), Path.GetFileName(f)), 
-					LayoutPatch.LoadTemplate(File.ReadAllText(f)).AsJson()
+					LayoutPatch.Load(File.ReadAllText(f)).AsJson()
 				);
 		}
 		
