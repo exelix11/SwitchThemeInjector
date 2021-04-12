@@ -1,6 +1,6 @@
 #include "Version.hpp"
 
-#define VER_NAME "Ver. 2.6"
+#define VER_NAME "Ver. 2.6.1"
 
 #ifndef GITVER
 	#define GITVER "Unknown version"
