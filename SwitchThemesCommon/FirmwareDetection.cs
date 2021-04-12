@@ -31,7 +31,7 @@ namespace SwitchThemes.Common
 			{ "home", new FirmInfo[] {
 				new FirmInfo() {
 					Version = Firmware.Fw11_0,
-					MustContain = new string[] { @"anim/RdtBase_SystemAppletPos.bflan" },
+					MustContain = new string[] { @"blyt/RdtBtnLR.bflyt" },
 				},
 				new FirmInfo() {
 					Version = Firmware.Fw8_0,
@@ -65,7 +65,7 @@ namespace SwitchThemes.Common
 					(x.MustNotContain?.All(y => !sarc.Files.ContainsKey(y)) ?? true)
 				);
 				if (t.Any())
-					return t.First().Version;
+					return t.Max(x => x.Version);
 			}
 
 			return Firmware.Invariant;
