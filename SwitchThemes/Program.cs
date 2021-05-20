@@ -53,7 +53,9 @@ namespace SwitchThemes
 				else if (args[0].ToLower() == "install")
 					RemoteInstallFromArgs(args);
 				else if (args[0].ToLower() == "extract")
-					RemoteInstallFromArgs(args);
+					ExtractNxtheme(args);
+				else if (args[0].ToLower() == "diff")
+					DiffSzs(args);
 				else if (args[0].ToLower() == "help")
 				{
 					Console.WriteLine(
@@ -64,7 +66,8 @@ namespace SwitchThemes
 						" Only the image and out file are needed.\r\n" +
 						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
 						"Extract an nxtheme: Switchthemes.exe extract \"<input file>\" \"<target oath>\" \r\n" +
-						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n");
+						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n" +
+						"Diff szs files: SwitchThemes.exe diff <original szs file> <modified szs file> <output json path>\r\n");
 					Console.WriteLine("The following applet icons are supported for home menu: " + string.Join(", ", TextureReplacement.ResidentMenu.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
 					Console.WriteLine("The following applet icons are supported for the lock screen: " + string.Join(", ", TextureReplacement.Entrance.Select(x => $"{x.NxThemeName} ({x.W}x{x.H})").ToArray()));
 					Console.WriteLine("Applet icons only support png and dds images");
@@ -104,6 +107,42 @@ namespace SwitchThemes
 			return true;
 		}
 
+		static bool DiffSzs(string[] args)
+		{
+			if (args.Length != 4)
+			{
+				Console.WriteLine("Error: Wrong number of arguments.");
+				return false;
+			}
+
+			var original = args[1];
+			var edited = args[2];
+			var outName = args[3];
+
+			var options = new LayoutDiff.DiffOptions {
+				HideOnlineButton = args.Any(x => x == "--hide-online")
+			};
+
+			try
+			{
+				var res = LayoutDiff.Diff(
+					SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(original))),
+					SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(edited))),
+					options
+				);
+
+				File.WriteAllBytes(outName, res.Item1.AsByteArray());
+
+				Console.WriteLine(res.Item2);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"There was an error:\r\n{ex}");
+			}
+
+			return true;
+		}
+
 		static bool ExtractNxtheme(string[] args)
 		{
 			if (args.Length != 3)
@@ -124,6 +163,7 @@ namespace SwitchThemes
 
 			return true;
 		}
+
 
 		static bool SZSFromArgs(string[] args)
 		{
