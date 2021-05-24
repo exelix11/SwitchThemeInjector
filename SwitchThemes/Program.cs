@@ -64,7 +64,7 @@ namespace SwitchThemes
 						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						" instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n" +
 						" Only the image and out file are needed.\r\n" +
-						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.dds>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
+						"Patch an SZS: SwitchThemes.exe szs \"<input file>\" \"<your image.dds, optional>\" \"<json layout file, optional>\" \"out=<OutputPath>.szs\"\r\n" +
 						"Extract an nxtheme: Switchthemes.exe extract \"<input file>\" \"<target oath>\" \r\n" +
 						"Remote install to NXTheme installer: SwitchThemes.exe install 192.168.X.Y \"<your nxtheme/szs file>\"\r\n" +
 						"Diff szs files: SwitchThemes.exe diff <original szs file> <modified szs file> <output json path>\r\n");
@@ -178,41 +178,53 @@ namespace SwitchThemes
 				return false;
 
 			string Target = args[1];
-			var	CommonSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
-			var targetPatch = DefaultTemplates.GetFor(CommonSzs);
+			var	TargetSzs = SARCExt.SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(Target)));
+			var targetPatch = DefaultTemplates.GetFor(TargetSzs);
 
 			if (targetPatch == null)
 			{
-				Console.WriteLine("Unknown szs file");
+				Console.WriteLine("Unknown SZS file");
 				return false;
 			}
 
 			string Image = args.Where(x => x.ToLower().EndsWith(".dds")).FirstOrDefault();
-			if (Image == null || !File.Exists(Image))
+			if (Image != null && !File.Exists(Image))
 			{
-				Console.WriteLine("No image file !\r\nNote that only dds files are supported for szs themes.");
+				Console.WriteLine("DDS image not found!\r\nNote that only DDS files are supported for szs themes.");
 				return false;
 			}
+
 			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
-			
-			string Output = GetArg("out");
-
-			if (Output == null || Output == "")
+			if (Layout != null && !File.Exists(Layout)) {
+				Console.WriteLine("JSON layout not found!");
 				return false;
-
-			{
-				var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(Image));
-				if (dds.Encoding != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
-				if (dds.Size.Width != 1280 || dds.Size.Height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}
 
-			try
-			{				
+			string Output = GetArg("out");
+			if (Output == null || Output == "")
+			{
+				Console.WriteLine("No output path supplied! Example: 'out=file.szs'");
+				return false;
+			}
+
+			if (Image == null && Layout == null)
+			{
+				Console.WriteLine("Nothing to do! An image (DDS), layout (JSON), or both should be supplied.");
+				return false;
+			}
+
+			try {				
 				var res = true;
-				var Patcher = new SzsPatcher(CommonSzs);
+				var Patcher = new SzsPatcher(TargetSzs);
 
 				if (Image != null)
 				{
+					{
+						var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(Image));
+						if (dds.Encoding != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
+						if (dds.Size.Width != 1280 || dds.Size.Height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the switch");
+					}
+
 					res = Patcher.PatchMainBG(File.ReadAllBytes(Image));
 					if (!res)
 					{
@@ -226,7 +238,7 @@ namespace SwitchThemes
 					foreach (var a in l)
 					{
 						string path = GetArg(a.NxThemeName);
-						if (!path.EndsWith(".dds"))
+						if (path != null && !path.EndsWith(".dds"))
 						{
 							Console.WriteLine($"{path} is not supported, only dds files can be used for szs themes");
 							path = null;
@@ -246,21 +258,21 @@ namespace SwitchThemes
 					var layoutres = Patcher.PatchLayouts(l);
 					if (!layoutres)
 					{
-						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS, you are probably using an already patched SZS");
+						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS. Either this layout it not meant for this menu or you are using an already patched SZS.");
 						return false;
 					}
 				}
 
-				CommonSzs = Patcher.GetFinalSarc();
-				var sarc = SARC.Pack(CommonSzs);
+				TargetSzs = Patcher.GetFinalSarc();
+				var sarc = SARC.Pack(TargetSzs);
 
 				File.WriteAllBytes(Output, ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1));
 				GC.Collect();
 
-				if (Patcher.PatchTemplate.RequiresCodePatch)
+				if (Image != null && Patcher.PatchTemplate.RequiresCodePatch)
 					Console.WriteLine("The file has been patched successfully but due to memory limitations this szs requires an extra code patch to be applied to the home menu, if you use NXThemesInstaller to install this it will be done automatically, otherwise you need to manually copy the patches from https://github.com/exelix11/SwitchThemeInjector/tree/master/SwitchThemesNX/romfs to the exefs patches directory of your cfw");
 				else
-					Console.WriteLine("Done");
+					Console.WriteLine("Done!");
 			}
 			catch (Exception ex)
 			{
@@ -281,7 +293,7 @@ namespace SwitchThemes
 			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).FirstOrDefault();
 			if (Image != null && !File.Exists(Image))
 			{
-				Console.WriteLine("No image file !");
+				Console.WriteLine("No image file!");
 				return false;
 			}
 
@@ -350,7 +362,7 @@ namespace SwitchThemes
 						builder.AddAppletIcon(i.Key, File.ReadAllBytes(i.Value));
 
 				File.WriteAllBytes(Output, builder.GetNxtheme());
-				Console.WriteLine("Done !");
+				Console.WriteLine("Done!");
 			}
 			catch (Exception ex)
 			{
