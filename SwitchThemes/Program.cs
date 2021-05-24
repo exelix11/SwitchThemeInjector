@@ -81,7 +81,7 @@ namespace SwitchThemes
 
 			if (IsMono)
 			{
-				Console.WriteLine("The ui is not supported with mono, use the command line args.\r\nRun \"mono SwitchThemes.exe help\"");
+				Console.Error.WriteLine("The ui is not supported with mono, use the command line args.\r\nRun \"mono SwitchThemes.exe help\"");
 				return;
 			}
 
@@ -94,7 +94,7 @@ namespace SwitchThemes
 		{
 			if (args.Length != 3)
 			{
-				Console.WriteLine("Error: Wrong number of arguments.");
+				Console.Error.WriteLine("Error: Wrong number of arguments.");
 				return false;
 			}
 
@@ -102,7 +102,11 @@ namespace SwitchThemes
 			byte[] Theme = File.ReadAllBytes(args[2]);
 
 			var res = RemoteInstallForm.DoRemoteInstall(Ip, Theme);
-			Console.WriteLine(res == null ? "Done !" : res);
+			if (res == null) {
+				Console.WriteLine("Done!");
+			} else {
+				Console.Error.WriteLine(res);
+			}
 
 			return true;
 		}
@@ -111,7 +115,7 @@ namespace SwitchThemes
 		{
 			if (args.Length != 4)
 			{
-				Console.WriteLine("Error: Wrong number of arguments.");
+				Console.Error.WriteLine("Error: Wrong number of arguments.");
 				return false;
 			}
 
@@ -137,7 +141,7 @@ namespace SwitchThemes
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"There was an error:\r\n{ex}");
+				Console.Error.WriteLine($"There was an error:\r\n{ex}");
 			}
 
 			return true;
@@ -147,18 +151,18 @@ namespace SwitchThemes
 		{
 			if (args.Length != 3)
 			{
-				Console.WriteLine("Error: Wrong number of arguments.");
+				Console.Error.WriteLine("Error: Wrong number of arguments.");
 				return false;
 			}
 
 			try
 			{
 				Form1.DoExtractNxTheme(args[1], args[2]);
-				Console.WriteLine("Done !");
+				Console.WriteLine("Done!");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"There was an error:\r\n{ex}");
+				Console.Error.WriteLine($"There was an error:\r\n{ex}");
 			}
 
 			return true;
@@ -183,33 +187,33 @@ namespace SwitchThemes
 
 			if (targetPatch == null)
 			{
-				Console.WriteLine("Unknown SZS file");
+				Console.Error.WriteLine("Unknown SZS file.");
 				return false;
 			}
 
 			string Image = args.Where(x => x.ToLower().EndsWith(".dds")).FirstOrDefault();
 			if (Image != null && !File.Exists(Image))
 			{
-				Console.WriteLine("DDS image not found!\r\nNote that only DDS files are supported for szs themes.");
+				Console.Error.WriteLine("DDS image not found!\r\nNote that only DDS files are supported for szs themes.");
 				return false;
 			}
 
 			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
 			if (Layout != null && !File.Exists(Layout)) {
-				Console.WriteLine("JSON layout not found!");
+				Console.Error.WriteLine("JSON layout not found!");
 				return false;
 			}
 
 			string Output = GetArg("out");
 			if (Output == null || Output == "")
 			{
-				Console.WriteLine("No output path supplied! Example: 'out=file.szs'");
+				Console.Error.WriteLine("No output path supplied! Example: 'out=file.szs'");
 				return false;
 			}
 
 			if (Image == null && Layout == null)
 			{
-				Console.WriteLine("Nothing to do! An image (DDS), layout (JSON), or both should be supplied.");
+				Console.Error.WriteLine("Nothing to do! An image (DDS), layout (JSON), or both should be supplied.");
 				return false;
 			}
 
@@ -228,7 +232,7 @@ namespace SwitchThemes
 					res = Patcher.PatchMainBG(File.ReadAllBytes(Image));
 					if (!res)
 					{
-						Console.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
+						Console.Error.WriteLine("Couldn't patch this file, it might have been already modified or it's from an unsupported system version.");
 						return false;
 					}
 				}
@@ -240,12 +244,12 @@ namespace SwitchThemes
 						string path = GetArg(a.NxThemeName);
 						if (path != null && !path.EndsWith(".dds"))
 						{
-							Console.WriteLine($"{path} is not supported, only dds files can be used for szs themes");
+							Console.Error.WriteLine($"{path} is not supported, only dds files can be used for szs themes");
 							path = null;
 						}
 						if (path != null)
 							if (!Patcher.PatchAppletIcon(File.ReadAllBytes(path), a.NxThemeName))
-								Console.WriteLine($"Applet icon patch for {a.NxThemeName} failed");
+								Console.Error.WriteLine($"Applet icon patch for {a.NxThemeName} failed");
 					}
 				}
 
@@ -258,7 +262,7 @@ namespace SwitchThemes
 					var layoutres = Patcher.PatchLayouts(l);
 					if (!layoutres)
 					{
-						Console.WriteLine("One of the target files for the selected layout patch is missing in the SZS. Either this layout it not meant for this menu or you are using an already patched SZS.");
+						Console.Error.WriteLine("One or more of the target files for the selected layout patch is missing in the SZS. Either this layout it not meant for this menu or you are using an already patched SZS.");
 						return false;
 					}
 				}
@@ -276,7 +280,7 @@ namespace SwitchThemes
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Error: " + ex.Message);
+				Console.Error.WriteLine("Error: " + ex.Message);
 			}
 
 			return true;
@@ -293,14 +297,14 @@ namespace SwitchThemes
 			string Image = args.Where(x => x.EndsWith(".dds") || x.EndsWith(".jpg") || x.EndsWith(".png") || x.EndsWith("jpeg")).FirstOrDefault();
 			if (Image != null && !File.Exists(Image))
 			{
-				Console.WriteLine("No image file!");
+				Console.Error.WriteLine("No image file!");
 				return false;
 			}
 
 			string Layout = args.Where(x => x.EndsWith(".json")).FirstOrDefault();
 			if (Image == null && Layout == null)
 			{
-				Console.WriteLine("You need at least an image or a layout to make a theme");
+				Console.Error.WriteLine("You need at least an image or a layout to make a theme.");
 				return false;
 			}
 
@@ -319,7 +323,7 @@ namespace SwitchThemes
 
 			if (Output == null || Output == "")
 			{
-				Console.WriteLine("Missing out= arg");
+				Console.Error.WriteLine("Missing out= arg");
 				return false;
 			}
 
@@ -366,7 +370,7 @@ namespace SwitchThemes
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("Error: " + ex.Message);
+				Console.Error.WriteLine("Error: " + ex.Message);
 				return false;
 			}
 
