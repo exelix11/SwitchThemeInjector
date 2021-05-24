@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesWin", "SwitchTh
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SwitchThemesCommon", "SwitchThemesCommon\SwitchThemesCommon.shproj", "{11174F92-402D-4064-B278-F52842A48251}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesOnline", "SwitchThemesOnline\SwitchThemesOnline.csproj", "{3EE76B71-422A-4E80-8F17-63DA105BB4BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwitchThemesOnline", "SwitchThemesOnline\SwitchThemesOnline.csproj", "{3EE76B71-422A-4E80-8F17-63DA105BB4BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNX", "SwitchThemesNX\SwitchThemesNX.vcxproj", "{B6DA9247-8ED4-44D7-9FD3-6EAB523FC003}"
 EndProject
