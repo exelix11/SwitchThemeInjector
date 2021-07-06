@@ -24,7 +24,9 @@ INCLUDES	:=	include
 #---------------------------------------------------------------------------------
 ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIC -ftls-model=local-exec
 
+# TODO: Update mbedtls one day
 CFLAGS	:=	-g -Wall -Werror \
+			-Wno-stringop-overflow -Wno-array-parameter \
 			-ffunction-sections \
 			-fdata-sections \
 			$(ARCH) \
