@@ -11,8 +11,8 @@
 
 using namespace std;
 
-static const u32 PatchSetVer = 6;
-#define LastSupportedVerSTR "11.0"
+static const u32 PatchSetVer = 7;
+#define LastSupportedVerSTR "12.1"
 
 #define ThemePatchesDir "NxThemesInstaller/"
 
