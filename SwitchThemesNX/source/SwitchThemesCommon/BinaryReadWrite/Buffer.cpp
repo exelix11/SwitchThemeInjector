@@ -91,7 +91,8 @@ void Buffer::WriteU32Array(const std::vector<unsigned int>& arr)
 }
 
 void Buffer::Write(const std::string &str, BinaryString type) {
-	for (const unsigned char &s : str) Write(s);
+	for (const unsigned char s : str) 
+        Write(s);
 	if (type == BinaryString::NullTerminated)
 		Write((unsigned char)0);
 }
