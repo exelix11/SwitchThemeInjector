@@ -66,12 +66,15 @@ namespace SwitchThemes
 		{
 			Text += " Ver. " + Info.CoreVer;
 			materialLabel10.Text = $"Switch Theme Injector Ver {Info.CoreVer} by exelix";
-#if DEBUG || CIRelease
+#if CIRelease
+			materialLabel10.Text += $" (Github build)";
+#endif
+#if DEBUG
 			lblDebug.Visible = true;
 #endif
 		}
 
-		#region AdvancedTools
+#region AdvancedTools
 		void EnableAdvanced()
 		{
 			if (!Advanced)
