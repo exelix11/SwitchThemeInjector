@@ -41,6 +41,8 @@ void NcaDumpPage::Render(int X, int Y)
 			try
 			{				
 				hactool::ExtractHomeMenu();
+				hactool::ExtractPlayerSelectMenu();
+				hactool::ExtractUserPage();
 				Dialog("Done, the home menu was extracted, now you can install nxtheme files !");
 			}
 			catch (std::runtime_error &err)
