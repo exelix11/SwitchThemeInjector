@@ -1,4 +1,3 @@
-
 #include "BflytPatcher.hpp"
 #include "Pic1Pane.hpp"
 #include "Usd1Pane.hpp"
@@ -7,6 +6,7 @@
 
 #include <stdexcept>
 #include <algorithm>
+#include <ranges>
 
 using namespace std;
 using namespace Panes;
@@ -128,48 +128,51 @@ bool BflytPatcher::ApplyMaterialsPatch(const std::vector<MaterialPatch>& Patches
 	if (!mats) return false;
 	for (const auto& p : Patches)
 	{
-		auto target = find_if(mats->Materials.begin(), mats->Materials.end(), [&p](BflytMaterial m) {return m.Name == p.MaterialName; });
-		if (target == mats->Materials.end()) continue; //Less strict patching
-		if (p.ForegroundColor != "")
-			(*target).ForegroundColor = (u32)std::stoul(p.ForegroundColor, 0, 16);
-		if (p.BackgroundColor != "")
-			(*target).BackgroundColor = (u32)std::stoul(p.BackgroundColor, 0, 16);
+		const auto filter_condition = [&name = p.MaterialName](const auto& m) {return m.Name == name; };
+		
+		for (auto& target : mats->Materials | views::filter(filter_condition)) {
 
-		std::unordered_map<std::string, int> texToMapId;
-		for (u32 i = 0; i < target->Textures.size(); i++)
-		{
-			auto id = target->Textures[i].TextureId;
-			texToMapId[lyt.GetTexSection()->Textures.at(id)] = i;
-		}
+			if (p.ForegroundColor != "")
+				target.ForegroundColor = (u32)std::stoul(p.ForegroundColor, 0, 16);
+			if (p.BackgroundColor != "")
+				target.BackgroundColor = (u32)std::stoul(p.BackgroundColor, 0, 16);
 
-		for (const auto& rp : p.Refs)
-		{
-			if (!texToMapId.count(rp.Name))
-				continue;
+			std::unordered_map<std::string, int> texToMapId;
+			for (u32 i = 0; i < target.Textures.size(); i++)
+			{
+				auto id = target.Textures[i].TextureId;
+				texToMapId[lyt.GetTexSection()->Textures.at(id)] = i;
+			}
 
-			auto& tex = target->Textures[texToMapId.at(rp.Name)];
+			for (const auto& rp : p.Refs)
+			{
+				if (!texToMapId.count(rp.Name))
+					continue;
 
-			if (rp.WrapS)
-				tex.WrapS = *rp.WrapS;
+				auto& tex = target.Textures[texToMapId.at(rp.Name)];
 
-			if (rp.WrapT)
-				tex.WrapT = *rp.WrapT;
-		}
+				if (rp.WrapS)
+					tex.WrapS = *rp.WrapS;
 
-		for (const auto& tp : p.Transforms)
-		{
-			if (!texToMapId.count(tp.Name))
-				continue;
+				if (rp.WrapT)
+					tex.WrapT = *rp.WrapT;
+			}
 
-			auto& tf = target->TextureTransformations[texToMapId.at(tp.Name)];
+			for (const auto& tp : p.Transforms)
+			{
+				if (!texToMapId.count(tp.Name))
+					continue;
 
-			#define set(x) if (tp.x) tf.x = *tp.x
-			set(X);
-			set(Y);
-			set(ScaleX);
-			set(ScaleY);
-			set(Rotation);			
-			#undef set
+				auto& tf = target.TextureTransformations[texToMapId.at(tp.Name)];
+
+#define set(x) if (tp.x) tf.x = *tp.x
+				set(X);
+				set(Y);
+				set(ScaleX);
+				set(ScaleY);
+				set(Rotation);
+#undef set
+			}
 		}
 	}
 	return true;
