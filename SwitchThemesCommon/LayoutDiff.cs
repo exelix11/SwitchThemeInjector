@@ -153,7 +153,15 @@ namespace SwitchThemes.Common
 									WrapT = (byte)tx.WrapT
 								});
 						}
-						else throw new Exception($"A texture reference to {tex} in the edited layout is not part of the original file: {layoutname}");
+						/*
+							At some point they started adding multiple materials with the same name but different texture references, this breaks
+							the following assumption:
+						
+							else throw new Exception($"A texture reference to {tex} in the edited layout is not part of the original file: {layoutname}");
+
+							For now i'm leaving diffing commented so diffing doesn't crash but materials are probably to be considered broken until this is rewritten.
+							Guess an option could be matching materials by index.
+						 */
 					}
 
 					m.Transforms = transforms.Count == 0 ? null : transforms.ToArray();
