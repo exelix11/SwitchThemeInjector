@@ -1,4 +1,5 @@
-﻿using ExtensionMethods;
+﻿
+using ExtensionMethods;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
@@ -109,50 +110,51 @@ namespace SwitchThemes.Common.Bflyt
 			if (mats == null) return false;
 			foreach (var p in Patches)
 			{
-				var target = mats.Materials.Where(x => x.Name == p.MaterialName).FirstOrDefault();
-				if (target == null) continue; //Less strict patching
-				if (p.ForegroundColor != null)
-					target.ForegroundColor = new RGBAColor(p.ForegroundColor);
-				if (p.BackgroundColor != null)
-					target.BackgroundColor = new RGBAColor(p.BackgroundColor);
-
-				if (p.Refs == null && p.Transforms == null)
-					continue;
-
-				Dictionary<string, int> texToMadId = new Dictionary<string, int>();
-				for (int i = 0; i < target.Textures.Length; i++)
+				foreach (var target in mats.Materials.Where(x => x.Name == p.MaterialName))
 				{
-					var id = target.Textures[i].TextureId;
-					texToMadId.Add(f.Tex1.Textures[id], i);
-				}
+					if (p.ForegroundColor != null)
+						target.ForegroundColor = new RGBAColor(p.ForegroundColor);
+					if (p.BackgroundColor != null)
+						target.BackgroundColor = new RGBAColor(p.BackgroundColor);
 
-				foreach (var rp in p.Refs)
-				{
-					if (!texToMadId.ContainsKey(rp.Name)) 
+					if (p.Refs == null && p.Transforms == null)
 						continue;
 
-					var tex = target.Textures[texToMadId[rp.Name]];
+					Dictionary<string, int> texToMadId = new Dictionary<string, int>();
+					for (int i = 0; i < target.Textures.Length; i++)
+					{
+						var id = target.Textures[i].TextureId;
+						texToMadId.Add(f.Tex1.Textures[id], i);
+					}
 
-					if (rp.WrapS != null)
-						tex.WrapS = (BflytMaterial.TextureReference.WRAPS)rp.WrapS.Value;
+					foreach (var rp in p.Refs)
+					{
+						if (!texToMadId.ContainsKey(rp.Name))
+							continue;
 
-					if (rp.WrapT != null)
-						tex.WrapT = (BflytMaterial.TextureReference.WRAPS)rp.WrapT.Value;
-				}
+						var tex = target.Textures[texToMadId[rp.Name]];
 
-				foreach (var tp in p.Transforms)
-				{
-					if (!texToMadId.ContainsKey(tp.Name))
-						continue;
+						if (rp.WrapS != null)
+							tex.WrapS = (BflytMaterial.TextureReference.WRAPS)rp.WrapS.Value;
 
-					var tf = target.TextureTransformations[texToMadId[tp.Name]];
+						if (rp.WrapT != null)
+							tex.WrapT = (BflytMaterial.TextureReference.WRAPS)rp.WrapT.Value;
+					}
 
-					tf.Rotation = tp.Rotation ?? tf.Rotation;
-					tf.ScaleX = tp.ScaleX ?? tf.ScaleX;
-					tf.ScaleY = tp.ScaleY ?? tf.ScaleY;
-					tf.X = tp.X ?? tf.X;
-					tf.Y = tp.Y ?? tf.Y;
-				}
+					foreach (var tp in p.Transforms)
+					{
+						if (!texToMadId.ContainsKey(tp.Name))
+							continue;
+
+						var tf = target.TextureTransformations[texToMadId[tp.Name]];
+
+						tf.Rotation = tp.Rotation ?? tf.Rotation;
+						tf.ScaleX = tp.ScaleX ?? tf.ScaleX;
+						tf.ScaleY = tp.ScaleY ?? tf.ScaleY;
+						tf.X = tp.X ?? tf.X;
+						tf.Y = tp.Y ?? tf.Y;
+					}
+				}			
 			}
 			return true;
 		}
