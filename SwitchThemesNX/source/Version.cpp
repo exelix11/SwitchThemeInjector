@@ -1,6 +1,7 @@
 #include "Version.hpp"
 
-#define VER_NAME "Ver. 2.6.3"
+#define VER_NUM "2.6.3"
+#define VER_NAME "Ver. " VER_NUM
 
 #ifndef GITVER
 	#define GITVER "Unknown version"
@@ -13,3 +14,4 @@
 #endif
 
 const std::string Version::Commit = "Commit: " GITVER;
+const std::string Version::UserAgent = "NXThemes/" VER_NUM;
