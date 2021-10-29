@@ -1,5 +1,6 @@
 name: NXThemesInstaller
 on:
+  workflow_dispatch
   push:
     branches: [ master, githubCI ]
     paths:
