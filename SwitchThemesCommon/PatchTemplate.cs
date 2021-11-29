@@ -18,7 +18,7 @@ namespace SwitchThemes.Common
 		*at least one of these two files must be in the theme for it to be valid*
 		Home-menu only files: these files can only be present if the theme targets the home menu, all of them are optional.
 			common.json - a layout to be applied to the common.szs file
-			album.dds/png, news.dds/png, shop.dds/png, controller.dds/png, settings.dds/png, power.dds/png - custom applet icons
+			album.dds/png, nso.dds/png, news.dds/png, shop.dds/png, controller.dds/png, settings.dds/png, power.dds/png - custom applet icons
 		Lock-screen only files:
 			lock.dds/png - custom home icon
 
@@ -285,6 +285,16 @@ namespace SwitchThemes.Common
 			}
 		};
 
+		readonly static LayoutFilePatch NsoPatch = new LayoutFilePatch()
+		{
+			FileName = "blyt/RdtBtnLR.bflyt",
+			Patches = new PanePatch[]
+			{
+				new PanePatch { PaneName = "P_PictNso_00", Size = new Vector2(64,56),
+				UsdPatches = new List<UsdPatch>() { new UsdPatch() {PropName = "C_W", PropValues = new string[] { "100","100","100","100" }, type = 1 } }},
+			}
+		};
+
 		readonly static LayoutFilePatch NtfPatch = new LayoutFilePatch()
 		{
 			FileName = "blyt/RdtBtnNtf.bflyt",
@@ -346,6 +356,7 @@ namespace SwitchThemes.Common
 		readonly public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
 		{
 			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x5050505, "blyt/RdtBtnPvr.bflyt",		"P_Pict_00",		64,56, AlbumPatch),
+			new TextureReplacement("nso",       "RdtIcoLR_00^s",    0x5050505, "blyt/RdtBtnLR.bflyt",       "P_PictNso_00",     64,56, NsoPatch),
 			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",		"P_PictNtf_00",		64,56, NtfPatch),
 			new TextureReplacement("shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",		"P_Pict",			64,56, ShopPatch),
 			new TextureReplacement("controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",			64,56, CtrlPatch),
