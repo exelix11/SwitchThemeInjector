@@ -57,7 +57,7 @@ void TabRenderer::Render(int X, int Y)
 		bool CurrentSelected = (page == CurrentControl);
 		if (CurrentSelected)
 		{
-			ImGui::PushStyleColor(ImGuiCol_Text, { 0,1,0.788f,1 }); //Font color
+			ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight); //Font color
 			ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 12);
 			CursorY = ImGui::GetCursorPosY();
 		}

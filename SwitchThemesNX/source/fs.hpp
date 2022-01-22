@@ -17,6 +17,9 @@
 #define SYSTEMDATA_PATH THEMES_PATH SYSTEMDATA_DIR "/"
 #define PROVIDERS_NAME "providers.json"
 
+#define SYSTEMPATCHES_DIR "systemPatches"
+#define SYSTEMPATCHES_PATH THEMES_PATH SYSTEMPATCHES_DIR "/"
+
 bool StrEndsWith(const std::string &str, const std::string &suffix);
 bool StrStartsWith(const std::string& str, const std::string& prefix);
 
@@ -27,6 +30,7 @@ namespace fs::path
 	const std::string DownloadsFolder = THEMES_PATH "Downloads/";
 	const std::string NcaVersionCfg = SYSTEMDATA_PATH "ver.cfg";
 	const std::string ProvidersFile = THEMES_PATH PROVIDERS_NAME;
+	const std::string PatchesDir = SYSTEMPATCHES_PATH;
 
 	const std::string& CfwFolder();
 	std::string FsMitmFolder();
@@ -47,7 +51,7 @@ namespace fs {
 
 	static inline bool Exists(const std::string& name) { return std::filesystem::exists(name); }
 	static inline void Delete(const std::string& path) { unlink(path.c_str()); }
-	static inline void CreateDirectory(const std::string& path) { mkdir(path.c_str(), ACCESSPERMS); }
+	static inline void CreateDirectory(const std::string& path) { std::filesystem::create_directories(path); }
 	static inline void DeleteDirectory(const std::string& path) { rmdir(path.c_str()); }
 
 	std::string GetFileName(const std::string& path);
@@ -72,6 +76,17 @@ namespace fs::cfw {
 
 	std::vector<std::string> SearchFolders();
 	void SetFolder(const std::string&);
+}
+
+namespace fs::patches {
+	// These are not patches but just the strings
+	std::vector<std::string> GetSdPatches();
+
+	void CreateFolder();
+
+	void WritePatchForBuild(const std::string& buildId, const std::vector<u8>&);
+	std::vector<u8> OpenPatchForBuild(const std::string& buildId);
+	bool hasPatchForBuild(const std::string& buildId);
 }
 
 namespace fs::theme {

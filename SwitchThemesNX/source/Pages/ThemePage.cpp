@@ -156,8 +156,9 @@ void ThemesPage::Render(int X, int Y)
 
 	if (DisplayEntries.size() == 0)
 		ImGui::TextWrapped(
-			"There's nothing here, copy your themes in the themes folder on your sd and try again.\n"
-			"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue if you use a mac or sd corruption if you use exfat, you can find more about those on google or ask for support on discord."
+			"There's nothing here, copy your themes in the themes folder on your sd and try again.\n\n"
+			"If you do have a themes folder in your sd with themes make sure that the name is all lowercase and that you don't have the archive bit issue (most likely if you use a mac) or sd corruption if you use exfat.\n\n"
+			"You can find more about those on google or ask for support on discord."
 		);
 
 	ImGui::SetCursorPosY(600);
