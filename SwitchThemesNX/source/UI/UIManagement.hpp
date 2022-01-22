@@ -7,7 +7,6 @@
 #include "imgui/imgui.h"
 
 namespace GFX {
-
 	extern float WRatio, HRatio;
 
 	extern GLFWwindow* mainWindow;

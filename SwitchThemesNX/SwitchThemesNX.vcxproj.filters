@@ -256,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="source\Dialogs.hpp" />
     <ClInclude Include="source\Version.hpp" />
+    <ClInclude Include="source\Pages\QlaunchPatchPage.hpp">
+      <Filter>Pages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -420,6 +423,9 @@
       <Filter>SwitchTools</Filter>
     </ClCompile>
     <ClCompile Include="source\Version.cpp" />
+    <ClCompile Include="source\Pages\QlaunchPatchPage.cpp">
+      <Filter>Pages</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />

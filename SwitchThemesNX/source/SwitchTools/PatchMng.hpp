@@ -3,15 +3,18 @@
 
 namespace PatchMng
 {
-	extern const char* InstallWarnStr;
+	bool Init();
 
-	struct ErrorPage {
-		const char *Title, *Content;
+	const std::string& QlaunchBuildId();
 
-		operator bool() const { return Title && Content; }
+	enum class InstallResult {
+		Ok,
+		MissingIps,
+		SDError,
+		UnsupportedCFW
 	};
 
-	ErrorPage EnsureInstalled();
+	InstallResult EnsureInstalled();
 	void RemoveAll();
 
 	bool CanInstallTheme(const std::string& FileName);

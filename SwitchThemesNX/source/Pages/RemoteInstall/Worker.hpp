@@ -12,15 +12,18 @@ namespace RemoteInstall::Worker
 	{
 	public:
 		static constexpr long MaxSessions = 6;
+		const bool Cancellable = false;
 
-		BaseWorker(const std::vector<std::string>& urls);
+		BaseWorker(const std::vector<std::string>& urls, bool cancellable = false);
 
 		void Update() override;
 		void Render(int X, int Y) override;
 		virtual ~BaseWorker();
 	protected:
+		void SetLoadingLine(std::string_view);
+
 		virtual void OnError(uintptr_t index) {}
-		virtual bool OnFinished(uintptr_t index) { return true; }
+		virtual bool OnFinished(uintptr_t index, long httpCode) { return true; }
 
 		virtual void OnComplete() = 0;
 
@@ -32,11 +35,16 @@ namespace RemoteInstall::Worker
 		std::string LoadingLine = "Downloading data...";
 		
 		std::stringstream Errors;
+		bool appendUrlToError = true;
 	private:
 		void UpdateStatusMessage();
 
 		int Completed = 0;
 		bool Done = false;
+		bool CancellationRequested = false;
+		bool CustomLine = false;
+
+		std::vector<CURL*> handles;
 		CURLM* cm;
 	};
 
@@ -87,7 +95,7 @@ namespace RemoteInstall::Worker
 				Dialog(str);
 		}
 		
-		bool OnFinished(uintptr_t index) override
+		bool OnFinished(uintptr_t index, long httpCode) override
 		{
 			return Action(std::move(Results[index]), index);
 		}

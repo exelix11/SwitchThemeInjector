@@ -24,6 +24,7 @@
 #include "Pages/RemoteInstallPage.hpp"
 #include "Pages/SettingsPage.hpp"
 #include "Pages/RebootPage.cpp"
+#include "Pages/QlaunchPatchPage.hpp"
 
 #include "SwitchTools/PatchMng.hpp"
 
@@ -345,15 +346,11 @@ int main(int argc, char **argv)
 	NcaDumpPage::CheckHomeMenuVer();
 	SetCfwFolder();
 
-	auto PatchErrorMsg = PatchMng::EnsureInstalled();
-	if (!PatchErrorMsg && UseLowMemory) // if patches are fine, check if applet mode
-	{
-		PatchErrorMsg.Title = "Warning";
-		PatchErrorMsg.Content = "You're running in applet mode, when launching homebrew from album they have less memory available.\n\nThis app should work fine but in case you encounter crashes try launching via title takeover by opening a game from the home menu and pressing R at the same time.";
-	}
+	PatchMng::Init();
 
 	if (envHasArgv() && argc > 1)
 	{
+		PatchMng::EnsureInstalled(); // no checks here :(
 		auto paths = GetArgsInstallList(argc,argv);
 		if (paths.size() != 0)
 		{
@@ -369,12 +366,11 @@ int main(int argc, char **argv)
 		if (!ThemesFolderExists)
 			ShowFirstTimeHelp(true);
 
-		TextPage* PatchFailedWarning = nullptr;
-		if (PatchErrorMsg)
-		{
-			PatchFailedWarning = new TextPage(PatchErrorMsg.Title, PatchErrorMsg.Content);
-			t->AddPage(PatchFailedWarning);
-		}
+		QlaunchPatchPage* patchPage = new QlaunchPatchPage();
+
+		// Internally calls patchmng
+		if (patchPage->ShouldShow())
+			t->AddPage(patchPage);
 
 		ThemesPage *p = new ThemesPage();
 		t->AddPage(p);
@@ -395,8 +391,7 @@ int main(int argc, char **argv)
 
 		MainLoop();
 		
-		if (PatchFailedWarning)
-			delete PatchFailedWarning;
+		delete patchPage;
 		delete p;
 		delete up;
 		delete dp;

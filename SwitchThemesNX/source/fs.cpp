@@ -93,8 +93,14 @@ static vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 	if (level > 7) return res;
 	for (auto p : filesystem::directory_iterator(path))
 	{
-		if (p.is_directory() && p.path().filename() != SYSTEMDATA_DIR && p.path().filename() != "shuffle")
+		if (p.is_directory())
 		{
+			// Folders excluded from search
+			if (p.path().filename() == SYSTEMDATA_DIR || 
+				p.path().filename() == SYSTEMPATCHES_DIR ||
+				p.path().filename() == "shuffle") // I don't actually remember what's this about
+					continue;
+
 			auto path = p.path().string();
 			res.push_back(replaceWindowsPathChar(path));
 			auto v = GetThemeFilesInDirRecursive(p.path().string(), level + 1);
@@ -192,9 +198,13 @@ bool fs::EnsureThemesFolderExists()
 {
 	if (!filesystem::exists(path::ThemesFolder))
 		CreateDirectory(path::ThemesFolder);
+
 	bool Result = filesystem::exists(path::SystemDataFolder);
 	if (!Result)
 		CreateDirectory(path::SystemDataFolder);
+	
+	patches::CreateFolder();
+
 	return Result;
 }
 
@@ -375,4 +385,45 @@ void fs::cfw::SetFolder(const std::string& s)
 		useContents = false;
 	
 	TitlesFolder = useContents ? "contents/" : "titles/";
+}
+
+std::vector<std::string> fs::patches::GetSdPatches()
+{
+	std::vector<std::string> result;
+
+	if (!fs::Exists(SYSTEMPATCHES_PATH))
+		return result;
+
+	for (auto p : filesystem::directory_iterator(SYSTEMPATCHES_PATH))
+	{
+		if (!p.is_regular_file() || p.path().extension() != ".ips")
+			continue;
+		auto s = p.path().stem();
+		if (!s.empty())
+			result.push_back(s.string());
+	}
+
+	return result;
+}
+
+void fs::patches::CreateFolder()
+{
+	if (Exists(SYSTEMPATCHES_PATH) && std::filesystem::is_regular_file(SYSTEMPATCHES_PATH))
+		Delete(SYSTEMPATCHES_PATH);
+	CreateDirectory(SYSTEMPATCHES_PATH);
+}
+
+void fs::patches::WritePatchForBuild(const std::string& buildId, const std::vector<u8>& data)
+{
+	return WriteFile(SYSTEMPATCHES_PATH + buildId + ".ips", data);
+}
+
+std::vector<u8> fs::patches::OpenPatchForBuild(const std::string& buildId)
+{
+	return OpenFile(SYSTEMPATCHES_PATH + buildId + ".ips");
+}
+
+bool fs::patches::hasPatchForBuild(const std::string& buildId)
+{
+	return fs::Exists(SYSTEMPATCHES_PATH + buildId + ".ips");
 }

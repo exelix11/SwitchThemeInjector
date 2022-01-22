@@ -22,6 +22,11 @@ constexpr uint32_t SCR_H = 720;
 
 typedef unsigned int LoadedImage;
 
+namespace Colors {
+	const ImVec4 Highlight = { 0,1,0.788f,1 };
+	const ImVec4 Red = { 1,0,0,1 };
+}
+
 namespace Image 
 {
 	void Free(LoadedImage img);
@@ -62,6 +67,9 @@ class TabRenderer;
 class IPage : public IUIControlObj
 {
 	public:
+		IPage() = default;
+		IPage(std::string_view name) : Name(name) {}
+		
 		TabRenderer* Parent;
 		std::string Name;
 		virtual ~IPage();

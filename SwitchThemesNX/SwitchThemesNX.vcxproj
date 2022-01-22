@@ -13,6 +13,7 @@
     <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h" />
     <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h" />
     <ClInclude Include="Libs\SOIL\stb_image_aug.h" />
+    <ClInclude Include="source\Pages\QlaunchPatchPage.hpp" />
     <ClInclude Include="source\Dialogs.hpp" />
     <ClInclude Include="source\fs.hpp" />
     <ClInclude Include="source\Pages\CfwSelectPage.hpp" />
@@ -82,6 +83,7 @@
     <ClCompile Include="Libs\SOIL\image_helper.c" />
     <ClCompile Include="Libs\SOIL\SOIL.c" />
     <ClCompile Include="Libs\SOIL\stb_image_aug.c" />
+    <ClCompile Include="source\Pages\QlaunchPatchPage.cpp" />
     <ClCompile Include="source\fs.cpp" />
     <ClCompile Include="source\main.cpp" />
     <ClCompile Include="source\Pages\CfwSelectPage.cpp" />
@@ -148,7 +150,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -179,6 +181,7 @@
       <AdditionalIncludeDirectories>D:\$(USERNAME)\Projects\VM\libnx\nx\include;$(ProjectDir)Libs;$(ProjectDir)Libs\hactool\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>false</TreatWarningAsError>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <TargetMachine>MachineX86</TargetMachine>
