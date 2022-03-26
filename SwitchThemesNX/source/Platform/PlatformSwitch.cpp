@@ -111,7 +111,7 @@ const char* PlatformTextInput(const char* current)
 
 void PlatformReboot() 
 {
-	bpcInitialize();
-	bpcRebootSystem();
+	spsmInitialize();
+	spsmShutdown(true);
 }
 #endif
