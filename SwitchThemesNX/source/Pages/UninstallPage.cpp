@@ -18,7 +18,7 @@ void UninstallPage::Render(int X, int Y)
 
 	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
 	
-	auto i = Utils::ImGuiCenterButtons({ "Uninstall the current theme", "Uninstall everything" });
+	auto i = Utils::ImGuiCenterButtons({ "Uninstall the current theme", "Uninstall everything" } , &firstBtn);
 	if (i != -1)
 	{
 		PushFunction([i]() {
@@ -41,7 +41,8 @@ void UninstallPage::Render(int X, int Y)
 			}
 		});
 	}
-	PAGE_RESET_FOCUS;
+	
+	PAGE_RESET_FOCUS_FOR(firstBtn);
 	ImGui::PopStyleColor();
 
 	ImGui::PopFont();
@@ -51,7 +52,7 @@ void UninstallPage::Render(int X, int Y)
 
 void UninstallPage::Update()
 {	
-	if (Utils::PageLeaveFocusInput()){
+	if (Utils::PageLeaveFocusInput() && ImGui::GetFocusID() == firstBtn){
 		Parent->PageLeaveFocus(this);
 	}
 }
