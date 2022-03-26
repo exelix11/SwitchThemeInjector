@@ -113,7 +113,7 @@ PatchMng::InstallResult PatchMng::EnsureInstalled()
 			if (fs::patches::hasPatchForBuild(qlaunchBuildID))
 				fs::WriteFile(expectedPatchFile, fs::patches::OpenPatchForBuild(qlaunchBuildID));
 			else if (fs::Exists(pathInRomfs))
-				fs::WriteFile(expectedPatchFile, fs::OpenFile(expectedPatchFile));
+				fs::WriteFile(expectedPatchFile, fs::OpenFile(pathInRomfs));
 			else return InstallResult::MissingIps;
 		}
 		catch (...)
