@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "Layouts/Bflyt/Bflyt.hpp"
 #include "Layouts/Bflyt/BflytPatcher.hpp"
+#include <ranges>
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -42,12 +43,12 @@ SARC::SarcData& SzsPatcher::GetFinalSarc()
 	return sarc;
 }
 
-QuickBntx* SzsPatcher::OpenBntx() 
+QuickBntx& SzsPatcher::OpenBntx() 
 {
-	if (bntx) return bntx;
+	if (bntx) return *bntx;
 	Buffer Reader(sarc.files["timg/__Combined.bntx"]);
 	bntx = new QuickBntx(Reader);
-	return bntx;
+	return *bntx;
 }
 
 void SzsPatcher::SaveBntx()
@@ -137,7 +138,7 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 		if (patch.HideOnlineBtn)
 			extra = NewFirmFixes::GetNoOnlineButtonFix();
 		else if (std::none_of(Anims.begin(), Anims.end(), [](const auto& a) { return a.FileName == "anim/RdtBase_SystemAppletPos.bflan"; }))
-			extra == NewFirmFixes::GetAppletsPositionFix();
+			extra = NewFirmFixes::GetAppletsPositionFix();
 
 		if (extra.size())
 			Anims.insert(Anims.end(), extra.begin(), extra.end());
@@ -187,6 +188,25 @@ bool SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 	auto res = MainFile.PatchBgLayout(templ);
 	if (!res) return res;
 	
+	//Patch bntx
+	QuickBntx& q = OpenBntx();
+	if (q.Rlt.size() != 0x80)
+		return false;
+
+	auto dds = DDSEncoder::LoadDDS(DDS);
+	q.ReplaceTex(templ.MaintextureName, dds);
+	
+	// Remove references to the texture we replaced from other layouts
+	auto replaceWith = q.FindTex(templ.SecondaryTexReplace) ? templ.SecondaryTexReplace : "";
+	
+	if (replaceWith == "") {
+		auto v = q.Textures | std::views::filter([](const auto& d) { return d.Name().starts_with("White"); });
+		if (v.empty())
+			return false;
+		
+		replaceWith = v.front().Name();
+	}
+	
 	sarc.files[templ.MainLayoutName] = _MainFile.SaveFile();
 	for (const auto& t : sarc.files)
 	{
@@ -194,34 +214,25 @@ bool SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 		if (!StrEndsWith(f, ".bflyt") || !StrStartsWith(f, "blyt/") || f == templ.MainLayoutName) continue;
 		BflytFile _curTarget(sarc.files[f]);
 		BflytPatcher curTarget(_curTarget);
-		if (curTarget.PatchTextureName(templ.MaintextureName, templ.SecondaryTexReplace))
+		if (curTarget.PatchTextureName(templ.MaintextureName, replaceWith))
 			sarc.files[f] = _curTarget.SaveFile();
 	}	
-
-	//Patch bntx
-	QuickBntx* q = OpenBntx();
-	if (q->Rlt.size() != 0x80)
-	{
-		return false;
-	}
-	auto dds = DDSEncoder::LoadDDS(DDS);
-	q->ReplaceTex(templ.MaintextureName, dds);
 
 	return true;
 }
 
 bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, u32 ChannelData)
 {
-	QuickBntx* q = OpenBntx();
-	if (q->Rlt.size() != 0x80)
+	QuickBntx& q = OpenBntx();
+	if (q.Rlt.size() != 0x80)
 		return false;
 
 	try
 	{
 		auto dds = DDSEncoder::LoadDDS(DDS);
-		q->ReplaceTex(texName, dds);
+		q.ReplaceTex(texName, dds);
 		if (ChannelData != 0xFFFFFFFF)
-			q->FindTex(texName)->ChannelTypes = ChannelData;
+			q.FindTex(texName)->ChannelTypes = ChannelData;
 	}
 	catch (...)
 	{
@@ -267,15 +278,15 @@ bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& 
 
 bool SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexAttribPatch> &patches)
 {
-	QuickBntx *q = OpenBntx();
-	if (q->Rlt.size() != 0x80)
+	QuickBntx& q = OpenBntx();
+	if (q.Rlt.size() != 0x80)
 		return false;
 
 	try
 	{
 		for (const auto& patch : patches) 
 		{
-			auto tex = q->FindTex(patch.TargetTexutre);
+			auto tex = q.FindTex(patch.TargetTexutre);
 			if (tex) tex->ChannelTypes = patch.ChannelData;
 		}
 	}

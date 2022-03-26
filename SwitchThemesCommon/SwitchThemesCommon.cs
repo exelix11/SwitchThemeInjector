@@ -301,20 +301,31 @@ namespace SwitchThemes.Common
 			if (!res) return res;
 
 			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
-			var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
-			foreach (var f in layouts)
-			{
-				BflytFile curTarget = BflytFromSzs(f);
-				if (curTarget.PatchTextureName(template.MaintextureName, template.SecondaryTexReplace))
-					sarc.Files[f] = curTarget.SaveFile();
-			}
 
 			//PatchBGBntx
 			QuickBntx q = GetBntx();
 			if (q.Rlt.Length != 0x80)
 				return false;
 			q.ReplaceTex(template.MaintextureName, DDS);
-			DDS = null;
+
+            // Remove references to the texture we replaced from other layouts
+
+			// If the hardcoded texture is not present fallback to the first one called White*
+            var replaceWith = 
+				q.Textures.Any(x => x.Name == template.SecondaryTexReplace) ? template.SecondaryTexReplace :
+				q.Textures.FirstOrDefault(x => x.Name.StartsWith("White"))?.Name;
+
+			if (replaceWith == null)
+				return false;
+            
+            var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
+			foreach (var f in layouts)
+			{
+				BflytFile curTarget = BflytFromSzs(f);
+				if (curTarget.PatchTextureName(template.MaintextureName, replaceWith))
+					sarc.Files[f] = curTarget.SaveFile();
+			}
+
 			return true;
 		}
 

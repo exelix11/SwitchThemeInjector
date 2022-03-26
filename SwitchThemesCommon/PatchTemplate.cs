@@ -189,7 +189,7 @@ namespace SwitchThemes.Common
 				MaintextureName = "NavBg_03^d",
 				PatchIdentifier = "exelixFBG",
 				targetPanels = new string[] { "P_Bg_00" },
-				SecondaryTexReplace = "White1x1A64^t",
+				SecondaryTexReplace = "White1x1^r",
 				NXThemeName = "apps"
 			},
 		//Set:

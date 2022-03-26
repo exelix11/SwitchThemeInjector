@@ -97,13 +97,13 @@ vector<u8> BRTI::Write()
 	return bin.getBuffer();
 }
 
-string BRTI::Name() { return _readonly_name; }
+const string& BRTI::Name() const { return _readonly_name; }
 
-ChannelType BRTI::Channel0Type() { return (ChannelType)((ChannelTypes >> 0) & 0xff); }
-ChannelType BRTI::Channel3Type() { return (ChannelType)((ChannelTypes >> 8) & 0xff); }
-ChannelType BRTI::Channel1Type() { return (ChannelType)((ChannelTypes >> 16) & 0xff); }
-ChannelType BRTI::Channel2Type() { return (ChannelType)((ChannelTypes >> 24) & 0xff); }
+ChannelType BRTI::Channel0Type() const { return (ChannelType)((ChannelTypes >> 0) & 0xff); }
+ChannelType BRTI::Channel3Type() const { return (ChannelType)((ChannelTypes >> 8) & 0xff); }
+ChannelType BRTI::Channel1Type() const { return (ChannelType)((ChannelTypes >> 16) & 0xff); }
+ChannelType BRTI::Channel2Type() const { return (ChannelType)((ChannelTypes >> 24) & 0xff); }
 
-Bntxx::TextureType BRTI::Type() { return (Bntxx::TextureType)TextureType; }
-TextureFormatType BRTI::FormatType() { return (TextureFormatType)((Format >> 8) & 0xff); }
-TextureFormatVar  BRTI::FormatVariant() { return (TextureFormatVar)((Format >> 0) & 0xff); }
+Bntxx::TextureType BRTI::Type() const { return (Bntxx::TextureType)TextureType; }
+TextureFormatType BRTI::FormatType() const { return (TextureFormatType)((Format >> 8) & 0xff); }
+TextureFormatVar  BRTI::FormatVariant() const { return (TextureFormatVar)((Format >> 0) & 0xff); }
