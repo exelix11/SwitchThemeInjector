@@ -86,7 +86,7 @@ namespace Utils
 	}
 
 	template <size_t N, typename T>
-	static inline int ImGuiCenterButtons(T (&&buttons)[N])
+	static inline int ImGuiCenterButtons(T (&&buttons)[N], ImGuiID* firstId = nullptr)
 	{
 		const auto str = [&buttons](size_t i) -> const char*
 		{
@@ -110,6 +110,10 @@ namespace Utils
 		{
 			if (ImGui::Button(str(i)))
 				res = i;
+
+			if (i == 0 && firstId)
+				*firstId = ImGui::GetCurrentWindow()->DC.LastItemId;
+
 			if (i != N - 1)
 				ImGui::SameLine();
 		}
@@ -144,6 +148,9 @@ namespace Utils
 
 #define PAGE_RESET_FOCUS \
 	do {if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(true); } while (0)
+	
+#define PAGE_RESET_FOCUS_FOR(x) \
+	do {if (FocusEvent.Reset() && ImGui::GetFocusID() == 0) Utils::ImGuiSelectItem(true, x); } while (0)
 
 	static inline bool ImGuiSelectItemOnce(bool isFocused = true)
 	{
