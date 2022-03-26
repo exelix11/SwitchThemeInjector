@@ -223,7 +223,7 @@ vector<PatchTemplate> Patches::DefaultTemplates{
         "NavBg_03^d",
         "exelixFBG",
         { "P_Bg_00" },
-        "White1x1A64^t" },
+        "White1x1^r" },
 //Set:
     PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", ">= 6.X",
         { "blyt/BgNav_Root.bflyt", "blyt/SetCntDataMngPhoto.bflyt", "blyt/SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection

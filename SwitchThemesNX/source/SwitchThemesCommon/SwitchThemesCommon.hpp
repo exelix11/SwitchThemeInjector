@@ -44,7 +44,7 @@ namespace SwitchThemesCommon {
 		SARC::SarcData sarc;
 		QuickBntx* bntx = nullptr;
 
-		QuickBntx* OpenBntx();
+		QuickBntx& OpenBntx();
 		void SaveBntx();
 
 		bool EnableAnimations = true;

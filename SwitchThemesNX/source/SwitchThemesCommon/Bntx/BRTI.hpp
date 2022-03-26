@@ -102,16 +102,16 @@ namespace Bntxx
 		std::vector<u8> Data;
 		std::vector<u8> ExtraBrtiData;
 
-		std::string Name();
+		const std::string& Name() const;
 
-		ChannelType Channel0Type();
-		ChannelType Channel3Type();
-		ChannelType Channel1Type();
-		ChannelType Channel2Type();
+		ChannelType Channel0Type() const;
+		ChannelType Channel3Type() const;
+		ChannelType Channel1Type() const;
+		ChannelType Channel2Type() const;
 
-		Bntxx::TextureType Type();
-		TextureFormatType FormatType();
-		TextureFormatVar  FormatVariant();
+		Bntxx::TextureType Type() const;
+		TextureFormatType FormatType() const;
+		TextureFormatVar FormatVariant() const;
 
 		std::vector<u8> Write();
 		BRTI(Buffer &Reader);
