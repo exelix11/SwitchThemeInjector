@@ -72,7 +72,12 @@ namespace SwitchThemes
 #if DEBUG
 			lblDebug.Visible = true;
 #endif
-		}
+			var extra = PatchTemplate.LoadExtraTemplates();
+			if (extra.Exception != null)
+                MessageBox.Show("Loading extra templates failed, this is caused by the ExtraTemplates.json file. If you don't know what this means, delete the file and try again.\n\nFull error:" + extra.Exception.ToString());
+            else if (extra.Result != null)
+                DefaultTemplates.ExtraTemplates = extra.Result;
+        }
 
 #region AdvancedTools
 		void EnableAdvanced()
