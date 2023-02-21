@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -93,8 +94,28 @@ namespace SwitchThemes.Common
 			System.IO.File.WriteAllText("DefaultTemplates.json", json);
 		}
 #endif
-		public static PatchTemplate[] LoadTemplates() =>
-			JsonConvert.DeserializeObject<PatchTemplate[]>(System.IO.File.ReadAllText("ExtraTemplates.json"));
+		public class ExtraTemplateResult 
+		{
+			public PatchTemplate[] Result;
+			public Exception Exception;
+        }
+		
+        // Returns null in case of errors
+		public static ExtraTemplateResult LoadExtraTemplates()
+		{
+			if (System.IO.File.Exists("ExtraTemplates.json"))
+			{
+				try { 
+					var res = JsonConvert.DeserializeObject<PatchTemplate[]>(System.IO.File.ReadAllText("ExtraTemplates.json"));
+					return new ExtraTemplateResult { Result = res };
+                }
+                catch (Exception e)
+                {
+                    return new ExtraTemplateResult { Exception = e };
+                }
+            }
+            return new ExtraTemplateResult { Result = new PatchTemplate[0] };
+        }
 #endif
 	}
 
@@ -107,12 +128,14 @@ namespace SwitchThemes.Common
 			if (!SzsHasKey(@"timg/__Combined.bntx"))
 				return null;
 
-			var t = Templates.Where(x =>
+			var t = ExtraTemplates.Concat(Templates).Where(x =>
 				x.FnameIdentifier.All(SzsHasKey) &&
 				!x.FnameNotIdentifier.Any(SzsHasKey));
 
 			return t.FirstOrDefault();
 		}
+
+		public static PatchTemplate[] ExtraTemplates = new PatchTemplate[0];
 
 		public static readonly PatchTemplate[] Templates =
 		{
