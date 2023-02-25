@@ -55,6 +55,8 @@
 			this.button1 = new System.Windows.Forms.Button();
 			this.btnAlbumIcoHelp = new System.Windows.Forms.Button();
 			this.btnApplet1 = new System.Windows.Forms.Button();
+			/* elys mod */
+            this.btnApplet7 = new System.Windows.Forms.Button();
 			this.lblAppletIcons = new MaterialSkin.Controls.MaterialLabel();
 			this.btnOpenCustomLayout = new System.Windows.Forms.Button();
 			this.lblCustomCommonLyt = new MaterialSkin.Controls.MaterialLabel();
@@ -383,6 +385,8 @@
 			this.grpHomeExtra.Controls.Add(this.button1);
 			this.grpHomeExtra.Controls.Add(this.btnAlbumIcoHelp);
 			this.grpHomeExtra.Controls.Add(this.btnApplet1);
+			/* elys mod */
+            this.grpHomeExtra.Controls.Add(this.btnApplet7);
 			this.grpHomeExtra.Controls.Add(this.lblAppletIcons);
 			this.grpHomeExtra.Controls.Add(this.btnOpenCustomLayout);
 			this.grpHomeExtra.Controls.Add(this.lblCustomCommonLyt);
@@ -483,8 +487,19 @@
 			this.btnApplet1.Size = new System.Drawing.Size(64, 23);
 			this.btnApplet1.TabIndex = 2;
 			this.btnApplet1.Text = "Album";
-			this.btnApplet1.UseVisualStyleBackColor = true;
-			// 
+            this.btnApplet1.UseVisualStyleBackColor = true;
+            // 
+            // btnApplet7
+            //* elys mod */ 
+            this.btnApplet7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnApplet7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApplet7.Location = new System.Drawing.Point(114, 42);
+            this.btnApplet7.Name = "btnApplet7";
+            this.btnApplet7.Size = new System.Drawing.Size(75, 23);
+            this.btnApplet7.TabIndex = 9;
+            this.btnApplet7.Text = "NSO";
+            this.btnApplet7.UseVisualStyleBackColor = true;
+            // 
 			// lblAppletIcons
 			// 
 			this.lblAppletIcons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -1302,6 +1317,8 @@
 		private MaterialSkin.Controls.MaterialLabel lblAppletIcons;
 		private System.Windows.Forms.Label lblDebug;
 		private System.Windows.Forms.Button button1;
+		/* elys mod */
+		private System.Windows.Forms.Button btnApplet7;
 		private System.Windows.Forms.Button btnApplet6;
 		private System.Windows.Forms.Button btnApplet5;
 		private System.Windows.Forms.Button btnApplet4;
