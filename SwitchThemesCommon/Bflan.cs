@@ -9,7 +9,7 @@ using System.ComponentModel;
 
 namespace SwitchThemes.Common.Bflan
 {
-	public class BflanSection
+	public abstract class BflanSection : ICloneable
 	{
 		public string TypeName { get; set; }
 		public byte[] Data;
@@ -25,10 +25,8 @@ namespace SwitchThemes.Common.Bflan
 			Data = data;
 		}
 
-		public virtual void BuildData(ByteOrder byteOrder)
-		{
-			return;
-		}
+		public abstract void BuildData(ByteOrder byteOrder);
+		public abstract object Clone();
 
 		public virtual void Write(BinaryDataWriter bin)
 		{
@@ -119,7 +117,13 @@ namespace SwitchThemes.Common.Bflan
 			Data = mem.ToArray();
 		}
 
-		public override string ToString() => "[Pat1 section]";
+		public override object Clone()
+		{
+			BuildData(ByteOrder.LittleEndian);
+			return new Pat1Section(Data.ToArray(), ByteOrder.LittleEndian);
+		}
+
+        public override string ToString() => "[Pat1 section]";
 	}
 
 	[TypeConverter(typeof(ExpandableObjectConverter))]
@@ -133,8 +137,8 @@ namespace SwitchThemes.Common.Bflan
 		public override string ToString() => "[Pai1 section]";
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiEntry
-		{
+		public class PaiEntry : ICloneable
+        {
 			public enum AnimationTarget : byte
 			{
 				Pane = 0,
@@ -195,10 +199,21 @@ namespace SwitchThemes.Common.Bflan
 			}
 
 			public override string ToString() => $"Pai entry: {Name} [{Target}]";
-		}
+
+            public object Clone()
+            {
+                return new PaiEntry 
+				{
+					Name = Name,
+                    Target = Target,
+                    Tags = Tags.Select(x => (PaiTag)x.Clone()).ToList(),
+                    UnkwnownData = UnkwnownData.ToArray()
+                };
+            }
+        }
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiTag
+		public class PaiTag : ICloneable
 		{
 			public uint Unknown { get; set; }
 			public string TagType { get; set; }
@@ -246,10 +261,20 @@ namespace SwitchThemes.Common.Bflan
 			}
 
 			public override string ToString() => "PaiTag: " + TagType;
-		}
+
+            public object Clone()
+            {
+				return new PaiTag
+				{
+					Unknown = Unknown,
+					TagType = TagType,
+					Entries = Entries.Select(x => (PaiTagEntry)x.Clone()).ToList()
+                };
+            }
+        }
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiTagEntry
+		public class PaiTagEntry : ICloneable
 		{
 			public byte Index { get; set; }
 			public byte AnimationTarget { get; set; }
@@ -313,7 +338,21 @@ namespace SwitchThemes.Common.Bflan
 						bin.Write((byte)0);
 				}
 			}
-		}
+
+            public object Clone()
+            {
+                var clone = (PaiTagEntry)MemberwiseClone();
+				// Manually clone keyframes 
+				clone.KeyFrames = KeyFrames.Select(x => new KeyFrame
+				{
+					Blend = x.Blend,
+					Frame = x.Frame,
+					Value = x.Value,
+				}).ToList();
+
+				return clone;
+            }
+        }
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
 		public class KeyFrame
@@ -429,7 +468,13 @@ namespace SwitchThemes.Common.Bflan
 
 			Data = mem.ToArray();
 		}
-	}
+
+        public override object Clone()
+        {
+			BuildData(ByteOrder.LittleEndian);
+			return new Pai1Section(Data.ToArray(), ByteOrder.LittleEndian);
+        }
+    }
 
 	public class BflanFile
 	{
