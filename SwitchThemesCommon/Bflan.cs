@@ -6,9 +6,16 @@ using ExtensionMethods;
 using Syroot.BinaryData;
 using System.Linq;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SwitchThemes.Common.Bflan
 {
+	public interface IBflanGenericCollection 
+	{
+		// The control ensures the type is correct
+		void InsertElement(object element);
+	}
+
 	public abstract class BflanSection : ICloneable
 	{
 		public string TypeName { get; set; }
@@ -127,8 +134,8 @@ namespace SwitchThemes.Common.Bflan
 	}
 
 	[TypeConverter(typeof(ExpandableObjectConverter))]
-	public class Pai1Section : BflanSection
-	{
+	public class Pai1Section : BflanSection, IBflanGenericCollection
+    {
 		public UInt16 FrameSize { get; set; }
 		public byte Flags { get; set; }
 		public string[] Textures { get; set; } 
@@ -136,8 +143,16 @@ namespace SwitchThemes.Common.Bflan
 
 		public override string ToString() => "[Pai1 section]";
 
-		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiEntry : ICloneable
+        public void InsertElement(object element)
+        {
+            if (element is PaiEntry)
+                Entries.Add((PaiEntry)element);
+            else
+                throw new Exception("Unsupported element type: " + element.GetType());
+        }
+
+        [TypeConverter(typeof(ExpandableObjectConverter))]
+		public class PaiEntry : ICloneable, IBflanGenericCollection
         {
 			public enum AnimationTarget : byte
 			{
@@ -152,7 +167,15 @@ namespace SwitchThemes.Common.Bflan
 			public List<PaiTag> Tags = new List<PaiTag>();
 			public byte[] UnkwnownData { get; set; } = new byte[0];
 
-			public PaiEntry() { }
+            public void InsertElement(object element)
+            {
+                if (element is PaiTag)
+                    Tags.Add((PaiTag)element);
+                else
+                    throw new Exception("Unsupported element type: " + element.GetType());
+            }
+
+            public PaiEntry() { }
 
 			public PaiEntry(BinaryDataReader bin)
 			{
@@ -213,8 +236,8 @@ namespace SwitchThemes.Common.Bflan
         }
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiTag : ICloneable
-		{
+		public class PaiTag : ICloneable, IBflanGenericCollection
+        {
 			public uint Unknown { get; set; }
 			public string TagType { get; set; }
 			public List<PaiTagEntry> Entries = new List<PaiTagEntry>();
@@ -223,7 +246,15 @@ namespace SwitchThemes.Common.Bflan
 
 			public PaiTag() { }
 
-			public PaiTag(BinaryDataReader bin, byte TargetType)
+            public void InsertElement(object element)
+            {
+                if (element is PaiTagEntry)
+                    Entries.Add((PaiTagEntry)element);
+                else
+                    throw new Exception("Unsupported element type: " + element.GetType());
+            }
+
+            public PaiTag(BinaryDataReader bin, byte TargetType)
 			{
 				if (TargetType == 2)
 					Unknown = bin.ReadUInt32(); //This doesn't seem to be included in the offsets to the entries (?)
@@ -256,7 +287,7 @@ namespace SwitchThemes.Common.Bflan
 					bin.Position = EntryTable + i * 4;
 					bin.Write((uint)oldpos - sectionStart);
 					bin.Position = oldpos;
-					Entries[i].Write(bin, IsFLEU);
+                    Entries[i].Write(bin, IsFLEU);
 				}
 			}
 
@@ -274,8 +305,8 @@ namespace SwitchThemes.Common.Bflan
         }
 
 		[TypeConverter(typeof(ExpandableObjectConverter))]
-		public class PaiTagEntry : ICloneable
-		{
+		public class PaiTagEntry : ICloneable, IBflanGenericCollection
+        {
 			public byte Index { get; set; }
 			public byte AnimationTarget { get; set; }
 			public UInt16 DataType { get; set; }
@@ -288,7 +319,15 @@ namespace SwitchThemes.Common.Bflan
 
 			public PaiTagEntry() { }
 
-			public PaiTagEntry(BinaryDataReader bin, bool FLEU)
+            public void InsertElement(object element)
+            {
+                if (element is KeyFrame)
+                    KeyFrames.Add((KeyFrame)element);
+                else
+                    throw new Exception("Unsupported element type: " + element.GetType());
+            }
+
+            public PaiTagEntry(BinaryDataReader bin, bool FLEU)
 			{
 				uint tagStart = (uint)bin.Position;
 				Index = bin.ReadByte();
