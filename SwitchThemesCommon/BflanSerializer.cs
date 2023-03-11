@@ -79,7 +79,7 @@ namespace SwitchThemes.Common.Serializers
 		}
 	}
 
-	public struct Pat1Serializer
+	public class Pat1Serializer
 	{
 		public ushort AnimationOrder;
 		public string Name;
@@ -91,7 +91,7 @@ namespace SwitchThemes.Common.Serializers
 		public byte[] Unk_EndOfHeader;
 	}
 
-	public struct Pai1Serializer
+	public class Pai1Serializer
 	{
 		public UInt16 FrameSize;
 		public byte Flags;
@@ -126,7 +126,7 @@ namespace SwitchThemes.Common.Serializers
 		}
 	}
 
-	public struct PaiEntrySerializer
+	public class PaiEntrySerializer
 	{
 		public string Name; 
 		public byte Target;
@@ -161,7 +161,7 @@ namespace SwitchThemes.Common.Serializers
 		}
 	}
 
-	public struct PaiTagSerializer
+	public class PaiTagSerializer
 	{
 		public uint Unknown;
 		public string TagType;
@@ -194,7 +194,7 @@ namespace SwitchThemes.Common.Serializers
 		}
 	}
 
-	public struct PaiTagEntrySerializer
+	public class PaiTagEntrySerializer
 	{
 		public byte Index;
 		public byte AnimationTarget;
@@ -240,7 +240,7 @@ namespace SwitchThemes.Common.Serializers
 		}
 	}
 
-	public struct KeyFrameSerializer
+	public class KeyFrameSerializer
 	{
 		public float Frame;
 		public float Value;
