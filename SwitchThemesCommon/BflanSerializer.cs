@@ -2,6 +2,7 @@
 using SwitchThemes.Common.Bflan;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using static SwitchThemes.Common.Bflan.Pai1Section;
 
@@ -215,10 +216,9 @@ namespace SwitchThemes.Common.Serializers
 				FLEUUnknownInt = FLEUUnknownInt
 			};
 
-			foreach (var k in KeyFrames)
-				res.KeyFrames.Add(new KeyFrame() { Blend = k.Blend, Frame = k.Frame, Value = k.Value });
+            res.KeyFrames.AddRange(KeyFrames.Select(x => x.Deserialize()));
 
-			return res;
+            return res;
 		}
 
 		public static PaiTagEntrySerializer Serialize(PaiTagEntry entry)
@@ -245,5 +245,10 @@ namespace SwitchThemes.Common.Serializers
 		public float Frame;
 		public float Value;
 		public float Blend;
+
+		public KeyFrame Deserialize()
+		{
+            return new KeyFrame() { Frame = Frame, Value = Value, Blend = Blend };
+        }
 	}
 }
