@@ -57,7 +57,7 @@ void CreditsPage::Render(int X, int Y)
 		"Syroot for BinaryData lib\n"
 		"AboodXD for Bntx editor and sarc lib\n"
 		"shchmue for Lockpick\n"
-		"ScriesM for hactool\n"
+		"SciresM for hactool\n"
 		"Everyone from Atmosphere and libnx\n"
 		"switch-stuff on github for the font converter\n"
 		"Fincs for the hybrid_app template\n"
