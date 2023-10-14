@@ -15,7 +15,7 @@ namespace SwitchThemes.Common
 {
 	public static class Info
 	{
-		public const string CoreVer = "4.7";
+		public const string CoreVer = "4.7.1";
 		public const int NxThemeFormatVersion = 15;
 
 		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
