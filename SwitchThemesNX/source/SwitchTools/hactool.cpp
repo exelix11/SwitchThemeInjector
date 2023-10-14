@@ -8,7 +8,6 @@
 #include <hactool.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include "lockpick/KeyCollection.hpp"
 
 static void CopyLytDir()
 {
@@ -24,8 +23,26 @@ static void CopyLytDir()
 static struct NcaDecryptionkeys
 {
 	bool Initialized;
-	Key header_key, key_area_key_application_source;
-} g_Keys = {false};
+	// key sources, hardcoded as they are already public.
+	u8 header_key_source[0x20];
+	u8 header_kek_source[0x10];
+	u8 key_area_key_application_source[0x10];
+	// acutal keys, derived on hardware using spl services.
+	u8 header_key[0x20];
+} g_Keys = {
+	.Initialized = false,
+	// from https://github.com/Atmosphere-NX/Atmosphere/blob/693fb423cbbd5ab28963c5157a6f46d1aae838cf/libraries/libstratosphere/source/fssrv/fssrv_nca_crypto_configuration.cpp#L120
+	.header_key_source = {
+		0x5A, 0x3E, 0xD8, 0x4F, 0xDE, 0xC0, 0xD8, 0x26, 0x31, 0xF7, 0xE2, 0x5D, 0x19, 0x7B, 0xF5, 0xD0,
+		0x1C, 0x9B, 0x7B, 0xFA, 0xF6, 0x28, 0x18, 0x3D, 0x71, 0xF6, 0x4D, 0x73, 0xF1, 0x50, 0xB9, 0xD2
+	},
+	.header_kek_source = {
+		0x1F, 0x12, 0x91, 0x3A, 0x4A, 0xCB, 0xF0, 0x0D, 0x4C, 0xDE, 0x3A, 0xF6, 0xD5, 0x23, 0x88, 0x2A
+	},
+	.key_area_key_application_source = {
+		0x7F, 0x59, 0x97, 0x1E, 0x62, 0x9F, 0x36, 0xA1, 0x30, 0x98, 0x06, 0x6F, 0x21, 0x44, 0xC3, 0x0D
+	}
+};
 
 enum class ExtractionTarget
 {
@@ -180,8 +197,8 @@ public:
 			throw std::runtime_error("Couldn't open " + _NcaFile);
 
 		// Copy keys
-		memcpy(tool_ctx.settings.keyset.header_key, g_Keys.header_key.key.data(), 0x20);
-		memcpy(tool_ctx.settings.keyset.key_area_key_application_source, g_Keys.key_area_key_application_source.key.data(), 0x10);
+		memcpy(tool_ctx.settings.keyset.header_key, g_Keys.header_key, sizeof(g_Keys.header_key));
+		memcpy(tool_ctx.settings.keyset.key_area_key_application_source, g_Keys.key_area_key_application_source, sizeof(g_Keys.key_area_key_application_source));
 
 		if (nca_ctx.tool_ctx->base_nca_ctx != NULL) {
 			memcpy(&base_ctx.settings.keyset, &tool_ctx.settings.keyset, sizeof(nca_keyset_t));
@@ -244,33 +261,34 @@ private:
 		if (g_Keys.Initialized)
 			return true;
 
-		if (!(envIsSyscallHinted(0x60) &&     // svcDebugActiveProcess
-			envIsSyscallHinted(0x63) &&     // svcGetDebugEvent
-			envIsSyscallHinted(0x65) &&     // svcGetProcessList
-			envIsSyscallHinted(0x69) &&     // svcQueryDebugProcessMemory
-			envIsSyscallHinted(0x6a))) {    // svcReadDebugProcessMemory
-			DialogBlocking("Lockpick Error: Please run with debug svc permissions.\nMake sure you're using latest version of your cfw and try launching this app from the album applet");
-			return false;
+		u8 tempheaderkek[0x10];
+		Result rc = splCryptoGenerateAesKek(g_Keys.header_kek_source, 0, 0, tempheaderkek);
+		if (R_FAILED(rc))
+		{
+			printf("splCryptoGenerateAesKek failed: %x\n", rc);
+		}
+		else {		
+			rc = splCryptoGenerateAesKey(tempheaderkek, g_Keys.header_key_source, g_Keys.header_key);
+			if (R_FAILED(rc))		
+			{
+				printf("splCryptoGenerateAesKey (1) failed: %x\n", rc);
+			}
+			else 
+			{
+				rc = splCryptoGenerateAesKey(tempheaderkek, g_Keys.header_key_source + 0x10, g_Keys.header_key + 0x10);
+			
+				if (R_FAILED(rc))
+					printf("splCryptoGenerateAesKey (2) failed: %x\n", rc);
+			}
 		}
 
-		KeyCollection Keys;
-		Keys.get_keys();
-
-		Key header_key = { "header_key", 0x20, {} };
-		if (Keys.header_kek_source.found() && Keys.header_key_source.found()) {
-			u8 tempheaderkek[0x10], tempheaderkey[0x20];
-			splCryptoGenerateAesKek(Keys.header_kek_source.key.data(), 0, 0, tempheaderkek);
-			splCryptoGenerateAesKey(tempheaderkek, Keys.header_key_source.key.data(), tempheaderkey);
-			splCryptoGenerateAesKey(tempheaderkek, Keys.header_key_source.key.data() + 0x10, tempheaderkey + 0x10);
-			header_key = { "header_key", 0x20, byte_vector(tempheaderkey, tempheaderkey + 0x20) };
-		}
-		else
+		if (R_FAILED(rc))
 		{
 			DialogBlocking("Key extraction from FS failed !");
 			return false;
 		}
 
-		g_Keys = { true, header_key, Keys.key_area_key_application_source };
+		g_Keys.Initialized = true;		
 #endif
 		return true;
 	}
