@@ -127,33 +127,35 @@ namespace SwitchThemes.Common.Bflyt
 						texToMadId.Add(f.Tex1.Textures[id], i);
 					}
 
-					foreach (var rp in p.Refs)
-					{
-						if (!texToMadId.ContainsKey(rp.Name))
-							continue;
+					if (p.Refs != null)
+						foreach (var rp in p.Refs)
+						{
+							if (!texToMadId.ContainsKey(rp.Name))
+								continue;
 
-						var tex = target.Textures[texToMadId[rp.Name]];
+							var tex = target.Textures[texToMadId[rp.Name]];
 
-						if (rp.WrapS != null)
-							tex.WrapS = (BflytMaterial.TextureReference.WRAPS)rp.WrapS.Value;
+							if (rp.WrapS != null)
+								tex.WrapS = (BflytMaterial.TextureReference.WRAPS)rp.WrapS.Value;
 
-						if (rp.WrapT != null)
-							tex.WrapT = (BflytMaterial.TextureReference.WRAPS)rp.WrapT.Value;
-					}
+							if (rp.WrapT != null)
+								tex.WrapT = (BflytMaterial.TextureReference.WRAPS)rp.WrapT.Value;
+						}
 
-					foreach (var tp in p.Transforms)
-					{
-						if (!texToMadId.ContainsKey(tp.Name))
-							continue;
+					if (p.Transforms != null)
+						foreach (var tp in p.Transforms)
+						{
+							if (!texToMadId.ContainsKey(tp.Name))
+								continue;
 
-						var tf = target.TextureTransformations[texToMadId[tp.Name]];
+							var tf = target.TextureTransformations[texToMadId[tp.Name]];
 
-						tf.Rotation = tp.Rotation ?? tf.Rotation;
-						tf.ScaleX = tp.ScaleX ?? tf.ScaleX;
-						tf.ScaleY = tp.ScaleY ?? tf.ScaleY;
-						tf.X = tp.X ?? tf.X;
-						tf.Y = tp.Y ?? tf.Y;
-					}
+							tf.Rotation = tp.Rotation ?? tf.Rotation;
+							tf.ScaleX = tp.ScaleX ?? tf.ScaleX;
+							tf.ScaleY = tp.ScaleY ?? tf.ScaleY;
+							tf.X = tp.X ?? tf.X;
+							tf.Y = tp.Y ?? tf.Y;
+						}
 				}			
 			}
 			return true;
