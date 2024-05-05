@@ -131,6 +131,14 @@ namespace SwitchThemes.Common.Bflyt
 			}
 
 			protected virtual void InitializeNewPane() { }
+
+			public bool ContainsChild(BasePane child)
+			{
+				if (Children.Contains(child)) return true;
+				foreach (var c in Children)
+					if (c.ContainsChild(child)) return true;
+				return false;
+			}
 		}
 
 		public class TextureSection : BasePane
@@ -374,7 +382,8 @@ namespace SwitchThemes.Common.Bflyt
 						PushPane(new Prt1Pane(bin, Version));
 						break;
 					case "pan1":
-					case "wnd1":	case "bnd1":
+					case "wnd1":
+					case "bnd1":
 						PushPane(new Pan1Pane(bin, name));
 						break;
 					default:
@@ -387,6 +396,7 @@ namespace SwitchThemes.Common.Bflyt
 		public void RemovePane(BasePane pane)
 		{
 			pane.Parent.Children.Remove(pane);
+			pane.Parent = null;
 		}
 
 		public void AddPane(int offset, BasePane Parent, BasePane pane)
@@ -394,6 +404,7 @@ namespace SwitchThemes.Common.Bflyt
 			if (offset < 0) offset = 0;
 			if (offset > Parent.Children.Count) offset = Parent.Children.Count;
 			Parent.Children.Insert(offset, pane);
+			pane.Parent = Parent;
 		}
 
 		public void MovePane(BasePane pane, BasePane NewParent, int offset)

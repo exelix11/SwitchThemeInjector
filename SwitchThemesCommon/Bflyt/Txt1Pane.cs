@@ -136,8 +136,15 @@ namespace SwitchThemes.Common.Bflyt
 			ShadowTopColor = dataReader.ReadColorRGBA(); //+64
 			ShadowBottomColor = dataReader.ReadColorRGBA();
 			ShadowItalic = dataReader.ReadSingle();
-			dataReader.Position = TextOffset - 8;
-			Text = dataReader.ReadString(TextLength, Encoding.Unicode);
+			
+			// This seems to only happen for panes that were created by us.
+			// Avoid crashing the layout editor so the file can be recovered but i don't know if TextOffset = 0 causes games to crash
+			// Adding panes is not well supported at this time anyway
+			if (TextOffset != 0)
+			{
+				dataReader.Position = TextOffset - 8;
+				Text = dataReader.ReadString(TextLength, Encoding.Unicode);
+			}
 		}
 
         protected override void ApplyChanges(BinaryDataWriter bin)
