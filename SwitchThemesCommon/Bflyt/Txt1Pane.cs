@@ -65,7 +65,7 @@ namespace SwitchThemes.Common.Bflyt
 			set => flags = value ? (byte)(flags | 1) : unchecked((byte)(flags & (~1)));
 		}
 
-		public byte UnknownFlag;
+		public byte UnknownFlag { get; set; }
 
 		public enum BorderType : byte
 		{
