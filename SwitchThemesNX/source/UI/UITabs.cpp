@@ -1,9 +1,9 @@
+#include <algorithm>
+
 #include "UI.hpp"
 #include "../ViewFunctions.hpp"
 #include "../Version.hpp"
 #include "../Platform/Platform.hpp"
-
-using namespace std;
 
 /*
 18					18
