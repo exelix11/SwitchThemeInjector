@@ -144,9 +144,19 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 			Anims.insert(Anims.end(), extra.begin(), extra.end());
 	}
 
-	if (Anims.size())
+	auto patchAnims = Anims.size() > 0;
+
+	// 20.x removed some animations. A few layouts were hitting an issue where the only target animation was not present in the szs anymore.
+	// Ensure we have at least one animation to patch
+	auto referenceAnim = std::find_if(Anims.begin(), Anims.end(), [&](const auto& e)
 	{
-		auto bflan = new Bflan(sarc.files[Anims[0].FileName]);
+		return sarc.files.count(e.FileName);
+	});
+
+	if (referenceAnim != Anims.end())
+	{
+		// The bflan version varies between firmwares, load a file from the list to detect the right one
+		auto bflan = new Bflan(sarc.files[referenceAnim->FileName]);
 		auto TargetVersion = bflan->Version;
 		delete bflan;
 

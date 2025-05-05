@@ -232,10 +232,16 @@ namespace SwitchThemes.Common
 					Anims.AddRange(animExtra);
 			}
 
-			if (Anims.Any())
+			var patchAnims = Anims.Any();
+
+			// 20.x removed some animations. A few layouts were hitting an issue where the only target animation was not present in the szs anymore.
+			// Ensure we have at least one animation to patch
+			var referenceBflan = patchAnims ? Anims.FirstOrDefault(x => sarc.Files.ContainsKey(x.FileName)) : null;
+
+            if (referenceBflan != null)
 			{
-				// The bflan version varies between firmwares, load a file from the list to detect the right one
-				BflanFile b = new BflanFile(sarc.Files[Anims[0].FileName]);
+                // The bflan version varies between firmwares, load a file from the list to detect the right one
+                BflanFile b = new BflanFile(sarc.Files[referenceBflan.FileName]);
 				var TargetVersion = b.Version;
 				b = null;
 
