@@ -148,10 +148,15 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 
 	// 20.x removed some animations. A few layouts were hitting an issue where the only target animation was not present in the szs anymore.
 	// Ensure we have at least one animation to patch
-	auto referenceAnim = std::find_if(Anims.begin(), Anims.end(), [&](const auto& e)
+	auto referenceAnim = Anims.end();
+	
+	if (patchAnims) 
 	{
-		return sarc.files.count(e.FileName);
-	});
+		referenceAnim = std::find_if(Anims.begin(), Anims.end(), [&](const auto& e)
+		{
+			return sarc.files.count(e.FileName);
+		});
+	}
 
 	if (referenceAnim != Anims.end())
 	{
