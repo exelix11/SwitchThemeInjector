@@ -221,7 +221,7 @@ void ShowFirstTimeHelp(bool WelcomeScr)
 
 	DialogBlocking(
 		"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"
-		"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/<your cfw folder>/contents (/titles on reinx and sxos)'.\n\n"
+		"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/atmosphere/contents'.\n\n"
 		"When you change the firmware your console (upgrade or downgrade) you must uninstall the theme first because the installed files on the sd are firmware-dependent.\n"
 		"If the firmware you installed supports themes you can install them back after the update.\n\n"
 		"Lockscreen themes after firmware version 9.0 are not supported on all CFWs because some lack support for patching titles via IPS."

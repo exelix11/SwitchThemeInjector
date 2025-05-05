@@ -22,14 +22,12 @@ void CfwSelectPage::Render(int X, int Y)
 	if (Folders.size() == 0)
 	{
 		ImGui::PushFont(font30);
-		Utils::ImGuiCenterString("Couldn't find any cfw folder.");
+		Utils::ImGuiCenterString("Couldn't find the Atmosphere folder.");
 		ImGui::PopFont();
 		ImGui::NewLine();
 		ImGui::TextWrapped(
-			"Make sure you have either the \"atmosphere\", \"reinx\" or \"sxos\" folder in the root of your sd card.\n\n"
-			"Some cfws don't create this folder automatically so you should do it manually.\n"
-			"If you do have the cfw folder but still see this screen make sure it's written correctly, without spaces and all lowercase.");
-		
+			"Make sure you have the \"atmosphere\" folder in the root of your sd card.\n\n"
+			"If the folder is there there is probably something wrong with your sd card.\n");
 	}	
 	else {
 		Utils::ImGuiCenterString("Multiple cfw folders detected, which one do you want to use ?");
@@ -53,7 +51,6 @@ void CfwSelectPage::Render(int X, int Y)
 	}
 
 	ImGui::NewLine();
-	Utils::ImGuiCenterString("if your cfw isn't supported open an issue on Github.");
 	if (Utils::ImGuiCenterButton("Close this application"))
 		App::Quit();
 
