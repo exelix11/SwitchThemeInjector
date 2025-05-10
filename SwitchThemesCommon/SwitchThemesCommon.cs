@@ -252,7 +252,7 @@ namespace SwitchThemes.Common
                 ApplyRawPatch(NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName));
 
             if (useModernFixes)
-                ApplyRawPatch(NewFirmFixes.GetFix(PartName, Patch.ID, fw));
+                ApplyRawPatch(NewFirmFixes.GetFix(Patch, fw));
 
             return true;
         }

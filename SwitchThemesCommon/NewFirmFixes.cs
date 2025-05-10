@@ -25,6 +25,11 @@ namespace SwitchThemes.Common
         // Also, to match the behavior of NoOnlineButton11 we extend it to also remove all the new applet buttons.
         // Note that this is additive to the Downgrade20To19 patch and must be added on top of it.
         const string LegacyAppletButtons20 = "{\"PatchName\":\"No online button 20.0\",\"AuthorName\":\"autoDiff\",\"Files\":[{\"FileName\":\"blyt/RdtBase.bflyt\",\"Patches\":[{\"PaneName\":\"L_BtnLR\",\"Visible\":false},{\"PaneName\":\"N_System\",\"Position\":{\"X\":-54}}]}]}";
+		// 20.0 changes the size of applet icons. The flow layout takes over the notification applet icon background to make its top bar. I tried adding a global fix but the button sizes are set by an animation, adding that to the fix patch would quickly grow too big to maintain and port to future qlaunch versions if needed.
+		// Instead, we just change the scale of the button in the flow layout to work with the new size.
+		const string FlowLayout20Fix = "{\"PatchName\":\"Flow layout 20.0 fix\",\"Files\":[{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictBase\",\"Scale\":{\"X\":21.5, \"Y\": 1.25}}]}]}";
+		// Same issue with careful layout, but also bump the scale of the album icon
+        const string CarefulLayout20Fix = "{\"PatchName\":\"Careful layout 20.0 fix\",\"Files\":[{\"FileName\":\"blyt/RdtBtnNtf.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictBase\",\"Scale\":{\"X\":12.7, \"Y\": 1}}]},{\"FileName\":\"blyt/RdtBtnPvr.bflyt\",\"Patches\":[{\"PaneName\":\"P_PictBase\",\"Scale\":{\"X\":2.2,\"Y\":0.9}}]}]}";
 
         // Legacy fixes
         const string DogeLayoutFix = "{\"PatchName\":\"DogeLayout 8.x fix\",\"AuthorName\":\"autoDiff\",\"Files\":[{\"FileName\":\"blyt/HudTime.bflyt\",\"Patches\":[{\"PaneName\":\"N_AMPM\",\"Position\":{\"X\":30,\"Y\":-1,\"Z\":0},\"Scale\":{\"X\":0.9,\"Y\":0.9}}]},{\"FileName\":\"blyt/RdtBtnFullLauncher.bflyt\",\"Patches\":[{\"PaneName\":\"N_Tip\",\"Scale\":{\"X\":1.1,\"Y\":1.1}},{\"PaneName\":\"B_Hit\",\"Size\":{\"X\":80,\"Y\":80}}]},{\"FileName\":\"blyt/Cursor3.bflyt\",\"Patches\":[{\"PaneName\":\"P_Main\",\"UsdPatches\":[{\"PropName\":\"S_BorderSize\",\"PropValues\":[\"7\"],\"type\":2}]},{\"PaneName\":\"P_Grow\",\"UsdPatches\":[{\"PropName\":\"S_BorderSize\",\"PropValues\":[\"7\"],\"type\":2}]}]},{\"FileName\":\"blyt/RdtBtnMyPage.bflyt\",\"Patches\":[{\"PaneName\":\"N_Tip\",\"Position\":{\"X\":125,\"Y\":0,\"Z\":0}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":1.428571,\"Y\":1.428571},\"Size\":{\"X\":40,\"Y\":40}}]},{\"FileName\":\"blyt/RdtBtnIconGame.bflyt\",\"Patches\":[{\"PaneName\":\"RootPane\",\"Scale\":{\"X\":0.5,\"Y\":0.5}},{\"PaneName\":\"P_InnerCursor\",\"Visible\":false},{\"PaneName\":\"N_BtnFocusKey\",\"Size\":{\"X\":259,\"Y\":259}},{\"PaneName\":\"N_Tip\",\"Scale\":{\"X\":1.1,\"Y\":1.1}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":2,\"Y\":2},\"Size\":{\"X\":132,\"Y\":132}}]},{\"FileName\":\"blyt/RdtBase.bflyt\",\"Patches\":[{\"PaneName\":\"N_ScrollArea\",\"Position\":{\"X\":0,\"Y\":-218,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":0.5},\"Size\":{\"X\":1300,\"Y\":322}},{\"PaneName\":\"N_ScrollWindow\",\"Position\":{\"X\":0,\"Y\":-218,\"Z\":0},\"Size\":{\"X\":100000,\"Y\":322}},{\"PaneName\":\"T_Blank\",\"Position\":{\"X\":0,\"Y\":197,\"Z\":0}},{\"PaneName\":\"N_GameRoot\",\"Position\":{\"X\":-530,\"Y\":-218,\"Z\":0},\"Scale\":{\"X\":0.00001,\"Y\":1}},{\"PaneName\":\"N_Game\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":100000,\"Y\":1}},{\"PaneName\":\"N_Icon_01\",\"Position\":{\"X\":135,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_02\",\"Position\":{\"X\":270,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_03\",\"Position\":{\"X\":405,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_04\",\"Position\":{\"X\":540,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_05\",\"Position\":{\"X\":675,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_06\",\"Position\":{\"X\":810,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_07\",\"Position\":{\"X\":945,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_08\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_09\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_10\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_11\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_12\",\"Position\":{\"X\":1080,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":1}},{\"PaneName\":\"L_BtnFlc\",\"Scale\":{\"X\":0.5,\"Y\":0.5}}]},{\"FileName\":\"blyt/Hud.bflyt\",\"Patches\":[{\"PaneName\":\"N_Time\",\"Size\":{\"X\":12,\"Y\":30}},{\"PaneName\":\"L_Time\",\"Position\":{\"X\":-18,\"Y\":0,\"Z\":0}}]}]}";
@@ -56,13 +61,21 @@ namespace SwitchThemes.Common
 			return null;
 		}
 
-		public static LayoutPatch GetFix(string NxPart, string LayoutID, ConsoleFirmware fw)
+		public static LayoutPatch GetFix(LayoutPatch layout, ConsoleFirmware fw)
 		{
 			// As of 4.5 this still hasn't been fixed in the builtin layouts but it has been given an ID
-			if (fw >= ConsoleFirmware.Fw9_0 && LayoutID == "builtin_ClearLock" && NxPart == "lock")
+			if (fw >= ConsoleFirmware.Fw9_0 && layout.ID == "builtin_ClearLock")
 				return JsonConvert.DeserializeObject<LayoutPatch>(ClearLock9Fix);
 
-			return null;
+			var apply20Fix = fw >= ConsoleFirmware.Fw20_0 && layout.TargetFirmwareValue < ConsoleFirmware.Fw20_0;
+
+            if (apply20Fix && layout.ID == "builtin_FlowLayout")
+                return JsonConvert.DeserializeObject<LayoutPatch>(FlowLayout20Fix);
+
+            if (apply20Fix && layout.ID == "builtin_CarefulLayout")
+                return JsonConvert.DeserializeObject<LayoutPatch>(CarefulLayout20Fix);
+
+            return null;
 		}
 
 		public static LayoutPatch GetLegacyAppletButtonsFix(ConsoleFirmware fw)
@@ -74,8 +87,7 @@ namespace SwitchThemes.Common
 
 			return null;
 		}
-
-		// Apply only if the layout is not overriding the target file
+		
 		public static bool ShouldApplyAppletPositionFix(LayoutPatch layout, ConsoleFirmware consoleFw)
 		{
             // On firmware up to and including 11.0 we must fix the N_System pane position by removing RdtBase_SystemAppletPos
