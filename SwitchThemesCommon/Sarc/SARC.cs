@@ -13,8 +13,8 @@ namespace SARCExt
 {
 	public class SarcData
 	{
-		public Dictionary<string, byte[]> Files;
-		public ByteOrder endianness;
+		public Dictionary<string, byte[]> Files = new Dictionary<string, byte[]>();
+		public ByteOrder endianness = ByteOrder.LittleEndian;
 		public bool HashOnly;
 	}
 

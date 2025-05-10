@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29020.237
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwitchThemesWin", "SwitchThemes\SwitchThemesWin.csproj", "{CFBF6EF0-8237-442A-8997-A30072F0B9F8}"
 EndProject
@@ -16,11 +16,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SwitchThemesNXTests", "Tests\SwitchThemesNXTests\SwitchThemesNXTests.vcxproj", "{28D10DAC-B4F8-4205-BBE8-722C2687E2E1}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
-		SwitchThemesCommon\SwitchThemesCommon.projitems*{ae30580e-a6b7-49db-97d9-088b159f1101}*SharedItemsImports = 5
-		SwitchThemesCommon\SwitchThemesCommon.projitems*{cfbf6ef0-8237-442a-8997-a30072f0b9f8}*SharedItemsImports = 4
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -51,5 +46,11 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {39DA1599-C227-462D-910F-490C734D5B41}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{11174f92-402d-4064-b278-f52842a48251}*SharedItemsImports = 13
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{3ee76b71-422a-4e80-8f17-63da105bb4bc}*SharedItemsImports = 5
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{ae30580e-a6b7-49db-97d9-088b159f1101}*SharedItemsImports = 5
+		SwitchThemesCommon\SwitchThemesCommon.projitems*{cfbf6ef0-8237-442a-8997-a30072f0b9f8}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal

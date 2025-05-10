@@ -195,10 +195,10 @@ namespace SwitchThemes
 			try
 			{
 #endif
-				string msg;
-				(res, msg) = LayoutDiff.Diff(originalSzs, CommonSzs, null);
-				if (msg != null)
-					MessageBox.Show(msg);
+				var diff = new LayoutDiff(originalSzs, CommonSzs, null);
+				res = diff.ComputeDiff();
+				if (!string.IsNullOrWhiteSpace(diff.OutputLog))
+					MessageBox.Show(diff.OutputLog);
 #if !DEBUG
 			}
 			catch (Exception ex)

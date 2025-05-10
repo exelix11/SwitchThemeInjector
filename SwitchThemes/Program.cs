@@ -129,15 +129,17 @@ namespace SwitchThemes
 
 			try
 			{
-				var res = LayoutDiff.Diff(
+				var diff = new LayoutDiff(
 					SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(original))),
 					SARC.Unpack(ManagedYaz0.Decompress(File.ReadAllBytes(edited))),
 					options
 				);
 
-				File.WriteAllBytes(outName, res.Item1.AsByteArray());
+				var res = diff.ComputeDiff();
 
-				Console.WriteLine(res.Item2);
+				File.WriteAllBytes(outName, res.AsByteArray());
+
+				Console.WriteLine(diff.OutputLog);
 			}
 			catch (Exception ex)
 			{

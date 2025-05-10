@@ -19,7 +19,22 @@ namespace SwitchThemes.Common
 			if this flag is set to true or null the installer will automatically remove that animation emulating the layout of pre 11.0 qlaunch */
 		public bool? HideOnlineBtn;
 
+		// This is a value from the ConsoleFirmware enum
+		// This is auto-generated based on the detected szs firmware when producing a layout patch and used by the installer to detect if the layout needs some compatibility patches for newer firmwares
+		// When this is not specified we assume Fw11_0 which is the common firmware compatibility level for all layouts at the time this feature was introduced
+		public int TargetFirmware = (int)ConsoleFirmware.Fw11_0;
+
 		[JsonIgnore]
+		public ConsoleFirmware TargetFirmwareValue
+		{
+			get => Enum.GetValues(typeof(ConsoleFirmware))
+					.Cast<ConsoleFirmware>()
+					.FirstOrDefault(x => (int)x == TargetFirmware);
+
+			set => TargetFirmware = (int)value;
+		}
+
+        [JsonIgnore]
 		public bool UsesOldFixes => ID == null && !Ready8X;
 
 		[Obsolete("This was used to detect whether a layout would need patches to support 8.0+ qlaunch, since version 4.5 prefer the ID value to detect layouts")]
@@ -130,7 +145,10 @@ namespace SwitchThemes.Common
 		public TexReference[] Refs = null;
 		public TexTransform[] Transforms = null;
 
-		public bool IsEmpty() 
+        public override string ToString() => 
+			$"Material patch for {MaterialName}";
+
+        public bool IsEmpty() 
 		{
 			if (ForegroundColor != null || BackgroundColor != null)
 				return false;
@@ -160,7 +178,10 @@ namespace SwitchThemes.Common
 	{
 		public string GroupName;
 		public string[] Panes;
-	}
+
+        public override string ToString() =>
+            $"Extra group patch for {GroupName}";
+    }
 
 	public class PanePatch
 	{
@@ -178,8 +199,8 @@ namespace SwitchThemes.Common
 		public byte? ParentOriginX;
 		public byte? ParentOriginY;
 
-		//These fields are used to store extra data according to the pane type.
-		[JsonIgnore]
+        //These fields are used to store extra data according to the pane type.
+        [JsonIgnore]
 		private string[] PaneSpecific = new string[4];
 
 		//For compatibility reasons these fields have the old pic1-specific name in layouts 
@@ -211,7 +232,9 @@ namespace SwitchThemes.Common
 		/// </summary>
 		[JsonProperty("ColorBR")]
 		public string PaneSpecific3 { get => PaneSpecific[3]; set => PaneSpecific[3] = value; }
-	}
+
+        public override string ToString() => $"Pane patch for {PaneName}";
+    }
 
 	public class UsdPatch
 	{

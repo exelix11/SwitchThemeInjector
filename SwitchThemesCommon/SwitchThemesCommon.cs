@@ -10,360 +10,357 @@ using System.Linq;
 using System.Text;
 using SARCExt;
 using ExtensionMethods;
+using System.Text.RegularExpressions;
 
 namespace SwitchThemes.Common
 {
-	public static class Info
-	{
-		public const string CoreVer = "4.7.1";
-		public const int NxThemeFormatVersion = 15;
+    public static class Info
+    {
+        public const string CoreVer = "4.7.1";
+        public const int NxThemeFormatVersion = 15;
 
-		public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
-			{"home", "ResidentMenu.szs"},
-			{"lock", "Entrance.szs"},
-			{"user", "MyPage.szs"},
-			{"apps", "Flaunch.szs"},
-			{"set" , "Set.szs"},
-			{"news", "Notification.szs"},
-			{"psl" , "Psl.szs" },
-		};
+        public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
+            {"home", "ResidentMenu.szs"},
+            {"lock", "Entrance.szs"},
+            {"user", "MyPage.szs"},
+            {"apps", "Flaunch.szs"},
+            {"set" , "Set.szs"},
+            {"news", "Notification.szs"},
+            {"psl" , "Psl.szs" },
+        };
 
-		public static Dictionary<string, string> PartToName = new Dictionary<string, string>()
-		{
-			{"home", "Home menu" },
-			{"lock", "Lock screen" },
-			{"user", "User page" },
-			{"apps", "All apps menu (All applets on 5.X)" },
-			{"set" , "Settings applet (All applets on 5.X)" },
-			{"news", "News applet (All applets on 5.X)" },
-			{"psl" , "Player select" },
-		};
-	}
+        public static Dictionary<string, string> PartToName = new Dictionary<string, string>()
+        {
+            {"home", "Home menu" },
+            {"lock", "Lock screen" },
+            {"user", "User page" },
+            {"apps", "All apps menu (All applets on 5.X)" },
+            {"set" , "Settings applet (All applets on 5.X)" },
+            {"news", "News applet (All applets on 5.X)" },
+            {"psl" , "Player select" },
+        };
+    }
 
-	public class NXThemeBuilder
-	{
-		private Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
-		ThemeFileManifest info;
+    public class NXThemeBuilder
+    {
+        private Dictionary<string, byte[]> files = new Dictionary<string, byte[]>();
+        ThemeFileManifest info;
 
-		public NXThemeBuilder(string target, string name, string author)
-		{
-			info = new ThemeFileManifest()
-			{
-				Version = Info.NxThemeFormatVersion,
-				ThemeName = name,
-				Author = author,
-				Target = target,
-			};
-		}
+        public NXThemeBuilder(string target, string name, string author)
+        {
+            info = new ThemeFileManifest()
+            {
+                Version = Info.NxThemeFormatVersion,
+                ThemeName = name,
+                Author = author,
+                Target = target,
+            };
+        }
 
-		public byte[] GetNxtheme()
-		{
-			if (!files.ContainsKey("image.dds") && !files.ContainsKey("image.jpg") && !files.ContainsKey("layout.json"))
-				throw new Exception("An nxtheme must contain at least a custom background image or layout");
+        public byte[] GetNxtheme()
+        {
+            if (!files.ContainsKey("image.dds") && !files.ContainsKey("image.jpg") && !files.ContainsKey("layout.json"))
+                throw new Exception("An nxtheme must contain at least a custom background image or layout");
 
-			if (!files.ContainsKey("info.json"))
-				AddFile("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
+            if (!files.ContainsKey("info.json"))
+                AddFile("info.json", Encoding.UTF8.GetBytes(info.Serialize()));
 
-			var sarc = SARCExt.SARC.Pack(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
+            var sarc = SARCExt.SARC.Pack(new SARCExt.SarcData() { endianness = ByteOrder.LittleEndian, Files = files, HashOnly = false });
 #if WIN
-			return ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1);
+            return ManagedYaz0.Compress(sarc.Item2, 3, (int)sarc.Item1);
 #else
 			return ManagedYaz0.Compress(sarc.Item2, 0, (int)sarc.Item1);
 #endif
-		}
+        }
 
-		private void AddFile(string name, byte[] data)
-		{
-			if (name == null || data == null)
-				return;
+        private void AddFile(string name, byte[] data)
+        {
+            if (name == null || data == null)
+                return;
 
-			if (info.Target != "home" && name == "common.json")
-				return;
+            if (info.Target != "home" && name == "common.json")
+                return;
 
-			files.Add(name, data);
-		}
+            files.Add(name, data);
+        }
 
-		public void AddCommonLayout(string json) =>
-			AddFile("common.json", LayoutPatch.Load(json).AsByteArray());
+        public void AddCommonLayout(string json) =>
+            AddFile("common.json", LayoutPatch.Load(json).AsByteArray());
 
-		public void AddCommonLayout(LayoutPatch data) =>
-			AddFile("common.json", data.AsByteArray());
+        public void AddCommonLayout(LayoutPatch data) =>
+            AddFile("common.json", data.AsByteArray());
 
-		public void AddMainBg(byte[] data)
-		{
-			if (data == null) return;
-			var fmt = Images.Validation.AssertValidForBG(data);
-			AddFile("image." + fmt.Extension, data);
-		}
+        public void AddMainBg(byte[] data)
+        {
+            if (data == null) return;
+            var fmt = Images.Validation.AssertValidForBG(data);
+            AddFile("image." + fmt.Extension, data);
+        }
 
-		public void AddMainLayout(string text) =>
-			AddMainLayout(LayoutPatch.Load(text));
+        public void AddMainLayout(string text) =>
+            AddMainLayout(LayoutPatch.Load(text));
 
-		public void AddMainLayout(LayoutPatch l) {
-			if (l == null) return;
-			AddFile("layout.json", l.AsByteArray());
-			info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
-		}
+        public void AddMainLayout(LayoutPatch l)
+        {
+            if (l == null) return;
+            AddFile("layout.json", l.AsByteArray());
+            info.LayoutInfo = l.PatchName + " by " + l.AuthorName;
+        }
 
-		public void AddAppletIcon(string name, byte[] data)
-		{
-			if (!TextureReplacement.NxNameToList.ContainsKey(info.Target)) throw new Exception("Not supported for this target");
+        public void AddAppletIcon(string name, byte[] data)
+        {
+            if (!TextureReplacement.NxNameToList.ContainsKey(info.Target)) throw new Exception("Not supported for this target");
 
-			var item = TextureReplacement.NxNameToList[info.Target].Where(x => x.NxThemeName == name).FirstOrDefault();
-			if (item == null) throw new Exception($"{name} not supported for this target");
+            var item = TextureReplacement.NxNameToList[info.Target].Where(x => x.NxThemeName == name).FirstOrDefault();
+            if (item == null) throw new Exception($"{name} not supported for this target");
 
-			var img = Images.Validation.AssertValidForApplet(item, data);
+            var img = Images.Validation.AssertValidForApplet(item, data);
 
-			AddFile($"{name}.{img.Extension}", data);
-		}
-	}
+            AddFile($"{name}.{img.Extension}", data);
+        }
+    }
 
-	public class SzsPatcher
-	{
-		private SarcData sarc;
-		private QuickBntx bntx = null;
+    public class SzsPatcher
+    {
+        private SarcData sarc;
+        private QuickBntx bntx = null;
 
-		public bool EnablePaneOrderMod = true;
+        public bool EnablePaneOrderMod = true;
 
-		public SzsPatcher(SarcData s) 
-		{
-			sarc = s;
-		}
+        public SzsPatcher(SarcData s)
+        {
+            sarc = s;
+        }
 
-		void SaveBntx()
-		{
-			if (bntx == null) return;
-			sarc.Files[@"timg/__Combined.bntx"] = bntx.Write();
-			bntx = null;
-		}
+        void SaveBntx()
+        {
+            if (bntx == null) return;
+            sarc.Files[@"timg/__Combined.bntx"] = bntx.Write();
+            bntx = null;
+        }
 
-		QuickBntx GetBntx()
-		{
-			if (bntx != null) return bntx;
-			bntx = new QuickBntx(sarc.Files[@"timg/__Combined.bntx"]);
-			return bntx;
-		}
+        QuickBntx GetBntx()
+        {
+            if (bntx != null) return bntx;
+            bntx = new QuickBntx(sarc.Files[@"timg/__Combined.bntx"]);
+            return bntx;
+        }
 
-		public SarcData GetFinalSarc()
-		{
-			SaveBntx();
-			return sarc;
-		}
+        public SarcData GetFinalSarc()
+        {
+            SaveBntx();
+            return sarc;
+        }
 
-		private bool PatchSingleLayout(LayoutFilePatch p)
-		{
-			if (p == null || p.FileName == null) return true;
-			if (!sarc.Files.ContainsKey(p.FileName))
-				return false;
-			
-			var target = new BflytFile(sarc.Files[p.FileName]);
-			
-			target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
-			
-			var res = target.ApplyLayoutPatch(p.Patches);
-			if (!res) return res;
+        private void ApplyRawPatch(LayoutPatch patch)
+        {
+            // Note that we ignore non-critical errors such as missing files or panes to improve compatibility across multiple firmware
+            // Critical errors will throw an exception and stop the patching process
 
-			res = target.AddGroupNames(p.AddGroups);
-			if (!res) return res;
+            if (patch == null)
+                return;
 
-			if (p.PullFrontPanes != null)
-				foreach (var n in p.PullFrontPanes)
-					target.PanePullToFront(n);
-			if (p.PushBackPanes != null)
-				foreach (var n in p.PushBackPanes)
-					target.PanePushBack(n);
+            if (patch.Anims != null) foreach (var p in patch.Anims) ApplyAnimPatch(p);
+            if (patch.Files != null) foreach (var p in patch.Files) ApplyLayoutPatch(p);
+        }
 
-			sarc.Files[p.FileName] = target.SaveFile();
-			return true;
-		}
+        uint? FirmwareTargetBflanVersion = null;
+        private bool ApplyAnimPatch(AnimFilePatch p)
+        {
+            if (!sarc.Files.ContainsKey(p.FileName))
+                return false;
 
-		public bool PatchLayouts(LayoutPatch Patch) =>
-			PatchLayouts(Patch, PatchTemplate?.NXThemeName ?? "");
-		
-		private bool PatchLayouts(LayoutPatch Patch, string PartName)
-		{
-			var fw = FirmwareDetection.Detect(PartName, sarc);
+            // The bflan version varies between firmwares, load a file from the current firmware to get the target version
+            // cache this result to avoid loading all files
+            if (!FirmwareTargetBflanVersion.HasValue)
+            {
+                BflanFile b = new BflanFile(sarc.Files[p.FileName]);
+                FirmwareTargetBflanVersion = b.Version;
+            }
 
-			if (PartName == "home" && Patch.PatchAppletColorAttrib)
-				PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
-				   new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),
-				   new Tuple<string, uint>("RdtIcoSet^s", 0x5050505), new Tuple<string, uint>("RdtIcoShop^s", 0x5050505),
-				   new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x5050505),
-				   new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x5050505), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x5050505));
+            var n = BflanSerializer.FromJson(p.AnimJson);
+            n.Version = FirmwareTargetBflanVersion.Value;
+            n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
+            sarc.Files[p.FileName] = n.WriteFile();
 
-			List<LayoutFilePatch> Files = new List<LayoutFilePatch>();
-			Files.AddRange(Patch.Files);
+            return true;
+        }
 
-			LayoutFilePatch[] extra;
-			//Legacy fixes based on name and version
-			if (fw != FirmwareDetection.Firmware.Invariant && Patch.UsesOldFixes)
-			{
-				extra = NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName);
-				if (extra != null)
-					Files.AddRange(extra);
-			}
-			//Modern fixes based on layout ID
-			else if (Patch.ID != null)
-			{
-				extra = NewFirmFixes.GetFix(PartName, Patch.ID, fw);
-				if (extra != null)
-					Files.AddRange(extra);
-			}
+        private bool ApplyLayoutPatch(LayoutFilePatch p)
+        {
+            if (p == null || p.FileName == null) return true;
+            if (!sarc.Files.ContainsKey(p.FileName))
+                return false;
 
-			foreach (var p in Files)
-			{
-				var res = PatchSingleLayout(p);
-				if (!res) return res;
-			}
+            var target = new BflytFile(sarc.Files[p.FileName]);
 
-			List<AnimFilePatch> Anims = new List<AnimFilePatch>();
-			if (Patch.Anims != null)
-				Anims.AddRange(Patch.Anims);
+            target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
 
-			if (PartName == "home")
-			{
-				AnimFilePatch[] animExtra = null;
-				if (Patch.HideOnlineBtn ?? true)
-					animExtra = NewFirmFixes.GetNoOnlineButtonFix(fw);
-				else if (NewFirmFixes.ShouldApplyAppletPositionFix(Anims))
-					animExtra = NewFirmFixes.GetAppletsPositionFix(fw);
+            var res = target.ApplyLayoutPatch(p.Patches);
+            if (!res) return res;
 
-				if (animExtra != null)
-					Anims.AddRange(animExtra);
-			}
+            res = target.AddGroupNames(p.AddGroups);
+            if (!res) return res;
 
-			var patchAnims = Anims.Any();
+            if (p.PullFrontPanes != null)
+                foreach (var n in p.PullFrontPanes)
+                    target.PanePullToFront(n);
+            if (p.PushBackPanes != null)
+                foreach (var n in p.PushBackPanes)
+                    target.PanePushBack(n);
 
-			// 20.x removed some animations. A few layouts were hitting an issue where the only target animation was not present in the szs anymore.
-			// Ensure we have at least one animation to patch
-			var referenceBflan = patchAnims ? Anims.FirstOrDefault(x => sarc.Files.ContainsKey(x.FileName)) : null;
+            sarc.Files[p.FileName] = target.SaveFile();
+            return true;
+        }
 
-            if (referenceBflan != null)
-			{
-                // The bflan version varies between firmwares, load a file from the list to detect the right one
-                BflanFile b = new BflanFile(sarc.Files[referenceBflan.FileName]);
-				var TargetVersion = b.Version;
-				b = null;
+        public bool PatchLayouts(LayoutPatch Patch) =>
+            PatchLayouts(Patch, PatchTemplate?.NXThemeName ?? "");
 
-				foreach (var p in Anims)
-				{
-					if (!sarc.Files.ContainsKey(p.FileName))
-						continue;
+        private bool PatchLayouts(LayoutPatch Patch, string PartName)
+        {
+            var fw = FirmwareDetection.Detect(PartName, sarc);
 
-					var n = BflanSerializer.FromJson(p.AnimJson);
-					n.Version = TargetVersion;
-					n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
-					sarc.Files[p.FileName] = n.WriteFile();
-				}
-			}
+            // Detect any compatibility patches we need
+            var useLegacyFixes = fw != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
+            var useModernFixes = !useLegacyFixes && Patch.ID != null;
+            var appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, fw);
+            // The default for this on old layouts that don't specify it is true
+            var onlineBtnFix = PartName == "home" && (Patch.HideOnlineBtn ?? true);
 
-			return true;
-		}
+            // Apply legacy PatchAppletColorAttrib patch
+            if (PartName == "home" && Patch.PatchAppletColorAttrib)
+                PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
+                   new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),
+                   new Tuple<string, uint>("RdtIcoSet^s", 0x5050505), new Tuple<string, uint>("RdtIcoShop^s", 0x5050505),
+                   new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x5050505),
+                   new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x5050505), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x5050505));
 
-		public bool PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
-		{
-			QuickBntx q = GetBntx();
-			if (q.Rlt.Length != 0x80)
-				return false;
-			q.ReplaceTex(texName, DDS);
-			if (TexFlag != 0xFFFFFFFF)
-				q.FindTex(texName).ChannelTypes = (int)TexFlag;
-			return true;
-		}
+            // Apply patches. The order here matters.
 
-		public bool PatchAppletIcon(byte[] DDS, string name)
-		{
-			var patch = PatchTemplate;
-			if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
-				return false;
+            // First home menu fixes. These are applied early so later patches from the json can override them
+            if (appletPositionFixes)
+                ApplyRawPatch(NewFirmFixes.GetAppletsPositionFix(fw));
 
-			var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
+            if (onlineBtnFix)
+                ApplyRawPatch(NewFirmFixes.GetLegacyAppletButtonsFix(fw));
 
-			var res = PatchSingleLayout(target.patch);
-			if (!res) return res;
+            // Then json patches
+            ApplyRawPatch(Patch);
 
-			PatchBntxTexture(DDS, target.BntxName, target.NewColorFlags);
+            // Then fixes on top of known broken layouts
+            if (useLegacyFixes)
+                ApplyRawPatch(NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName));
 
-			BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
-			curTarget.ClearUVData(target.PaneName);
-			sarc.Files[target.FileName] = curTarget.SaveFile();
+            if (useModernFixes)
+                ApplyRawPatch(NewFirmFixes.GetFix(PartName, Patch.ID, fw));
 
-			return true;
-		}
+            return true;
+        }
 
-		public bool PatchMainBG(byte[] DDS)
-		{
-			return PatchMainBG(new Images.DDS(DDS));
-		}
+        public bool PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
+        {
+            QuickBntx q = GetBntx();
+            if (q.Rlt.Length != 0x80)
+                return false;
+            q.ReplaceTex(texName, DDS);
+            if (TexFlag != 0xFFFFFFFF)
+                q.FindTex(texName).ChannelTypes = (int)TexFlag;
+            return true;
+        }
 
-		public bool PatchMainBG(Images.DDS DDS)
-		{
-			var template = PatchTemplate;
-			BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
+        public bool PatchAppletIcon(byte[] DDS, string name)
+        {
+            var patch = PatchTemplate;
+            if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
+                return false;
 
-			//PatchBGLayouts
-			BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
-			var res = MainFile.PatchBgLayout(template);
-			if (!res) return res;
+            var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
 
-			sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
+            var res = ApplyLayoutPatch(target.patch);
+            if (!res) return res;
 
-			//PatchBGBntx
-			QuickBntx q = GetBntx();
-			if (q.Rlt.Length != 0x80)
-				return false;
-			q.ReplaceTex(template.MaintextureName, DDS);
+            PatchBntxTexture(DDS, target.BntxName, target.NewColorFlags);
+
+            BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
+            curTarget.ClearUVData(target.PaneName);
+            sarc.Files[target.FileName] = curTarget.SaveFile();
+
+            return true;
+        }
+
+        public bool PatchMainBG(byte[] DDS)
+        {
+            return PatchMainBG(new Images.DDS(DDS));
+        }
+
+        public bool PatchMainBG(Images.DDS DDS)
+        {
+            var template = PatchTemplate;
+            BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
+
+            //PatchBGLayouts
+            BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
+            var res = MainFile.PatchBgLayout(template);
+            if (!res) return res;
+
+            sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
+
+            //PatchBGBntx
+            QuickBntx q = GetBntx();
+            if (q.Rlt.Length != 0x80)
+                return false;
+            q.ReplaceTex(template.MaintextureName, DDS);
 
             // Remove references to the texture we replaced from other layouts
 
-			// If the hardcoded texture is not present fallback to the first one called White*
-            var replaceWith = 
-				q.Textures.Any(x => x.Name == template.SecondaryTexReplace) ? template.SecondaryTexReplace :
-				q.Textures.FirstOrDefault(x => x.Name.StartsWith("White"))?.Name;
+            // If the hardcoded texture is not present fallback to the first one called White*
+            var replaceWith =
+                q.Textures.Any(x => x.Name == template.SecondaryTexReplace) ? template.SecondaryTexReplace :
+                q.Textures.FirstOrDefault(x => x.Name.StartsWith("White"))?.Name;
 
-			if (replaceWith == null)
-				return false;
-            
+            if (replaceWith == null)
+                return false;
+
             var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
-			foreach (var f in layouts)
-			{
-				BflytFile curTarget = BflytFromSzs(f);
-				if (curTarget.PatchTextureName(template.MaintextureName, replaceWith))
-					sarc.Files[f] = curTarget.SaveFile();
-			}
+            foreach (var f in layouts)
+            {
+                BflytFile curTarget = BflytFromSzs(f);
+                if (curTarget.PatchTextureName(template.MaintextureName, replaceWith))
+                    sarc.Files[f] = curTarget.SaveFile();
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public bool PatchBntxTextureAttribs(params Tuple<string, UInt32>[] patches)
-		{
-			QuickBntx q = GetBntx();
-			if (q.Rlt.Length != 0x80)
-				return false;
-			try
-			{
-				foreach (var patch in patches)
-				{
-					var target = q.FindTex(patch.Item1);
-					if (target != null) target.ChannelTypes = (int)patch.Item2;
-				}
-			}
-			catch
-			{
-				return false;
-			}
-			return true;
-		}
+        public bool PatchBntxTextureAttribs(params Tuple<string, UInt32>[] patches)
+        {
+            QuickBntx q = GetBntx();
+            if (q.Rlt.Length != 0x80)
+                return false;
+            try
+            {
+                foreach (var patch in patches)
+                {
+                    var target = q.FindTex(patch.Item1);
+                    if (target != null) target.ChannelTypes = (int)patch.Item2;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
 
-		private PatchTemplate _patch = null;
-		public PatchTemplate PatchTemplate
-		{
-			get
-			{
-				if (_patch != null) return _patch;
-				_patch = DefaultTemplates.GetFor(sarc);
-				return _patch;
-			}
-		}
-	}
+        private PatchTemplate _patch = null;
+        public PatchTemplate PatchTemplate
+        {
+            get
+            {
+                if (_patch != null) return _patch;
+                _patch = DefaultTemplates.GetFor(sarc);
+                return _patch;
+            }
+        }
+    }
 }

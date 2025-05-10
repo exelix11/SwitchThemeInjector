@@ -6,26 +6,48 @@ using System.Text;
 using System.Threading.Tasks;
 using ExtensionMethods;
 using SARCExt;
-using SwitchThemes.Common;
 using SwitchThemes.Common.Bflan;
 using SwitchThemes.Common.Bflyt;
 using SwitchThemes.Common.Serializers;
-using Syroot.BinaryData;
 using static SwitchThemes.Common.Bflyt.BflytFile;
 
 namespace SwitchThemes.Common
 {
-	public static class LayoutDiff
+	public class LayoutDiff
 	{
 		readonly static string[] IgnorePaneList = new string[] { "usd1", "lyt1", "mat1", "txl1", "fnl1", "grp1", "pae1", "pas1", "cnt1" };
 
-		public struct DiffOptions 
+		public class DiffOptions 
 		{
-			public bool? HideOnlineButton;
-		}
+			public bool HideOnlineButton;
+			public bool IgnoreMissingPanes;
+			public bool IgnoreGroups;
+			public bool IgnoreAnimations;
+			public bool IgnoreMaterials;
+        }
 
-		public static (LayoutPatch,string) Diff(SarcData original, SarcData edited, DiffOptions? opt)
+		readonly StringBuilder log = new StringBuilder();
+		readonly SarcData original;
+		readonly SarcData edited;
+		readonly DiffOptions opt;
+
+		public string OutputLog => log.ToString();
+
+        public LayoutDiff(SarcData original, SarcData edited, DiffOptions opt = null)
 		{
+			this.original = original;
+            this.edited = edited;
+            this.opt = opt ?? new DiffOptions();
+        }
+
+        public LayoutPatch ComputeDiff()
+		{
+            // Try detect target firmware version. Needed for 20.0+ themes
+			var targetPatch = DefaultTemplates.GetFor(edited);
+            var target = ConsoleFirmware.Invariant;
+			if (targetPatch != null)
+                target = FirmwareDetection.Detect(targetPatch.NXThemeName, edited);
+
 			List<LayoutFilePatch> Patches = new List<LayoutFilePatch>();
 			if (!ScrambledEquals<string>(original.Files.Keys, edited.Files.Keys))
 				throw new Exception("The provided archives don't have the same files");
@@ -39,42 +61,42 @@ namespace SwitchThemes.Common
 
 				var curFile = DiffPanes(_or, _ed, f);
 
-				var extraGroups = DiffGroups(_or, _ed);
+				var extraGroups = opt.IgnoreGroups ? null : DiffGroups(_or, _ed);
 				if (extraGroups != null)
 					hasAtLeastAnExtraGroup = true;
 
-				var materials = DiffMaterials(_or, _ed, f);
+				var materials = opt.IgnoreMaterials ? null : DiffMaterials(_or, _ed, f);
 
 				if (curFile.Count > 0 || extraGroups?.Count > 0 || materials?.Count > 0)
 					Patches.Add(new LayoutFilePatch() { FileName = f, Patches = curFile.ToArray(), Materials = materials?.ToArray(), AddGroups = extraGroups?.ToArray() });
 			}
 
-			string Message = null;
-
 			List<AnimFilePatch> AnimPatches = new List<AnimFilePatch>();
-			foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
+			if (!opt.IgnoreAnimations)
 			{
-				if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
-				BflanFile anim = new BflanFile(edited.Files[f]);
-				AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
+				foreach (var f in original.Files.Keys.Where(x => x.EndsWith(".bflan")))
+				{
+					if (original.Files[f].SequenceEqual(edited.Files[f])) continue;
+					BflanFile anim = new BflanFile(edited.Files[f]);
+					AnimPatches.Add(new AnimFilePatch() { FileName = f, AnimJson = BflanSerializer.ToJson(anim) });
+				}
 			}
-			if (AnimPatches.Count == 0) AnimPatches = null;
+			
+			if (AnimPatches.Count == 0) 
+				AnimPatches = null;
 			else if (!hasAtLeastAnExtraGroup)
-				Message = "This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations";
+                log.AppendLine("This theme uses custom animations but doesn't have custom group in the layouts, this means that the nxtheme will work on the firmware it has been developed on but it may break on older or newer ones. It's *highly recommended* to create custom groups to handle animations");
 
 			if (AnimPatches != null && AnimPatches.Any(x => x.FileName == "anim/RdtBase_SystemAppletPos.bflan"))
 			{
-				if (opt == null || opt?.HideOnlineButton == null)
-					opt = new DiffOptions { HideOnlineButton = false };
-				else if (opt != null && opt.Value.HideOnlineButton.Value)
+				if (opt.HideOnlineButton)
 				{
-					Message = "You chose to hide the 11.0+ \"Switch online\" button but manually edited the \"RdtBase_SystemAppletPos\" animation. HideOnlineButton will be disabled.";
-					opt = new DiffOptions { HideOnlineButton = false };
+					log.AppendLine("You chose to hide the 11.0+ \"Switch online\" button but manually edited the \"RdtBase_SystemAppletPos\" animation. HideOnlineButton will be disabled.");
+					opt.HideOnlineButton = false;
 				}
 			}
 				
-			var targetPatch = DefaultTemplates.GetFor(original);
-			return (new LayoutPatch()
+			return new LayoutPatch()
 			{
 				PatchName = "diffPatch" + (targetPatch == null ? "" : " for " + targetPatch.TemplateName),
 				TargetName = targetPatch?.szsName,
@@ -82,8 +104,9 @@ namespace SwitchThemes.Common
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
 				ID = $"Generated_{Guid.NewGuid()}",
-				HideOnlineBtn = targetPatch?.NXThemeName != "home" ? null : opt?.HideOnlineButton
-			}, Message);
+				HideOnlineBtn = targetPatch?.NXThemeName != "home" ? null : opt?.HideOnlineButton,
+				TargetFirmwareValue = target
+			};
 		}
 
 		static List<MaterialPatch> DiffMaterials(BflytFile _or, BflytFile _ed, string layoutname)
@@ -199,18 +222,29 @@ namespace SwitchThemes.Common
 			return extraGroups;
 		}
 
-		static List<PanePatch> DiffPanes(BflytFile _or, BflytFile _ed, string filename)
+		List<PanePatch> DiffPanes(BflytFile originalFile, BflytFile editedFile, string filename)
 		{
 			List<PanePatch> curFile = new List<PanePatch>();
-			foreach (var orpane_ in _or.EnumeratePanes().Where(x => x is INamedPane))
+			foreach (var originalPane in originalFile.EnumeratePanes().Where(x => x is INamedPane))
 			{
-				var edpane = _ed[((INamedPane)orpane_).PaneName];
-				if (edpane == null) throw new Exception($"{filename} is missing {((INamedPane)orpane_).PaneName}");
-				if (orpane_.name != edpane.name) throw new Exception($"{filename} : {((INamedPane)orpane_).PaneName} Two panes with the same name are of a different type");
-				if (IgnorePaneList.Contains(orpane_.name)) continue;
+				var editedPane = editedFile[((INamedPane)originalPane).PaneName];
+				
+				if (editedPane == null)
+				{
+					var line = $"Missing pane in {filename}. Pane name was {((INamedPane)originalPane).PaneName}.";
+                    if (opt.IgnoreMissingPanes)
+					{
+						log.AppendLine(line);
+						continue;
+					}
+					else throw new Exception(line);
+                }
 
-				var edPan = (Pan1Pane)edpane;
-				var orPan = (Pan1Pane)orpane_;
+				if (originalPane.name != editedPane.name) throw new Exception($"{filename} : {((INamedPane)originalPane).PaneName} Two panes with the same name are of a different type");
+				if (IgnorePaneList.Contains(originalPane.name)) continue;
+
+				var edPan = (Pan1Pane)editedPane;
+				var orPan = (Pan1Pane)originalPane;
 
 				PanePatch curPatch = new PanePatch() { PaneName = edPan.PaneName };
 				curPatch.UsdPatches = MakeUsdPatch(edPan.UserData, orPan.UserData);
