@@ -190,7 +190,7 @@ if (SData.files.count("layout.json"))\
 				if (themeInfo.Target == "home" && SData.files.count("album.dds"))
 				{
 					FileHasBeenPatched = true;
-					if (!Patcher.PatchBntxTexture(SData.files["album.dds"], "RdtIcoPvr_00^s", 0x02000000))
+					if (!Patcher.PatchBntxTexture(SData.files["album.dds"], {"RdtIcoPvr_00^s"}, 0x02000000))
 						DialogBlocking("Album icon patch failed for " + SzsName + "\nThe theme will be installed anyway but may crash.");
 				}
 			}

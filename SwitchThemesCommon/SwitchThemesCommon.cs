@@ -230,7 +230,10 @@ namespace SwitchThemes.Common
             // Apply legacy PatchAppletColorAttrib patch
             if (PartName == "home" && Patch.PatchAppletColorAttrib)
                 PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
+                   // News icon before 20.0.0:
                    new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),
+                   // news icon for 20.0.0 and later:
+                   new Tuple<string, uint>("RdtIcoNews_00_Home^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01_Home^s", 0x5050505),
                    new Tuple<string, uint>("RdtIcoSet^s", 0x5050505), new Tuple<string, uint>("RdtIcoShop^s", 0x5050505),
                    new Tuple<string, uint>("RdtIcoCtrl_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoCtrl_01^s", 0x5050505),
                    new Tuple<string, uint>("RdtIcoCtrl_02^s", 0x5050505), new Tuple<string, uint>("RdtIcoPwrForm^s", 0x5050505));
@@ -257,15 +260,23 @@ namespace SwitchThemes.Common
             return true;
         }
 
-        public bool PatchBntxTexture(byte[] DDS, string texName, uint TexFlag = 0xFFFFFFFF)
+        public bool PatchBntxTexture(byte[] DDS, string[] texNames, uint TexFlag = 0xFFFFFFFF)
         {
             QuickBntx q = GetBntx();
             if (q.Rlt.Length != 0x80)
                 return false;
-            q.ReplaceTex(texName, DDS);
-            if (TexFlag != 0xFFFFFFFF)
-                q.FindTex(texName).ChannelTypes = (int)TexFlag;
-            return true;
+            // Replace the first texture whose name in the list is present.
+            foreach (var texName in texNames)
+            {
+                var texture = q.FindTex(texName);
+                if (texture == null) continue;
+
+                q.ReplaceTex(texName, DDS);
+                if (TexFlag != 0xFFFFFFFF)
+                    q.FindTex(texName).ChannelTypes = (int)TexFlag;
+                return true;
+            }
+            return false;
         }
 
         public bool PatchAppletIcon(byte[] DDS, string name)
@@ -279,7 +290,7 @@ namespace SwitchThemes.Common
             var res = ApplyLayoutPatch(target.patch);
             if (!res) return res;
 
-            PatchBntxTexture(DDS, target.BntxName, target.NewColorFlags);
+            PatchBntxTexture(DDS, target.BntxNames, target.NewColorFlags);
 
             BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
             curTarget.ClearUVData(target.PaneName);
