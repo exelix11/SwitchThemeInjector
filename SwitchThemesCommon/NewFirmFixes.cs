@@ -69,10 +69,10 @@ namespace SwitchThemes.Common
 
 			var apply20Fix = fw >= ConsoleFirmware.Fw20_0 && layout.TargetFirmwareValue < ConsoleFirmware.Fw20_0;
 
-            if (apply20Fix && layout.ID == "builtin_FlowLayout")
+            if (apply20Fix && layout.ID == "builtin_FlowLayout" || layout.ID.StartsWith("Themezer:5|"))		
                 return JsonConvert.DeserializeObject<LayoutPatch>(FlowLayout20Fix);
 
-            if (apply20Fix && layout.ID == "builtin_CarefulLayout")
+            if (apply20Fix && layout.ID == "builtin_CarefulLayout" || layout.ID.StartsWith("Themezer:6|"))
                 return JsonConvert.DeserializeObject<LayoutPatch>(CarefulLayout20Fix);
 
             return null;

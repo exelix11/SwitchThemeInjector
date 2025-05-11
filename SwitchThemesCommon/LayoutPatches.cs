@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -19,18 +20,17 @@ namespace SwitchThemes.Common
 			if this flag is set to true or null the installer will automatically remove that animation emulating the layout of pre 11.0 qlaunch */
 		public bool? HideOnlineBtn;
 
-		// This is a value from the ConsoleFirmware enum
-		// This is auto-generated based on the detected szs firmware when producing a layout patch and used by the installer to detect if the layout needs some compatibility patches for newer firmwares
-		// When this is not specified we assume Fw11_0 which is the common firmware compatibility level for all layouts at the time this feature was introduced
-		public int TargetFirmware = (int)ConsoleFirmware.Fw11_0;
+        // This is a value from the ConsoleFirmware enum
+        // This is auto-generated based on the detected szs firmware when producing a layout patch and used by the installer to detect if the layout needs some compatibility patches for newer firmwares
+        // When this is not specified we assume Fw11_0 which is the common firmware compatibility level for all layouts at the time this feature was introduced
+        // When this is specified with a value not known by the injector/installer the value is treated as-is so if it's a value lower than (int)ConsoleFirmware.Fw11_0 it will receive compatibility fixes that apply to <= ConsoleFirmware.Fw11_0. If it's a value higher than the highest known firmware in ConsoleFirmware it will not receive fixes in this version of the installer/injector.
+		// This behavior is intended to avoid newer themes getting wrong fixes on older installer versions.
+        public int TargetFirmware = (int)ConsoleFirmware.Fw11_0;
 
 		[JsonIgnore]
 		public ConsoleFirmware TargetFirmwareValue
 		{
-			get => Enum.GetValues(typeof(ConsoleFirmware))
-					.Cast<ConsoleFirmware>()
-					.FirstOrDefault(x => (int)x == TargetFirmware);
-
+			get => (ConsoleFirmware)TargetFirmware;
 			set => TargetFirmware = (int)value;
 		}
 
