@@ -319,11 +319,6 @@ private:
 	static bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
 	{
 		auto patch = Patches::LoadLayout(JSON);
-		if (!patch.IsCompatible(Patcher.GetSarc()))
-		{
-			DialogBlocking("The provided layout is not compatible with " + PartName + "\nThe theme was not installed");
-			return false;
-		}
 		if (!Patcher.PatchLayouts(patch, PartName))
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");

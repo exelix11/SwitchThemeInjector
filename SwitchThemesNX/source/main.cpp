@@ -313,7 +313,7 @@ static void SetupSysVer()
 	HOSVer = { firmware.major,firmware.minor,firmware.micro };
 	setsysExit();
 #else 
-	HOSVer = { 11,0,0 };
+	HOSVer = { 20,0,0 };
 #endif
 	if (HOSVer.major <= 5)
 	{

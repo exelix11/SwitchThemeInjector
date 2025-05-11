@@ -17,7 +17,6 @@ namespace SwitchThemesNXTests
 		{
 			auto bflan = BflanDeserializer::FromJson(Util::ReadTestString("Synthetic/bflan.json"));
 			auto hash = Util::StringHash(bflan->WriteFile());
-			delete bflan;
 
 			if (hash != "43CE2CDE8B2638E36CA1723328CD571DB350D3BC011B6389944FAD69260BC748")
 				throw std::runtime_error("");

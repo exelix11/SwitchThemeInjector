@@ -381,9 +381,9 @@ void Bflan::ParseFile(Buffer& bin)
 #include "Base64.hpp"
 #include "json.hpp"
 
-Bflan *BflanDeserializer::FromJson(std::string jsn) 
+std::unique_ptr<Bflan> BflanDeserializer::FromJson(std::string jsn)
 {
-	Bflan *res = new Bflan;
+	auto res = std::make_unique<Bflan>();
 	auto j = nlohmann::json::parse(jsn);
 
 	res->byteOrder = j["LittleEndian"].get<bool>() ? Endianness::LittleEndian : Endianness::BigEndian;

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace SwitchThemes.Common
 {
+	// This enum defines the compatibility level of layouts, it is not meant to map exactly to HOS versions. New versions are only added when there are breaking changes to address via the NewFirmFixes feature
     public enum ConsoleFirmware : int
     {
 		// Default value

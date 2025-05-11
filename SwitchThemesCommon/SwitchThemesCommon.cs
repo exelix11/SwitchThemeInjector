@@ -160,8 +160,8 @@ namespace SwitchThemes.Common
             if (patch == null)
                 return;
 
-            if (patch.Anims != null) foreach (var p in patch.Anims) ApplyAnimPatch(p);
             if (patch.Files != null) foreach (var p in patch.Files) ApplyLayoutPatch(p);
+            if (patch.Anims != null) foreach (var p in patch.Anims) ApplyAnimPatch(p);
         }
 
         uint? FirmwareTargetBflanVersion = null;
@@ -247,6 +247,12 @@ namespace SwitchThemes.Common
             if (onlineBtnFix)
                 ApplyRawPatch(NewFirmFixes.GetLegacyAppletButtonsFix(fw));
 
+            // GetFix might modify the layout to make it compatible.
+            // So while its result must be applied as an overlay we must call it before applying the patch.
+            LayoutPatch modernFix = null;
+            if (useModernFixes)
+                modernFix = NewFirmFixes.GetFix(Patch, fw);
+
             // Then json patches
             ApplyRawPatch(Patch);
 
@@ -255,7 +261,7 @@ namespace SwitchThemes.Common
                 ApplyRawPatch(NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName));
 
             if (useModernFixes)
-                ApplyRawPatch(NewFirmFixes.GetFix(Patch, fw));
+                ApplyRawPatch(modernFix);
 
             return true;
         }

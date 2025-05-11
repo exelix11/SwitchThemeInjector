@@ -4,25 +4,16 @@
 
 using namespace std;
 
-namespace NewFirmFixes 
+// Import the json fixes from the C# codebase
+namespace
 {
-	const static string NoOnlineButton = "{\"PatchName\":\"NoOnline11\",\"Anims\":[{\"FileName\":\"anim/RdtBase_SystemAppletPos.bflan\",\"AnimJson\":\"{\\\"LittleEndian\\\":true,\\\"Version\\\":150994944,\\\"pat1\\\":{\\\"AnimationOrder\\\":6,\\\"Name\\\":\\\"SystemAppletPos\\\",\\\"ChildBinding\\\":190,\\\"Groups\\\":[\\\"G_System\\\"],\\\"Unk_StartOfFile\\\":0,\\\"Unk_EndOfFile\\\":0,\\\"Unk_EndOfHeader\\\":\\\"AL8AAAAAAA==\\\"},\\\"pai1\\\":{\\\"FrameSize\\\":1,\\\"Flags\\\":0,\\\"Textures\\\":[],\\\"Entries\\\":[]}}\"}]}";
+#include "../../../../SwitchThemesCommon/NewFirmFixesJsons.cs"
+}
 
-	/*
-		The RdtBase_SystemAppletPos animation on 11.0 will change the position and size of the applet buttons root element, to make layout developers' lives easier
-		this is automatically patched away. It's possible to override this by including that file in the layout json
-	 */
-	const static string NoMoveApplets11 = "{\"PatchName\":\"G_SystemNoMove11.0\",\"Anims\":[{\"FileName\":\"anim/RdtBase_SystemAppletPos.bflan\",\"AnimJson\":\"{\\\"LittleEndian\\\":true,\\\"Version\\\":150994944,\\\"pat1\\\":{\\\"AnimationOrder\\\":6,\\\"Name\\\":\\\"SystemAppletPos\\\",\\\"ChildBinding\\\":190,\\\"Groups\\\":[\\\"G_System\\\"],\\\"Unk_StartOfFile\\\":0,\\\"Unk_EndOfFile\\\":0,\\\"Unk_EndOfHeader\\\":\\\"AL8AAAAAAA==\\\"},\\\"pai1\\\":{\\\"FrameSize\\\":1,\\\"Flags\\\":0,\\\"Textures\\\":[],\\\"Entries\\\":[{\\\"Name\\\":\\\"L_BtnLR\\\",\\\"Target\\\":0,\\\"Tags\\\":[{\\\"Unknown\\\":0,\\\"TagType\\\":\\\"FLVI\\\",\\\"Entries\\\":[{\\\"Index\\\":0,\\\"AnimationTarget\\\":0,\\\"DataType\\\":1,\\\"KeyFrames\\\":[{\\\"Frame\\\":0.0,\\\"Value\\\":0.0,\\\"Blend\\\":0.0},{\\\"Frame\\\":1.0,\\\"Value\\\":1.0,\\\"Blend\\\":0.0}],\\\"FLEUUnknownInt\\\":0,\\\"FLEUEntryName\\\":\\\"\\\"}]}],\\\"UnkwnownData\\\":\\\"\\\"}]}}\"}]}";
-
-
-	const static string DogeLayoutFix = "{\"PatchName\":\"DogeLayout 8.x fix\",\"AuthorName\":\"autoDiff\",\"Files\":[{\"FileName\":\"blyt/HudTime.bflyt\",\"Patches\":[{\"PaneName\":\"N_AMPM\",\"Position\":{\"X\":30,\"Y\":-1,\"Z\":0},\"Scale\":{\"X\":0.9,\"Y\":0.9}}]},{\"FileName\":\"blyt/RdtBtnFullLauncher.bflyt\",\"Patches\":[{\"PaneName\":\"N_Tip\",\"Scale\":{\"X\":1.1,\"Y\":1.1}},{\"PaneName\":\"B_Hit\",\"Size\":{\"X\":80,\"Y\":80}}]},{\"FileName\":\"blyt/Cursor3.bflyt\",\"Patches\":[{\"PaneName\":\"P_Main\",\"UsdPatches\":[{\"PropName\":\"S_BorderSize\",\"PropValues\":[\"7\"],\"type\":2}]},{\"PaneName\":\"P_Grow\",\"UsdPatches\":[{\"PropName\":\"S_BorderSize\",\"PropValues\":[\"7\"],\"type\":2}]}]},{\"FileName\":\"blyt/RdtBtnMyPage.bflyt\",\"Patches\":[{\"PaneName\":\"N_Tip\",\"Position\":{\"X\":125,\"Y\":0,\"Z\":0}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":1.428571,\"Y\":1.428571},\"Size\":{\"X\":40,\"Y\":40}}]},{\"FileName\":\"blyt/RdtBtnIconGame.bflyt\",\"Patches\":[{\"PaneName\":\"RootPane\",\"Scale\":{\"X\":0.5,\"Y\":0.5}},{\"PaneName\":\"P_InnerCursor\",\"Visible\":false},{\"PaneName\":\"N_BtnFocusKey\",\"Size\":{\"X\":259,\"Y\":259}},{\"PaneName\":\"N_Tip\",\"Scale\":{\"X\":1.1,\"Y\":1.1}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":2,\"Y\":2},\"Size\":{\"X\":132,\"Y\":132}}]},{\"FileName\":\"blyt/RdtBase.bflyt\",\"Patches\":[{\"PaneName\":\"N_ScrollArea\",\"Position\":{\"X\":0,\"Y\":-218,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":0.5},\"Size\":{\"X\":1300,\"Y\":322}},{\"PaneName\":\"N_ScrollWindow\",\"Position\":{\"X\":0,\"Y\":-218,\"Z\":0},\"Size\":{\"X\":100000,\"Y\":322}},{\"PaneName\":\"T_Blank\",\"Position\":{\"X\":0,\"Y\":197,\"Z\":0}},{\"PaneName\":\"N_GameRoot\",\"Position\":{\"X\":-530,\"Y\":-218,\"Z\":0},\"Scale\":{\"X\":0.00001,\"Y\":1}},{\"PaneName\":\"N_Game\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":100000,\"Y\":1}},{\"PaneName\":\"N_Icon_01\",\"Position\":{\"X\":135,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_02\",\"Position\":{\"X\":270,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_03\",\"Position\":{\"X\":405,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_04\",\"Position\":{\"X\":540,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_05\",\"Position\":{\"X\":675,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_06\",\"Position\":{\"X\":810,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_07\",\"Position\":{\"X\":945,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_08\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_09\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_10\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_11\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_12\",\"Position\":{\"X\":1080,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":1}},{\"PaneName\":\"L_BtnFlc\",\"Scale\":{\"X\":0.5,\"Y\":0.5}}]},{\"FileName\":\"blyt/Hud.bflyt\",\"Patches\":[{\"PaneName\":\"N_Time\",\"Size\":{\"X\":12,\"Y\":30}},{\"PaneName\":\"L_Time\",\"Position\":{\"X\":-18,\"Y\":0,\"Z\":0}}]}]}";
-	const static string DiamondFix = "{\"PatchName\":\"Diamond 8 fix\",\"AuthorName\":\"akai\",\"Files\":[{\"FileName\":\"blyt/RdtBtnFullLauncher.bflyt\",\"Patches\":[{\"PaneName\":\"N_Root\",\"Rotation\":{\"X\":0,\"Y\":0,\"Z\":45}}]},{\"FileName\":\"blyt/RdtBtnIconGame.bflyt\",\"Patches\":[{\"PaneName\":\"RootPane\",\"Scale\":{\"X\":0.37,\"Y\":0.37}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":3,\"Y\":3},\"Size\":{\"X\":97.68,\"Y\":97.68}}]},{\"FileName\":\"blyt/RdtBase.bflyt\",\"Patches\":[{\"PaneName\":\"N_ScrollArea\",\"Position\":{\"X\":-30,\"Y\":-200,\"Z\":0},\"Size\":{\"X\":1300,\"Y\":322}},{\"PaneName\":\"N_ScrollWindow\",\"Position\":{\"X\":-30,\"Y\":-200,\"Z\":0},\"Size\":{\"X\":1080,\"Y\":322}},{\"PaneName\":\"N_GameRoot\",\"Position\":{\"X\":200,\"Y\":-195,\"Z\":0},\"Scale\":{\"X\":0.00001,\"Y\":1}},{\"PaneName\":\"N_Game\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":100000,\"Y\":1}},{\"PaneName\":\"N_Icon_01\",\"Position\":{\"X\":140,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_02\",\"Position\":{\"X\":280,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_03\",\"Position\":{\"X\":68,\"Y\":73,\"Z\":0}},{\"PaneName\":\"N_Icon_04\",\"Position\":{\"X\":208,\"Y\":73,\"Z\":0}},{\"PaneName\":\"N_Icon_05\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_06\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_07\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_08\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_09\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_10\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_11\",\"Position\":{\"X\":1,\"Y\":99999,\"Z\":0}},{\"PaneName\":\"N_Icon_12\",\"Position\":{\"X\":348,\"Y\":73,\"Z\":0}},{\"PaneName\":\"L_BtnFlc\",\"Scale\":{\"X\":0.37,\"Y\":0.37}},{\"PaneName\":\"N_System\",\"Position\":{\"X\":-600,\"Y\":-250,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_00\",\"Position\":{\"X\":-247,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_01\",\"Position\":{\"X\":-175,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_02\",\"Position\":{\"X\":-103,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_03\",\"Position\":{\"X\":-31,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_04\",\"Position\":{\"X\":41,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_05\",\"Position\":{\"X\":113,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_06\",\"Position\":{\"X\":185,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_Hud\",\"Position\":{\"X\":-300,\"Y\":-325,\"Z\":0}}]},{\"FileName\":\"blyt/Hud.bflyt\",\"Patches\":[{\"PaneName\":\"N_Time\",\"Position\":{\"X\":10,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_Time\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0}}]}]}";
-	const static string CompactFix = "{\"PatchName\":\"Compact 8 fix\",\"AuthorName\":\"akai\",\"Files\":[{\"FileName\":\"blyt/RdtBtnFullLauncher.bflyt\",\"Patches\":[{\"PaneName\":\"N_Root\",\"Rotation\":{\"X\":0,\"Y\":0,\"Z\":45}}]},{\"FileName\":\"blyt/RdtBtnIconGame.bflyt\",\"Patches\":[{\"PaneName\":\"RootPane\",\"Scale\":{\"X\":0.37,\"Y\":0.37}},{\"PaneName\":\"B_Hit\",\"Scale\":{\"X\":3,\"Y\":3},\"Size\":{\"X\":97.68,\"Y\":97.68}}]},{\"FileName\":\"blyt/RdtBase.bflyt\",\"Patches\":[{\"PaneName\":\"N_ScrollArea\",\"Position\":{\"X\":0,\"Y\":-280,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":0.5},\"Size\":{\"X\":1300,\"Y\":322}},{\"PaneName\":\"N_ScrollWindow\",\"Position\":{\"X\":0,\"Y\":-280,\"Z\":0},\"Scale\":{\"X\":1,\"Y\":0.5},\"Size\":{\"X\":1080,\"Y\":322}},{\"PaneName\":\"N_GameRoot\",\"Position\":{\"X\":-50,\"Y\":-230,\"Z\":0},\"Scale\":{\"X\":0.000001,\"Y\":1}},{\"PaneName\":\"N_Game\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0},\"Scale\":{\"X\":1000000,\"Y\":1}},{\"PaneName\":\"N_Icon_01\",\"Position\":{\"X\":100,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_02\",\"Position\":{\"X\":200,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_03\",\"Position\":{\"X\":300,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_04\",\"Position\":{\"X\":400,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_Icon_05\",\"Position\":{\"X\":500,\"Y\":0,\"Z\":0},\"Visible\":true},{\"PaneName\":\"N_Icon_06\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_07\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_08\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_09\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_10\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_11\",\"Position\":{\"X\":1,\"Y\":-9999999,\"Z\":0}},{\"PaneName\":\"N_Icon_12\",\"Position\":{\"X\":600,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnFlc\",\"Scale\":{\"X\":0.37,\"Y\":0.37}},{\"PaneName\":\"L_BtnAccount_00\",\"Position\":{\"X\":-247,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_01\",\"Position\":{\"X\":-175,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_02\",\"Position\":{\"X\":-103,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_03\",\"Position\":{\"X\":-31,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_04\",\"Position\":{\"X\":41,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_05\",\"Position\":{\"X\":113,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_BtnAccount_06\",\"Position\":{\"X\":185,\"Y\":0,\"Z\":0}},{\"PaneName\":\"L_Hud\",\"Position\":{\"X\":-290,\"Y\":-325,\"Z\":0}}]},{\"FileName\":\"blyt/Hud.bflyt\",\"Patches\":[{\"PaneName\":\"N_Time\",\"Position\":{\"X\":10,\"Y\":0,\"Z\":0}}]}]}";
-
-	const static string ClearLock9Fix = "{\"PatchName\":\"clearlayout 9.x fix\",\"AuthorName\":\"exelix\",\"Ready8X\":true,\"Files\":[{\"FileName\":\"blyt/EntMain.bflyt\",\"Patches\":[{\"PaneName\":\"L_BtnResume\",\"Position\":{\"X\":-180,\"Y\":0,\"Z\":0}},{\"PaneName\":\"N_CntHud\",\"Position\":{\"X\":0,\"Y\":0,\"Z\":0}}]}]}";
-
+namespace NewFirmFixes
+{
 	//https://stackoverflow.com/questions/3152241/case-insensitive-stdstring-find
-	static bool findStringIC(const std::string& strHaystack, const std::string& strNeedle)
+	static bool contains_ignore_case(const std::string& strHaystack, const std::string& strNeedle)
 	{
 		auto it = std::search(
 			strHaystack.begin(), strHaystack.end(),
@@ -32,51 +23,120 @@ namespace NewFirmFixes
 		return (it != strHaystack.end());
 	}
 
-	vector<LayoutFilePatch> GetFixLegacy(const string& LayoutName, const string& NXThemeName)
+	static bool themezer_name_check(const std::string& layout_id, const std::string& themezer_name)
+	{	
+		return layout_id == themezer_name ||
+			layout_id.starts_with(themezer_name + "|");
+	}
+
+	std::optional<LayoutPatch> GetFixLegacy(const std::string& LayoutName, ConsoleFirmware fw, const std::string& nxName)
 	{
-		// Instead of patch revision here we can use the HOS version detected which may be more precise
-		// TODO: is this inconsistent with the injector ?
-		if (HOSVer > SystemVersion{8,1,1})
+		// Check PatchRevision definitions in PatchTemplte.cs for firmware version
+		if (fw >= ConsoleFirmware::Fw9_0 && nxName == "lock")
 		{
-			if (NXThemeName == "lock") {
-				if (findStringIC(LayoutName, "clear lockscreen"))
-					return Patches::LoadLayout(ClearLock9Fix).Files;
+			if (contains_ignore_case(LayoutName, "clear lockscreen"))
+				return Patches::LoadLayout(ClearLock9Fix);
+		}
+
+		// These are have all been updated in the builtins as of 4.4
+		if (fw >= ConsoleFirmware::Fw8_0 && nxName == "home") // >= 8.0 home menu
+		{
+			if (contains_ignore_case(LayoutName, "dogelayout") || contains_ignore_case(LayoutName, "clearlayout"))
+				return Patches::LoadLayout(DogeLayoutFix);
+			else if (contains_ignore_case(LayoutName, "diamond layout"))
+				return Patches::LoadLayout(DiamondFix);
+			else if (contains_ignore_case(LayoutName, "small compact"))
+				return Patches::LoadLayout(CompactFix);
+		}
+
+		return std::nullopt;
+	}
+
+	std::optional<LayoutPatch> GetFix(LayoutPatch& layout, ConsoleFirmware fw)
+	{
+		// As of 4.5 this still hasn't been fixed in the builtin layouts but it has been given an ID
+		if (fw >= ConsoleFirmware::Fw9_0 && layout.ID == "builtin_ClearLock")
+			return Patches::LoadLayout(ClearLock9Fix);
+
+		const auto apply20Fix = fw >= ConsoleFirmware::Fw20_0 && layout.TargetFirmware < (int)ConsoleFirmware::Fw20_0;
+
+		if (apply20Fix)
+		{
+			// Themezer allows genearting variants of layouts, they use a specific format and ID to identify them
+			// these are managed by migush
+			if (layout.ID == "builtin_FlowLayout" || themezer_name_check(layout.ID, "Themezer:5"))
+				return Patches::LoadLayout(FlowLayout20Fix);
+
+			if (layout.ID == "builtin_CarefulLayout" || themezer_name_check(layout.ID, "Themezer:6"))
+				return Patches::LoadLayout(CarefulLayout20Fix);
+
+			// Hacky. see my comment on https://github.com/exelix11/SwitchThemeInjector/issues/156#issuecomment-2869845256
+			// This layout is broken and will crash on 20.0+
+			// As an extreme workaround we remove all the animations that cause the crash
+			if (layout.ID == "builtin_JAGLayout" || themezer_name_check(layout.ID, "Themezer:2"))
+			{
+				std::vector<AnimFilePatch> filteredAnims;
+				std::copy_if(layout.Anims.begin(), layout.Anims.end(), std::back_inserter(filteredAnims),
+					[](const auto& x) {
+						return
+							x.FileName == "anim/RdtBtnIconGame_Inactive.bflan" ||
+							x.FileName == "anim/RdtBtnIconGame_Active.bflan";
+					});
+
+				layout.Anims = filteredAnims;
 			}
 		}
 
-		if (NXThemeName == "home" && HOSVer >= SystemVersion{8,0,0}) {
-			if (findStringIC(LayoutName, "dogelayout") || findStringIC(LayoutName, "clearlayout"))
-				return Patches::LoadLayout(DogeLayoutFix).Files;
-			else if (findStringIC(LayoutName, "diamond"))
-				return Patches::LoadLayout(DiamondFix).Files;
-			else if (findStringIC(LayoutName, "small compact"))
-				return Patches::LoadLayout(CompactFix).Files;
+		return std::nullopt;
+	}
+
+	std::optional<LayoutPatch> GetLegacyAppletButtonsFix(ConsoleFirmware fw)
+	{
+		if (fw >= ConsoleFirmware::Fw20_0)
+			return Patches::LoadLayout(LegacyAppletButtons20);
+		if (fw >= ConsoleFirmware::Fw11_0)
+			return Patches::LoadLayout(NoOnlineButton11);
+
+		return std::nullopt;
+	}
+
+	bool ShouldApplyAppletPositionFix(const LayoutPatch& layout, ConsoleFirmware consoleFw)
+	{
+		// On firmware up to and including 11.0 we must fix the N_System pane position by removing RdtBase_SystemAppletPos
+		// Except if the layout is already overriding it
+		if (consoleFw <= ConsoleFirmware::Fw11_0)
+		{
+			auto found = std::find_if(layout.Anims.begin(), layout.Anims.end(),
+				[](const auto& x) {
+					return x.FileName == "anim/RdtBase_SystemAppletPos.bflan";
+				});
+
+			return found == layout.Anims.end();
 		}
 
-		return {};
+		if (consoleFw >= ConsoleFirmware::Fw20_0)
+		{
+			// On 20.0 and later we must always apply our compatibility fix if the layout targets an old firmware
+			if (layout.TargetFirmware < (int)ConsoleFirmware::Fw20_0)
+				return true;
+
+			// Also if the layout requests the legacy applet buttons.
+			// When the option is not specified, we assume it's an old layout and we should apply the fix.
+			if (layout.HideOnlineBtn)
+				return true;
+		}
+
+		return false;
 	}
 
-	vector<LayoutFilePatch> GetFix(const string& LayoutID, const string& NxPart)
+	std::optional<LayoutPatch> GetAppletsPositionFix(ConsoleFirmware fw)
 	{
-		if (LayoutID == "builtin_ClearLock" && HOSVer > SystemVersion{8,1,1} && NxPart == "lock")
-			return Patches::LoadLayout(ClearLock9Fix).Files;
-		
-		return {};
-	}
+		if (fw >= ConsoleFirmware::Fw20_0)
+			return Patches::LoadLayout(Downgrade20To19);
 
-	std::vector<AnimFilePatch> GetNoOnlineButtonFix()
-	{
-		if (HOSVer >= SystemVersion{ 11,0,0 })
-			return Patches::LoadLayout(NoOnlineButton).Anims;
+		if (fw >= ConsoleFirmware::Fw11_0)
+			return Patches::LoadLayout(NoMoveApplets11);
 
-		return {};
-	}
-
-	std::vector<AnimFilePatch> GetAppletsPositionFix()
-	{
-		if (HOSVer >= SystemVersion{ 11,0,0 })
-			return Patches::LoadLayout(NoMoveApplets11).Anims;
-
-		return {};
+		return std::nullopt;
 	}
 }

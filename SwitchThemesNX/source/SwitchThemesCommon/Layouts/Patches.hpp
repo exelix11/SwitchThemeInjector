@@ -4,6 +4,7 @@
 #include <optional>
 #include "../MyTypes.h"
 #include "../SarcLib/Sarc.hpp"
+#include "../NXTheme.hpp"
 
 struct Vector3 { float X, Y, Z; bool operator==(Vector3 const&) const = default; };
 struct Vector2 { float X, Y; bool operator==(Vector2 const&) const = default; };
@@ -152,10 +153,11 @@ struct LayoutPatch
 	std::string ID;
 	bool HideOnlineBtn;
 
+	// Maps to the ConsoleFirmware enum, see details in the C# definition
+	int TargetFirmware;
+
 	bool Obsolete_Ready8X = false;
 	bool UsesOldFixes() const { return ID == "" && !Obsolete_Ready8X; }
-
-	bool IsCompatible(const SARC::SarcData &sarc) const;
 
 	bool operator==(LayoutPatch const&) const = default;
 };
@@ -205,10 +207,12 @@ namespace Patches {
 
 namespace NewFirmFixes 
 {
-	std::vector<LayoutFilePatch> GetFixLegacy(const std::string& LayoutName, const std::string& NXThemeName);
-	std::vector<LayoutFilePatch> GetFix(const std::string& LayoutID, const std::string& NxPart);
+	std::optional<LayoutPatch> GetFixLegacy(const std::string& LayoutName, ConsoleFirmware fw, const std::string& NXThemeName);
+	
+	// In certain cases, this function may edit the layout directly to remove bad files.
+	std::optional<LayoutPatch> GetFix(LayoutPatch& layout, ConsoleFirmware fw);
 
-	// Since 11.0
-	std::vector<AnimFilePatch> GetNoOnlineButtonFix();
-	std::vector<AnimFilePatch> GetAppletsPositionFix();
+	bool ShouldApplyAppletPositionFix(const LayoutPatch& layout, ConsoleFirmware consoleFw);
+	std::optional<LayoutPatch> GetLegacyAppletButtonsFix(ConsoleFirmware fw);
+	std::optional<LayoutPatch> GetAppletsPositionFix(ConsoleFirmware fw);
 }

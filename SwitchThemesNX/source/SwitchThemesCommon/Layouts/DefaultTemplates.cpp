@@ -1,21 +1,8 @@
 #include "Patches.hpp"
 #include "json.hpp"
+#include "../NXTheme.hpp"
 
 using namespace std;
-
-bool LayoutPatch::IsCompatible(const SARC::SarcData &sarc) const
-{
-	for (size_t i = 0; i < Files.size(); i++)
-	{
-		if (!sarc.files.count(Files[i].FileName)) return false;
-		//For now this should be enough.
-		/*string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
-		for (int j = 0; j < Files[i].Patches.Length; j++)
-			if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
-				return false;*/
-	}
-	return true;
-}
 
 using json = nlohmann::json;
 
@@ -153,6 +140,7 @@ void from_json(const json& j, LayoutPatch& p) {
 	get_if(ID);
 	get_if_else(HideOnlineBtn, true);
 	get_if_s("Ready8X", p.Obsolete_Ready8X);
+	get_if_else(TargetFirmware, ((int)ConsoleFirmware::Fw11_0));
 }
 
 #undef get_s

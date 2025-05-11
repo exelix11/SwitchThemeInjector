@@ -38,16 +38,21 @@ namespace SwitchThemesCommon {
 		const SARC::SarcData& GetSarc();
 		SARC::SarcData& GetFinalSarc();
 
-	private:
-		bool PatchSingleLayout(const LayoutFilePatch& p);
-
+	private:		
 		SARC::SarcData sarc;
+		
 		QuickBntx* bntx = nullptr;
-
 		QuickBntx& OpenBntx();
 		void SaveBntx();
-
+		
 		bool EnableAnimations = true;
+
+		void ApplyRawPatch(const std::optional<LayoutPatch>& p);
+		void ApplyRawPatch(const LayoutPatch* p);
+
+		std::optional<uint32_t> FirmwareTargetBflanVersion = std::nullopt;
+		bool ApplyAnimPatch(const AnimFilePatch& p);
+		bool ApplyLayoutPatch(const LayoutFilePatch& p);
 	};
 	
 	std::string GeneratePatchListString(const std::vector<PatchTemplate>& templates);

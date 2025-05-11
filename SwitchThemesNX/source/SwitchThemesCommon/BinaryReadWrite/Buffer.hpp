@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>  // buffers
 #include <sstream> // strings, byteStr()
+#include <memory>
 
 enum class Endianness : unsigned char
 {

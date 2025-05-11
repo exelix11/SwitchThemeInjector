@@ -12,6 +12,9 @@
 using namespace std;
 using namespace SwitchThemesCommon;
 
+// This is the C++ implementation of SwitchThemesCommon. While this is the one that runs on switch the main one to be used as a reference and for prototyping is the C# one.
+// The C# version also has better comments on the rationale behind things like compatibility fixes and patch ordering.
+
 const string SwitchThemesCommon::CoreVer = "4.7.1 (C++)";
 const int SwitchThemesCommon::NXThemeVer = 15;
 
@@ -59,16 +62,55 @@ void SzsPatcher::SaveBntx()
 	bntx = nullptr;
 }
 
-bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
+void SzsPatcher::ApplyRawPatch(const std::optional<LayoutPatch>& p)
+{
+	if (!p)
+		return;
+
+	const auto& patch = *p;
+	ApplyRawPatch(&patch);
+}
+
+void SzsPatcher::ApplyRawPatch(const LayoutPatch* p)
+{
+	if (!p)
+		return;
+
+	for (auto& f : p->Files) ApplyLayoutPatch(f);
+	for (auto& f : p->Anims) ApplyAnimPatch(f);
+}
+
+bool SzsPatcher::ApplyAnimPatch(const AnimFilePatch& p)
 {
 	if (!sarc.files.count(p.FileName))
 		return false;
+
+	if (!FirmwareTargetBflanVersion)
+	{
+		auto bflan = std::make_unique<Bflan>(sarc.files[p.FileName]);
+		FirmwareTargetBflanVersion = bflan->Version;
+	}
+
+	auto bflan = BflanDeserializer::FromJson(p.AnimJson);
+	bflan->Version = *FirmwareTargetBflanVersion;
+	bflan->byteOrder = Endianness::LittleEndian;
+	sarc.files[p.FileName] = bflan->WriteFile();
+
+	return true;
+}
+
+bool SzsPatcher::ApplyLayoutPatch(const LayoutFilePatch& p)
+{
+	if (!sarc.files.count(p.FileName))
+		return false;
+
 	BflytFile _target(sarc.files[p.FileName]);
 	BflytPatcher target(_target);
 	target.ApplyMaterialsPatch(p.Materials); //Ignore result for 8.0 less strict patching
 	auto res = target.ApplyLayoutPatch(p.Patches);
 	if (res != true)
 		return res;
+
 	if (EnableAnimations)
 	{
 		res = target.AddGroupNames(p.AddGroups);
@@ -85,7 +127,6 @@ bool SzsPatcher::PatchSingleLayout(const LayoutFilePatch& p)
 	return true;
 }
 
-// TODO
 bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
 {
 	auto szs = DetectSarc().szsName;
@@ -95,11 +136,28 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
 		return e.second == szs;
 	});
 
+	if (t == ThemeTargetToFileName.end())
+	{
+		return false;
+	}
+
 	return PatchLayouts(patch, t->first);
 }
 
-bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
+bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &partName)
 {
+	// We must make a copy of the patch because some fix function might modify it
+	auto patch = original_patch;
+
+	const auto fw = HOSVer.ToFirmwareEnum();
+
+	// Detect any compatibility patches we need
+	const auto useLegacyFixes = fw != ConsoleFirmware::Invariant && patch.UsesOldFixes();
+	const auto useModernFixes = !useLegacyFixes && patch.ID != "";
+	const auto appletPositionFixes = partName == "home" && NewFirmFixes::ShouldApplyAppletPositionFix(patch, fw);
+	// The default for this on old layouts that don't specify it is true
+	const auto onlineBtnFix = partName == "home" && patch.HideOnlineBtn;
+
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
 			{"RdtIcoPvr_00^s",       0x2000000}, 
@@ -113,75 +171,30 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 			{"RdtIcoPwrForm^s",      0x2000000},
 		});
 
-	vector<LayoutFilePatch> Files = patch.Files;
+	// Apply patches. The order here matters.
 
-	if (patch.UsesOldFixes())
-	{
-		auto extra = NewFirmFixes::GetFixLegacy(patch.PatchName, partName);
-		if (extra.size() != 0)
-			Files.insert(Files.end(), extra.begin(), extra.end());
-	}
-	else if (patch.ID != "")
-	{
-		auto extra = NewFirmFixes::GetFix(patch.ID, partName);
-		if (extra.size() != 0)
-			Files.insert(Files.end(), extra.begin(), extra.end());
-	}
+	// First home menu fixes. These are applied early so later patches from the json can override them
+	if (appletPositionFixes)
+		ApplyRawPatch(NewFirmFixes::GetAppletsPositionFix(fw));
 
-	for (auto p : Files)
-	{
-		auto res = PatchSingleLayout(p);
-		if (res != true)
-			return res;
-	}
+	if (onlineBtnFix)
+		ApplyRawPatch(NewFirmFixes::GetLegacyAppletButtonsFix(fw));
 
-	vector<AnimFilePatch> Anims = patch.Anims;
+	// GetFix might modify the layout to make it compatible.
+	// So while its result must be applied as an overlay we must call it before applying the patch.
+	std::optional<LayoutPatch> modern_fix = std::nullopt;
+	if (useModernFixes)
+		modern_fix = NewFirmFixes::GetFix(patch, fw);
 
-	vector<AnimFilePatch> extra;
+	// Then json patches
+	ApplyRawPatch(&patch);
 
-	if (partName == "home") {
-		if (patch.HideOnlineBtn)
-			extra = NewFirmFixes::GetNoOnlineButtonFix();
-		else if (std::none_of(Anims.begin(), Anims.end(), [](const auto& a) { return a.FileName == "anim/RdtBase_SystemAppletPos.bflan"; }))
-			extra = NewFirmFixes::GetAppletsPositionFix();
+	// Then fixes on top of known broken layouts
+	if (useLegacyFixes)
+		ApplyRawPatch(NewFirmFixes::GetFixLegacy(patch.PatchName, fw, partName));
 
-		if (extra.size())
-			Anims.insert(Anims.end(), extra.begin(), extra.end());
-	}
-
-	auto patchAnims = Anims.size() > 0;
-
-	// 20.x removed some animations. A few layouts were hitting an issue where the only target animation was not present in the szs anymore.
-	// Ensure we have at least one animation to patch
-	auto referenceAnim = Anims.end();
-	
-	if (patchAnims) 
-	{
-		referenceAnim = std::find_if(Anims.begin(), Anims.end(), [&](const auto& e)
-		{
-			return sarc.files.count(e.FileName);
-		});
-	}
-
-	if (referenceAnim != Anims.end())
-	{
-		// The bflan version varies between firmwares, load a file from the list to detect the right one
-		auto bflan = new Bflan(sarc.files[referenceAnim->FileName]);
-		auto TargetVersion = bflan->Version;
-		delete bflan;
-
-		for (const auto& p : Anims)
-		{
-			if (!sarc.files.count(p.FileName))
-				continue; //return BflytFile.PatchResult.Fail; Don't be so strict as older firmwares may not have all the animations (?)
-
-			auto bflan = BflanDeserializer::FromJson(p.AnimJson);
-			bflan->Version = TargetVersion;
-			bflan->byteOrder = Endianness::LittleEndian;
-			sarc.files[p.FileName] = bflan->WriteFile();
-			delete bflan;
-		}
-	}
+	if (useModernFixes)
+		ApplyRawPatch(modern_fix);
 
 	return true;
 }
@@ -290,7 +303,7 @@ bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& 
 	if (it == list.end()) 
 		return false;
 
-	auto res = PatchSingleLayout(it->patch);
+	auto res = ApplyLayoutPatch(it->patch);
 	if (!res) return res;
 
 	PatchBntxTexture(DDS, it->BntxNames, it->NewColorFlags);
