@@ -271,17 +271,17 @@ namespace Patches::textureReplacement {
 
 	static vector<TextureReplacement> ResidentMenu
 	{
-		{"album",     "RdtIcoPvr_00^s",   0x5050505, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",   64,56, GetPatch(AlbumPatch)	},
-		{"news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00",64,56, GetPatch(NtfPatch)	},
-		{"shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",    "P_Pict",      64,56, GetPatch(ShopPatch)	},
-		{"controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",    "P_Form",		64,56, GetPatch(CtrlPatch)	},
-		{"settings",  "RdtIcoSet^s",      0x5050505, "blyt/RdtBtnSet.bflyt",     "P_Pict",      64,56, GetPatch(SetPatch)	},
-		{"power",     "RdtIcoPwrForm^s",  0x5050505, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",   64,56, GetPatch(PowPatch)	},
+		{"album",     {"RdtIcoPvr_00^s"},							0x5050505, "blyt/RdtBtnPvr.bflyt",     "P_Pict_00",		64,56, GetPatch(AlbumPatch)	},
+		{"news",      {"RdtIcoNews_00^s", "RdtIcoNews_00_Home^s"},	0x5050505, "blyt/RdtBtnNtf.bflyt",     "P_PictNtf_00",	64,56, GetPatch(NtfPatch)	},
+		{"shop",      {"RdtIcoShop^s"},								0x5050505, "blyt/RdtBtnShop.bflyt",    "P_Pict",		64,56, GetPatch(ShopPatch)	},
+		{"controller",{"RdtIcoCtrl_00^s"},							0x5050505, "blyt/RdtBtnCtrl.bflyt",    "P_Form",		64,56, GetPatch(CtrlPatch)	},
+		{"settings",  {"RdtIcoSet^s"},								0x5050505, "blyt/RdtBtnSet.bflyt",     "P_Pict",		64,56, GetPatch(SetPatch)	},
+		{"power",     {"RdtIcoPwrForm^s"},							0x5050505, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",		64,56, GetPatch(PowPatch)	},
 	};
 
 	static vector<TextureReplacement> Entrance
 	{
-		{"lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",  "P_PictHome", 184,168, GetPatch(LockPatch)}
+		{"lock", {"EntIcoHome^s"}, 0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt", "P_PictHome", 184,168, GetPatch(LockPatch)}
 	};
 	
 	unordered_map <string, vector<TextureReplacement>> NxNameToList

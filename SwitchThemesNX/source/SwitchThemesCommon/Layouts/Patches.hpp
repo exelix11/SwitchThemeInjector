@@ -183,7 +183,7 @@ struct PatchTemplate
 struct TextureReplacement 
 {
 	std::string NxThemeName;
-	std::string BntxName;
+	std::vector<std::string> BntxNames;
 	u32 NewColorFlags;
 	std::string FileName;
 	std::string PaneName;

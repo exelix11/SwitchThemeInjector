@@ -102,10 +102,15 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch, const string &partName)
 {
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
-			{"RdtIcoPvr_00^s",	0x2000000}, {"RdtIcoNews_00^s", 0x2000000},
-			{"RdtIcoNews_01^s", 0x2000000}, {"RdtIcoSet^s",		0x2000000},
-			{"RdtIcoShop^s",	0x2000000}, {"RdtIcoCtrl_00^s", 0x2000000},
-			{"RdtIcoCtrl_01^s", 0x2000000}, {"RdtIcoCtrl_02^s", 0x2000000}, {"RdtIcoPwrForm^s", 0x2000000},
+			{"RdtIcoPvr_00^s",       0x2000000}, 
+			// Pre 20.0.0 news icon:
+			{"RdtIcoNews_00^s",      0x2000000}, {"RdtIcoNews_01^s",      0x2000000},
+			// 20.0.0 news icon:
+			{"RdtIcoNews_00_Home^s", 0x2000000}, {"RdtIcoNews_01_Home^s", 0x2000000},
+			{"RdtIcoSet^s",          0x2000000},
+			{"RdtIcoShop^s",         0x2000000},
+			{"RdtIcoCtrl_00^s",      0x2000000}, {"RdtIcoCtrl_01^s",      0x2000000}, {"RdtIcoCtrl_02^s",      0x2000000},
+			{"RdtIcoPwrForm^s",      0x2000000},
 		});
 
 	vector<LayoutFilePatch> Files = patch.Files;
@@ -236,7 +241,7 @@ bool SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 	return true;
 }
 
-bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, u32 ChannelData)
+bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const vector<string> &texNames, u32 ChannelData)
 {
 	QuickBntx& q = OpenBntx();
 	if (q.Rlt.size() != 0x80)
@@ -244,16 +249,24 @@ bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const string &texName, 
 
 	try
 	{
-		auto dds = DDSEncoder::LoadDDS(DDS);
-		q.ReplaceTex(texName, dds);
-		if (ChannelData != 0xFFFFFFFF)
-			q.FindTex(texName)->ChannelTypes = ChannelData;
+
+		for (const auto& texName : texNames)
+		{
+			auto tex = q.FindTex(texName);
+			if(!tex) continue;
+
+			auto dds = DDSEncoder::LoadDDS(DDS);
+			q.ReplaceTex(texName, dds);
+			if (ChannelData != 0xFFFFFFFF)
+				q.FindTex(texName)->ChannelTypes = ChannelData;
+			return true;
+		}
 	}
 	catch (...)
 	{
 		return false;
 	}
-	return true;
+	return false;
 }
 
 bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName)
@@ -280,7 +293,7 @@ bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& 
 	auto res = PatchSingleLayout(it->patch);
 	if (!res) return res;
 
-	PatchBntxTexture(DDS, it->BntxName, it->NewColorFlags);
+	PatchBntxTexture(DDS, it->BntxNames, it->NewColorFlags);
 
 	BflytFile _curTarget{ sarc.files[it->FileName] };
 	BflytPatcher curTarget(_curTarget);

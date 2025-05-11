@@ -348,17 +348,17 @@ namespace SwitchThemes.Common
 #endregion
 
 		public string NxThemeName;
-		public string BntxName;
+		public string[] BntxNames;
 		public UInt32 NewColorFlags;
 		public string FileName;
 		public string PaneName;
 		public int W, H;
 		public LayoutFilePatch patch;
 
-		public TextureReplacement(string name, string bntx, UInt32 cflag, string Fname, string Pname, int w, int h, LayoutFilePatch p)
+		public TextureReplacement(string name, string[] bntxNames, UInt32 cflag, string Fname, string Pname, int w, int h, LayoutFilePatch p)
 		{
 			NxThemeName = name;
-			BntxName = bntx;
+			BntxNames = bntxNames;
 			NewColorFlags = cflag;
 			FileName = Fname;
 			PaneName = Pname;
@@ -366,19 +366,22 @@ namespace SwitchThemes.Common
 			patch = p;
 		}
 
+        // News texture name varies by version
+		readonly static string[] newsTextures = new[] {"RdtIcoNews_00^s", "RdtIcoNews_00_Home^s"};
+
 		readonly public static List<TextureReplacement> ResidentMenu = new List<TextureReplacement>
 		{
-			new TextureReplacement("album",     "RdtIcoPvr_00^s",   0x5050505, "blyt/RdtBtnPvr.bflyt",		"P_Pict_00",		64,56, AlbumPatch),
-			new TextureReplacement("news",      "RdtIcoNews_00^s",  0x5050505, "blyt/RdtBtnNtf.bflyt",		"P_PictNtf_00",		64,56, NtfPatch),
-			new TextureReplacement("shop",      "RdtIcoShop^s",     0x5050505, "blyt/RdtBtnShop.bflyt",		"P_Pict",			64,56, ShopPatch),
-			new TextureReplacement("controller","RdtIcoCtrl_00^s",  0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",			64,56, CtrlPatch),
-			new TextureReplacement("settings",  "RdtIcoSet^s",      0x5050505, "blyt/RdtBtnSet.bflyt",		"P_Pict",			64,56, SetPatch),
-			new TextureReplacement("power",     "RdtIcoPwrForm^s",  0x5050505, "blyt/RdtBtnPow.bflyt",		"P_Pict_00",		64,56, PowPatch),
+			new TextureReplacement("album",     new[] {"RdtIcoPvr_00^s"},	0x5050505, "blyt/RdtBtnPvr.bflyt",		"P_Pict_00",		64,56, AlbumPatch),
+			new TextureReplacement("news",      newsTextures,				0x5050505, "blyt/RdtBtnNtf.bflyt",		"P_PictNtf_00",		64,56, NtfPatch),
+			new TextureReplacement("shop",      new[] {"RdtIcoShop^s"},		0x5050505, "blyt/RdtBtnShop.bflyt",		"P_Pict",			64,56, ShopPatch),
+			new TextureReplacement("controller",new[] {"RdtIcoCtrl_00^s"},	0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",			64,56, CtrlPatch),
+			new TextureReplacement("settings",  new[] {"RdtIcoSet^s"},		0x5050505, "blyt/RdtBtnSet.bflyt",		"P_Pict",			64,56, SetPatch),
+			new TextureReplacement("power",     new[] {"RdtIcoPwrForm^s"},	0x5050505, "blyt/RdtBtnPow.bflyt",		"P_Pict_00",		64,56, PowPatch),
 		};
 
 		readonly public static List<TextureReplacement> Entrance = new List<TextureReplacement>
 		{
-			new TextureReplacement("lock",     "EntIcoHome^s",  0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome",184,168, LockPatch),
+			new TextureReplacement("lock",     new[] {"EntIcoHome^s"}, 0x5040302, "blyt/EntBtnResumeSystemApplet.bflyt",     "P_PictHome",184,168, LockPatch),
 		};
 
 		readonly public static Dictionary<string, List<TextureReplacement>> NxNameToList = new Dictionary<string, List<TextureReplacement>>
