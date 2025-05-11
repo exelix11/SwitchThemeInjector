@@ -69,6 +69,8 @@ namespace SwitchThemes.Common
 
 			var apply20Fix = fw >= ConsoleFirmware.Fw20_0 && layout.TargetFirmwareValue < ConsoleFirmware.Fw20_0;
 
+            // Themezer allows genearting variants of layouts, they use a specific format and ID to identify them
+			// these are managed by migush
             if (apply20Fix && layout.ID == "builtin_FlowLayout" || layout.ID.StartsWith("Themezer:5|"))		
                 return JsonConvert.DeserializeObject<LayoutPatch>(FlowLayout20Fix);
 
