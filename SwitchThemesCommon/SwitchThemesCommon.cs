@@ -123,8 +123,8 @@ namespace SwitchThemes.Common
     public class SzsPatcher
     {
         readonly SarcData Sarc;
-        readonly ConsoleFirmware TargetFirmware;
-        readonly PatchTemplate PatchTemplate;
+        public readonly ConsoleFirmware TargetFirmware;
+        public readonly PatchTemplate PatchTemplate;
 
         private QuickBntx bntx = null;
 
