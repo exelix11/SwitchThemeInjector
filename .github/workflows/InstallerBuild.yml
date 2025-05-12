@@ -5,10 +5,13 @@ on:
     branches: [ master, githubCI ]
     paths:
       - SwitchThemesNX/**
+      # This file is included in the c++ codebase to load the json fixes
+      - SwitchThemesCommon/NewFirmFixesJsons.cs
   pull_request:
     branches: [ master ]
     paths:
       - SwitchThemesNX/**
+      - SwitchThemesCommon/NewFirmFixesJsons.cs
 jobs:
   Build:
     runs-on: ubuntu-latest
