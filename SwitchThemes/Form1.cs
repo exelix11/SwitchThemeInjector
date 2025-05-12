@@ -597,7 +597,7 @@ namespace SwitchThemes
 
 		private void HomeAppletIcoButtonsInit()
 		{
-			var btns = new List<Button> { btnApplet1, btnApplet2, btnApplet3, btnApplet4, btnApplet5, btnApplet6 };
+			var btns = new List<Button> { btnApplet1, btnApplet2, btnApplet3, btnApplet4, btnApplet5, btnApplet6, btnApplet7, btnApplet8, btnApplet9  };
 			int i = 0;
 			foreach (var p in TextureReplacement.ResidentMenu)
 			{
