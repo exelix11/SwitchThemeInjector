@@ -266,7 +266,7 @@
             this.materialRaisedButton9.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton9.Depth = 0;
             this.materialRaisedButton9.Icon = null;
-            this.materialRaisedButton9.Location = new System.Drawing.Point(425, 331);
+            this.materialRaisedButton9.Location = new System.Drawing.Point(425, 332);
             this.materialRaisedButton9.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton9.Name = "materialRaisedButton9";
             this.materialRaisedButton9.Primary = true;
@@ -285,7 +285,7 @@
             this.NxBuilderBuild.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.NxBuilderBuild.Depth = 0;
             this.NxBuilderBuild.Icon = null;
-            this.NxBuilderBuild.Location = new System.Drawing.Point(575, 331);
+            this.NxBuilderBuild.Location = new System.Drawing.Point(575, 332);
             this.NxBuilderBuild.MouseState = MaterialSkin.MouseState.HOVER;
             this.NxBuilderBuild.Name = "NxBuilderBuild";
             this.NxBuilderBuild.Primary = true;
@@ -628,7 +628,7 @@
             this.ExtractPage.Location = new System.Drawing.Point(4, 22);
             this.ExtractPage.Name = "ExtractPage";
             this.ExtractPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ExtractPage.Size = new System.Drawing.Size(638, 331);
+            this.ExtractPage.Size = new System.Drawing.Size(707, 374);
             this.ExtractPage.TabIndex = 5;
             this.ExtractPage.Text = "Extract nxtheme";
             // 
@@ -656,7 +656,7 @@
             this.ExtractNxthemeBtn.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ExtractNxthemeBtn.Depth = 0;
             this.ExtractNxthemeBtn.Icon = null;
-            this.ExtractNxthemeBtn.Location = new System.Drawing.Point(254, 40);
+            this.ExtractNxthemeBtn.Location = new System.Drawing.Point(296, 36);
             this.ExtractNxthemeBtn.MouseState = MaterialSkin.MouseState.HOVER;
             this.ExtractNxthemeBtn.Name = "ExtractNxthemeBtn";
             this.ExtractNxthemeBtn.Primary = true;
@@ -678,7 +678,7 @@
             this.materialLabel14.Location = new System.Drawing.Point(3, 8);
             this.materialLabel14.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel14.Name = "materialLabel14";
-            this.materialLabel14.Size = new System.Drawing.Size(633, 25);
+            this.materialLabel14.Size = new System.Drawing.Size(696, 25);
             this.materialLabel14.TabIndex = 8;
             this.materialLabel14.Text = "In this page you can extract an nxtheme file to edit its assets";
             this.materialLabel14.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -696,7 +696,7 @@
             this.InfoPage.Controls.Add(this.tbPatches);
             this.InfoPage.Location = new System.Drawing.Point(4, 22);
             this.InfoPage.Name = "InfoPage";
-            this.InfoPage.Size = new System.Drawing.Size(638, 331);
+            this.InfoPage.Size = new System.Drawing.Size(707, 374);
             this.InfoPage.TabIndex = 2;
             this.InfoPage.Text = "Help&Info";
             // 
@@ -717,9 +717,9 @@
             // 
             this.SubredditLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.SubredditLinkLbl.LinkColor = System.Drawing.Color.Red;
-            this.SubredditLinkLbl.Location = new System.Drawing.Point(308, 70);
+            this.SubredditLinkLbl.Location = new System.Drawing.Point(355, 69);
             this.SubredditLinkLbl.Name = "SubredditLinkLbl";
-            this.SubredditLinkLbl.Size = new System.Drawing.Size(147, 21);
+            this.SubredditLinkLbl.Size = new System.Drawing.Size(147, 22);
             this.SubredditLinkLbl.TabIndex = 21;
             this.SubredditLinkLbl.TabStop = true;
             this.SubredditLinkLbl.Text = "r/NXThemes subreddit";
@@ -730,9 +730,9 @@
             // 
             this.QceanLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.QceanLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
-            this.QceanLinkLbl.Location = new System.Drawing.Point(482, 70);
+            this.QceanLinkLbl.Location = new System.Drawing.Point(529, 69);
             this.QceanLinkLbl.Name = "QceanLinkLbl";
-            this.QceanLinkLbl.Size = new System.Drawing.Size(147, 21);
+            this.QceanLinkLbl.Size = new System.Drawing.Size(147, 22);
             this.QceanLinkLbl.TabIndex = 20;
             this.QceanLinkLbl.TabStop = true;
             this.QceanLinkLbl.Text = "Qcean discord";
@@ -745,9 +745,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.DiscordLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.DiscordLinkLbl.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(114)))), ((int)(((byte)(137)))), ((int)(((byte)(218)))));
-            this.DiscordLinkLbl.Location = new System.Drawing.Point(271, 38);
+            this.DiscordLinkLbl.Location = new System.Drawing.Point(299, 38);
             this.DiscordLinkLbl.Name = "DiscordLinkLbl";
-            this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 21);
+            this.DiscordLinkLbl.Size = new System.Drawing.Size(147, 22);
             this.DiscordLinkLbl.TabIndex = 18;
             this.DiscordLinkLbl.TabStop = true;
             this.DiscordLinkLbl.Text = "Exelix\'s discord server";
@@ -759,9 +759,9 @@
             this.SupportLinkLbl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.SupportLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.SupportLinkLbl.LinkColor = System.Drawing.Color.DarkOrange;
-            this.SupportLinkLbl.Location = new System.Drawing.Point(458, 38);
+            this.SupportLinkLbl.Location = new System.Drawing.Point(505, 37);
             this.SupportLinkLbl.Name = "SupportLinkLbl";
-            this.SupportLinkLbl.Size = new System.Drawing.Size(174, 21);
+            this.SupportLinkLbl.Size = new System.Drawing.Size(174, 22);
             this.SupportLinkLbl.TabIndex = 17;
             this.SupportLinkLbl.TabStop = true;
             this.SupportLinkLbl.Text = "Donate ❤";
@@ -772,7 +772,7 @@
             // 
             this.GithubLinkLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.GithubLinkLbl.LinkColor = System.Drawing.Color.Aqua;
-            this.GithubLinkLbl.Location = new System.Drawing.Point(9, 38);
+            this.GithubLinkLbl.Location = new System.Drawing.Point(44, 38);
             this.GithubLinkLbl.Name = "GithubLinkLbl";
             this.GithubLinkLbl.Size = new System.Drawing.Size(199, 21);
             this.GithubLinkLbl.TabIndex = 16;
@@ -788,10 +788,10 @@
             this.materialLabel10.Depth = 0;
             this.materialLabel10.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel10.Location = new System.Drawing.Point(2, 2);
+            this.materialLabel10.Location = new System.Drawing.Point(43, 0);
             this.materialLabel10.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel10.Name = "materialLabel10";
-            this.materialLabel10.Size = new System.Drawing.Size(633, 41);
+            this.materialLabel10.Size = new System.Drawing.Size(633, 42);
             this.materialLabel10.TabIndex = 13;
             this.materialLabel10.Text = "Switch theme injector Ver. X.Y.Z By exelix";
             this.materialLabel10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -811,7 +811,7 @@
             this.tbPatches.Name = "tbPatches";
             this.tbPatches.ReadOnly = true;
             this.tbPatches.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbPatches.Size = new System.Drawing.Size(635, 218);
+            this.tbPatches.Size = new System.Drawing.Size(701, 282);
             this.tbPatches.TabIndex = 12;
             this.tbPatches.Text = resources.GetString("tbPatches.Text");
             // 
@@ -834,7 +834,7 @@
             this.InjectPage.Location = new System.Drawing.Point(4, 22);
             this.InjectPage.Name = "InjectPage";
             this.InjectPage.Padding = new System.Windows.Forms.Padding(3);
-            this.InjectPage.Size = new System.Drawing.Size(638, 331);
+            this.InjectPage.Size = new System.Drawing.Size(707, 374);
             this.InjectPage.TabIndex = 1;
             this.InjectPage.Text = "SZS";
             // 
@@ -845,7 +845,7 @@
             this.lblDetected.Depth = 0;
             this.lblDetected.Font = new System.Drawing.Font("Roboto", 11F);
             this.lblDetected.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lblDetected.Location = new System.Drawing.Point(366, 59);
+            this.lblDetected.Location = new System.Drawing.Point(420, 59);
             this.lblDetected.MouseState = MaterialSkin.MouseState.HOVER;
             this.lblDetected.Name = "lblDetected";
             this.lblDetected.Size = new System.Drawing.Size(260, 22);
@@ -860,7 +860,7 @@
             this.materialRaisedButton3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton3.Depth = 0;
             this.materialRaisedButton3.Icon = null;
-            this.materialRaisedButton3.Location = new System.Drawing.Point(274, 52);
+            this.materialRaisedButton3.Location = new System.Drawing.Point(317, 53);
             this.materialRaisedButton3.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton3.Name = "materialRaisedButton3";
             this.materialRaisedButton3.Primary = true;
@@ -878,7 +878,7 @@
             this.tbImageFile.Location = new System.Drawing.Point(65, 98);
             this.tbImageFile.Name = "tbImageFile";
             this.tbImageFile.ReadOnly = true;
-            this.tbImageFile.Size = new System.Drawing.Size(530, 20);
+            this.tbImageFile.Size = new System.Drawing.Size(594, 20);
             this.tbImageFile.TabIndex = 1;
             this.tbImageFile.DragDrop += new System.Windows.Forms.DragEventHandler(this.BgImage_DragDrop);
             this.tbImageFile.DragEnter += new System.Windows.Forms.DragEventHandler(this.Shared_FileDragEnter);
@@ -887,8 +887,8 @@
             // 
             this.materialLabel7.Depth = 0;
             this.materialLabel7.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel7.Location = new System.Drawing.Point(6, 185);
+            this.materialLabel7.ForeColor = System.Drawing.Color.White;
+            this.materialLabel7.Location = new System.Drawing.Point(6, 196);
             this.materialLabel7.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel7.Name = "materialLabel7";
             this.materialLabel7.Size = new System.Drawing.Size(620, 64);
@@ -899,7 +899,7 @@
             // 
             this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabel1.LinkColor = System.Drawing.SystemColors.MenuHighlight;
-            this.linkLabel1.Location = new System.Drawing.Point(547, 153);
+            this.linkLabel1.Location = new System.Drawing.Point(614, 153);
             this.linkLabel1.Name = "linkLabel1";
             this.linkLabel1.Size = new System.Drawing.Size(84, 21);
             this.linkLabel1.TabIndex = 4;
@@ -918,7 +918,7 @@
             this.LayoutPatchList.FormattingEnabled = true;
             this.LayoutPatchList.Location = new System.Drawing.Point(108, 153);
             this.LayoutPatchList.Name = "LayoutPatchList";
-            this.LayoutPatchList.Size = new System.Drawing.Size(433, 21);
+            this.LayoutPatchList.Size = new System.Drawing.Size(500, 21);
             this.LayoutPatchList.TabIndex = 3;
             this.LayoutPatchList.SelectedIndexChanged += new System.EventHandler(this.LayoutPatchList_SelectedIndexChanged);
             this.LayoutPatchList.DragDrop += new System.Windows.Forms.DragEventHandler(this.LayoutPatchList_DragDrop);
@@ -928,7 +928,7 @@
             // 
             this.materialLabel6.Depth = 0;
             this.materialLabel6.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialLabel6.ForeColor = System.Drawing.Color.White;
             this.materialLabel6.Location = new System.Drawing.Point(6, 153);
             this.materialLabel6.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel6.Name = "materialLabel6";
@@ -944,7 +944,7 @@
             this.materialFlatButton1.Depth = 0;
             this.materialFlatButton1.ForeColor = System.Drawing.Color.White;
             this.materialFlatButton1.Icon = null;
-            this.materialFlatButton1.Location = new System.Drawing.Point(602, 90);
+            this.materialFlatButton1.Location = new System.Drawing.Point(666, 90);
             this.materialFlatButton1.Margin = new System.Windows.Forms.Padding(4, 6, 4, 6);
             this.materialFlatButton1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialFlatButton1.Name = "materialFlatButton1";
@@ -961,7 +961,7 @@
             // 
             this.materialLabel2.Depth = 0;
             this.materialLabel2.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialLabel2.ForeColor = System.Drawing.Color.White;
             this.materialLabel2.Location = new System.Drawing.Point(6, 98);
             this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel2.Name = "materialLabel2";
@@ -976,7 +976,7 @@
             this.materialRaisedButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton2.Depth = 0;
             this.materialRaisedButton2.Icon = null;
-            this.materialRaisedButton2.Location = new System.Drawing.Point(495, 284);
+            this.materialRaisedButton2.Location = new System.Drawing.Point(559, 322);
             this.materialRaisedButton2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton2.Name = "materialRaisedButton2";
             this.materialRaisedButton2.Primary = true;
@@ -988,10 +988,11 @@
             // 
             // materialLabel3
             // 
+            this.materialLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.materialLabel3.Depth = 0;
             this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel3.Location = new System.Drawing.Point(6, 247);
+            this.materialLabel3.ForeColor = System.Drawing.Color.White;
+            this.materialLabel3.Location = new System.Drawing.Point(9, 315);
             this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel3.Name = "materialLabel3";
             this.materialLabel3.Size = new System.Drawing.Size(475, 43);
@@ -1005,8 +1006,8 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.materialLabel17.Depth = 0;
             this.materialLabel17.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel17.Location = new System.Drawing.Point(13, 122);
+            this.materialLabel17.ForeColor = System.Drawing.Color.White;
+            this.materialLabel17.Location = new System.Drawing.Point(51, 121);
             this.materialLabel17.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel17.Name = "materialLabel17";
             this.materialLabel17.Size = new System.Drawing.Size(617, 24);
@@ -1020,11 +1021,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.materialLabel1.ForeColor = System.Drawing.Color.White;
             this.materialLabel1.Location = new System.Drawing.Point(3, 6);
             this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
-            this.materialLabel1.Size = new System.Drawing.Size(633, 45);
+            this.materialLabel1.Size = new System.Drawing.Size(696, 45);
             this.materialLabel1.TabIndex = 14;
             this.materialLabel1.Text = "Use this page to create themes with the old SZS format, if you don\'t know what yo" +
     "u\'re doing it\'s recommended to use nxtheme instead.";
@@ -1039,7 +1040,7 @@
             this.AdvancedPage.Location = new System.Drawing.Point(4, 22);
             this.AdvancedPage.Name = "AdvancedPage";
             this.AdvancedPage.Padding = new System.Windows.Forms.Padding(3);
-            this.AdvancedPage.Size = new System.Drawing.Size(638, 331);
+            this.AdvancedPage.Size = new System.Drawing.Size(707, 374);
             this.AdvancedPage.TabIndex = 3;
             this.AdvancedPage.Text = "Advanced";
             // 
@@ -1056,7 +1057,7 @@
             this.AdvPanel.Enabled = false;
             this.AdvPanel.Location = new System.Drawing.Point(3, 3);
             this.AdvPanel.Name = "AdvPanel";
-            this.AdvPanel.Size = new System.Drawing.Size(632, 325);
+            this.AdvPanel.Size = new System.Drawing.Size(701, 368);
             this.AdvPanel.TabIndex = 7;
             this.AdvPanel.Visible = false;
             // 
@@ -1067,7 +1068,7 @@
             this.materialRaisedButton7.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton7.Depth = 0;
             this.materialRaisedButton7.Icon = null;
-            this.materialRaisedButton7.Location = new System.Drawing.Point(401, 283);
+            this.materialRaisedButton7.Location = new System.Drawing.Point(401, 326);
             this.materialRaisedButton7.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton7.Name = "materialRaisedButton7";
             this.materialRaisedButton7.Primary = true;
@@ -1084,7 +1085,7 @@
             this.materialRaisedButton6.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton6.Depth = 0;
             this.materialRaisedButton6.Icon = null;
-            this.materialRaisedButton6.Location = new System.Drawing.Point(294, 283);
+            this.materialRaisedButton6.Location = new System.Drawing.Point(294, 326);
             this.materialRaisedButton6.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton6.Name = "materialRaisedButton6";
             this.materialRaisedButton6.Primary = true;
@@ -1101,7 +1102,7 @@
             this.materialRaisedButton4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton4.Depth = 0;
             this.materialRaisedButton4.Icon = null;
-            this.materialRaisedButton4.Location = new System.Drawing.Point(181, 283);
+            this.materialRaisedButton4.Location = new System.Drawing.Point(181, 326);
             this.materialRaisedButton4.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton4.Name = "materialRaisedButton4";
             this.materialRaisedButton4.Primary = true;
@@ -1121,7 +1122,7 @@
             this.materialLabel5.Location = new System.Drawing.Point(3, 0);
             this.materialLabel5.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel5.Name = "materialLabel5";
-            this.materialLabel5.Size = new System.Drawing.Size(626, 23);
+            this.materialLabel5.Size = new System.Drawing.Size(695, 23);
             this.materialLabel5.TabIndex = 7;
             this.materialLabel5.Text = "Files in the SZS (right click to replace or extract):";
             // 
@@ -1137,7 +1138,7 @@
             this.SzsFileList.FormattingEnabled = true;
             this.SzsFileList.Location = new System.Drawing.Point(3, 26);
             this.SzsFileList.Name = "SzsFileList";
-            this.SzsFileList.Size = new System.Drawing.Size(626, 234);
+            this.SzsFileList.Size = new System.Drawing.Size(695, 273);
             this.SzsFileList.Sorted = true;
             this.SzsFileList.TabIndex = 0;
             // 
@@ -1147,19 +1148,19 @@
             this.extractToolStripMenuItem,
             this.replaceToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(139, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(116, 48);
             // 
             // extractToolStripMenuItem
             // 
             this.extractToolStripMenuItem.Name = "extractToolStripMenuItem";
-            this.extractToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.extractToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.extractToolStripMenuItem.Text = "Extract";
             this.extractToolStripMenuItem.Click += new System.EventHandler(this.extractToolStripMenuItem_Click);
             // 
             // replaceToolStripMenuItem
             // 
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
-            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
+            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
             this.replaceToolStripMenuItem.Text = "Replace";
             this.replaceToolStripMenuItem.Click += new System.EventHandler(this.replaceToolStripMenuItem_Click);
             // 
@@ -1170,7 +1171,7 @@
             this.materialRaisedButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton1.Depth = 0;
             this.materialRaisedButton1.Icon = null;
-            this.materialRaisedButton1.Location = new System.Drawing.Point(497, 283);
+            this.materialRaisedButton1.Location = new System.Drawing.Point(566, 326);
             this.materialRaisedButton1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton1.Name = "materialRaisedButton1";
             this.materialRaisedButton1.Primary = true;
@@ -1187,7 +1188,7 @@
             this.materialRaisedButton5.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.materialRaisedButton5.Depth = 0;
             this.materialRaisedButton5.Icon = null;
-            this.materialRaisedButton5.Location = new System.Drawing.Point(3, 283);
+            this.materialRaisedButton5.Location = new System.Drawing.Point(3, 326);
             this.materialRaisedButton5.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialRaisedButton5.Name = "materialRaisedButton5";
             this.materialRaisedButton5.Primary = true;
