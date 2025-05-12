@@ -268,9 +268,9 @@ namespace Patches::textureReplacement {
 		{"controller",{"RdtIcoCtrl_00^s"},							0x5050505, "blyt/RdtBtnCtrl.bflyt",    "P_Form",		64,56, GetPatch(CtrlPatch)	},
 		{"settings",  {"RdtIcoSet^s"},								0x5050505, "blyt/RdtBtnSet.bflyt",     "P_Pict",		64,56, GetPatch(SetPatch)	},
 		{"power",     {"RdtIcoPwrForm^s"},							0x5050505, "blyt/RdtBtnPow.bflyt",     "P_Pict_00",		64,56, GetPatch(PowPatch)	},
-		{"nso",       {"RdtIcoLR_00^s"},							0x5050505, "blyt/RdtBtnLR.bflyt",      "P_LR_00",		64,56, GetPatch(NsoPatch)	},
-		{"card",      {"RdtIcoHomeVgc^s"},							0x5050505, "blyt/RdtBtnVgc.bflyt",     "P_Pict_00",		64,56, GetPatch(VgcPatch)	},
-		{"share",     {"RdtIcoHomeSplayFrame^s"},					0x5050505, "blyt/RdtBtnSplay.bflyt",   "P_Pict_00",		64,56, GetPatch(SplayPatch)	},
+		{"nso",       {"RdtIcoLR_00^s"},							0x5050505, "blyt/RdtBtnLR.bflyt",      "P_LR_00",		64,56, GetPatch(NsoPatch)	, ConsoleFirmware::Fw11_0   },
+		{"card",      {"RdtIcoHomeVgc^s"},							0x5050505, "blyt/RdtBtnVgc.bflyt",     "P_Pict_00",		64,56, GetPatch(VgcPatch)	, ConsoleFirmware::Fw20_0   },
+		{"share",     {"RdtIcoHomeSplayFrame^s"},					0x5050505, "blyt/RdtBtnSplay.bflyt",   "P_Pict_00",		64,56, GetPatch(SplayPatch)	, ConsoleFirmware::Fw20_0   },
 	};
 
 	static vector<TextureReplacement> Entrance

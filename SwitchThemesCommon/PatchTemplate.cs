@@ -389,9 +389,10 @@ namespace SwitchThemes.Common
 		public string FileName;
 		public string PaneName;
 		public int W, H;
-		public LayoutFilePatch patch;
+		public LayoutFilePatch Patch;
+		public ConsoleFirmware MinFirmware;
 
-		public TextureReplacement(string name, string[] bntxNames, UInt32 cflag, string Fname, string Pname, int w, int h, LayoutFilePatch p)
+		public TextureReplacement(string name, string[] bntxNames, UInt32 cflag, string Fname, string Pname, int w, int h, LayoutFilePatch p, ConsoleFirmware minFirmware = ConsoleFirmware.Invariant)
 		{
 			NxThemeName = name;
 			BntxNames = bntxNames;
@@ -399,7 +400,8 @@ namespace SwitchThemes.Common
 			FileName = Fname;
 			PaneName = Pname;
 			W = w; H = h;
-			patch = p;
+			Patch = p;
+			MinFirmware = minFirmware;
 		}
 
         // News texture name varies by version
@@ -413,9 +415,9 @@ namespace SwitchThemes.Common
 			new TextureReplacement("controller",new[] {"RdtIcoCtrl_00^s"},			0x5050505, "blyt/RdtBtnCtrl.bflyt",		"P_Form",			64,56, CtrlPatch),
 			new TextureReplacement("settings",  new[] {"RdtIcoSet^s"},				0x5050505, "blyt/RdtBtnSet.bflyt",		"P_Pict",			64,56, SetPatch),
 			new TextureReplacement("power",     new[] {"RdtIcoPwrForm^s"},			0x5050505, "blyt/RdtBtnPow.bflyt",		"P_Pict_00",		64,56, PowPatch),
-			new TextureReplacement("nso",       new[] {"RdtIcoLR_00^s"},			0x5050505, "blyt/RdtBtnLR.bflyt",		"P_LR_00",			64,56, NsoPatch),
-			new TextureReplacement("card",      new[] {"RdtIcoHomeVgc^s"},			0x5050505, "blyt/RdtBtnVgc.bflyt",		"P_Pict_00",		64,56, VgcPatch),
-			new TextureReplacement("share",     new[] {"RdtIcoHomeSplayFrame^s"},	0x5050505, "blyt/RdtBtnSplay.bflyt",	"P_Pict_00",		64,56, SplayPatch),
+			new TextureReplacement("nso",       new[] {"RdtIcoLR_00^s"},			0x5050505, "blyt/RdtBtnLR.bflyt",		"P_LR_00",			64,56, NsoPatch, ConsoleFirmware.Fw11_0),
+			new TextureReplacement("card",      new[] {"RdtIcoHomeVgc^s"},			0x5050505, "blyt/RdtBtnVgc.bflyt",		"P_Pict_00",		64,56, VgcPatch, ConsoleFirmware.Fw20_0),
+			new TextureReplacement("share",     new[] {"RdtIcoHomeSplayFrame^s"},	0x5050505, "blyt/RdtBtnSplay.bflyt",	"P_Pict_00",		64,56, SplayPatch, ConsoleFirmware.Fw20_0),
 		};
 
 		readonly public static List<TextureReplacement> Entrance = new List<TextureReplacement>
@@ -445,7 +447,7 @@ namespace SwitchThemes.Common
 			{
 				foreach (var i in v)
 				{
-					p.Add(i.NxThemeName, JsonConvert.SerializeObject(i.patch, settings));
+					p.Add(i.NxThemeName, JsonConvert.SerializeObject(i.Patch, settings));
 				}
 			}
 			return JsonConvert.SerializeObject(p, settings);

@@ -122,34 +122,43 @@ namespace SwitchThemes.Common
 
     public class SzsPatcher
     {
-        private SarcData sarc;
+        readonly SarcData Sarc;
+        readonly ConsoleFirmware TargetFirmware;
+        readonly PatchTemplate PatchTemplate;
+
         private QuickBntx bntx = null;
 
         public bool EnablePaneOrderMod = true;
 
         public SzsPatcher(SarcData s)
         {
-            sarc = s;
+            Sarc = s;
+            PatchTemplate = DefaultTemplates.GetFor(Sarc);
+
+            if (PatchTemplate != null)
+                TargetFirmware = FirmwareDetection.Detect(PatchTemplate.NXThemeName, Sarc);
+            else
+                TargetFirmware = ConsoleFirmware.Invariant;
         }
 
         void SaveBntx()
         {
             if (bntx == null) return;
-            sarc.Files[@"timg/__Combined.bntx"] = bntx.Write();
+            Sarc.Files[@"timg/__Combined.bntx"] = bntx.Write();
             bntx = null;
         }
 
         QuickBntx GetBntx()
         {
             if (bntx != null) return bntx;
-            bntx = new QuickBntx(sarc.Files[@"timg/__Combined.bntx"]);
+            bntx = new QuickBntx(Sarc.Files[@"timg/__Combined.bntx"]);
             return bntx;
         }
 
         public SarcData GetFinalSarc()
         {
             SaveBntx();
-            return sarc;
+            return Sarc;
         }
 
         private void ApplyRawPatch(LayoutPatch patch)
@@ -167,21 +176,21 @@ namespace SwitchThemes.Common
         uint? FirmwareTargetBflanVersion = null;
         private bool ApplyAnimPatch(AnimFilePatch p)
         {
-            if (!sarc.Files.ContainsKey(p.FileName))
+            if (!Sarc.Files.ContainsKey(p.FileName))
                 return false;
 
             // The bflan version varies between firmwares, load a file from the current firmware to get the target version
             // cache this result to avoid loading all files
             if (!FirmwareTargetBflanVersion.HasValue)
             {
-                BflanFile b = new BflanFile(sarc.Files[p.FileName]);
+                BflanFile b = new BflanFile(Sarc.Files[p.FileName]);
                 FirmwareTargetBflanVersion = b.Version;
             }
 
             var n = BflanSerializer.FromJson(p.AnimJson);
             n.Version = FirmwareTargetBflanVersion.Value;
             n.byteOrder = Syroot.BinaryData.ByteOrder.LittleEndian;
-            sarc.Files[p.FileName] = n.WriteFile();
+            Sarc.Files[p.FileName] = n.WriteFile();
 
             return true;
         }
@@ -189,10 +198,10 @@ namespace SwitchThemes.Common
         private bool ApplyLayoutPatch(LayoutFilePatch p)
         {
             if (p == null || p.FileName == null) return true;
-            if (!sarc.Files.ContainsKey(p.FileName))
+            if (!Sarc.Files.ContainsKey(p.FileName))
                 return false;
 
-            var target = new BflytFile(sarc.Files[p.FileName]);
+            var target = new BflytFile(Sarc.Files[p.FileName]);
 
             target.ApplyMaterialsPatch(p.Materials); //Do not check result as it fails only if the file doesn't have any material
 
@@ -209,7 +218,7 @@ namespace SwitchThemes.Common
                 foreach (var n in p.PushBackPanes)
                     target.PanePushBack(n);
 
-            sarc.Files[p.FileName] = target.SaveFile();
+            Sarc.Files[p.FileName] = target.SaveFile();
             return true;
         }
 
@@ -218,12 +227,10 @@ namespace SwitchThemes.Common
 
         private bool PatchLayouts(LayoutPatch Patch, string PartName)
         {
-            var fw = FirmwareDetection.Detect(PartName, sarc);
-
             // Detect any compatibility patches we need
-            var useLegacyFixes = fw != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
+            var useLegacyFixes = TargetFirmware != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
             var useModernFixes = !useLegacyFixes && Patch.ID != null;
-            var appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, fw);
+            var appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, TargetFirmware);
             // The default for this on old layouts that don't specify it is true
             var onlineBtnFix = PartName == "home" && (Patch.HideOnlineBtn ?? true);
 
@@ -242,23 +249,23 @@ namespace SwitchThemes.Common
 
             // First home menu fixes. These are applied early so later patches from the json can override them
             if (appletPositionFixes)
-                ApplyRawPatch(NewFirmFixes.GetAppletsPositionFix(fw));
+                ApplyRawPatch(NewFirmFixes.GetAppletsPositionFix(TargetFirmware));
 
             if (onlineBtnFix)
-                ApplyRawPatch(NewFirmFixes.GetLegacyAppletButtonsFix(fw));
+                ApplyRawPatch(NewFirmFixes.GetLegacyAppletButtonsFix(TargetFirmware));
 
             // GetFix might modify the layout to make it compatible.
             // So while its result must be applied as an overlay we must call it before applying the patch.
             LayoutPatch modernFix = null;
             if (useModernFixes)
-                modernFix = NewFirmFixes.GetFix(Patch, fw);
+                modernFix = NewFirmFixes.GetFix(Patch, TargetFirmware);
 
             // Then json patches
             ApplyRawPatch(Patch);
 
             // Then fixes on top of known broken layouts
             if (useLegacyFixes)
-                ApplyRawPatch(NewFirmFixes.GetFixLegacy(Patch.PatchName, fw, PartName));
+                ApplyRawPatch(NewFirmFixes.GetFixLegacy(Patch.PatchName, TargetFirmware, PartName));
 
             if (useModernFixes)
                 ApplyRawPatch(modernFix);
@@ -291,16 +298,24 @@ namespace SwitchThemes.Common
             if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
                 return false;
 
-            var target = TextureReplacement.NxNameToList[patch.NXThemeName].Where(x => x.NxThemeName == name).First();
+            var target = TextureReplacement.NxNameToList[patch.NXThemeName]
+                .Where(x => x.NxThemeName == name).FirstOrDefault();
 
-            var res = ApplyLayoutPatch(target.patch);
-            if (!res) return res;
+            if (target == null)
+                return false;
+
+            // THis applet icon is not present in the current firmware. Nothing to do.
+            if (TargetFirmware < target.MinFirmware)
+                return true;
+
+            if (!ApplyLayoutPatch(target.Patch))
+                return false;
 
             PatchBntxTexture(DDS, target.BntxNames, target.NewColorFlags);
 
-            BflytFile curTarget = new BflytFile(sarc.Files[target.FileName]);
+            BflytFile curTarget = new BflytFile(Sarc.Files[target.FileName]);
             curTarget.ClearUVData(target.PaneName);
-            sarc.Files[target.FileName] = curTarget.SaveFile();
+            Sarc.Files[target.FileName] = curTarget.SaveFile();
 
             return true;
         }
@@ -313,14 +328,14 @@ namespace SwitchThemes.Common
         public bool PatchMainBG(Images.DDS DDS)
         {
             var template = PatchTemplate;
-            BflytFile BflytFromSzs(string name) => new BflytFile(sarc.Files[name]);
+            BflytFile BflytFromSzs(string name) => new BflytFile(Sarc.Files[name]);
 
             //PatchBGLayouts
             BflytFile MainFile = BflytFromSzs(template.MainLayoutName);
             var res = MainFile.PatchBgLayout(template);
             if (!res) return res;
 
-            sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
+            Sarc.Files[template.MainLayoutName] = MainFile.SaveFile();
 
             //PatchBGBntx
             QuickBntx q = GetBntx();
@@ -338,12 +353,12 @@ namespace SwitchThemes.Common
             if (replaceWith == null)
                 return false;
 
-            var layouts = sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
+            var layouts = Sarc.Files.Keys.Where(x => x.StartsWith("blyt/") && x.EndsWith(".bflyt") && x != template.MainLayoutName).ToArray();
             foreach (var f in layouts)
             {
                 BflytFile curTarget = BflytFromSzs(f);
                 if (curTarget.PatchTextureName(template.MaintextureName, replaceWith))
-                    sarc.Files[f] = curTarget.SaveFile();
+                    Sarc.Files[f] = curTarget.SaveFile();
             }
 
             return true;
@@ -367,17 +382,6 @@ namespace SwitchThemes.Common
                 return false;
             }
             return true;
-        }
-
-        private PatchTemplate _patch = null;
-        public PatchTemplate PatchTemplate
-        {
-            get
-            {
-                if (_patch != null) return _patch;
-                _patch = DefaultTemplates.GetFor(sarc);
-                return _patch;
-            }
         }
     }
 }

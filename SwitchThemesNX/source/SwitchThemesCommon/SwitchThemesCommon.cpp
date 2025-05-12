@@ -29,8 +29,34 @@ string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& 
 	return FileList;
 }
 
-SzsPatcher::SzsPatcher(SARC::SarcData&& s) : sarc(s) {}
-SzsPatcher::SzsPatcher(SARC::SarcData& s) : sarc(s) {}
+SzsPatcher::SzsPatcher(SARC::SarcData&& s) : sarc(s) { Initialize(); }
+SzsPatcher::SzsPatcher(SARC::SarcData& s) : sarc(s) { Initialize(); }
+
+void SzsPatcher::Initialize()
+{
+	currentFirmware = HOSVer.ToFirmwareEnum();
+	
+	currentTemplate = DetectSarc(sarc);
+	
+	if (!currentTemplate)
+	{
+		nxthemePartName = "";
+	}
+	else
+	{
+		// Note that the PatchTemplate class does not have an NxThemeName property here because it depends on the current firmware version, this is to support 5.0 and earlier.
+		// Since that is ancient firmware it is not supported in the injector so it's a difference to keep in mind when reasoning about the mapping between the nxtheme name and the target szs name
+		auto t = std::find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(), [&](const auto& e)
+			{
+				return e.second == currentTemplate->szsName;
+			});
+
+		if (t == ThemeTargetToFileName.end())
+			nxthemePartName = "";
+		else
+			nxthemePartName = t->first;
+	}
+}
 
 SzsPatcher::~SzsPatcher()
 {
@@ -129,19 +155,7 @@ bool SzsPatcher::ApplyLayoutPatch(const LayoutFilePatch& p)
 
 bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
 {
-	auto szs = DetectSarc().szsName;
-
-	auto t = std::find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(), [&szs](const auto &e)
-	{
-		return e.second == szs;
-	});
-
-	if (t == ThemeTargetToFileName.end())
-	{
-		return false;
-	}
-
-	return PatchLayouts(patch, t->first);
+	return PatchLayouts(patch, nxthemePartName);
 }
 
 bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &partName)
@@ -149,12 +163,10 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &p
 	// We must make a copy of the patch because some fix function might modify it
 	auto patch = original_patch;
 
-	const auto fw = HOSVer.ToFirmwareEnum();
-
 	// Detect any compatibility patches we need
-	const auto useLegacyFixes = fw != ConsoleFirmware::Invariant && patch.UsesOldFixes();
+	const auto useLegacyFixes = currentFirmware != ConsoleFirmware::Invariant && patch.UsesOldFixes();
 	const auto useModernFixes = !useLegacyFixes && patch.ID != "";
-	const auto appletPositionFixes = partName == "home" && NewFirmFixes::ShouldApplyAppletPositionFix(patch, fw);
+	const auto appletPositionFixes = partName == "home" && NewFirmFixes::ShouldApplyAppletPositionFix(patch, currentFirmware);
 	// The default for this on old layouts that don't specify it is true
 	const auto onlineBtnFix = partName == "home" && patch.HideOnlineBtn;
 
@@ -175,23 +187,23 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &p
 
 	// First home menu fixes. These are applied early so later patches from the json can override them
 	if (appletPositionFixes)
-		ApplyRawPatch(NewFirmFixes::GetAppletsPositionFix(fw));
+		ApplyRawPatch(NewFirmFixes::GetAppletsPositionFix(currentFirmware));
 
 	if (onlineBtnFix)
-		ApplyRawPatch(NewFirmFixes::GetLegacyAppletButtonsFix(fw));
+		ApplyRawPatch(NewFirmFixes::GetLegacyAppletButtonsFix(currentFirmware));
 
 	// GetFix might modify the layout to make it compatible.
 	// So while its result must be applied as an overlay we must call it before applying the patch.
 	std::optional<LayoutPatch> modern_fix = std::nullopt;
 	if (useModernFixes)
-		modern_fix = NewFirmFixes::GetFix(patch, fw);
+		modern_fix = NewFirmFixes::GetFix(patch, currentFirmware);
 
 	// Then json patches
 	ApplyRawPatch(&patch);
 
 	// Then fixes on top of known broken layouts
 	if (useLegacyFixes)
-		ApplyRawPatch(NewFirmFixes::GetFixLegacy(patch.PatchName, fw, partName));
+		ApplyRawPatch(NewFirmFixes::GetFixLegacy(patch.PatchName, currentFirmware, partName));
 
 	if (useModernFixes)
 		ApplyRawPatch(modern_fix);
@@ -212,7 +224,10 @@ static bool StrStartsWith(const std::string &str, const std::string &prefix)
 
 bool SzsPatcher::PatchMainBG(const vector<u8> &DDS)
 {
-	PatchTemplate templ = DetectSarc();
+	if (!currentTemplate)
+		return false;
+
+	auto& templ = *currentTemplate;
 
 	//Patch BG layouts
 	BflytFile _MainFile(sarc.files[templ.MainLayoutName]);
@@ -284,35 +299,34 @@ bool SzsPatcher::PatchBntxTexture(const vector<u8> &DDS, const vector<string> &t
 
 bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName)
 {
-	auto patch = DetectSarc();
-	string nxthemeTarget = "";
-
-	{
-		auto it = find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(),
-			[&patch](const pair<string, string>& v) { return v.second == patch.szsName;	});
-		if (it == ThemeTargetToFileName.end()) return false;
-		nxthemeTarget = it->first;
-	}
-
-	if (!Patches::textureReplacement::NxNameToList.count(nxthemeTarget))
+	if (nxthemePartName == "")
 		return false;
 
-	auto& list = Patches::textureReplacement::NxNameToList[nxthemeTarget];
-	auto it = find_if(list.begin(), list.end(),
-		[&texName](const TextureReplacement& t) {return t.NxThemeName == texName; });
-	if (it == list.end()) 
+	if (!Patches::textureReplacement::NxNameToList.count(nxthemePartName))
 		return false;
 
-	auto res = ApplyLayoutPatch(it->patch);
+	const auto& list = Patches::textureReplacement::NxNameToList[nxthemePartName];
+	auto replacement = find_if(list.begin(), list.end(), [&texName](const TextureReplacement& t) {
+		return t.NxThemeName == texName; 
+	});
+
+	if (replacement == list.end()) 
+		return false;
+
+	// If this is not the right firmware, skip it
+	if (currentFirmware < replacement->MinFirmware)
+		return true;
+
+	auto res = ApplyLayoutPatch(replacement->patch);
 	if (!res) return res;
 
-	PatchBntxTexture(DDS, it->BntxNames, it->NewColorFlags);
+	PatchBntxTexture(DDS, replacement->BntxNames, replacement->NewColorFlags);
 
-	BflytFile _curTarget{ sarc.files[it->FileName] };
+	BflytFile _curTarget{ sarc.files[replacement->FileName] };
 	BflytPatcher curTarget(_curTarget);
 
-	curTarget.ClearUVData(it->PaneName);
-	sarc.files[it->FileName] = _curTarget.SaveFile();
+	curTarget.ClearUVData(replacement->PaneName);
+	sarc.files[replacement->FileName] = _curTarget.SaveFile();
 
 	return true;
 }
@@ -338,44 +352,46 @@ bool SzsPatcher::PatchBntxTextureAttribs(const vector<BntxTexAttribPatch> &patch
 	return true;
 }
 
-
-PatchTemplate SzsPatcher::DetectSarc()
+const std::optional<PatchTemplate>& SzsPatcher::DetectedSarc()
 {
-	return DetectSarc(sarc);
+	return currentTemplate;
 }
 
-PatchTemplate SzsPatcher::DetectSarc(const SARC::SarcData& sarc)
+std::optional<PatchTemplate> SzsPatcher::DetectSarc(const SARC::SarcData& sarc)
 {
-#define SzsHasKey(_str) (sarc.files.count(_str))
-
-	if (!SzsHasKey("timg/__Combined.bntx"))
-		return {};
+	if (!sarc.files.count("timg/__Combined.bntx"))
+		return std::nullopt;
 
 	for (auto p : Patches::DefaultTemplates)
 	{
-		if (!SzsHasKey(p.MainLayoutName))
+		if (!sarc.files.count(p.MainLayoutName))
 			continue;
+
 		bool isTarget = true;
-		for(string s : p.FnameIdentifier)
+		for (string s : p.FnameIdentifier)
 		{
-			if (!SzsHasKey(s))
+			if (!sarc.files.count(s))
 			{
 				isTarget = false;
 				break;
 			}
 		}
+
 		if (!isTarget) continue;
+
 		for (string s : p.FnameNotIdentifier)
 		{
-			if (SzsHasKey(s))
+			if (sarc.files.count(s))
 			{
 				isTarget = false;
 				break;
 			}
 		}
+
 		if (!isTarget) continue;
+
 		return p;
 	}
-	return {};
-#undef SzsHasKey
+
+	return std::nullopt;
 }

@@ -35,13 +35,17 @@ protected:
 	{
 		if (ShowDialogs)
 			ThemeEntry::DisplayInstallDialog(FileName);
-		PatchTemplate patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
 
-		if (!PatchMng::ExefsCompatAsk(patch.szsName))
+		auto patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
+
+		if (!patch)
+			throw std::runtime_error("Couldn't find a compatible patch template");
+
+		if (!PatchMng::ExefsCompatAsk(patch->szsName))
 			return false;
 
-		fs::theme::CreateStructure(patch.TitleId);;
-		fs::WriteFile(fs::path::RomfsFolder(patch.TitleId) + "lyt/" + patch.szsName, file);
+		fs::theme::CreateStructure(patch->TitleId);
+		fs::WriteFile(fs::path::RomfsFolder(patch->TitleId) + "lyt/" + patch->szsName, file);
 
 		return true;
 	}
@@ -69,12 +73,13 @@ private:
 			lblLine1 = FileName;
 		}
 		auto patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
-		if (patch.FirmName == "")
+		if (!patch)
 		{
 			lblLine2 = "Invalid theme";
-			InstallFailReason = "Invalid theme";
+			InstallFailReason = "Couldn't find a compatible patch template";
 			_CanInstall = false;
 		}
-		else lblLine2 = (patch.TemplateName + " for " + patch.FirmName);
+
+		else lblLine2 = (patch->TemplateName + " for " + patch->FirmName);
 	}
 };

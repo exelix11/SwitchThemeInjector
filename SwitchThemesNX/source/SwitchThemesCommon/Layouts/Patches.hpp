@@ -191,6 +191,7 @@ struct TextureReplacement
 	std::string PaneName;
 	s32 W, H;
 	LayoutFilePatch patch;
+	ConsoleFirmware MinFirmware = ConsoleFirmware::Invariant;
 };
 
 namespace Patches {

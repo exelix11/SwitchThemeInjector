@@ -109,48 +109,64 @@ protected:
 		//Actual file patching code 
 		bool FileHasBeenPatched = false;
 		SARC::SarcData sarc;
-		if (!SarcOpen(BaseSzs, &sarc)) return false;
+		
+		if (!SarcOpen(BaseSzs, &sarc)) 
+			return false;
+		
 		SwitchThemesCommon::SzsPatcher Patcher(sarc);
+		
 		std::string ContentID = "0100000000001000";
 		std::string SzsName = ThemeTargetToFileName[themeInfo.Target];
-		auto patch = Patcher.DetectSarc();
-		if (patch.FirmName != "")
+		auto patch = Patcher.DetectedSarc();
+
+		// TODO: Why is there a fallback here ? if detect sarc fails we will not be able to apply the wallaper anyway
+		if (patch)
 		{
-			ContentID = patch.TitleId;
-			SzsName = patch.szsName;
+			ContentID = patch->TitleId;
+			SzsName = patch->szsName;
 		}
 
 		if (!ShouldPatchBGInCommon)
 		{
-			if (patch.FirmName == "")
+			if (!patch)
 			{
 				DialogBlocking("Couldn't find any patch for " + BaseSzs + "\nThe theme was not installed");
 				return false;
 			}
+
 			if (NxThemeGetBgImage().size() != 0)
 			{
 				if (!PatchBG(Patcher, NxThemeGetBgImage(), BaseSzs))
 					return false;
+
 				FileHasBeenPatched = true;
 			}
 		}
 
 		/*
-			The layout patching step has been moved after the custom user icons (and furutre home menu components)
+			The layout patching step has been moved after the custom user icons (and future home menu components)
 			to let layouts edit the built-in patches that are applied to the panes. To avoid breaking old layouts
 			patches from pre 9 nxthemes will still be applied first
 		*/
-#define APPLY_LAYOUT_PATCH do { \
-if (SData.files.count("layout.json"))\
-	{\
-		auto JsonBinary = SData.files["layout.json"];\
-		if (!PatchLayout(Patcher, StringFromVec(JsonBinary), themeInfo.Target))	return false;\
-		FileHasBeenPatched = true;\
-	} \
-} while (0)
+		const auto applyLayoutPatch = [&](){
+			if (SData.files.count("layout.json"))
+			{
+				auto JsonBinary = SData.files["layout.json"]; 
+				
+				if (!PatchLayout(Patcher, StringFromVec(JsonBinary), themeInfo.Target))	
+					return false; 
+				
+				FileHasBeenPatched = true; 
+			} 
+
+			return true;
+		};
 
 		if (NXThemeVer <= 8)
-			APPLY_LAYOUT_PATCH;
+		{
+			if (!applyLayoutPatch())
+				return false;
+		}
 
 		//Applet icons patching
 		if (Settings::UseIcons)
@@ -197,7 +213,10 @@ if (SData.files.count("layout.json"))\
 		}
 
 		if (NXThemeVer >= 9)
-			APPLY_LAYOUT_PATCH;
+		{
+			if (!applyLayoutPatch())
+				return false;
+		}
 
 		if (FileHasBeenPatched)
 		{			

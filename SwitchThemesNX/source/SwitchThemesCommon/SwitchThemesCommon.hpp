@@ -32,15 +32,21 @@ namespace SwitchThemesCommon {
 		bool PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName);
 		bool PatchBntxTexture(const std::vector<u8>& DDS, const std::vector<std::string>& texNames, u32 ChannelData = 0xFFFFFFFF);
 		bool PatchBntxTextureAttribs(const std::vector<BntxTexAttribPatch>& patches);
-		PatchTemplate DetectSarc();
-		static PatchTemplate DetectSarc(const SARC::SarcData&);
+		static std::optional<PatchTemplate> DetectSarc(const SARC::SarcData&);
+
+		const std::optional<PatchTemplate>& DetectedSarc();
 
 		const SARC::SarcData& GetSarc();
 		SARC::SarcData& GetFinalSarc();
 
 	private:		
 		SARC::SarcData sarc;
-		
+		ConsoleFirmware currentFirmware;
+		std::optional<PatchTemplate> currentTemplate;
+		std::string nxthemePartName;
+
+		void Initialize();
+
 		QuickBntx* bntx = nullptr;
 		QuickBntx& OpenBntx();
 		void SaveBntx();
