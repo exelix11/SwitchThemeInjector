@@ -8,9 +8,16 @@
 #include "../fs.hpp"
 
 namespace Settings {
-	extern bool UseAnimations;
+	enum class InstallCompatOption : int
+	{
+		Default,
+		ForceLegacyLayout,
+		BypassFixes
+	};
+
 	extern bool UseIcons;
 	extern bool UseCommon;
+	extern InstallCompatOption HomeMenuCompat;
 };
 
 class SettingsPage : public IPage

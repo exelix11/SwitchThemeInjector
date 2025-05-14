@@ -338,6 +338,13 @@ private:
 	static bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
 	{
 		auto patch = Patches::LoadLayout(JSON);
+
+		if (PartName == "home" && Settings::HomeMenuCompat == Settings::InstallCompatOption::ForceLegacyLayout)
+			patch.HideOnlineBtn = true;
+
+		if (Settings::HomeMenuCompat == Settings::InstallCompatOption::BypassFixes)
+			patch.TargetFirmware = (int)HOSVer.ToFirmwareEnum();
+
 		if (!Patcher.PatchLayouts(patch, PartName))
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
