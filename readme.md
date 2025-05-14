@@ -7,21 +7,29 @@
 
 ![ThemeScreenshot](ThemeScreenshot.jpg)
 
-The Switch theme injector project is split into three parts:
-- Switch theme injector (Windows app): An app to create and edit custom themes
-- NXThemes installer: An homebrew app that runs on the switch itself and can be used to install and manage themes.
+This repo contains tools to create and install custom themes for the home menu "qlaunch" of the nintendo switch. You will need a modded console with the atmosphere CFW.
+
+These tools are:
+- NXThemes installer: Homebrew app that runs on the switch itself and can be used to install and manage themes.
+- Switch theme injector: The windows application to create and edit custom themes
 - [Switch theme injector online](http://exelix11.github.io/SwitchThemeInjector/v2) (also called WebInjector): A port of the windows injector as a web app, it lacks some features like custom applet icons and common.szs layouts support.
 
-The main objective is to develop a complete toolset to create and install custom themes on the switch. As the console os doesn't implement custom themes natively most of this is done by patching system SZS files to get the desidered aspect.\
-\
-Unfortunately SZS files from the switch os contain copyrighted data and can't be shared online that's why the **nxtheme format** has been developed, it contains only differential info and can be freely shared. Unless you're dealing with making your own patches and custom layouts you should only use nxtheme files.
+You can download the binareis from the [releases tab](https://github.com/exelix11/SwitchThemeInjector/releases).
+
+Since the console OS doesn't implement custom themes natively this tool patches the system layout files stored in the SZS in the romfs of qlaunch.
+
+SZS files extracted from the console are considered copyrighted data and can't be shared online that's why the **nxtheme format** has been developed, it contains only differential info and can be freely shared. Unless you're dealing with making your own patches and custom layouts you should only use nxtheme files.
 
 # Getting started
-To use custom themes you need an hacked switch that's at least on firmware 5.0
+To use custom themes you need as hacked switch that's at least on firmware 5.0
+
+You can find some themes on the [themezer website](https://themezer.net/)
 
 ## Installing themes
-This is the most common scenario, you just need the theme installer homebrew. \
-Make a folder called `themes` in the root of your sd card and copy your themes in either nxtheme or szs format in it. Then launch the theme installer and you should be able to select and install them. \
+This is the most common scenario, you just need the theme installer homebrew. 
+
+Make a folder called `themes` in the root of your sd card and copy your themes in either nxtheme or szs format in it. Then launch the theme installer and you should be able to select and install them.
+
 Reboot and your theme should be applied.
 
 Note that each file is a single home menu part (eg just the lockscreen or just the main menu), a full home menu theme is composed by multiple nxtheme files.
@@ -34,9 +42,8 @@ When a new firmware comes out **before upgrading (or downgrading) remember to un
 
 ## Making themes
 To make themes you need either the Theme injector application or the web version.
-### Format differences
-In the past themes have been distributed as szs files, this is not supported anymore as these szs files also contain copyrighted data, now you should only use the **nxtheme** format.
-### Making an nxtheme
+
+### Creating a nxtheme file
 Open the injector and go to the NXThemes builder tab, open any **720p JPG image** (1280x720 pixels), select a custom layout and click on build nxtheme.
 
 For making themes you can only use JPG images or DXT1-encoded DDS images. For best quality it's better to manually encode the image to DDS so you can have a preview of how will it look like with the compression applied. 
@@ -52,6 +59,7 @@ SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, opt
 ```
 this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed. \
 Other options specific to the theme target such as applet icons are availbale as well, run `SwitchThemes.exe help` for more info
+
 #### Remote install
 Launch the theme installer and select remote install, then run the following command:
 ```
