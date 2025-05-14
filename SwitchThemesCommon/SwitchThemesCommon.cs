@@ -5,19 +5,16 @@ using SwitchThemes.Common.Serializers;
 using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using SARCExt;
-using ExtensionMethods;
-using System.Text.RegularExpressions;
 
 namespace SwitchThemes.Common
 {
     public static class Info
     {
-        public const string CoreVer = "4.7.1";
-        public const int NxThemeFormatVersion = 15;
+        public const string CoreVer = "4.8";
+        public const int NxThemeFormatVersion = 16;
 
         public static Dictionary<string, string> PartToFileName = new Dictionary<string, string>() {
             {"home", "ResidentMenu.szs"},
