@@ -80,44 +80,116 @@ namespace SwitchThemes.Common
             };
         }
 
+        public static string LayoutNameForAnimation(string animation)
+        {
+            // The animation file name is usually in the format "anim/filename_animname.bflan"
+            // We want to extract the "filename" part
+            var parts = animation.Split('/');
+            if (parts.Length < 2)
+                return null;
+
+            var fileName = parts[1].Split('_').FirstOrDefault();
+            if (string.IsNullOrEmpty(fileName))
+                return null;
+
+            return "blyt/" + fileName + ".bflyt";
+        }
+
+        public static void CheckBflytCompatibility(List<CompatIssue> res, LayoutFilePatch patch, BflytFile bflyt) 
+        {
+            var paneNames = bflyt.EnumeratePanes()
+                .Where(x => x is BflytFile.INamedPane)
+                .Select(x => ((BflytFile.INamedPane)x).PaneName)
+                .ToHashSet();
+
+            if (patch.Patches != null)
+                foreach (var pane in patch.Patches)
+                    if (!paneNames.Contains(pane.PaneName))
+                        res.Add(CompatIssue.MissingPane(patch.FileName, pane.PaneName));
+
+            if (patch.AddGroups != null)
+                foreach (var group in patch.AddGroups)
+                    foreach (var item in group.Panes)
+                        if (!paneNames.Contains(item))
+                            res.Add(CompatIssue.MissingPane(patch.FileName, item, $"group:{group.GroupName}"));
+
+            if (patch.PullFrontPanes != null)
+                foreach (var pane in patch.PullFrontPanes)
+                    if (!paneNames.Contains(pane))
+                        res.Add(CompatIssue.MissingPane(patch.FileName, pane, $"PullFrontPanes"));
+
+            if (patch.PushBackPanes != null)
+                foreach (var pane in patch.PushBackPanes)
+                    if (!paneNames.Contains(pane))
+                        res.Add(CompatIssue.MissingPane(patch.FileName, pane, $"PullFrontPanes"));
+
+            // TODO: Materials
+        }
+
+        public static void CheckAnimationCompatibility(List<CompatIssue> res, LayoutPatch layout, SarcData szs, string animName, BflanFile bflan) 
+        {
+            var bflytName = LayoutNameForAnimation(animName);
+
+            if (!szs.Files.ContainsKey(bflytName))
+            {
+                res.Add(CompatIssue.Uncertain(animName, bflytName, "Unknown bflyt file"));
+                return;
+            }
+
+            var bflyt = new BflytFile(szs.Files[bflytName]);
+            var paneNames = bflyt.EnumeratePanes()
+                .Where(x => x is BflytFile.INamedPane)
+                .Select(x => ((BflytFile.INamedPane)x).PaneName)
+                .ToHashSet();
+
+            var groupNames = bflyt.EnumeratePanes()
+                .Where(x => x is Grp1Pane)
+                .Select(x => ((Grp1Pane)x).PaneName)
+                .ToHashSet();
+
+            var layoutPatch = layout.Files.FirstOrDefault(x => x.FileName == bflytName);
+
+            foreach (var group in bflan.patData.Groups)
+            {
+                if (groupNames.Contains(group))
+                    continue;
+
+                // The group might also be added via a patch
+                if (layoutPatch != null && layoutPatch.AddGroups != null)
+                {
+                    if (layoutPatch.AddGroups.Any(x => x.GroupName == group))
+                        continue;
+                }
+
+                res.Add(CompatIssue.MissingGroup(animName, group));
+            }
+
+            foreach (var entry in bflan.paiData.Entries)
+            {
+                if (entry.Target == Pai1Section.PaiEntry.AnimationTarget.Pane)
+                    if (!paneNames.Contains(entry.Name))
+                        res.Add(CompatIssue.MissingPane(animName, entry.Name, "Animation target", true));
+
+                // TODO: Materials
+                // TODO: Textures
+            }
+        }
+
         public static List<CompatIssue> ValidateLayout(SarcData szs, LayoutPatch layout)
         {
             var res = new List<CompatIssue>();
 
             // First do layouts, none of these are critical since we can ignore missing panes
-            foreach (var p in layout.Files)
+            foreach (var patch in layout.Files)
             {
-                if (!szs.Files.ContainsKey(p.FileName))
+                if (!szs.Files.ContainsKey(patch.FileName))
                 {
-                    res.Add(CompatIssue.MissingFile(p.FileName));
+                    res.Add(CompatIssue.MissingFile(patch.FileName));
                     continue;
                 }
 
-                var bflyt = new BflytFile(szs.Files[p.FileName]);
-                var paneNames = bflyt.EnumeratePanes().Select(x => x.name).ToHashSet();
-
-                if (p.Patches != null)
-                    foreach (var pane in p.Patches)
-                        if (!paneNames.Contains(pane.PaneName))
-                            res.Add(CompatIssue.MissingPane(p.FileName, pane.PaneName));
-
-                if (p.AddGroups != null)
-                    foreach (var group in p.AddGroups)
-                        foreach (var item in group.Panes)
-                            if (!paneNames.Contains(item))
-                                res.Add(CompatIssue.MissingPane(p.FileName, item, $"group:{group.GroupName}"));
-
-                if (p.PullFrontPanes != null)
-                    foreach (var pane in p.PullFrontPanes)
-                        if (!paneNames.Contains(pane))
-                            res.Add(CompatIssue.MissingPane(p.FileName, pane, $"PullFrontPanes"));
-
-                if (p.PushBackPanes != null)
-                    foreach (var pane in p.PushBackPanes)
-                        if (!paneNames.Contains(pane))
-                            res.Add(CompatIssue.MissingPane(p.FileName, pane, $"PullFrontPanes"));
-            
-                // TODO: Materials
+                var bflyt = new BflytFile(szs.Files[patch.FileName]);
+                CheckBflytCompatibility(res, patch, bflyt);
             }
 
             // Then do animations
@@ -129,46 +201,8 @@ namespace SwitchThemes.Common
                     continue;
                 }
 
-                var bflytName = anim.FileName.Split('/').Last().Split('_').First();
-                bflytName = "blyt/" + bflytName + ".bflyt";
-
-                if (!szs.Files.ContainsKey(bflytName))
-                {
-                    res.Add(CompatIssue.Uncertain(anim.FileName, bflytName, "Unknown bflyt file"));
-                    continue;
-                }
-
-                var bflyt = new BflytFile(szs.Files[bflytName]);
-                var paneNames = bflyt.EnumeratePanes().Select(x => x.name).ToHashSet();
-                var groupNames = bflyt.EnumeratePanes().Where(x => x is Grp1Pane).Select(x => x.name).ToHashSet();
-                var layoutPatch = layout.Files.FirstOrDefault(x => x.FileName == bflytName);
-
                 var bflan = BflanSerializer.FromJson(anim.AnimJson);
-
-                foreach (var group in bflan.patData.Groups)
-                {
-                    if (groupNames.Contains(group))
-                        continue;
-
-                    // The group might also be added via a patch
-                    if (layoutPatch != null && layoutPatch.AddGroups != null)
-                    {
-                        if (layoutPatch.AddGroups.Any(x => x.GroupName == group))
-                            continue;
-                    }
-
-                    res.Add(CompatIssue.MissingGroup(anim.FileName, group));
-                }
-
-                foreach (var entry in bflan.paiData.Entries)
-                {
-                    if (entry.Target == Pai1Section.PaiEntry.AnimationTarget.Pane)
-                        if (!paneNames.Contains(entry.Name))
-                            res.Add(CompatIssue.MissingPane(anim.FileName, entry.Name, "Animation target", true));
-
-                    // TODO: Materials
-                    // TODO: Textures
-                }
+                CheckAnimationCompatibility(res, layout, szs, anim.FileName, bflan);
             }
 
             return res;

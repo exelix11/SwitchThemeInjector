@@ -43,15 +43,13 @@ namespace SwitchThemes.Common
 
 		public override string ToString() => PatchName + " by " + AuthorName;
 
+		// Note: this is just used as a quick filter and does not guarantee compatibility
 		public bool IsCompatible(SARCExt.SarcData szs)
 		{
 			for (int i = 0; i < Files.Length; i++)
 			{
-				if (!szs.Files.ContainsKey(Files[i].FileName)) return false;
-				//string TargetFileAsString = ASCIIEncoding.ASCII.GetString(szs.Files[Files[i].FileName]);
-				//for (int j = 0; j < Files[i].Patches.Length; j++)
-				//	if (!TargetFileAsString.Contains(Files[i].Patches[j].PaneName))
-				//		return false;
+				if (!szs.Files.ContainsKey(Files[i].FileName)) 
+					return false;
 			}
 			return true;
 		}
