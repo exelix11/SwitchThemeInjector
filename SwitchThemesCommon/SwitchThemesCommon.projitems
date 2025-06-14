@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FirmwareDetection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LayoutCompatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixesJsons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RGBAColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
