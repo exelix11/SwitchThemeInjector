@@ -52,17 +52,6 @@ namespace SwitchThemes.Common
 
 				if (layout.ID == "builtin_CarefulLayout" || ThemezerNameCheck(layout.ID, "Themezer:6"))
 					return JsonConvert.DeserializeObject<LayoutPatch>(CarefulLayout20Fix);
-
-				// Hacky. see my comment on https://github.com/exelix11/SwitchThemeInjector/issues/156#issuecomment-2869845256
-				// This layout is broken and will crash on 20.0+
-				// As an extreme workaround we remove all the animations that cause the crash
-				if (layout.ID == "builtin_JAGLayout" || ThemezerNameCheck(layout.ID, "Themezer:2"))
-				{
-					layout.Anims = layout.Anims.Where(x =>
-						x.FileName == "anim/RdtBtnIconGame_Inactive.bflan" ||
-						x.FileName == "anim/RdtBtnIconGame_Active.bflan"
-					).ToArray();
-				}
 			}
 
             return null;

@@ -44,9 +44,11 @@ bool ThemeEntry::Install(bool ShowDialogs)
 	if (!CanInstall())
 	{
 		// Sometimes ::Install is called automatically eg RemoteInstall/Detail.cpp, it would fail silently if CanInstall() == false
-		DialogBlocking(InstallFailReason == "" ? "This theme can't be installed." : InstallFailReason);
+		DialogBlocking(CannotInstallReason == "" ? "This theme can't be installed." : CannotInstallReason);
 		return false;
 	}
+
+	InstallLog.clear();
 
 	try 
 	{
@@ -55,12 +57,21 @@ bool ThemeEntry::Install(bool ShowDialogs)
 	}
 	catch (const exception & ex)
 	{
-		DialogBlocking("Error while installing this theme: " + string(ex.what()));
+		DialogBlocking("Error while installing this theme: " + string(ex.what()) + "\n\n" + InstallLog);
 		return false;
 	}
 
-	if (ShowDialogs)
-		DialogBlocking("Done, restart the console to apply the changes");
+	if (ShowDialogs) 
+	{
+		if (InstallLog.empty())
+			DialogBlocking("Done, restart the console to apply the changes");
+		else
+			DialogBlocking("Done, restart the console to apply the changes.\n\nThe following warnings were generated:\n" + InstallLog);
+
+		// If !ShowDialogs keep the install log so it can be displayed by the caller
+		InstallLog.clear();
+	}
+
 	return true;
 }
 

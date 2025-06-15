@@ -267,7 +267,7 @@ private:
 				_HasPreview = false;
 				_CanInstall = false;
 				lblLine2 = DDSConv::GetError();
-				InstallFailReason = "Couldn't convert the included image " + lblLine2;
+				CannotInstallReason = "Couldn't convert the included image " + lblLine2;
 				return  ThemeEntry::_emtptyVec;
 			}
 		}
@@ -282,14 +282,14 @@ private:
 		if (themeInfo.Version == -1)
 		{
 			lblLine1 = "Invalid theme";
-			InstallFailReason = "Invalid theme";
+			CannotInstallReason = "Invalid theme";
 			_CanInstall = false;
 		}
 		NXThemeVer = themeInfo.Version;
 		if (themeInfo.Version > SwitchThemesCommon::NXThemeVer)
 		{
 			lblLine2 = "New version, update the installer !";
-			InstallFailReason = "This theme requres a newer version of the theme installer. Download latest version from GitHub.";
+			CannotInstallReason = "This theme requres a newer version of the theme installer. Download latest version from GitHub.";
 			_CanInstall = false;
 		}
 		if (_CanInstall) {
@@ -299,7 +299,7 @@ private:
 		if (!ThemeTargetToName.count(themeInfo.Target))
 		{
 			lblLine2 = "Error: invalid target";
-			InstallFailReason = "The target home menu part is not valid";
+			CannotInstallReason = "The target home menu part is not valid";
 			_CanInstall = false;
 		}
 		else if (_CanInstall)
@@ -335,21 +335,22 @@ private:
 		return true;
 	}
 
-	static bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
+	bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
 	{
 		auto patch = Patches::LoadLayout(JSON);
-
-		if (PartName == "home" && Settings::HomeMenuCompat == Settings::InstallCompatOption::ForceLegacyLayout)
-			patch.HideOnlineBtn = true;
-
-		if (Settings::HomeMenuCompat == Settings::InstallCompatOption::BypassFixes)
-			patch.TargetFirmware = (int)HOSVer.ToFirmwareEnum();
+		Patcher.CompatFixes = Settings::HomeMenuCompat;
 
 		if (!Patcher.PatchLayouts(patch, PartName))
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 			return false;
 		}
+
+		if (Patcher.TotalNonCompatibleFixes > 0)
+		{
+			AppendInstallMessage("The theme \"" + lblFname + "\" for " + PartName + " contained a custom layout that was not compatible with your current firmware, the problematic parts were automatically removed and might change the look of the theme.");
+		}
+
 		return true;
 	}
 

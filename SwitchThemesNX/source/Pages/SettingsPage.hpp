@@ -8,16 +8,9 @@
 #include "../fs.hpp"
 
 namespace Settings {
-	enum class InstallCompatOption : int
-	{
-		Default,
-		ForceLegacyLayout,
-		BypassFixes
-	};
-
 	extern bool UseIcons;
 	extern bool UseCommon;
-	extern InstallCompatOption HomeMenuCompat;
+	extern SwitchThemesCommon::LayoutCompatibilityOption HomeMenuCompat;
 };
 
 class SettingsPage : public IPage

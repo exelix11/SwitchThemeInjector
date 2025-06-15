@@ -55,6 +55,7 @@
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\MyTypes.h" />
     <ClInclude Include="source\SwitchThemesCommon\NXTheme.hpp" />
@@ -117,6 +118,7 @@
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\NXTheme.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\SarcLib\Sarc.cpp" />

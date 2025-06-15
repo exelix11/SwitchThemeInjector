@@ -76,7 +76,7 @@ private:
 		if (!patch)
 		{
 			lblLine2 = "Invalid theme";
-			InstallFailReason = "Couldn't find a compatible patch template";
+			CannotInstallReason = "Couldn't find a compatible patch template";
 			_CanInstall = false;
 		}
 

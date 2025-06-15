@@ -32,9 +32,19 @@ class ThemeEntry
 		std::string GetPath() {return FileName;}
 		
 		virtual UserAction Render(bool OverrideColor = false);
+
+		std::string InstallLog;
 	protected:
 		virtual bool DoInstall(bool ShowDialogs = true) = 0;
 		virtual LoadedImage GetPreview() = 0;
+
+		void AppendInstallMessage(const std::string& msg)
+		{
+			if (InstallLog.empty())
+				InstallLog = msg;
+			else
+				InstallLog += "\n" + msg;
+		}
 
 		std::vector<u8> file;		
 		
@@ -43,7 +53,7 @@ class ThemeEntry
 		std::string lblLine1;
 		std::string lblLine2;
 
-		std::string InstallFailReason;
+		std::string CannotInstallReason;
 
 		//Used to return by reference for the background image
 		const static std::vector<u8> _emtptyVec;

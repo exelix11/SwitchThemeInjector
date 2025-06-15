@@ -147,19 +147,21 @@ namespace SwitchThemes.Common
                 .Select(x => ((Grp1Pane)x).PaneName)
                 .ToHashSet();
 
-            var layoutPatch = layout.Files.FirstOrDefault(x => x.FileName == bflytName);
+            var layoutPatch = layout.Files.Where(x => x.FileName == bflytName).ToArray();
+
+            // Target groups might also be added via a patch
+            var addedGroups = layoutPatch
+                .Where(x => x.AddGroups != null).SelectMany(x => x.AddGroups)
+                .Select(x => x.GroupName)
+                .ToHashSet();
 
             foreach (var group in bflan.patData.Groups)
             {
                 if (groupNames.Contains(group))
                     continue;
 
-                // The group might also be added via a patch
-                if (layoutPatch != null && layoutPatch.AddGroups != null)
-                {
-                    if (layoutPatch.AddGroups.Any(x => x.GroupName == group))
-                        continue;
-                }
+                if (addedGroups.Contains(group))
+                    continue;
 
                 res.Add(CompatIssue.MissingGroup(animName, group));
             }

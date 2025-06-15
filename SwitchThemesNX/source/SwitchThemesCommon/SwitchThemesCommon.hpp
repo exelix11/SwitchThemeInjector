@@ -18,6 +18,16 @@ namespace SwitchThemesCommon {
 		std::string TargetTexutre;
 		u32 ChannelData;
 	};
+
+	enum class LayoutCompatibilityOption : int
+	{
+		// Layout fixes will be applied automatically using our heuristics and version detection
+		Default,
+		// Disable all layout fixes
+		DisableFixes,
+		// Forces pre-11.0 layout by removing the new applet icons
+		RemoveHomeAppletIcons
+	};
 	
 	class SzsPatcher 
 	{
@@ -25,6 +35,8 @@ namespace SwitchThemesCommon {
 		SzsPatcher(SARC::SarcData&& s);
 		SzsPatcher(SARC::SarcData& s);
 		~SzsPatcher();
+
+		LayoutCompatibilityOption CompatFixes = LayoutCompatibilityOption::Default;
 		
 		bool PatchLayouts(const LayoutPatch& patch);
 		bool PatchLayouts(const LayoutPatch& patch, const std::string& PartName);
@@ -39,6 +51,7 @@ namespace SwitchThemesCommon {
 		const SARC::SarcData& GetSarc();
 		SARC::SarcData& GetFinalSarc();
 
+		int TotalNonCompatibleFixes = 0;
 	private:		
 		SARC::SarcData sarc;
 		ConsoleFirmware currentFirmware;
@@ -59,6 +72,8 @@ namespace SwitchThemesCommon {
 		std::optional<uint32_t> FirmwareTargetBflanVersion = std::nullopt;
 		bool ApplyAnimPatch(const AnimFilePatch& p);
 		bool ApplyLayoutPatch(const LayoutFilePatch& p);
+
+		int FilterIncompatibleAnimations(LayoutPatch& p);
 	};
 	
 	std::string GeneratePatchListString(const std::vector<PatchTemplate>& templates);

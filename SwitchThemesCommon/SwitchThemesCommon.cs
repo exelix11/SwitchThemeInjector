@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SARCExt;
+using System.IO;
 
 namespace SwitchThemes.Common
 {
@@ -117,15 +118,25 @@ namespace SwitchThemes.Common
         }
     }
 
+    public enum LayoutCompatibilityOption 
+    {
+        // Layout fixes will be applied automatically using our heuristics and version detection
+        Default,
+        // Disable all layout fixes
+        DisableFixes,
+        // Forces pre-11.0 layout by removing the new applet icons
+        RemoveHomeAppletIcons
+    }
+
     public class SzsPatcher
     {
         readonly SarcData Sarc;
         public readonly ConsoleFirmware TargetFirmware;
         public readonly PatchTemplate PatchTemplate;
 
-        private QuickBntx bntx = null;
+        public LayoutCompatibilityOption CompatFixes = LayoutCompatibilityOption.Default;
 
-        public bool EnablePaneOrderMod = true;
+        private QuickBntx bntx = null;
 
         public SzsPatcher(SarcData s)
         {
@@ -222,14 +233,59 @@ namespace SwitchThemes.Common
         public bool PatchLayouts(LayoutPatch Patch) =>
             PatchLayouts(Patch, PatchTemplate?.NXThemeName ?? "");
 
+        // Hacky. see my comment on https://github.com/exelix11/SwitchThemeInjector/issues/156#issuecomment-2869845256
+        // Some layout are broken on 20.0 because they have animations that reference missing panes
+        // As an extreme workaround we remove all the animations that cause the crash
+        // This method will remove any such animation from the json
+        // Currently we don't apply checks on the bflyt patches since we automatically ignore the ones that don't exist anymore
+        private int FilterIncompatibleAnimations(LayoutPatch layout)
+        {
+            if (layout.Anims is null)
+                return 0;
+
+            var remove = new HashSet<string>();
+
+            var list = new List<LayoutCompatibility.CompatIssue>();
+            foreach (var anim in layout.Anims)
+            {
+                list.Clear();
+                var parsed = BflanSerializer.FromJson(anim.AnimJson);
+                LayoutCompatibility.CheckAnimationCompatibility(list, layout, Sarc, anim.FileName, parsed);
+
+                // TODO: Should unknown files be treated as errors ?
+                if (list.Any(x => x.Severity == LayoutCompatibility.ProblemSeverity.Critical))
+                    remove.Add(anim.FileName);
+            }
+
+            // Remove all the animations that caused issues
+            layout.Anims = layout.Anims
+                .Where(x => !remove.Contains(x.FileName))
+                .ToArray();
+
+            return remove.Count;
+        }
+
         private bool PatchLayouts(LayoutPatch Patch, string PartName)
         {
-            // Detect any compatibility patches we need
-            var useLegacyFixes = TargetFirmware != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
-            var useModernFixes = !useLegacyFixes && Patch.ID != null;
-            var appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, TargetFirmware);
-            // The default for this on old layouts that don't specify it is true
-            var onlineBtnFix = PartName == "home" && (Patch.HideOnlineBtn ?? true);
+            // Compatibility flags
+            bool useLegacyFixes = false;
+            bool useModernFixes = false;
+            bool appletPositionFixes = false;
+            bool onlineBtnFix = false;
+
+            if (CompatFixes == LayoutCompatibilityOption.RemoveHomeAppletIcons && PartName == "home")
+                Patch.HideOnlineBtn = true;
+
+            if (CompatFixes != LayoutCompatibilityOption.DisableFixes)
+            {
+                // Detect any compatibility patches we need
+                useLegacyFixes = TargetFirmware != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
+                useModernFixes = !useLegacyFixes && Patch.ID != null;
+                appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, TargetFirmware);
+
+                // The default for this on old layouts that don't specify it is true
+                onlineBtnFix = PartName == "home" && (Patch.HideOnlineBtn ?? true);
+            }
 
             // Apply legacy PatchAppletColorAttrib patch
             if (PartName == "home" && Patch.PatchAppletColorAttrib)
@@ -256,6 +312,9 @@ namespace SwitchThemes.Common
             LayoutPatch modernFix = null;
             if (useModernFixes)
                 modernFix = NewFirmFixes.GetFix(Patch, TargetFirmware);
+
+            if (CompatFixes != LayoutCompatibilityOption.DisableFixes)
+                FilterIncompatibleAnimations(Patch);
 
             // Then json patches
             ApplyRawPatch(Patch);

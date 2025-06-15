@@ -44,7 +44,7 @@ private:
 		lblLine2 = ("Custom font");
 		auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
 		_CanInstall = fontName != "";
-		InstallFailReason = "Invalid font file";
+		CannotInstallReason = "Invalid font file";
 		lblFname = (CanInstall() ? fontName : "Invalid font :(");
 		lblLine1 = (fs::GetFileName(FileName));
 	}

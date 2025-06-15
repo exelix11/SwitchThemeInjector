@@ -332,15 +332,30 @@ void ThemesPage::Update()
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_START) && SelectedFiles.size() != 0)
 	{
+		std::string combinedInstallLog;
 		for (string file : SelectedFiles)
 		{
 			ThemeEntry::DisplayInstallDialog(file);
-			if (!ThemeEntry::FromFile(file)->Install(false))
+			auto entry = ThemeEntry::FromFile(file);
+
+			if (!entry->Install(false))
 			{
 				Dialog("Installing a theme failed, the process was cancelled");
 				break;
 			}
+
+			if (!entry->InstallLog.empty())
+			{
+				if (combinedInstallLog.empty())
+					combinedInstallLog = entry->InstallLog;
+				else
+					combinedInstallLog += "\n" + entry->InstallLog;
+			}
 		}
+
+		if (!combinedInstallLog.empty())
+			Dialog("The themes were installed, however the following warnings have been generated: \n\n" + combinedInstallLog);
+
 		ClearSelection();
 		SetPage(pageNum);		
 	}

@@ -2,6 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <type_traits>
+
 #include "../BinaryReadWrite/Buffer.hpp"
 #include "../MyTypes.h"
 #include "Patches.hpp"
@@ -135,6 +137,19 @@ public:
 	Bflan();
 	Bflan(const std::vector<u8>& data);
 	std::vector<u8> WriteFile();
+
+    template<typename T>
+    const T* FindSectionByType() const requires std::is_base_of_v<BflanSection, T>
+    {
+       for (BflanSection* section : Sections)
+       {
+           if (auto casted = dynamic_cast<T*>(section))
+           {
+               return casted;
+           }
+       }
+       return nullptr;
+    }
 private:
 	void ParseFile(Buffer& buf);
 };

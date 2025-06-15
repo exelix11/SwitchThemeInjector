@@ -7,7 +7,7 @@ using namespace std;
 namespace Settings {
 	bool UseIcons = true;
 	bool UseCommon = true;
-	InstallCompatOption HomeMenuCompat = InstallCompatOption::Default;
+	SwitchThemesCommon::LayoutCompatibilityOption HomeMenuCompat = SwitchThemesCommon::LayoutCompatibilityOption::Default;
 };
 
 SettingsPage::SettingsPage() 
@@ -32,9 +32,9 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::Spacing();
 	ImGui::Text("Home menu compatibility options.");
 	ImGui::TextWrapped("Changing this could help solve install issues with old themes on latest firmware.");
-	ImGui::RadioButton("Apply compatibility fixes (default)", (int*)&Settings::HomeMenuCompat, (int)Settings::InstallCompatOption::Default);
-	ImGui::RadioButton("Always remove new applet icons", (int*)&Settings::HomeMenuCompat, (int)Settings::InstallCompatOption::ForceLegacyLayout);
-	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)Settings::InstallCompatOption::BypassFixes);
+	ImGui::RadioButton("Apply compatibility fixes (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
+	ImGui::RadioButton("Always remove new applet icons", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::RemoveHomeAppletIcons);
+	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
 
 	ImGui::NewLine();
 

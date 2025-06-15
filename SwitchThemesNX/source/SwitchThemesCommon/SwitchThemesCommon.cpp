@@ -1,13 +1,16 @@
+#include <algorithm>
+#include <ranges>
+#include <unordered_set>
+
 #include "SwitchThemesCommon.hpp"
 #include "Bntx/QuickBntx.hpp"
 #include "Bntx/DDS.hpp"
 #include "Bntx/BRTI.hpp"
 #include "Layouts/Bflan.hpp"
 #include "NXTheme.hpp"
-#include <algorithm>
 #include "Layouts/Bflyt/Bflyt.hpp"
 #include "Layouts/Bflyt/BflytPatcher.hpp"
-#include <ranges>
+#include "Layouts/LayoutCompatibility.hpp"
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -158,17 +161,56 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
 	return PatchLayouts(patch, nxthemePartName);
 }
 
+int SzsPatcher::FilterIncompatibleAnimations(LayoutPatch& p)
+{
+	std::unordered_set<std::string> remove{};
+	std::vector<Compatibility::CompatIssue> issues{};
+
+	for (const auto& anim : p.Anims)
+	{
+		issues.clear();
+		auto bflan = BflanDeserializer::FromJson(anim.AnimJson);
+		Compatibility::CheckAnimationCompatibility(issues, p, sarc, anim.FileName, *bflan);
+
+		// TODO: Should unknown files be treated as errors ?
+		for (auto& issue : issues)
+			if (issue.Severity == Compatibility::ProblemSeverity::Critical)
+				remove.insert(anim.FileName);
+	}
+
+	std::erase_if(p.Anims, [&](const auto& e) {
+		return remove.count(e.FileName);
+	});
+
+	return static_cast<int>(remove.size());
+}
+
 bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &partName)
 {
 	// We must make a copy of the patch because some fix function might modify it
 	auto patch = original_patch;
 
-	// Detect any compatibility patches we need
-	const auto useLegacyFixes = currentFirmware != ConsoleFirmware::Invariant && patch.UsesOldFixes();
-	const auto useModernFixes = !useLegacyFixes && patch.ID != "";
-	const auto appletPositionFixes = partName == "home" && NewFirmFixes::ShouldApplyAppletPositionFix(patch, currentFirmware);
-	// The default for this on old layouts that don't specify it is true
-	const auto onlineBtnFix = partName == "home" && patch.HideOnlineBtn;
+	// Compatibility flags
+	bool useLegacyFixes = false;
+	bool useModernFixes = false;
+	bool appletPositionFixes = false;
+	bool onlineBtnFix = false;
+
+	// Clear this when patching a new layout
+	TotalNonCompatibleFixes = 0;
+
+	if (CompatFixes == LayoutCompatibilityOption::RemoveHomeAppletIcons && partName == "home")
+		patch.HideOnlineBtn = true;
+
+	if (CompatFixes != LayoutCompatibilityOption::DisableFixes) 
+	{
+		// Detect any compatibility patches we need
+		useLegacyFixes = currentFirmware != ConsoleFirmware::Invariant && patch.UsesOldFixes();
+		useModernFixes = !useLegacyFixes && patch.ID != "";
+		appletPositionFixes = partName == "home" && NewFirmFixes::ShouldApplyAppletPositionFix(patch, currentFirmware);
+		// The default for this on old layouts that don't specify it is true
+		onlineBtnFix = partName == "home" && patch.HideOnlineBtn;
+	}
 
 	if (partName == "home" && patch.PatchAppletColorAttrib)
 		PatchBntxTextureAttribs({
@@ -197,6 +239,9 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &p
 	std::optional<LayoutPatch> modern_fix = std::nullopt;
 	if (useModernFixes)
 		modern_fix = NewFirmFixes::GetFix(patch, currentFirmware);
+
+	if (CompatFixes != LayoutCompatibilityOption::DisableFixes)
+		TotalNonCompatibleFixes += FilterIncompatibleAnimations(patch);
 
 	// Then json patches
 	ApplyRawPatch(&patch);

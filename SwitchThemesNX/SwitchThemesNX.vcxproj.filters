@@ -259,6 +259,9 @@
     <ClInclude Include="source\Pages\QlaunchPatchPage.hpp">
       <Filter>Pages</Filter>
     </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -425,6 +428,9 @@
     <ClCompile Include="source\Version.cpp" />
     <ClCompile Include="source\Pages\QlaunchPatchPage.cpp">
       <Filter>Pages</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp">
+      <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
