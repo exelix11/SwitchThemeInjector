@@ -32,8 +32,9 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::Spacing();
 	ImGui::Text("Home menu compatibility options.");
 	ImGui::TextWrapped("Changing this could help solve install issues with old themes on latest firmware.");
-	ImGui::RadioButton("Apply compatibility fixes (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
-	ImGui::RadioButton("Always remove new applet icons", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::RemoveHomeAppletIcons);
+	ImGui::RadioButton("Decide automatically (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
+	ImGui::RadioButton("Force original home menu applet icons", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
+	ImGui::RadioButton("Force 11.0 home menu layout", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
 	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
 
 	ImGui::NewLine();

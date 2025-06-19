@@ -124,8 +124,10 @@ namespace SwitchThemes.Common
         Default,
         // Disable all layout fixes
         DisableFixes,
-        // Forces pre-11.0 layout by removing the new applet icons
-        RemoveHomeAppletIcons
+        // Forces pre-11.0 layout by removing the new applet icons, keeping only the stock release ones
+        Firmware10,
+        // Forces the 11.0 layout by removing all the applet icons added with 20.0 and keeping only the stock + NS online one
+        Firmware11
     }
 
     public class SzsPatcher
@@ -273,8 +275,14 @@ namespace SwitchThemes.Common
             bool appletPositionFixes = false;
             bool onlineBtnFix = false;
 
-            if (CompatFixes == LayoutCompatibilityOption.RemoveHomeAppletIcons && PartName == "home")
+            if (CompatFixes == LayoutCompatibilityOption.Firmware10 && PartName == "home")
                 Patch.HideOnlineBtn = true;
+
+            if (CompatFixes == LayoutCompatibilityOption.Firmware11 && PartName == "home")
+            {
+                Patch.HideOnlineBtn = false;
+                Patch.TargetFirmwareValue = ConsoleFirmware.Fw11_0;
+            }
 
             if (CompatFixes != LayoutCompatibilityOption.DisableFixes)
             {

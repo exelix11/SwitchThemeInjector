@@ -8,8 +8,8 @@
 #include "Fonts/TTF.hpp"
 #include "Bntx/QuickBntx.hpp"
 
-namespace SwitchThemesCommon {
-	
+namespace SwitchThemesCommon 
+{	
 	extern const std::string CoreVer;
 	extern const int NXThemeVer;
 
@@ -25,8 +25,10 @@ namespace SwitchThemesCommon {
 		Default,
 		// Disable all layout fixes
 		DisableFixes,
-		// Forces pre-11.0 layout by removing the new applet icons
-		RemoveHomeAppletIcons
+		// Forces pre-11.0 layout by removing the new applet icons leaving only the original stock ones
+		Firmware10,
+		// Forces 11.0 layout by removing all the applet icons added with 20.0. Only the stock and the NS online one will remain.
+		Firmware11,
 	};
 	
 	class SzsPatcher 
@@ -38,8 +40,10 @@ namespace SwitchThemesCommon {
 
 		LayoutCompatibilityOption CompatFixes = LayoutCompatibilityOption::Default;
 		
+		bool PatchLayouts();
 		bool PatchLayouts(const LayoutPatch& patch);
 		bool PatchLayouts(const LayoutPatch& patch, const std::string& PartName);
+
 		bool PatchMainBG(const std::vector<u8>& DDS);
 		bool PatchAppletIcon(const std::vector<u8>& DDS, const std::string& texName);
 		bool PatchBntxTexture(const std::vector<u8>& DDS, const std::vector<std::string>& texNames, u32 ChannelData = 0xFFFFFFFF);

@@ -161,6 +161,15 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& patch)
 	return PatchLayouts(patch, nxthemePartName);
 }
 
+bool SzsPatcher::PatchLayouts()
+{
+	auto fakePatch = LayoutPatch{
+		.PatchName = "stub"
+	};
+
+	return PatchLayouts(fakePatch, nxthemePartName);
+}
+
 int SzsPatcher::FilterIncompatibleAnimations(LayoutPatch& p)
 {
 	std::unordered_set<std::string> remove{};
@@ -199,8 +208,14 @@ bool SzsPatcher::PatchLayouts(const LayoutPatch& original_patch, const string &p
 	// Clear this when patching a new layout
 	TotalNonCompatibleFixes = 0;
 
-	if (CompatFixes == LayoutCompatibilityOption::RemoveHomeAppletIcons && partName == "home")
+	if (CompatFixes == LayoutCompatibilityOption::Firmware10 && partName == "home")
 		patch.HideOnlineBtn = true;
+
+	if (CompatFixes == LayoutCompatibilityOption::Firmware11 && partName == "home")
+	{
+		patch.HideOnlineBtn = false;
+		patch.TargetFirmware = static_cast<int>(ConsoleFirmware::Fw11_0);
+	}
 
 	if (CompatFixes != LayoutCompatibilityOption::DisableFixes) 
 	{

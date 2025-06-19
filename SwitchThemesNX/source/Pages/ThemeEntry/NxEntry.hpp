@@ -158,6 +158,17 @@ protected:
 				
 				FileHasBeenPatched = true; 
 			} 
+			else if (
+				Settings::HomeMenuCompat == SwitchThemesCommon::LayoutCompatibilityOption::Firmware10 || 
+				Settings::HomeMenuCompat == SwitchThemesCommon::LayoutCompatibilityOption::Firmware11
+			)
+			{
+ 				// Special case: this theme has no layout but the user requested to force compatibility fixes
+				if (!PatchLayout(Patcher, "", themeInfo.Target))
+					return false;
+
+				FileHasBeenPatched = true;
+			}
 
 			return true;
 		};
@@ -337,10 +348,21 @@ private:
 
 	bool PatchLayout(SwitchThemesCommon::SzsPatcher& Patcher, const std::string_view JSON, const std::string& PartName)
 	{
-		auto patch = Patches::LoadLayout(JSON);
 		Patcher.CompatFixes = Settings::HomeMenuCompat;
+		bool success = false;
 
-		if (!Patcher.PatchLayouts(patch, PartName))
+		// Special case, apply compat fixes to old themes that have no layout if manually requested by the user
+		if (JSON.empty())
+		{
+			success = Patcher.PatchLayouts();
+		}
+		else
+		{
+			auto patch = Patches::LoadLayout(JSON);
+			success = Patcher.PatchLayouts(patch, PartName);
+		}
+
+		if (!success)
 		{
 			DialogBlocking("PatchLayouts failed for " + PartName + "\nThe theme was not installed");
 			return false;
