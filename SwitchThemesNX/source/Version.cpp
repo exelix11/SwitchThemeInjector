@@ -1,6 +1,6 @@
 #include "Version.hpp"
 
-#define VER_NUM "2.8"
+#define VER_NUM "2.8.1"
 #define VER_NAME "Ver. " VER_NUM
 
 #ifndef GITVER
