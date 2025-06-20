@@ -29,12 +29,12 @@ void SettingsPage::Render(int X, int Y)
 	PAGE_RESET_FOCUS;
 	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
 
-	ImGui::Spacing();
+	ImGui::NewLine();
 	ImGui::Text("Home menu compatibility options.");
 	ImGui::TextWrapped("Changing this could help solve install issues with old themes on latest firmware.");
 	ImGui::RadioButton("Decide automatically (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
-	ImGui::RadioButton("Force original home menu applet icons", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
-	ImGui::RadioButton("Force 11.0 home menu layout", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
+	ImGui::RadioButton("Force original home menu applet icons (firmware <= 10.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
+	ImGui::RadioButton("Force home menu layout with the NS online icon (firmware 11.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
 	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
 
 	ImGui::NewLine();
