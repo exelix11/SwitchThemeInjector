@@ -106,8 +106,9 @@ RemoteInstall::API::APIResponse RemoteInstall::API::GetManifest(const std::strin
 void RemoteInstall::API::ReloadProviders()
 {
     Providers.clear();
-    // Builtin providers -- should this be in romfs ?
-    Providers.push_back({ "Themezer.net", "https://api.themezer.net/?query=query($id:String!){nxinstaller(id:$id){groupname,themes{id,name,target,url,preview,thumbnail}}}&variables={\"id\":\"%%ID%%\"}", false });
+    // Builtin providers
+    // Themezer's queries are a little complex due to graphql, only the %%ID%% part gets replaced.
+    Providers.push_back({ "Themezer.net", "https://api.themezer.net/graphql?query=query%28%24id%3AString%21%29%7Bnxinstaller%28id%3A%24id%29%7Bgroupname%2Cthemes%7Bid%2Cname%2Ctarget%2Curl%2Cpreview%2Cthumbnail%7D%7D%7D&variables=%7B%22id%22%3A%22" "%%ID%%" "%22%7D", false });
     // Load extra providers from sd
     try
     {
