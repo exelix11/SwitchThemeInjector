@@ -181,6 +181,7 @@ CURL* RemoteInstall::API::Util::EasyGET(const std::string& url, std::vector<u8>&
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &out);
     curl_easy_setopt(curl, CURLOPT_PRIVATE, priv);
     curl_easy_setopt(curl, CURLOPT_USERAGENT, Version::UserAgent.c_str()); 
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1); 
 
     return curl;
 }
