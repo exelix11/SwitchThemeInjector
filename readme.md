@@ -14,7 +14,7 @@ These tools are:
 - Switch theme injector: The windows application to create and edit custom themes
 - [Switch theme injector online](http://exelix11.github.io/SwitchThemeInjector/v2) (also called WebInjector): A port of the windows injector as a web app, it lacks some features like custom applet icons and common.szs layouts support.
 
-You can download the binareis from the [releases tab](https://github.com/exelix11/SwitchThemeInjector/releases).
+You can download the binaries from the [releases tab](https://github.com/exelix11/SwitchThemeInjector/releases).
 
 Since the console OS doesn't implement custom themes natively this tool patches the system layout files stored in the SZS in the romfs of qlaunch.
 
