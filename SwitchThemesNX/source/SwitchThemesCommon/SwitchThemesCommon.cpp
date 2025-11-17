@@ -18,7 +18,7 @@ using namespace SwitchThemesCommon;
 // This is the C++ implementation of SwitchThemesCommon. While this is the one that runs on switch the main one to be used as a reference and for prototyping is the C# one.
 // The C# version also has better comments on the rationale behind things like compatibility fixes and patch ordering.
 
-const string SwitchThemesCommon::CoreVer = "4.8.2 (C++)";
+const string SwitchThemesCommon::CoreVer = "4.8.3 (C++)";
 const int SwitchThemesCommon::NXThemeVer = 16;
 
 string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& templates) 
