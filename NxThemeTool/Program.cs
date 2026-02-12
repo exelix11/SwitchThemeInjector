@@ -56,7 +56,7 @@ else if (args[0] == "validate")
         return 1;
     }
 
-    var validation = new ValidationResult();
+    var validation = new ProcessResult();
     _ = new NxTheme2(provider, validation);
     provider.Dispose();
 
@@ -78,12 +78,33 @@ else if (args[0] == "pack")
 
     using var provider = new DirectoryContentProvider(args[1]);
     using var writer = new ZipContentWriter(new FileStream(args[2], FileMode.Create, FileAccess.Write));
-    var validation = new ValidationResult();
+    var validation = new ProcessResult();
 
     var theme = new NxTheme2(provider, validation);
     PrintValidation(validation);
 
     theme.Pack(writer);
+}
+else if (args[0] == "apply")
+{
+    if (args.Length < 4)
+    {
+        Console.WriteLine("Not enough arguments.");
+        return 1;
+    }
+
+    var source = args[1];
+    var szs = args[2];
+    var output = args[3];
+
+    var result = new ProcessResult();
+
+    using var patcher = ThemeApply.FromFiles(source, szs, result);
+    using var outputFolder = new DirectoryContentWriter(output);
+    
+    patcher.Apply(outputFolder, result);
+
+    PrintValidation(result);
 }
 else if (args[0] == "unpack" || File.Exists(args[0]))
 {
@@ -159,12 +180,12 @@ else
 
 return 0;
 
-void PrintValidation(ValidationResult result) 
+void PrintValidation(ProcessResult result) 
 {
     if (result.Warnings.Count == 0 && result.Errors.Count == 0)
     {
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("Validation successful: no issues found.");
+        Console.WriteLine("Completed. No warnings were generated.");
     }
 
     foreach (var warning in result.Warnings)
@@ -190,8 +211,10 @@ void PrintHelp()
     Console.WriteLine("  validate <target>                  Ensures the selected nxtheme or folder is valid");
     Console.WriteLine("  pack <target directory> <output>   Packs a folder to an nxtheme file");
     Console.WriteLine("  unpack <file> <output directory>   Extracts the content of an nxtheme file to the given directory");
-    Console.WriteLine("  <nxtheme file>                     The only specified argument is a valid nxtheme file it will be unpacked");
     Console.WriteLine("  install <file> <ip address>        Perform remote install to NXThemesInstaller running on a console");
+    Console.WriteLine("  apply <nxtheme> <szs> <output>     Apply an nxthme file to one or more szs files. Szs must be the the path to the systemData folder of the theme installer.");
+    Console.WriteLine("Extra:");
+    Console.WriteLine("  <nxtheme file>                     If the only specified argument is a valid nxtheme file it will be unpacked");
 }
 
 byte[] PeekFormat(Stream stream)

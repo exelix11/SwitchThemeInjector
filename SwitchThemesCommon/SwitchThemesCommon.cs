@@ -1,13 +1,7 @@
-﻿using SwitchThemes.Common.Bntx;
-using SwitchThemes.Common.Bflyt;
-using SwitchThemes.Common.Bflan;
-using SwitchThemes.Common.Serializers;
-using Syroot.BinaryData;
+﻿using Syroot.BinaryData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using SARCExt;
 
 namespace SwitchThemes.Common
 {

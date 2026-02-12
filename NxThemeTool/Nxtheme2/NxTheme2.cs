@@ -45,7 +45,7 @@ namespace NxThemeTool.Nxtheme2
             };
         }
 
-        public NxTheme2(IContentProvider provider, ValidationResult? validation)
+        public NxTheme2(IContentProvider provider, ProcessResult? validation)
         {
             Manifest = provider.GetJson<NxTheme2Manifest>("manifest.json");
 
@@ -101,7 +101,7 @@ namespace NxThemeTool.Nxtheme2
             return part;
         }
 
-        public void Validate(ValidationResult validation)
+        public void Validate(ProcessResult validation)
         {
             // Manifest checks
             if (string.IsNullOrWhiteSpace(Manifest.ThemeName))
@@ -159,6 +159,15 @@ namespace NxThemeTool.Nxtheme2
                     {
                         var image = ImageUtil.ParseImage(part.MainImage!);
 
+                        if (image is JpgInfo { IsProgressive: true })
+                            validation.Err(part.PartName, $"The provided JPG image uses progressive encoding. This is not support and will fail to install.");
+
+                        if (image is DDS dds && !dds.IsValidForBg)
+                            validation.Err(part.PartName, $"The provided DDS image can't be used for wallpapers. Only DXT1 encoded images are valid.");
+
+                        if (image is PngInfo)
+                            validation.Err(part.PartName, $"Png images are not supported for wallpapers.");
+
                         if (image.Size.Width != 1280 || image.Size.Height != 720)
                             validation.Err(part.PartName, $"Invalid main image size {image.Size}. The main image must be 1280x720 pixels.");
                     }
@@ -195,6 +204,13 @@ namespace NxThemeTool.Nxtheme2
                     try
                     {
                         var imageInfo = ImageUtil.ParseImage(image.Value);
+                        
+                        if (imageInfo is JpgInfo)
+                            validation.Err(part.PartName + "/" + image.Key, $"JPG images are not allowed for icons.");
+
+                        if (imageInfo is DDS dds && !dds.IsValidForIcons)
+                            validation.Err(part.PartName + "/" + image.Key, $"The provided DDS image can't be used for icons. Try a different encoding.");
+
                         if (imageInfo.Size.Width != tex.W || imageInfo.Size.Height != tex.H)
                             validation.Err(part.PartName + "/" + image.Key, $"Invalid extra image size {imageInfo.Size}. The image must be {tex.W}x{tex.H} pixels.");
                     }

@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace SwitchThemes.Common.Patching
 {
-
     public enum LayoutCompatibilityOption
     {
         // Layout fixes will be applied automatically using our heuristics and version detection
@@ -21,6 +20,7 @@ namespace SwitchThemes.Common.Patching
         // Forces the 11.0 layout by removing all the applet icons added with 20.0 and keeping only the stock + NS online one
         Firmware11
     }
+
     public class SzsPatcher
     {
         readonly SarcData Sarc;
@@ -247,18 +247,8 @@ namespace SwitchThemes.Common.Patching
             return false;
         }
 
-        public bool PatchAppletIcon(byte[] DDS, string name)
+        public bool PatchAppletIcon2(byte[] DDS, TextureReplacement target)
         {
-            var patch = PatchTemplate;
-            if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
-                return false;
-
-            var target = TextureReplacement.NxNameToList[patch.NXThemeName]
-                .Where(x => x.NxThemeName == name).FirstOrDefault();
-
-            if (target == null)
-                return false;
-
             // THis applet icon is not present in the current firmware. Nothing to do.
             if (TargetFirmware < target.MinFirmware)
                 return true;
@@ -273,6 +263,21 @@ namespace SwitchThemes.Common.Patching
             Sarc.Files[target.FileName] = curTarget.SaveFile();
 
             return true;
+        }
+
+        public bool PatchAppletIcon(byte[] DDS, string name)
+        {
+            var patch = PatchTemplate;
+            if (!TextureReplacement.NxNameToList.ContainsKey(patch.NXThemeName))
+                return false;
+
+            var target = TextureReplacement.NxNameToList[patch.NXThemeName]
+                .Where(x => x.NxThemeName == name).FirstOrDefault();
+
+            if (target == null)
+                return false;
+
+            return PatchAppletIcon2(DDS, target);
         }
 
         public bool PatchMainBG(byte[] DDS)

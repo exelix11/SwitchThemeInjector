@@ -14,6 +14,19 @@ namespace NxThemeTool
         T GetJson<T>(string name) => JsonSerializer.Deserialize<T>(GetString(name)) ?? throw new Exception($"Failed to deserialize JSON file '{name}'.");
     }
 
+    public static class ProviderHelper
+    {
+        public static IContentProvider OpenFor(string path)
+        {
+            if (Directory.Exists(path))
+                return new DirectoryContentProvider(path);
+            if (File.Exists(path))
+                return new ZipContentProvider(File.OpenRead(path));
+
+            throw new FileNotFoundException($"Path '{path}' does not exist as a directory or file.");
+        }
+    }
+
     public class DirectoryContentProvider : IContentProvider
     {
         private readonly string directoryPath;

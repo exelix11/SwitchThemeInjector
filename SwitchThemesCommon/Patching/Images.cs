@@ -7,288 +7,273 @@ using System.Text;
 
 namespace SwitchThemes.Common.Images
 {
-	public enum ImageFormat
-	{
-		Unknown, Dds, Jpg, Png
-	}
-
-	public struct ImageSize
-	{
-		readonly public uint Width, Height;
-
-		public void Deconstruct(out uint w, out uint y) =>
-			(w, y) = (Width, Height);
-
-		public ImageSize(uint w, uint h) =>
-			(Width, Height) = (w, h);
-
-        public override string ToString() =>
-			$"{Width}x{Height}";
+    public enum ImageFormat
+    {
+        Unknown, Dds, Jpg, Png
     }
 
-	public interface IImageInfo 
-	{
-		ImageSize Size { get; }
-		string Extension { get; }
-		ImageFormat Format { get; }
+    public struct ImageSize
+    {
+        readonly public uint Width, Height;
 
-		void AssertValidForBG();
-		void AssertValidForApplet();
-	}
+        public void Deconstruct(out uint w, out uint y) =>
+            (w, y) = (Width, Height);
 
-	public class JpgInfo : IImageInfo
-	{
-		public bool IsProgressive;
-		public ImageSize Size { get; internal set; }
+        public ImageSize(uint w, uint h) =>
+            (Width, Height) = (w, h);
 
-		public string Extension => "jpg";
-		public ImageFormat Format => ImageFormat.Jpg;
+        public override string ToString() =>
+            $"{Width}x{Height}";
+    }
 
-		public JpgInfo(bool isProgressive, uint width, uint height)
-		{
-			IsProgressive = isProgressive;
-			Size = new ImageSize(width, height);
-		}
+    public interface IImageInfo
+    {
+        ImageSize Size { get; }
+        string Extension { get; }
+        ImageFormat Format { get; }
 
-		public void Deconstruct(out uint w, out uint y, out bool p)
-		{
-			(w, y) = Size;
-			p = IsProgressive;
-		}
 
-		public void AssertValidForBG() 
-		{
-			if (IsProgressive)
-				throw new Exception("Jpg images are not supported when progressive encoding is enabled, check your image editor settings and disable it");
-		}
+        public bool IsValidForBg { get; }
+        public bool IsValidForIcons { get; }
+    }
 
-		public void AssertValidForApplet() =>
-			throw new Exception("Jpg images can't be used for applet icons");
-	}
+    public class JpgInfo : IImageInfo
+    {
+        public bool IsProgressive;
+        public ImageSize Size { get; internal set; }
 
-	public class PngInfo : IImageInfo
-	{
-		public ImageSize Size { get; internal set; }
-		
-		public string Extension => "png";
-		public ImageFormat Format => ImageFormat.Png;
+        public string Extension => "jpg";
+        public ImageFormat Format => ImageFormat.Jpg;
 
-		public void AssertValidForApplet() { }
+        public bool IsValidForBg => !IsProgressive;
+        public bool IsValidForIcons => false;
 
-		public void AssertValidForBG() =>
-			throw new Exception("Png images can't be used as background images");
-	}
+        public JpgInfo(bool isProgressive, uint width, uint height)
+        {
+            IsProgressive = isProgressive;
+            Size = new ImageSize(width, height);
+        }
 
-	public class DDS : IImageInfo
-	{
-		public struct Header : IImageInfo
-		{
-			public string Encoding;
-			public int MipmapCount;
-			public ImageSize Size { get; internal set; }
+        public void Deconstruct(out uint w, out uint y, out bool p)
+        {
+            (w, y) = Size;
+            p = IsProgressive;
+        }
+    }
 
-			public string Extension => "dds";
-			public ImageFormat Format => ImageFormat.Dds;
+    public class PngInfo : IImageInfo
+    {
+        public ImageSize Size { get; internal set; }
 
-			public uint PixelDataLength;
+        public string Extension => "png";
+        public ImageFormat Format => ImageFormat.Png;
 
-			public void AssertValidForBG()
-			{
-				if (Encoding != "DXT1")
-					throw new Exception("Only DXT1-encoded Dds files can be used as background images");
-			}
+        public bool IsValidForBg => false;
+        public bool IsValidForIcons => true;
+    }
 
-			public void AssertValidForApplet()
-			{
-				if (Encoding != "DXT1" && Encoding != "DXT4" && Encoding != "DXT5" && Encoding != "DXT3")
-					throw new Exception("Only DXT1/3/4/5 encodings are supported for dds applet icons.");
-			}
-		}
+    public class DDS : IImageInfo
+    {
+        public class Header : IImageInfo
+        {
+            public string Encoding;
+            public int MipmapCount;
+            public ImageSize Size { get; internal set; }
 
-		internal struct EncoderInfo
-		{
-			public int blkHeight;
-			public int blkWidth;
-			public int bpp;
-			public int formatCode;
-		}
+            public string Extension => "dds";
+            public ImageFormat Format => ImageFormat.Dds;
 
-		internal static readonly Dictionary<string, EncoderInfo> EncoderTable = new Dictionary<string, EncoderInfo>() {
-			{ "DXT1", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 8 , formatCode = 0x1a01 } },
-			{ "DXT3", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1b01 } },
-			{ "DXT4", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
-			{ "DXT5", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
-		};
+            public uint PixelDataLength;
 
-		readonly public Header Info;
-		readonly public byte[] Data;
+            public bool IsValidForBg => Encoding == "DXT1";
+            public bool IsValidForIcons => Encoding == "DXT1" || Encoding == "DXT4" || Encoding == "DXT5" || Encoding == "DXT3";
+        }
 
-		public int Height => (int)Info.Size.Height;
-		public int Width => (int)Info.Size.Width;
+        internal struct EncoderInfo
+        {
+            public int blkHeight;
+            public int blkWidth;
+            public int bpp;
+            public int formatCode;
+        }
 
-		public DDS(byte[] data)
-		{
-			Info = ImageUtil.ParseDds(data);
-			uint mipSize = 0; // not implemented
-			Data = new byte[Info.PixelDataLength + mipSize];
-			Array.Copy(data, 0x80, Data, 0, Info.PixelDataLength + mipSize);
-		}
+        internal static readonly Dictionary<string, EncoderInfo> EncoderTable = new Dictionary<string, EncoderInfo>() {
+            { "DXT1", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 8 , formatCode = 0x1a01 } },
+            { "DXT3", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1b01 } },
+            { "DXT4", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
+            { "DXT5", new EncoderInfo() { blkHeight = 4, blkWidth = 4, bpp = 16 , formatCode = 0x1c01 } },
+        };
 
-		public ImageSize Size => Info.Size;
-		public string Extension => Info.Extension;
-		public ImageFormat Format => Info.Format;
-		public void AssertValidForBG() => Info.AssertValidForBG();
-		public void AssertValidForApplet() => Info.AssertValidForApplet();
-	}
+        readonly public Header Info;
+        readonly public byte[] Data;
 
-	public static class ImageUtil
-	{
-		public static ImageFormat DetectFormat(byte[] data)
-		{
-			if (data.Matches("DDS "))
-				return ImageFormat.Dds;
-			else if (data.Matches(0, new byte[] { 0xFF, 0xD8, 0xFF }))
-				return ImageFormat.Jpg;
-			else if (data.Matches(1, "PNG"))
-				return ImageFormat.Png;
-			return ImageFormat.Unknown;
-		}
+        public int Height => (int)Info.Size.Height;
+        public int Width => (int)Info.Size.Width;
 
-		public static string DetectImageExtension(byte[] data)
-		{
-			switch (DetectFormat(data))
-			{
-				case ImageFormat.Dds:
-					return "dds";
-				case ImageFormat.Jpg:
-					return "jpg";
-				case ImageFormat.Png:
-					return "png";
-				default:
-					throw new Exception("Image format not supported");
-			}
+        public DDS(byte[] data)
+        {
+            Info = ImageUtil.ParseDds(data);
+            uint mipSize = 0; // not implemented
+            Data = new byte[Info.PixelDataLength + mipSize];
+            Array.Copy(data, 0x80, Data, 0, Info.PixelDataLength + mipSize);
+        }
+
+        public ImageSize Size => Info.Size;
+        public string Extension => Info.Extension;
+        public ImageFormat Format => Info.Format;
+
+        public bool IsValidForBg => Info.IsValidForBg;
+        public bool IsValidForIcons => Info.IsValidForIcons;
+    }
+
+    public static class ImageUtil
+    {
+        public static ImageFormat DetectFormat(byte[] data)
+        {
+            if (data.Matches("DDS "))
+                return ImageFormat.Dds;
+            else if (data.Matches(0, new byte[] { 0xFF, 0xD8, 0xFF }))
+                return ImageFormat.Jpg;
+            else if (data.Matches(1, "PNG"))
+                return ImageFormat.Png;
+            return ImageFormat.Unknown;
+        }
+
+        public static string DetectImageExtension(byte[] data)
+        {
+            switch (DetectFormat(data))
+            {
+                case ImageFormat.Dds:
+                    return "dds";
+                case ImageFormat.Jpg:
+                    return "jpg";
+                case ImageFormat.Png:
+                    return "png";
+                default:
+                    throw new Exception("Image format not supported");
+            }
         }
 
         public static IImageInfo ParseImage(byte[] data)
-		{
-			switch (DetectFormat(data))
-			{
-				case ImageFormat.Dds:
-					return ParseDds(data);
-				case ImageFormat.Jpg:
-					return ParseJpg(data);
-				case ImageFormat.Png:
-					return ParsePng(data);
-				default:
-					throw new Exception("Image format not supported");
-			}
-		}
+        {
+            switch (DetectFormat(data))
+            {
+                case ImageFormat.Dds:
+                    return ParseDds(data);
+                case ImageFormat.Jpg:
+                    return ParseJpg(data);
+                case ImageFormat.Png:
+                    return ParsePng(data);
+                default:
+                    throw new Exception("Image format not supported");
+            }
+        }
 
-		public static PngInfo ParsePng(byte[] data)
-		{
-			uint w, h;
-			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
-			{
-				bin.ByteOrder = ByteOrder.BigEndian;
-				bin.BaseStream.Position = 0x10;
-				w = bin.ReadUInt32();
-				h = bin.ReadUInt32();
-			}
-			return new PngInfo { Size = new ImageSize(w,h) };
-		}		
+        public static PngInfo ParsePng(byte[] data)
+        {
+            uint w, h;
+            using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
+            {
+                bin.ByteOrder = ByteOrder.BigEndian;
+                bin.BaseStream.Position = 0x10;
+                w = bin.ReadUInt32();
+                h = bin.ReadUInt32();
+            }
+            return new PngInfo { Size = new ImageSize(w, h) };
+        }
 
-		public static JpgInfo ParseJpg(byte[] data)
-		{
-			uint w = 0, h = 0;
-			bool Progressive = false;
-			using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
-			{
-				bin.ByteOrder = ByteOrder.BigEndian;
-				while (bin.BaseStream.Position < bin.BaseStream.Length)
-				{
-					byte marker = 0;
-					while ((marker = bin.ReadByte()) != 0xFF) ;
-					while ((marker = bin.ReadByte()) == 0xFF) ;
+        public static JpgInfo ParseJpg(byte[] data)
+        {
+            uint w = 0, h = 0;
+            bool Progressive = false;
+            using (BinaryDataReader bin = new BinaryDataReader(new MemoryStream(data)))
+            {
+                bin.ByteOrder = ByteOrder.BigEndian;
+                while (bin.BaseStream.Position < bin.BaseStream.Length)
+                {
+                    byte marker = 0;
+                    while ((marker = bin.ReadByte()) != 0xFF) ;
+                    while ((marker = bin.ReadByte()) == 0xFF) ;
 
-					if (marker == 0xC0)
-					{
-						bin.ReadByte();
-						bin.ReadByte();
-						bin.ReadByte();
+                    if (marker == 0xC0)
+                    {
+                        bin.ReadByte();
+                        bin.ReadByte();
+                        bin.ReadByte();
 
-						h = bin.ReadUInt16();
-						w = bin.ReadUInt16();
-					}
-					if (marker == 0xC2)
-					{
-						Progressive = true;
-					}
-				}
-			}
-			return new JpgInfo(Progressive, w, h);
-		}		
+                        h = bin.ReadUInt16();
+                        w = bin.ReadUInt16();
+                    }
+                    if (marker == 0xC2)
+                    {
+                        Progressive = true;
+                    }
+                }
+            }
+            return new JpgInfo(Progressive, w, h);
+        }
 
-		public static DDS.Header ParseDds(byte[] data)
-		{
-			string FormatMagic = "" + (char)data[0x54] + (char)data[0x55] + (char)data[0x56] + (char)data[0x57];
+        public static DDS.Header ParseDds(byte[] data)
+        {
+            string FormatMagic = "" + (char)data[0x54] + (char)data[0x55] + (char)data[0x56] + (char)data[0x57];
 
-			if (!DDS.EncoderTable.ContainsKey(FormatMagic))
-				throw new Exception("Unsupported DDS format");
+            if (!DDS.EncoderTable.ContainsKey(FormatMagic))
+                throw new Exception("Unsupported DDS format");
 
-			var bpp = DDS.EncoderTable[FormatMagic].bpp;
+            var bpp = DDS.EncoderTable[FormatMagic].bpp;
 
-			var width = BitConverter.ToUInt32(data, 0x10);
-			var height = BitConverter.ToUInt32(data, 0xC);
-			uint size = ((width + 3) >> 2) * ((height + 3) >> 2) * (uint)bpp;
-			var numMips = 0; // Not implemented
-			return new DDS.Header()
-			{
-				Size = new ImageSize(width, height),
-				Encoding = FormatMagic,
-				PixelDataLength = size,
-				MipmapCount = numMips,
-			};
-		}
-	}
+            var width = BitConverter.ToUInt32(data, 0x10);
+            var height = BitConverter.ToUInt32(data, 0xC);
+            uint size = ((width + 3) >> 2) * ((height + 3) >> 2) * (uint)bpp;
+            var numMips = 0; // Not implemented
+            return new DDS.Header()
+            {
+                Size = new ImageSize(width, height),
+                Encoding = FormatMagic,
+                PixelDataLength = size,
+                MipmapCount = numMips,
+            };
+        }
+    }
 
-	public static class Validation
-	{
-		private static void AssertBGSizeValid(ImageSize size)
-		{
-			if (size.Width != 1280 || size.Height != 720)
-				throw new Exception("The background image must be 1280x720.");
-		}
+    public static class Validation
+    {
+        private static void AssertBGSizeValid(ImageSize size)
+        {
+            if (size.Width != 1280 || size.Height != 720)
+                throw new Exception("The background image must be 1280x720.");
+        }
 
-		private static void AssertBGSizeValid(this IImageInfo size) =>
-			AssertBGSizeValid(size.Size);
+        private static void AssertBGSizeValid(this IImageInfo size) =>
+            AssertBGSizeValid(size.Size);
 
-		public static IImageInfo AssertValidForBG(byte[] data)
-		{
-			var img = ImageUtil.ParseImage(data);
+        public static IImageInfo AssertValidForBG(byte[] data)
+        {
+            var img = ImageUtil.ParseImage(data);
 
-			img.AssertValidForBG();
-			img.AssertBGSizeValid();
+            img.AssertValidForBG();
+            img.AssertBGSizeValid();
 
-			return img;
-		}
+            return img;
+        }
 
-		private static void AssertAppletSizeValid(TextureReplacement repl, ImageSize size)
-		{
-			if (size.Width != repl.W || size.Height != repl.H)
-				throw new Exception($"The applet image size for {repl.NxThemeName} must be {repl.W}x{repl.H}");
-		}
+        private static void AssertAppletSizeValid(TextureReplacement repl, ImageSize size)
+        {
+            if (size.Width != repl.W || size.Height != repl.H)
+                throw new Exception($"The applet image size for {repl.NxThemeName} must be {repl.W}x{repl.H}");
+        }
 
-		private static void AssertAppletSizeValid(this IImageInfo size, TextureReplacement repl) =>
-			AssertAppletSizeValid(repl, size.Size);
+        private static void AssertAppletSizeValid(this IImageInfo size, TextureReplacement repl) =>
+            AssertAppletSizeValid(repl, size.Size);
 
-		public static IImageInfo AssertValidForApplet(TextureReplacement target, byte[] data) 
-		{
-			var img = ImageUtil.ParseImage(data);
+        public static IImageInfo AssertValidForApplet(TextureReplacement target, byte[] data)
+        {
+            var img = ImageUtil.ParseImage(data);
 
-			img.AssertValidForApplet();
-			img.AssertAppletSizeValid(target);
+            img.AssertValidForApplet();
+            img.AssertAppletSizeValid(target);
 
-			return img;
-		}
-	}
+            return img;
+        }
+    }
 }
