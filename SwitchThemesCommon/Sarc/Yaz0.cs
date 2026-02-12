@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Collections;
-namespace SwitchThemes.Common
+﻿namespace SwitchThemes.Common
 {
 	static class ManagedYaz0
 	{
@@ -128,7 +123,14 @@ namespace SwitchThemes.Common
 			return realresult;
 		}
 
-		public static byte[] Decompress(byte[] Data)
+		public static bool IsYaz0(byte[] Data) =>
+			Data.Length > 4 &&
+			Data[0] == 'Y' &&
+			Data[1] == 'a' &&
+			Data[2] == 'z' &&
+			Data[3] == '0';
+
+        public static byte[] Decompress(byte[] Data)
 		{
 			UInt32 leng = (uint)(Data[4] << 24 | Data[5] << 16 | Data[6] << 8 | Data[7]);
 			byte[] Result = new byte[leng];

@@ -9,8 +9,8 @@
     <Import_RootNamespace>SwitchThemes.Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Bflan.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)BflanSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflan\Bflan.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Bflan\BflanSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\BflytFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\BflytMaterial.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bflyt\Grp1Pane.cs" />
@@ -24,16 +24,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\BntxxFormats.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\DDSEncoder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Bntx\Texture.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FirmwareDetection.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Images.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LayoutCompatibility.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patching\FirmwareDetection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patching\Images.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\LayoutCompatibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixesJsons.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)RGBAColor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\RGBAColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LayoutDiff.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LayoutPatches.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixes.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)PatchTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\LayoutDiff.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\LayoutPatches.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\NewFirmFixes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Layouts\PatchTemplate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Patching\SzsPatcher.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\SARC.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Sarc\Yaz0.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SwitchThemesCommon.cs" />
@@ -49,5 +50,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Meta\MemberData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\Offset.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Syroot.BinaryData\SeekTask.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Layouts\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Bflan\" />
   </ItemGroup>
 </Project>

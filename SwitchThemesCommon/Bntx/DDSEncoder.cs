@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SwitchThemes.Common.Bntxx
+namespace SwitchThemes.Common.Bntx
 {
 	//mostly based on https://github.com/aboood40091/BNTX-Editor
 	static class DDSEncoder

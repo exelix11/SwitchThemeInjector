@@ -6,7 +6,8 @@ using System.Text;
 using System.Windows.Forms;
 using SARCExt;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Bntxx;
+using SwitchThemes.Common.Bntx;
+using SwitchThemes.Common.Patching;
 using Syroot.BinaryData;
 
 namespace SwitchThemes
@@ -64,8 +65,8 @@ namespace SwitchThemes
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			Text += " Ver. " + Info.CoreVer;
-			materialLabel10.Text = $"Switch Theme Injector Ver {Info.CoreVer} by exelix";
+			Text += " Ver. " + CommonInfo.CoreVer;
+			materialLabel10.Text = $"Switch Theme Injector Ver {CommonInfo.CoreVer} by exelix";
 #if CIRelease
 			materialLabel10.Text += $" (Github build)";
 #endif
@@ -348,7 +349,7 @@ namespace SwitchThemes
 			AllLayoutsBox.Items.Add("Don't patch");
 			foreach (var l in Layouts.Values)
 			{
-				if (l.TargetName == null || l.TargetName.Contains(Info.PartToFileName[HomeMenuParts[HomeMenuPartBox.Text]]))
+				if (l.TargetName == null || l.TargetName.Contains(CommonInfo.PartToFileName[HomeMenuParts[HomeMenuPartBox.Text]]))
 					AllLayoutsBox.Items.Add(l);
 			}
 			AllLayoutsBox.Items.Add("Open from file...");
@@ -389,7 +390,7 @@ namespace SwitchThemes
 			
 			if (HasImage)
 			{
-				var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(BgImage));
+				var dds = Common.Images.ImageUtil.ParseDds(File.ReadAllBytes(BgImage));
 				if (dds.Encoding != "DXT1") MessageBox.Show("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
 				if (dds.Size.Width != 1280 || dds.Size.Height != 720) MessageBox.Show("WARNING: the selected image is not 720p (1280x720), it may crash on the swtich");
 			}

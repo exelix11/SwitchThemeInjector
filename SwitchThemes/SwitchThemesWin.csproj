@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>SwitchThemes</RootNamespace>
     <AssemblyName>SwitchThemes</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -73,6 +73,8 @@
     <DebugSymbols>true</DebugSymbols>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
   </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="MaterialSkin, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialSkin.Updated.0.2.2\lib\MaterialSkin.dll</HintPath>
@@ -128,25 +130,63 @@
     <EmbeddedResource Include="ThemeInputInfo.resx">
       <DependentUpon>ThemeInputInfo.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="layouts\CarefulLayout.json" />
-    <None Include="layouts\CommonNoFooter.json" />
-    <None Include="layouts\DiamondLayoutHomescreen.json" />
-    <None Include="layouts\DogeFl.json" />
-    <None Include="layouts\DogeLayoutRounded.json" />
-    <None Include="layouts\FlaunchRounded.json" />
-    <None Include="layouts\Flow Layout.json" />
-    <None Include="layouts\GleLk.json" />
-    <None Include="layouts\RedAppletButtons.json" />
-    <None Include="layouts\RoundedSmallCompact.json" />
-    <None Include="layouts\SimpleLockscreenLayout.json" />
-    <None Include="layouts\SmallCompactHomescreen.json" />
-    <None Include="layouts\SuchHm.json" />
-    <None Include="layouts\SuchLk.json" />
-    <None Include="layouts\Transparant Playerselect 90%25 Scale centered.json" />
-    <None Include="layouts\Transparant Playerselect 90%25 Scale.json" />
-    <None Include="layouts\Transparant Playerselect centered.json" />
-    <None Include="layouts\Transparant Playerselect.json" />
-    <None Include="layouts\ZnHm.json" />
+    <None Include="layouts\CarefulLayout.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\CommonNoFooter.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\DiamondLayoutHomescreen.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\DogeFl.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\DogeLayoutRounded.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\FlaunchRounded.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\Flow Layout.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\GleLk.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\RedAppletButtons.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\RoundedSmallCompact.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\SimpleLockscreenLayout.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\SmallCompactHomescreen.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\SuchHm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\SuchLk.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\Transparant Playerselect 90%25 Scale centered.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\Transparant Playerselect 90%25 Scale.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\Transparant Playerselect centered.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\Transparant Playerselect.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="layouts\ZnHm.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -163,23 +203,57 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />
-    <Content Include="layouts\CarefulLayout.jpg" />
-    <Content Include="layouts\DiamondLayoutHomescreen.jpg" />
-    <Content Include="layouts\DogeFl.png" />
-    <Content Include="layouts\DogeLayoutRounded.jpg" />
-    <Content Include="layouts\FlaunchRounded.jpg" />
-    <Content Include="layouts\Flow Layout.jpg" />
-    <Content Include="layouts\GleLk.jpg" />
-    <Content Include="layouts\RoundedSmallCompact.jpg" />
-    <Content Include="layouts\SimpleLockscreenLayout.jpg" />
-    <Content Include="layouts\SmallCompactHomescreen.jpg" />
-    <Content Include="layouts\SuchHm.jpg" />
-    <Content Include="layouts\SuchLk.jpg" />
-    <Content Include="layouts\Transparant Playerselect 90%25 Scale centered.jpg" />
-    <Content Include="layouts\Transparant Playerselect 90%25 Scale.jpg" />
-    <Content Include="layouts\Transparant Playerselect centered.jpg" />
-    <Content Include="layouts\Transparant Playerselect.jpg" />
-    <Content Include="layouts\ZnHm.jpg" />
+    <Content Include="layouts\CarefulLayout.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\DiamondLayoutHomescreen.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\DogeFl.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\DogeLayoutRounded.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\FlaunchRounded.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\Flow Layout.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\GleLk.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\RoundedSmallCompact.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\SimpleLockscreenLayout.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\SmallCompactHomescreen.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\SuchHm.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\SuchLk.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\Transparant Playerselect 90%25 Scale centered.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\Transparant Playerselect 90%25 Scale.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\Transparant Playerselect centered.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\Transparant Playerselect.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="layouts\ZnHm.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

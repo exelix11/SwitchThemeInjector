@@ -50,6 +50,9 @@
       <Filter>SwitchThemesCommon</Filter>
     </ClCompile>
     <ClCompile Include="Layouts.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="picosha2.h" />
@@ -129,6 +132,9 @@
       <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Patches.hpp">
+      <Filter>SwitchThemesCommon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
   </ItemGroup>

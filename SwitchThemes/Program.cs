@@ -1,6 +1,6 @@
 ﻿using SARCExt;
 using SwitchThemes.Common;
-using SwitchThemes.Common.Bntxx;
+using SwitchThemes.Common.Bntx;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +59,7 @@ namespace SwitchThemes
 				else if (args[0].ToLower() == "help")
 				{
 					Console.WriteLine(
-						"Switch themes Injector V " + Info.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
+						"Switch themes Injector V " + CommonInfo.CoreVer + " by exelix\r\nhttps://github.com/exelix11/SwitchThemeInjector\r\n\r\n" +
 						"Command line usage:\r\n" +
 						"Build an nxtheme file : SwitchThemes.exe buildNX home \"<your image.jpg/dds>\" \"<json layout file, optional>\" \"name=<theme name>\" \"author=<author name>\" \"commonlyt=<custom common.szs layout>\" \"out=<OutputPath>.nxtheme\"\r\n" +
 						" instead of home you can use: lock for lockscreen, apps for the all apps screen, set for the settings applet, user for the user page applet and news for the news applet.\r\n" +
@@ -226,7 +226,7 @@ namespace SwitchThemes
 				if (Image != null)
 				{
 					{
-						var dds = Common.Images.Util.ParseDds(File.ReadAllBytes(Image));
+						var dds = Common.Images.ImageUtil.ParseDds(File.ReadAllBytes(Image));
 						if (dds.Encoding != "DXT1") Console.WriteLine("WARNING: the encoding of the selected DDS is not DXT1, it may crash on the switch");
 						if (dds.Size.Width != 1280 || dds.Size.Height != 720) Console.WriteLine("WARNING: the selected image is not 720p (1280x720), it may crash on the switch");
 					}

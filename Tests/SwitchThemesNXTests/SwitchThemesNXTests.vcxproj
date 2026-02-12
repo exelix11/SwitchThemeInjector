@@ -98,6 +98,7 @@
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\SarcLib\Sarc.cpp" />
@@ -129,6 +130,7 @@
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\json.hpp" />
+    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\Patches.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\MyTypes.h" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\NXTheme.hpp" />

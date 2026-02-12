@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace SwitchThemes.Common.Bntxx
+namespace SwitchThemes.Common.Bntx
 {
 	public class Texture
 	{

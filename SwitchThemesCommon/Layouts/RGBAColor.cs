@@ -130,8 +130,7 @@ namespace SwitchThemes.Common
 
 		public bool Equals(RGBAColor other)
 		{
-			return other != null &&
-				   R == other.R &&
+			return R == other.R &&
 				   G == other.G &&
 				   B == other.B &&
 				   A == other.A;

@@ -120,6 +120,14 @@ namespace SwitchThemes.Common.Bflyt
 			return false;
 		}
 
+        public override int GetHashCode()
+        {
+			unchecked
+			{
+				return Data.Sum(x => (int)x);
+			}
+        }
+
 		byte[] Data;
 		public byte[] GetData() => Data;
 		Int32 bitflags;

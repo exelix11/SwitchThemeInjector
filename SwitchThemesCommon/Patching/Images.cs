@@ -21,7 +21,10 @@ namespace SwitchThemes.Common.Images
 
 		public ImageSize(uint w, uint h) =>
 			(Width, Height) = (w, h);
-	}
+
+        public override string ToString() =>
+			$"{Width}x{Height}";
+    }
 
 	public interface IImageInfo 
 	{
@@ -33,7 +36,7 @@ namespace SwitchThemes.Common.Images
 		void AssertValidForApplet();
 	}
 
-	public struct JpgInfo : IImageInfo
+	public class JpgInfo : IImageInfo
 	{
 		public bool IsProgressive;
 		public ImageSize Size { get; internal set; }
@@ -63,7 +66,7 @@ namespace SwitchThemes.Common.Images
 			throw new Exception("Jpg images can't be used for applet icons");
 	}
 
-	public struct PngInfo : IImageInfo
+	public class PngInfo : IImageInfo
 	{
 		public ImageSize Size { get; internal set; }
 		
@@ -125,7 +128,7 @@ namespace SwitchThemes.Common.Images
 
 		public DDS(byte[] data)
 		{
-			Info = Util.ParseDds(data);
+			Info = ImageUtil.ParseDds(data);
 			uint mipSize = 0; // not implemented
 			Data = new byte[Info.PixelDataLength + mipSize];
 			Array.Copy(data, 0x80, Data, 0, Info.PixelDataLength + mipSize);
@@ -138,7 +141,7 @@ namespace SwitchThemes.Common.Images
 		public void AssertValidForApplet() => Info.AssertValidForApplet();
 	}
 
-	public static class Util
+	public static class ImageUtil
 	{
 		public static ImageFormat DetectFormat(byte[] data)
 		{
@@ -151,7 +154,22 @@ namespace SwitchThemes.Common.Images
 			return ImageFormat.Unknown;
 		}
 
-		public static IImageInfo ParseImage(byte[] data)
+		public static string DetectImageExtension(byte[] data)
+		{
+			switch (DetectFormat(data))
+			{
+				case ImageFormat.Dds:
+					return "dds";
+				case ImageFormat.Jpg:
+					return "jpg";
+				case ImageFormat.Png:
+					return "png";
+				default:
+					throw new Exception("Image format not supported");
+			}
+        }
+
+        public static IImageInfo ParseImage(byte[] data)
 		{
 			switch (DetectFormat(data))
 			{
@@ -246,7 +264,7 @@ namespace SwitchThemes.Common.Images
 
 		public static IImageInfo AssertValidForBG(byte[] data)
 		{
-			var img = Util.ParseImage(data);
+			var img = ImageUtil.ParseImage(data);
 
 			img.AssertValidForBG();
 			img.AssertBGSizeValid();
@@ -265,7 +283,7 @@ namespace SwitchThemes.Common.Images
 
 		public static IImageInfo AssertValidForApplet(TextureReplacement target, byte[] data) 
 		{
-			var img = Util.ParseImage(data);
+			var img = ImageUtil.ParseImage(data);
 
 			img.AssertValidForApplet();
 			img.AssertAppletSizeValid(target);
