@@ -123,7 +123,7 @@ protected:
 		if (patch)
 		{
 			ContentID = patch->TitleId;
-			SzsName = patch->szsName;
+			SzsName = patch->SzsName;
 		}
 
 		if (!ShouldPatchBGInCommon)

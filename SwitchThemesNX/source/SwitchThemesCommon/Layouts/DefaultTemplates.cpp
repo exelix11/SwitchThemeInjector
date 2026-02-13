@@ -1,5 +1,5 @@
 #include "Patches.hpp"
-#include "json.hpp"
+#include "../json.hpp"
 #include "../NXTheme.hpp"
 
 using namespace std;
@@ -154,92 +154,6 @@ LayoutPatch Patches::LoadLayout(const string_view jsn)
 {
 	return json::parse(jsn).get<LayoutPatch>();
 }
-
-//this is so ugly but c#-like aggregate initialization comes with c++20
-//Whenever a new firmware breaks compatibility or layouts add a way to detect the new file here and increase the PatchRevision value, this is used later to fix old layouts via NewFirmFixes.cs
-//Not using PatchRevision here because we can just figure out the firmware from the OS 
-vector<PatchTemplate> Patches::DefaultTemplates{
-//Common:
-	PatchTemplate{ "home and applets", "common.szs", "0100000000001000", "<= 5.X",
-        { "blyt/SystemAppletFader.bflyt" },
-        { "blyt/DHdrSoft.bflyt" },
-        "blyt/BgNml.bflyt",
-        "White1x1_180^r",
-        "exelixBG",
-        { "P_Bg_00" },
-        "White1x1^r" },
-//Residentmenu:
-	PatchTemplate{ "home menu", "ResidentMenu.szs", "0100000000001000", ">= 6.0",
-		{ "blyt/IconError.bflyt" },
-		{ "anim/RdtBtnShop_LimitB.bflan" },
-		"blyt/BgNml.bflyt",
-		"White1x1A128^s",
-		"exelixBG",
-		{ "P_Bg_00" },
-		"White1x1A64^t" },
-	PatchTemplate{ "home menu only", "ResidentMenu.szs", "0100000000001000", "<= 5.X",
-		{ "anim/RdtBtnShop_LimitB.bflan", "blyt/IconError.bflyt" },
-		{},
-		"blyt/RdtBase.bflyt",
-		"White1x1A128^s",
-		"exelixResBG",
-		{ "L_BgNml" },
-		"White1x1A64^t" },
-//Entrance:
-    PatchTemplate{ "lock screen", "Entrance.szs", "0100000000001000", "all firmwares",
-        { "blyt/EntBtnResumeSystemApplet.bflyt" },
-        {},
-        "blyt/EntMain.bflyt",
-        "White1x1^s",
-        "exelixLK",
-        { "P_BgL", "P_BgR" },
-        "White1x1^r" },
-//MyPage:
-	PatchTemplate{ "user page", "MyPage.szs", "0100000000001013", "all firmwares",
-        { "blyt/MypUserIconMini.bflyt", "blyt/BgNav_Root.bflyt" },
-        {},
-        "blyt/BgNml.bflyt",
-        "NavBg_03^d",
-        "exelixMY",
-        { "P_Bg_00" },
-        "White1x1A0^t" },
-//Flaunch:
-    PatchTemplate{ "all apps menu", "Flaunch.szs", "0100000000001000", ">= 6.X",
-        { "blyt/FlcBtnIconGame.bflyt", "anim/BaseBg_Loading.bflan", "blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
-        {},
-        "blyt/BgNml.bflyt",
-        "NavBg_03^d",
-        "exelixFBG",
-        { "P_Bg_00" },
-        "White1x1^r" },
-//Set:
-    PatchTemplate{ "settings applet", "Set.szs", "0100000000001000", ">= 6.X",
-        { "blyt/BgNav_Root.bflyt", "blyt/SetCntDataMngPhoto.bflyt", "blyt/SetSideStory.bflyt" }, //blyt/SetSideStory.bflyt for 6.0 detection
-        {},
-        "blyt/BgNml.bflyt",
-        "NavBg_03^d",
-        "exelixSET",
-        { "P_Bg_00" },
-        "White1x1A0^t" },
-//Notification:
-    PatchTemplate{ "news applet", "Notification.szs", "0100000000001000", ">= 6.X",
-        { "blyt/BgNavNoHeader.bflyt", "blyt/BgNav_Root.bflyt", "blyt/NtfBase.bflyt", "blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
-        {},
-        "blyt/BgNml.bflyt",
-        "NavBg_03^d",
-        "exelixNEW",
-        { "P_Bg_00" },
-        "White1x1^r" },
-//PSL:
-    PatchTemplate{ "player selection", "Psl.szs", "0100000000001007", "all firmwares",
-        { "blyt/IconGame.bflyt", "blyt/BgNavNoHeader.bflyt" },
-        {},
-        "blyt/PslSelectSinglePlayer.bflyt",
-        "PselTopUserIcon_Bg^s",
-        "exelixPSL",
-        { "P_Bg" },
-        "White1x1^r" },
-};
 
 namespace Patches::textureReplacement {
 

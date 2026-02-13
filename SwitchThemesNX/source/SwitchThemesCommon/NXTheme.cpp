@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "NXTheme.hpp"
 #include "BinaryReadWrite/Buffer.hpp"
-#include "Layouts/json.hpp"
+#include "json.hpp"
 #include "SwitchThemesCommon.hpp"
 
 SystemVersion HOSVer = { 0,0,0 };

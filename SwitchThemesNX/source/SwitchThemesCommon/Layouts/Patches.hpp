@@ -3,7 +3,6 @@
 #include <vector>
 #include <optional>
 #include "../MyTypes.h"
-#include "../SarcLib/Sarc.hpp"
 #include "../NXTheme.hpp"
 
 struct Vector3 { float X, Y, Z; bool operator==(Vector3 const&) const = default; };
@@ -165,7 +164,7 @@ struct LayoutPatch
 struct PatchTemplate 
 {
 	std::string TemplateName;
-	std::string szsName;
+	std::string SzsName;
 	std::string TitleId;
 	std::string FirmName;
 
@@ -178,8 +177,11 @@ struct PatchTemplate
 	std::vector<std::string> targetPanels;
 	std::string SecondaryTexReplace;
 
+	std::string NXThemeName;
+
 	bool DirectPatchPane = false;
 	bool NoRemovePanel = false;
+	bool RequiresCodePatch = false;
 };
 
 struct TextureReplacement 

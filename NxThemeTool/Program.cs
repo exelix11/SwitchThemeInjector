@@ -101,7 +101,7 @@ else if (args[0] == "apply")
 
     using var patcher = ThemeApply.FromFiles(source, szs, result);
     using var outputFolder = new DirectoryContentWriter(output);
-    
+
     patcher.Apply(outputFolder, result);
 
     PrintValidation(result);
@@ -171,6 +171,17 @@ else if (args[0] == "install")
         return 1;
     }
 }
+else if (args[0] == "cppgen")
+{
+    if (args.Length < 2)
+    {
+        Console.WriteLine("Not enough arguments.");
+        return 1;
+    }
+
+    var gen = new CppGen(args[1]);
+    gen.GeneratePatchTemplates();
+}
 else
 {
     Console.WriteLine("Invalid commandline.");
@@ -214,7 +225,9 @@ void PrintHelp()
     Console.WriteLine("  install <file> <ip address>        Perform remote install to NXThemesInstaller running on a console");
     Console.WriteLine("  apply <nxtheme> <szs> <output>     Apply an nxthme file to one or more szs files. Szs must be the the path to the systemData folder of the theme installer.");
     Console.WriteLine("Extra:");
-    Console.WriteLine("  <nxtheme file>                     If the only specified argument is a valid nxtheme file it will be unpacked");
+    Console.WriteLine("  <nxtheme file>                     If the only specified argument is a valid nxtheme file it will be unpacked. This is a convenience feature which allows dragging nxtheme files on this binary to unpack them automatically.");
+    Console.WriteLine("Development:");
+    Console.WriteLine("  cppgen <output foler>              Generate C++ data tables needed by the NxThemesInstaller codease");
 }
 
 byte[] PeekFormat(Stream stream)

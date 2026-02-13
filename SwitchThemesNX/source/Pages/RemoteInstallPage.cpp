@@ -2,7 +2,7 @@
 #include "../ViewFunctions.hpp"
 #include <numeric>
 #include "RemoteInstall/API.hpp"
-#include "../SwitchThemesCommon/Layouts/json.hpp"
+#include "../SwitchThemesCommon/json.hpp"
 
 using namespace std;
 

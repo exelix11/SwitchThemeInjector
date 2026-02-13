@@ -1,5 +1,5 @@
 #include "API.hpp"
-#include "../../SwitchThemesCommon/Layouts/json.hpp"
+#include "../../SwitchThemesCommon/json.hpp"
 #include "../../Platform/Platform.hpp"
 #include "ApiUtil.hpp"
 #include "Worker.hpp"

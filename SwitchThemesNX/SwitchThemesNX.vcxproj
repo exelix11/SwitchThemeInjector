@@ -43,6 +43,7 @@
     <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\json.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflan.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\BasePane.hpp" />
@@ -54,7 +55,6 @@
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\RGBAColor.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Txt1Pane.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Usd1Pane.hpp" />
-    <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\MyTypes.h" />
@@ -113,6 +113,7 @@
     <ClCompile Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp" />

@@ -55,6 +55,9 @@
     <Filter Include="Pages\RemoteInstall">
       <UniqueIdentifier>{42b9a74b-11e4-48fe-9abc-7185427ace50}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SwitchThemesCommon\Generated">
+      <UniqueIdentifier>{9bcfff11-c77f-4ac3-8497-0761077bd3c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -134,9 +137,6 @@
     </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp">
       <Filter>SwitchThemesCommon\Fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="source\SwitchThemesCommon\Layouts\json.hpp">
-      <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Patches.hpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
@@ -261,6 +261,9 @@
     </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.hpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\json.hpp">
+      <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -431,6 +434,9 @@
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp">
+      <Filter>SwitchThemesCommon\Generated</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

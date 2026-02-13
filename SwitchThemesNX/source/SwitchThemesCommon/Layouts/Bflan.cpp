@@ -1,5 +1,7 @@
 #include "Bflan.hpp"
 #include <stdexcept>
+#include "Base64.hpp"
+#include "../json.hpp"
 
 using namespace std;
 
@@ -377,9 +379,6 @@ void Bflan::ParseFile(Buffer& bin)
 			throw runtime_error("unexpected section");
 	}
 }
-
-#include "Base64.hpp"
-#include "json.hpp"
 
 std::unique_ptr<Bflan> BflanDeserializer::FromJson(std::string jsn)
 {

@@ -41,11 +41,11 @@ protected:
 		if (!patch)
 			throw std::runtime_error("Couldn't find a compatible patch template");
 
-		if (!PatchMng::ExefsCompatAsk(patch->szsName))
+		if (!PatchMng::ExefsCompatAsk(patch->SzsName))
 			return false;
 
 		fs::theme::CreateStructure(patch->TitleId);
-		fs::WriteFile(fs::path::RomfsFolder(patch->TitleId) + "lyt/" + patch->szsName, file);
+		fs::WriteFile(fs::path::RomfsFolder(patch->TitleId) + "lyt/" + patch->SzsName, file);
 
 		return true;
 	}

@@ -27,7 +27,7 @@ string SwitchThemesCommon::GeneratePatchListString(const vector<PatchTemplate>& 
 	string FileList = "";
 	for (auto p : templates)
 	{
-		FileList += "["+ p.FirmName+"] "+ p.TemplateName +" : the file is called "+ p.szsName+" from title "+ p.TitleId +"\n";
+		FileList += "["+ p.FirmName+"] "+ p.TemplateName +" : the file is called "+ p.SzsName+" from title "+ p.TitleId +"\n";
 	}
 	return FileList;
 }
@@ -51,7 +51,7 @@ void SzsPatcher::Initialize()
 		// Since that is ancient firmware it is not supported in the injector so it's a difference to keep in mind when reasoning about the mapping between the nxtheme name and the target szs name
 		auto t = std::find_if(ThemeTargetToFileName.begin(), ThemeTargetToFileName.end(), [&](const auto& e)
 			{
-				return e.second == currentTemplate->szsName;
+				return e.second == currentTemplate->SzsName;
 			});
 
 		if (t == ThemeTargetToFileName.end())

@@ -52,10 +52,10 @@ namespace SwitchThemes.Common
 
 	public class PatchTemplate
 	{
-		public string FirmName;
 		public string TemplateName;
-		public string szsName;
+		public string SzsName;
 		public string TitleId;
+		public string FirmName;
 
 		public string[] FnameIdentifier;
 		public string[] FnameNotIdentifier;
@@ -70,9 +70,6 @@ namespace SwitchThemes.Common
 
 		public bool DirectPatchPane = false;
 		public bool NoRemovePanel = false;
-		//public bool ReplaceTarget = false;
-		//public PatchTemplate[] UnpatchTargets;
-
 		public bool RequiresCodePatch = false;
 
 #if WIN
@@ -137,7 +134,7 @@ namespace SwitchThemes.Common
 		public static readonly PatchTemplate[] Templates =
 		{
 		//Common:
-			new PatchTemplate() { TemplateName = "home and applets" , szsName = "common.szs", TitleId = "0100000000001000", FirmName = "<= 5.X",
+			new PatchTemplate() { TemplateName = "home and applets" , SzsName = "common.szs", TitleId = "0100000000001000", FirmName = "<= 5.X",
 				FnameIdentifier = new string[] { @"blyt/SystemAppletFader.bflyt"},
 				FnameNotIdentifier = new string[] { @"blyt/DHdrSoft.bflyt" } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -148,7 +145,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "home",
 			},
 		//Residentmenu:
-			new PatchTemplate() { TemplateName = "home menu" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
+			new PatchTemplate() { TemplateName = "home menu" , SzsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/IconError.bflyt" },
 				FnameNotIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -158,7 +155,7 @@ namespace SwitchThemes.Common
 				SecondaryTexReplace = "White1x1A64^t",
 				NXThemeName = "home"
 			},
-			new PatchTemplate() { TemplateName = "home menu only" , szsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = "<= 5.X",
+			new PatchTemplate() { TemplateName = "home menu only" , SzsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = "<= 5.X",
 				FnameIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" ,@"blyt/IconError.bflyt"},
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/RdtBase.bflyt",
@@ -169,7 +166,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "home"
 			},
 		//Entrance:
-			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = ">= 9.0",
+			new PatchTemplate() { TemplateName = "lock screen" , SzsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = ">= 9.0",
 				FnameIdentifier = new string[] {  @"blyt/PageindicatorAlarm.bflyt", @"blyt/EntBtnResumeSystemApplet.bflyt"},
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName =@"blyt/EntMain.bflyt",
@@ -180,7 +177,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "lock",
 				RequiresCodePatch = true,
 			},
-			new PatchTemplate() { TemplateName = "lock screen" , szsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.0",
+			new PatchTemplate() { TemplateName = "lock screen" , SzsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.0",
 				FnameIdentifier = new string[] {  @"blyt/EntBtnResumeSystemApplet.bflyt"},
 				FnameNotIdentifier = new string[] { @"blyt/PageindicatorAlarm.bflyt" } ,
 				MainLayoutName =@"blyt/EntMain.bflyt",
@@ -191,7 +188,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "lock"
 			},
 		//MyPage:
-			new PatchTemplate() { TemplateName = "user page" , szsName = "MyPage.szs", TitleId = "0100000000001013",  FirmName = "all firmwares",
+			new PatchTemplate() { TemplateName = "user page" , SzsName = "MyPage.szs", TitleId = "0100000000001013",  FirmName = "all firmwares",
 				FnameIdentifier = new string[] { @"blyt/MypUserIconMini.bflyt",@"blyt/BgNav_Root.bflyt" },
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -202,7 +199,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "user"
 			},
 		//Flaunch:
-			new PatchTemplate() { TemplateName = "all apps menu" , szsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
+			new PatchTemplate() { TemplateName = "all apps menu" , SzsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/FlcBtnIconGame.bflyt", @"anim/BaseBg_Loading.bflan", @"blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -213,7 +210,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "apps"
 			},
 		//Set:
-			new PatchTemplate() { TemplateName = "settings applet" , szsName = "Set.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
+			new PatchTemplate() { TemplateName = "settings applet" , SzsName = "Set.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/BgNav_Root.bflyt", @"blyt/SetCntDataMngPhoto.bflyt" , @"blyt/SetSideStory.bflyt"}, //blyt/SetSideStory.bflyt for 6.0 detection
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -224,7 +221,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "set"
 			},
 		//Notification:
-			new PatchTemplate() { TemplateName = "news applet" , szsName = "Notification.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
+			new PatchTemplate() { TemplateName = "news applet" , SzsName = "Notification.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/BgNavNoHeader.bflyt", @"blyt/BgNav_Root.bflyt", @"blyt/NtfBase.bflyt", @"blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/BgNml.bflyt",
@@ -235,7 +232,7 @@ namespace SwitchThemes.Common
 				NXThemeName = "news"
 			},
 		//PSL:
-			new PatchTemplate() { TemplateName = "player selection" , szsName = "Psl.szs", TitleId = "0100000000001007", FirmName = "all firmwares",
+			new PatchTemplate() { TemplateName = "player selection" , SzsName = "Psl.szs", TitleId = "0100000000001007", FirmName = "all firmwares",
 				FnameIdentifier = new string[] { @"blyt/IconGame.bflyt", @"blyt/BgNavNoHeader.bflyt" },
 				FnameNotIdentifier = new string[] { } ,
 				MainLayoutName = @"blyt/PslSelectSinglePlayer.bflyt",

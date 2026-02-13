@@ -251,7 +251,9 @@ namespace SwitchThemes.Common.Images
         {
             var img = ImageUtil.ParseImage(data);
 
-            img.AssertValidForBG();
+            if (!img.IsValidForBg)
+                throw new Exception("This image format is not supported for the wallpaper. Try a different encoding");
+
             img.AssertBGSizeValid();
 
             return img;
@@ -270,7 +272,9 @@ namespace SwitchThemes.Common.Images
         {
             var img = ImageUtil.ParseImage(data);
 
-            img.AssertValidForApplet();
+            if (!img.IsValidForIcons)
+                throw new Exception("This image format is not supported for icons. Try a different encoding");
+
             img.AssertAppletSizeValid(target);
 
             return img;
