@@ -114,11 +114,12 @@
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Generated\TextureReplacement.g.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflan.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytMaterial.hpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\BflytPatcher.cpp" />
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutDeserializer.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutCompatibility.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\NXTheme.cpp" />

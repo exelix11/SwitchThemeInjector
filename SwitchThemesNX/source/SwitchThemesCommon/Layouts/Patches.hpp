@@ -52,6 +52,8 @@ struct PanePatch
 
 	std::vector<UsdPatch> UsdPatches;
 
+	std::string PaneSpecific[4];
+
 	// These fields were originally used for color data in PIC1 panes, now they can be used for pane-specific data 
 	// For compatibility reasons they keep the original name in the JSON
 
@@ -76,8 +78,6 @@ struct PanePatch
 	inline std::string& PaneSpecific3() { return PaneSpecific[3]; }
 
 	bool operator==(PanePatch const&) const = default;
-private:
-	std::string PaneSpecific[4];
 };
 
 struct ExtraGroup
@@ -192,7 +192,7 @@ struct TextureReplacement
 	std::string FileName;
 	std::string PaneName;
 	s32 W, H;
-	LayoutFilePatch patch;
+	LayoutFilePatch Patch;
 	ConsoleFirmware MinFirmware = ConsoleFirmware::Invariant;
 };
 

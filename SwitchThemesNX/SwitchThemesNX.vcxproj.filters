@@ -345,7 +345,7 @@
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp">
       <Filter>SwitchThemesCommon\Fonts</Filter>
     </ClCompile>
-    <ClCompile Include="source\SwitchThemesCommon\Layouts\DefaultTemplates.cpp">
+    <ClCompile Include="source\SwitchThemesCommon\Layouts\LayoutDeserializer.cpp">
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\NewFirmFixes.cpp">
@@ -436,6 +436,9 @@
       <Filter>SwitchThemesCommon\Layouts</Filter>
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp">
+      <Filter>SwitchThemesCommon\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Generated\TextureReplacement.g.cpp">
       <Filter>SwitchThemesCommon\Generated</Filter>
     </ClCompile>
   </ItemGroup>

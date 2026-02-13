@@ -181,6 +181,7 @@ else if (args[0] == "cppgen")
 
     var gen = new CppGen(args[1]);
     gen.GeneratePatchTemplates();
+    gen.GenerateTextureReplacementTable();
 }
 else
 {

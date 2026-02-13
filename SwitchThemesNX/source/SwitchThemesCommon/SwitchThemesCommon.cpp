@@ -377,7 +377,7 @@ bool SzsPatcher::PatchAppletIcon(const std::vector<u8>& DDS, const std::string& 
 	if (currentFirmware < replacement->MinFirmware)
 		return true;
 
-	auto res = ApplyLayoutPatch(replacement->patch);
+	auto res = ApplyLayoutPatch(replacement->Patch);
 	if (!res) return res;
 
 	PatchBntxTexture(DDS, replacement->BntxNames, replacement->NewColorFlags);
