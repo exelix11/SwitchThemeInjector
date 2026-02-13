@@ -1,0 +1,27 @@
+{
+  "PatchName": "clearlayout 9.x fix",
+  "AuthorName": "exelix",
+  "Files": [
+    {
+      "FileName": "blyt/EntMain.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_BtnResume",
+          "Position": {
+            "X": -180,
+            "Y": 0,
+            "Z": 0
+          }
+        },
+        {
+          "PaneName": "N_CntHud",
+          "Position": {
+            "X": 0,
+            "Y": 0,
+            "Z": 0
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "PatchName": "Downgrade 20.x layout",
+  "AuthorName": "autoDiff",
+  "Files": [
+    {
+      "FileName": "blyt/RdtBase.bflyt",
+      "Patches": [
+        {
+          "PaneName": "L_BtnSplay",
+          "Visible": false
+        },
+        {
+          "PaneName": "L_BtnVgc",
+          "Visible": false
+        },
+        {
+          "PaneName": "N_System",
+          "Position": {
+            "Y": -186,
+            "X": 54
+          }
+        },
+        {
+          "PaneName": "L_BtnLR",
+          "Position": {
+            "X": -378
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnNoti",
+          "Position": {
+            "X": -270
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnShop",
+          "Position": {
+            "X": -162
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnPvr",
+          "Position": {
+            "X": -54
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnCtrl",
+          "Position": {
+            "X": 54
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnSet",
+          "Position": {
+            "X": 162
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        },
+        {
+          "PaneName": "L_BtnPow",
+          "Position": {
+            "X": 270
+          },
+          "Size": {
+            "X": 508,
+            "Y": 180
+          }
+        }
+      ]
+    }
+  ]
+}

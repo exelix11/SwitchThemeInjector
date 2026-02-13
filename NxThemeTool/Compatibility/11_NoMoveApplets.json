@@ -1,0 +1,9 @@
+{
+  "PatchName": "G_SystemNoMove11.0",
+  "Anims": [
+    {
+      "FileName": "anim/RdtBase_SystemAppletPos.bflan",
+      "AnimJson": "{\u0022LittleEndian\u0022:true,\u0022Version\u0022:150994944,\u0022pat1\u0022:{\u0022AnimationOrder\u0022:6,\u0022Name\u0022:\u0022SystemAppletPos\u0022,\u0022ChildBinding\u0022:190,\u0022Groups\u0022:[\u0022G_System\u0022],\u0022Unk_StartOfFile\u0022:0,\u0022Unk_EndOfFile\u0022:0,\u0022Unk_EndOfHeader\u0022:\u0022AL8AAAAAAA==\u0022},\u0022pai1\u0022:{\u0022FrameSize\u0022:1,\u0022Flags\u0022:0,\u0022Textures\u0022:[],\u0022Entries\u0022:[{\u0022Name\u0022:\u0022L_BtnLR\u0022,\u0022Target\u0022:0,\u0022Tags\u0022:[{\u0022Unknown\u0022:0,\u0022TagType\u0022:\u0022FLVI\u0022,\u0022Entries\u0022:[{\u0022Index\u0022:0,\u0022AnimationTarget\u0022:0,\u0022DataType\u0022:1,\u0022KeyFrames\u0022:[{\u0022Frame\u0022:0.0,\u0022Value\u0022:0.0,\u0022Blend\u0022:0.0},{\u0022Frame\u0022:1.0,\u0022Value\u0022:1.0,\u0022Blend\u0022:0.0}],\u0022FLEUUnknownInt\u0022:0,\u0022FLEUEntryName\u0022:\u0022\u0022}]}],\u0022UnkwnownData\u0022:\u0022\u0022}]}}"
+    }
+  ]
+}

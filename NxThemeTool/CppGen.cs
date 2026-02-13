@@ -207,5 +207,22 @@ namespace NxThemeTool
 
             File.WriteAllText(Path.Join(RootDir, "TextureReplacement.g.cpp"), sb.ToString());
         }
+
+        public void GenerateLayoutJsons() 
+        {
+            CodeBuilder sb = new();
+
+            foreach (var fix in NewFirmFixes.FixResources.Keys)
+            {
+                var res = NewFirmFixes.LoadFromFixName(fix);
+                var minijson = res.AsJson(Formatting.None);
+
+                sb.StartLine($"constexpr std::string_view {fix} = ");
+                WriteCppValue(sb, minijson);
+                sb.FinishLine("sv;");
+            }
+
+            File.WriteAllText(Path.Join(RootDir, "NewFirmFixes.g.hpp"), sb.ToString());
+        }
     }
 }

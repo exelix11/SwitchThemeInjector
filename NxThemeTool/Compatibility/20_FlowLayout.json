@@ -1,0 +1,17 @@
+{
+  "PatchName": "Flow layout 20.0 fix",
+  "Files": [
+    {
+      "FileName": "blyt/RdtBtnNtf.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "Scale": {
+            "X": 21.5,
+            "Y": 1.25
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -43,6 +43,7 @@
     <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\json.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Base64.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflan.hpp" />

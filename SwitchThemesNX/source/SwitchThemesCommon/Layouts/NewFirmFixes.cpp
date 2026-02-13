@@ -1,13 +1,15 @@
 #include "../NXTheme.hpp"
 #include "Patches.hpp"
 #include <algorithm>
+#include <string>
 
 using namespace std;
+using namespace std::string_literals;
 
-// Import the json fixes from the C# codebase
+// Import the json fixes from the auto generated file.
 namespace
 {
-#include "../../../../SwitchThemesCommon/NewFirmFixesJsons.cs"
+	#include "../Generated/NewFirmFixes.g.hpp"
 }
 
 namespace NewFirmFixes
@@ -35,18 +37,18 @@ namespace NewFirmFixes
 		if (fw >= ConsoleFirmware::Fw9_0 && nxName == "lock")
 		{
 			if (contains_ignore_case(LayoutName, "clear lockscreen"))
-				return Patches::LoadLayout(ClearLock9Fix);
+				return Patches::LoadLayout(Fix_Legacy_ClearLock);
 		}
 
 		// These are have all been updated in the builtins as of 4.4
 		if (fw >= ConsoleFirmware::Fw8_0 && nxName == "home") // >= 8.0 home menu
 		{
 			if (contains_ignore_case(LayoutName, "dogelayout") || contains_ignore_case(LayoutName, "clearlayout"))
-				return Patches::LoadLayout(DogeLayoutFix);
+				return Patches::LoadLayout(Fix_Legacy_DogeLayout);
 			else if (contains_ignore_case(LayoutName, "diamond layout"))
-				return Patches::LoadLayout(DiamondFix);
+				return Patches::LoadLayout(Fix_Legacy_Diamond);
 			else if (contains_ignore_case(LayoutName, "small compact"))
-				return Patches::LoadLayout(CompactFix);
+				return Patches::LoadLayout(Fix_Legacy_Compact);
 		}
 
 		return std::nullopt;
@@ -56,7 +58,7 @@ namespace NewFirmFixes
 	{
 		// As of 4.5 this still hasn't been fixed in the builtin layouts but it has been given an ID
 		if (fw >= ConsoleFirmware::Fw9_0 && layout.ID == "builtin_ClearLock")
-			return Patches::LoadLayout(ClearLock9Fix);
+			return Patches::LoadLayout(Fix_Legacy_ClearLock);
 
 		const auto apply20Fix = fw >= ConsoleFirmware::Fw20_0 && layout.TargetFirmware < (int)ConsoleFirmware::Fw20_0;
 
@@ -65,10 +67,10 @@ namespace NewFirmFixes
 			// Themezer allows genearting variants of layouts, they use a specific format and ID to identify them
 			// these are managed by migush
 			if (layout.ID == "builtin_FlowLayout" || themezer_name_check(layout.ID, "Themezer:5"))
-				return Patches::LoadLayout(FlowLayout20Fix);
+				return Patches::LoadLayout(Fix_20_FlowLayout);
 
 			if (layout.ID == "builtin_CarefulLayout" || themezer_name_check(layout.ID, "Themezer:6"))
-				return Patches::LoadLayout(CarefulLayout20Fix);
+				return Patches::LoadLayout(Fix_20_CarefulLayout);
 		}
 
 		return std::nullopt;
@@ -77,9 +79,9 @@ namespace NewFirmFixes
 	std::optional<LayoutPatch> GetLegacyAppletButtonsFix(ConsoleFirmware fw)
 	{
 		if (fw >= ConsoleFirmware::Fw20_0)
-			return Patches::LoadLayout(LegacyAppletButtons20);
+			return Patches::LoadLayout(Fix_20_LegacyAppletButtons);
 		if (fw >= ConsoleFirmware::Fw11_0)
-			return Patches::LoadLayout(NoOnlineButton11);
+			return Patches::LoadLayout(Fix_11_NoOnlineButton);
 
 		return std::nullopt;
 	}
@@ -116,10 +118,10 @@ namespace NewFirmFixes
 	std::optional<LayoutPatch> GetAppletsPositionFix(ConsoleFirmware fw)
 	{
 		if (fw >= ConsoleFirmware::Fw20_0)
-			return Patches::LoadLayout(Downgrade20To19);
+			return Patches::LoadLayout(Fix_20_DowngradeTo19);
 
 		if (fw >= ConsoleFirmware::Fw11_0)
-			return Patches::LoadLayout(NoMoveApplets11);
+			return Patches::LoadLayout(Fix_11_NoMoveApplets);
 
 		return std::nullopt;
 	}

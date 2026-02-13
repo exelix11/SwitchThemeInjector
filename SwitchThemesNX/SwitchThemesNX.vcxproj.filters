@@ -265,6 +265,9 @@
     <ClInclude Include="source\SwitchThemesCommon\json.hpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp">
+      <Filter>SwitchThemesCommon\Generated</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">

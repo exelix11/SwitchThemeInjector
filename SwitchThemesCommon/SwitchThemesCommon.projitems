@@ -27,7 +27,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Patching\FirmwareDetection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Patching\Images.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Layouts\LayoutCompatibility.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)NewFirmFixesJsons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Layouts\RGBAColor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exten.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Layouts\LayoutDiff.cs" />

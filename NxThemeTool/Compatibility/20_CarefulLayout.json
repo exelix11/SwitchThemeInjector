@@ -1,0 +1,29 @@
+{
+  "PatchName": "Careful layout 20.0 fix",
+  "Files": [
+    {
+      "FileName": "blyt/RdtBtnNtf.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "Scale": {
+            "X": 12.7,
+            "Y": 1
+          }
+        }
+      ]
+    },
+    {
+      "FileName": "blyt/RdtBtnPvr.bflyt",
+      "Patches": [
+        {
+          "PaneName": "P_PictBase",
+          "Scale": {
+            "X": 2.2,
+            "Y": 0.9
+          }
+        }
+      ]
+    }
+  ]
+}
