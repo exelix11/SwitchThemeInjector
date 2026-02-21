@@ -1,11 +1,13 @@
 #ifndef SWITCHTHEMESCOMMON_TESTS
-#include "DDSConv.hpp"
-#define STB_DXT_IMPLEMENTATION
-#include "stb_dxt.h"
-#include "../../../../Libs/SOIL/SOIL.h"
+#include "DDS_conversion.hpp"
 
-#include "../../BinaryReadWrite/Buffer.hpp"
-#include "../../..//Platform/Platform.hpp"
+#include "../BinaryReadWrite/Buffer.hpp"
+#include "../../Platform/Platform.hpp"
+
+#include "../../../Libs/SOIL2/stb_image.h"
+#include "../../../Libs/stb_image/stb_dxt.h"
+
+#include <string>
 
 using namespace std;
 
@@ -62,43 +64,23 @@ static void extractBlock(const unsigned char* src, int x, int y,
 	}
 }
 
-extern "C" char* stbi_failure_reason();
-static string LastError = "";
-
-const std::string& DDSConv::GetError()
+DDSConv::ConversionResult DDSConv::ConvertImage(const std::vector<u8>& imgData, bool DXT5, int Width, int Height, bool ResizeIfNeeded)
 {
-	return LastError;
-}
-
-static void failWithError(const std::string &msg) 
-{
-	LastError = "Image error: " + msg;
-	LOGf("%s", LastError.c_str());
-}
-
-vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int ExpectedW, int ExpectedH)
-{
-	LastError = "";
-
-	if ((ExpectedW % 4) || (ExpectedH % 4))
-	{
-		failWithError("Image size must be a multiple of 4");
-		return {};
-	}
+	if ((Width % 4) || (Height % 4))
+		return DDSConv::ConversionResult::Fail("Width and height must be multiples of 4");
 
 	int w, h, n;
-	u8* data = SOIL_load_image_from_memory(imgData.data(), imgData.size(), &w, &h, &n, 4);
+	u8* data = stbi_load_from_memory(imgData.data(), imgData.size(), &w, &h, &n, 4);
 
-	if (!data) 
-	{
-		failWithError(stbi_failure_reason());
-		return {};
-	}
+	if (!data)
+		return DDSConv::ConversionResult::Fail("Failed to load the source image: "s + stbi_failure_reason());
 
-	if (w != ExpectedW || h != ExpectedH)
+	if (w != Width || h != Height)
 	{
-		failWithError("Wrong image size");
-		return {};
+		if (!ResizeIfNeeded)
+			return DDSConv::ConversionResult::Fail("Image dimensions don't match the required ones.");
+
+		return DDSConv::ConversionResult::Fail("Image resize is not implemented yet.");
 	}
 
 	const int BytePerBlock = DXT5 ? 16 : 8;
@@ -139,8 +121,8 @@ vector<u8> DDSConv::ImageToDDS(const vector<u8> &imgData, bool DXT5, int Expecte
 		}
 	}
 
-	SOIL_free_image_data(data);
+	stbi_image_free(data);
 
-	return bin.getBuffer();
+	return DDSConv::ConversionResult::Success(bin.getBuffer());
 }
 #endif

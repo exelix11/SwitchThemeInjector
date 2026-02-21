@@ -32,7 +32,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	Libs/SOIL source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/Pages/ThemeEntry source/Pages/RemoteInstall source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Layouts/Bflyt source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/Bntx/DDSConv source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
+SOURCES		:=	Libs/SOIL2 Libs/stb_image source/SwitchTools source/SwitchTools/lockpick source/UI source/UI/imgui source/Platform source/Pages source/Pages/ThemeEntry source/Pages/RemoteInstall source/SwitchThemesCommon/SarcLib source/SwitchThemesCommon/Layouts source/SwitchThemesCommon/Layouts/Bflyt source/SwitchThemesCommon/Bntx source/SwitchThemesCommon/BinaryReadWrite source/SwitchThemesCommon/Fonts source/SwitchThemesCommon source
 DATA		:=	data
 INCLUDES	:=	include Libs
 EXEFS_SRC	:=	exefs_src

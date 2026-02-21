@@ -1,10 +1,12 @@
 /**
-	@mainpage SOIL
+	@mainpage SOIL2
 
-	Jonathan Dummer
+	Fork by Martin Lucas Golini
+
+	Original author Jonathan Dummer
 	2007-07-26-10.36
 
-	Simple OpenGL Image Library
+	Simple OpenGL Image Library 2
 
 	A tiny c library for uploading images as
 	textures into OpenGL.  Also saving and
@@ -21,8 +23,12 @@
 	- BMP		load & save
 	- TGA		load & save
 	- DDS		load & save
-	- PNG		load
-	- JPG		load
+	- PNG		load & save
+	- JPG		load & save
+	- QOI		load & save
+	- PSD		load
+	- HDR		load
+	- PIC		load
 
 	OpenGL Texture Features:
 	- resample to power-of-two sizes
@@ -40,9 +46,24 @@
 #ifndef HEADER_SIMPLE_OPENGL_IMAGE_LIBRARY
 #define HEADER_SIMPLE_OPENGL_IMAGE_LIBRARY
 
+#include "image_array_helper.h" 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define SOIL_MAJOR_VERSION 1
+#define SOIL_MINOR_VERSION 3
+#define SOIL_PATCH_LEVEL 0
+
+#define SOIL_VERSION_NUM( X, Y, Z ) ( (X)*1000 + (Y)*100 + ( Z ) )
+
+#define SOIL_COMPILED_VERSION \
+	SOIL_VERSION_NUM( SOIL_MAJOR_VERSION, SOIL_MINOR_VERSION, SOIL_PATCH_LEVEL )
+
+#define SOIL_VERSION_ATLEAST( X, Y, Z ) ( SOIL_COMPILED_VERSION >= SOIL_VERSION_NUM( X, Y, Z ) )
+
+	unsigned long SOIL_version();
 
 /**
 	The format of images that may be loaded (force_channels).
@@ -87,10 +108,11 @@ enum
 	SOIL_FLAG_MULTIPLY_ALPHA: for using (GL_ONE,GL_ONE_MINUS_SRC_ALPHA) blending
 	SOIL_FLAG_INVERT_Y: flip the image vertically
 	SOIL_FLAG_COMPRESS_TO_DXT: if the card can display them, will convert RGB to DXT1, RGBA to DXT5
-	SOIL_FLAG_DDS_LOAD_DIRECT: will load DDS files directly without _ANY_ additional processing
+	SOIL_FLAG_DDS_LOAD_DIRECT: will load DDS files directly without _ANY_ additional processing ( if supported )
 	SOIL_FLAG_NTSC_SAFE_RGB: clamps RGB components to the range [16,235]
 	SOIL_FLAG_CoCg_Y: Google YCoCg; RGB=>CoYCg, RGBA=>CoCgAY
 	SOIL_FLAG_TEXTURE_RECTANGE: uses ARB_texture_rectangle ; pixel indexed & no repeat or MIPmaps or cubemaps
+	SOIL_FLAG_PVR_LOAD_DIRECT: will load PVR files directly without _ANY_ additional processing ( if supported )
 **/
 enum
 {
@@ -103,7 +125,11 @@ enum
 	SOIL_FLAG_DDS_LOAD_DIRECT = 64,
 	SOIL_FLAG_NTSC_SAFE_RGB = 128,
 	SOIL_FLAG_CoCg_Y = 256,
-	SOIL_FLAG_TEXTURE_RECTANGLE = 512
+	SOIL_FLAG_TEXTURE_RECTANGLE = 512,
+	SOIL_FLAG_PVR_LOAD_DIRECT = 1024,
+	SOIL_FLAG_ETC1_LOAD_DIRECT = 2048,
+	SOIL_FLAG_GL_MIPMAPS = 4096,
+	SOIL_FLAG_SRGB_COLOR_SPACE = 8192
 };
 
 /**
@@ -111,12 +137,16 @@ enum
 	(TGA supports uncompressed RGB / RGBA)
 	(BMP supports uncompressed RGB)
 	(DDS supports DXT1 and DXT5)
+	(PNG supports RGB / RGBA)
 **/
 enum
 {
 	SOIL_SAVE_TYPE_TGA = 0,
 	SOIL_SAVE_TYPE_BMP = 1,
-	SOIL_SAVE_TYPE_DDS = 2
+	SOIL_SAVE_TYPE_PNG = 2,
+	SOIL_SAVE_TYPE_DDS = 3,
+	SOIL_SAVE_TYPE_JPG = 4,
+	SOIL_SAVE_TYPE_QOI = 5
 };
 
 /**
@@ -235,7 +265,7 @@ unsigned int
 	SOIL_load_OGL_texture_from_memory
 	(
 		const unsigned char *const buffer,
-		size_t buffer_length,
+		int buffer_length,
 		int force_channels,
 		unsigned int reuse_texture_ID,
 		unsigned int flags
@@ -294,7 +324,7 @@ unsigned int
 	SOIL_load_OGL_single_cubemap_from_memory
 	(
 		const unsigned char *const buffer,
-		size_t buffer_length,
+		int buffer_length,
 		const char face_order[6],
 		int force_channels,
 		unsigned int reuse_texture_ID,
@@ -305,8 +335,8 @@ unsigned int
 	Creates a 2D OpenGL texture from raw image data.  Note that the raw data is
 	_NOT_ freed after the upload (so the user can load various versions).
 	\param data the raw data to be uploaded as an OpenGL texture
-	\param width the width of the image in pixels
-	\param height the height of the image in pixels
+	\param width the pointer of the width of the image in pixels ( if the texture size change, width will be overrided with the new width )
+	\param height the pointer of the height of the image in pixels ( if the texture size change, height will be overrided with the new height )
 	\param channels the number of channels: 1-luminous, 2-luminous/alpha, 3-RGB, 4-RGBA
 	\param reuse_texture_ID 0-generate a new texture ID, otherwise reuse the texture ID (overwriting the old texture)
 	\param flags can be any of SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MULTIPLY_ALPHA | SOIL_FLAG_INVERT_Y | SOIL_FLAG_COMPRESS_TO_DXT
@@ -316,7 +346,7 @@ unsigned int
 	SOIL_create_OGL_texture
 	(
 		const unsigned char *const data,
-		int width, int height, int channels,
+		int *width, int *height, int channels,
 		unsigned int reuse_texture_ID,
 		unsigned int flags
 	);
@@ -385,15 +415,26 @@ unsigned char*
 	SOIL_load_image_from_memory
 	(
 		const unsigned char *const buffer,
-		size_t buffer_length,
+		int buffer_length,
 		int *width, int *height, int *channels,
 		int force_channels
 	);
 
 /**
 	Saves an image from an array of unsigned chars (RGBA) to disk
+	\param quality parameter only used for SOIL_SAVE_TYPE_JPG files, values accepted between 0 and 100.
 	\return 0 if failed, otherwise returns 1
 **/
+int
+	SOIL_save_image_quality
+	(
+		const char *filename,
+		int image_type,
+		int width, int height, int channels,
+		const unsigned char *const data,
+		int quality
+	);
+
 int
 	SOIL_save_image
 	(
@@ -402,6 +443,34 @@ int
 		int width, int height, int channels,
 		const unsigned char *const data
 	);
+
+
+/**
+	Saves an image from an array of unsigned chars (RGBA) to a memory buffer in the target format.
+	Free the buffer with SOIL_free_image_data.
+	\param quality parameter only used for SOIL_SAVE_TYPE_JPG files, values accepted between 0 and 100.
+	\param imageSize returns the byte count of the image.
+	\return 0 if failed, otherwise returns 1
+**/
+
+unsigned char*
+SOIL_write_image_to_memory_quality
+(
+	int image_type,
+	int width, int height, int channels,
+	const unsigned char* const data,
+	int quality,
+	int* imageSize
+);
+
+unsigned char*
+SOIL_write_image_to_memory
+(
+	int image_type,
+	int width, int height, int channels,
+	const unsigned char* const data,
+	int* imageSize
+);
 
 /**
 	Frees the image data (note, this is just C's "free()"...this function is
@@ -412,10 +481,122 @@ void
 	SOIL_free_image_data
 	(
 		unsigned char *img_data
-	);
+);
 
 /**
-	This function resturn a pointer to a string describing the last thing
+    Selects the appropriate OpenGL texture formats based on the number of channels and flags.
+    This function determines both the internal format (how OpenGL stores the texture) and 
+    the external format (how the data is provided) for texture uploads.
+    
+    \param channels Number of color channels: 1 (L), 2 (LA), 3 (RGB), or 4 (RGBA)
+    \param flags Bitwise combination of SOIL_FLAG_* options (e.g., SOIL_FLAG_COMPRESS_TO_DXT, SOIL_FLAG_SRGB_COLOR_SPACE)
+    \param out_internal Pointer to store the selected internal GL format (GL_RGB, GL_RGBA, SOIL_RGB_S3TC_DXT1, etc.)
+    \param out_external Pointer to store the selected external GL format (GL_RGB, GL_RGBA, GL_LUMINANCE, etc.)
+**/
+void SOIL_choose_gl_formats(
+    int channels,
+    int flags,
+    int *out_internal,
+    int *out_external
+);
+
+/**
+    Uploads image layers to a 2D texture array in OpenGL.
+    This function transfers the image data from each layer of a SOIL_ImageArray
+    to the GPU, storing them as individual layers in a GL_TEXTURE_2D_ARRAY.
+    
+    \param imgArray Pointer to the SOIL_ImageArray containing the layer data to upload
+    \param external_fmt The OpenGL external format specifying how the data is organized (GL_RGB, GL_RGBA, GL_LUMINANCE, etc.)
+**/
+void SOIL_upload_image_array_layers(
+    const SOIL_ImageArray *imgArray,
+    int external_fmt
+);
+
+/**
+    Creates GPU storage for a 2D texture array with specified dimensions and layer count.
+    Allocates the necessary GPU memory for a texture array without loading data initially.
+    Data can be populated later using SOIL_upload_image_array_layers().
+    
+    \param reuse_id 0 to generate a new texture ID, or an existing texture ID to reuse
+    \param internal_fmt The OpenGL internal format specifying how the GPU stores the texture (GL_RGB, GL_RGBA, GL_SRGB, etc.)
+    \param external_fmt The OpenGL external format specifying the input data layout (GL_RGB, GL_RGBA, GL_LUMINANCE, etc.)
+    \param w Width of each texture layer in pixels
+    \param h Height of each texture layer in pixels
+    \param layers Number of layers in the texture array
+    \return OpenGL texture ID for the created texture array, or 0 if creation failed
+**/
+unsigned int SOIL_create_texture_array_storage(
+    unsigned int reuse_id,
+    int internal_fmt,
+    int external_fmt,
+    int w,
+    int h,
+    int layers
+);
+
+/**
+    Configures texture parameters for a 2D texture array based on the provided flags.
+    Sets up filtering, wrapping, and mipmap behavior for the currently bound texture array.
+    
+    \param flags Bitwise combination of SOIL_FLAG_* options (e.g., SOIL_FLAG_MIPMAPS, SOIL_FLAG_TEXTURE_REPEATS)
+**/
+void SOIL_setup_texture_params(int flags);
+
+/**
+    Loads an image atlas from disk and splits it into a 2D texture array.
+    Divides a single image file into a grid of smaller images and uploads them as individual
+    layers in a GL_TEXTURE_2D_ARRAY texture, ideal for sprite sheets and tile atlases.
+    
+    \param filename the name of the atlas file to load
+    \param cols number of columns in the atlas grid
+    \param rows number of rows in the atlas grid
+    \param force_channels 0-image format, 1-luminous, 2-luminous/alpha, 3-RGB, 4-RGBA
+    \param reuse_texture_ID 0-generate a new texture ID, otherwise reuse the texture ID (overwriting the old texture)
+    \param flags can be any of SOIL_FLAG_POWER_OF_TWO | SOIL_FLAG_MIPMAPS | SOIL_FLAG_TEXTURE_REPEATS | SOIL_FLAG_MULTIPLY_ALPHA | SOIL_FLAG_INVERT_Y | SOIL_FLAG_COMPRESS_TO_DXT
+    \return 0-failed, otherwise returns the OpenGL texture array handle
+**/
+unsigned int SOIL_load_OGL_texture_array_from_atlas_grid(
+	const char *filename,
+    int cols,
+    int rows,
+    int force_channels,
+    unsigned int reuse_texture_ID,
+    unsigned int flags
+);
+
+/**
+    Prepares an image array for GPU upload by applying transformations.
+    Processes the image array according to flags (invert Y, NTSC safe, alpha multiplication, etc.)
+    and ensures dimensions meet GPU constraints (POT, max texture size).
+    
+    \param imgArray pointer to the SOIL_ImageArray to process
+    \param flags bitwise combination of SOIL_FLAG_* options specifying transformations to apply
+    \return 1 if successful, 0 if preparation failed
+**/
+int SOIL_prepare_image_array(
+    SOIL_ImageArray* imgArray,
+    unsigned int flags
+);
+
+/**
+    Uploads a prepared image array to GPU memory as a 2D texture array.
+    Transfers all layers from a SOIL_ImageArray to OpenGL, creating or reusing a texture ID,
+    and applies texture parameter settings.
+    
+    \param imgArray pointer to the SOIL_ImageArray containing the layers to upload
+    \param reuse_texture_ID 0-generate a new texture ID, otherwise reuse the texture ID (overwriting the old texture)
+    \param flags bitwise combination of SOIL_FLAG_* options for texture configuration
+    \return 0-failed, otherwise returns the OpenGL texture array handle
+**/
+unsigned int SOIL_upload_image_array_to_gl(
+    const SOIL_ImageArray *imgArray,
+    unsigned int reuse_texture_ID,
+    unsigned int flags
+);
+
+/**
+	This function returns a pointer to a string describing the last thing
 	that happened inside SOIL.  It can be used to determine why an image
 	failed to load.
 **/
@@ -425,6 +606,60 @@ const char*
 		void
 	);
 
+/** @return The address of the GL function proc, or NULL if the function is not found. */
+void *
+	SOIL_GL_GetProcAddress
+	(
+		const char *proc
+	);
+
+/** @return 1 if an OpenGL extension is supported for the current context, 0 otherwise. */
+int
+	SOIL_GL_ExtensionSupported
+	(
+		const char *extension
+	);
+
+/** Loads the DDS texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_DDS(
+		const char *filename,
+		unsigned int reuse_texture_ID,
+		int flags,
+		int loading_as_cubemap );
+
+/** Loads the DDS texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_DDS_from_memory(
+		const unsigned char *const buffer,
+		int buffer_length,
+		unsigned int reuse_texture_ID,
+		int flags,
+		int loading_as_cubemap );
+
+/** Loads the PVR texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_PVR(
+		const char *filename,
+		unsigned int reuse_texture_ID,
+		int flags,
+		int loading_as_cubemap );
+
+/** Loads the PVR texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_PVR_from_memory(
+		const unsigned char *const buffer,
+		int buffer_length,
+		unsigned int reuse_texture_ID,
+		int flags,
+		int loading_as_cubemap );
+
+/** Loads the PVR texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_ETC1(const char *filename,
+		unsigned int reuse_texture_ID,
+		int flags );
+
+/** Loads the PVR texture directly to the GPU memory ( if supported ) */
+unsigned int SOIL_direct_load_ETC1_from_memory(const unsigned char *const buffer,
+		int buffer_length,
+		unsigned int reuse_texture_ID,
+		int flags );
 
 #ifdef __cplusplus
 }

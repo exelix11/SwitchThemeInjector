@@ -7,12 +7,29 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Libs\SOIL\image_DXT.h" />
-    <ClInclude Include="Libs\SOIL\image_helper.h" />
-    <ClInclude Include="Libs\SOIL\SOIL.h" />
-    <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h" />
-    <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h" />
-    <ClInclude Include="Libs\SOIL\stb_image_aug.h" />
+    <ClInclude Include="Libs\SOIL2\image_array.h" />
+    <ClInclude Include="Libs\SOIL2\image_array_helper.h" />
+    <ClInclude Include="Libs\SOIL2\image_DXT.h" />
+    <ClInclude Include="Libs\SOIL2\image_helper.h" />
+    <ClInclude Include="Libs\SOIL2\pkm_helper.h" />
+    <ClInclude Include="Libs\SOIL2\pvr_helper.h" />
+    <ClInclude Include="Libs\SOIL2\SOIL2.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_DDS.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_DDS_c.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_ext.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_ext_c.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_pkm.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_pkm_c.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_pvr.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_pvr_c.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_qoi.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_qoi_c.h" />
+    <ClInclude Include="Libs\SOIL2\stbi_qoi_write.h" />
+    <ClInclude Include="Libs\SOIL2\stb_image.h" />
+    <ClInclude Include="Libs\SOIL2\stb_image_write.h" />
+    <ClInclude Include="Libs\SOIL2\wfETC.h" />
+    <ClInclude Include="Libs\stb_image\stb_dxt.h" />
+    <ClInclude Include="Libs\stb_image\stb_image_resize2.h" />
     <ClInclude Include="source\Pages\QlaunchPatchPage.hpp" />
     <ClInclude Include="source\Dialogs.hpp" />
     <ClInclude Include="source\fs.hpp" />
@@ -39,8 +56,7 @@
     <ClInclude Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\BRTI.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS.hpp" />
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.hpp" />
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS_conversion.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp" />
@@ -81,10 +97,12 @@
     <ClInclude Include="source\ViewFunctions.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Libs\SOIL\image_DXT.c" />
-    <ClCompile Include="Libs\SOIL\image_helper.c" />
-    <ClCompile Include="Libs\SOIL\SOIL.c" />
-    <ClCompile Include="Libs\SOIL\stb_image_aug.c" />
+    <ClCompile Include="Libs\SOIL2\image_array.c" />
+    <ClCompile Include="Libs\SOIL2\image_DXT.c" />
+    <ClCompile Include="Libs\SOIL2\image_helper.c" />
+    <ClCompile Include="Libs\SOIL2\SOIL2.c" />
+    <ClCompile Include="Libs\SOIL2\wfETC.c" />
+    <ClCompile Include="Libs\stb_image\stb_image_impl.c" />
     <ClCompile Include="source\Pages\QlaunchPatchPage.cpp" />
     <ClCompile Include="source\fs.cpp" />
     <ClCompile Include="source\main.cpp" />
@@ -111,7 +129,7 @@
     <ClCompile Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\BRTI.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS.cpp" />
-    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS_conversion.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp" />

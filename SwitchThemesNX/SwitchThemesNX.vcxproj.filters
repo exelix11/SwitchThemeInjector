@@ -40,12 +40,6 @@
     <Filter Include="Libs">
       <UniqueIdentifier>{531f4e38-1417-485f-92ca-e9cb14694160}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Libs\SOIL">
-      <UniqueIdentifier>{74079f35-9814-4b14-b763-9f1cd47aa260}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="SwitchThemesCommon\Btnx\DDSConv">
-      <UniqueIdentifier>{bd0674db-f5fa-4069-94ef-21925bd13823}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SwitchThemesCommon\Layouts\Bflyt">
       <UniqueIdentifier>{9e3ec0c5-5373-4d74-a93d-8e9316a66c12}</UniqueIdentifier>
     </Filter>
@@ -57,6 +51,12 @@
     </Filter>
     <Filter Include="SwitchThemesCommon\Generated">
       <UniqueIdentifier>{9bcfff11-c77f-4ac3-8497-0761077bd3c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\SOIL2">
+      <UniqueIdentifier>{db371317-22d0-4c9b-84a0-42700705acb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\stb_image">
+      <UniqueIdentifier>{59b44990-75cf-45d7-8ae1-f49c4ec30b5b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -167,30 +167,6 @@
     <ClInclude Include="source\SwitchTools\hactool.hpp">
       <Filter>SwitchTools</Filter>
     </ClInclude>
-    <ClInclude Include="Libs\SOIL\image_helper.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\SOIL\SOIL.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\SOIL\stbi_DDS_aug.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\SOIL\stbi_DDS_aug_c.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\SOIL\image_DXT.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.hpp">
-      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
-    </ClInclude>
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDSconv\stb_dxt.h">
-      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
-    </ClInclude>
-    <ClInclude Include="Libs\SOIL\stb_image_aug.h">
-      <Filter>Libs\SOIL</Filter>
-    </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.hpp">
       <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClInclude>
@@ -267,6 +243,78 @@
     </ClInclude>
     <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp">
       <Filter>SwitchThemesCommon\Generated</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS_conversion.hpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\image_array_helper.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\image_DXT.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\image_helper.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\pkm_helper.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\pvr_helper.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\SOIL2.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stb_image.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stb_image_write.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_DDS.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_DDS_c.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_ext.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_ext_c.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_pkm.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_pkm_c.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_pvr.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_pvr_c.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_qoi.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_qoi_c.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\stbi_qoi_write.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\wfETC.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\SOIL2\image_array.h">
+      <Filter>Libs\SOIL2</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\stb_image\stb_image_resize2.h">
+      <Filter>Libs\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\stb_image\stb_dxt.h">
+      <Filter>Libs\stb_image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -377,21 +425,6 @@
     <ClCompile Include="source\SwitchTools\hactool.cpp">
       <Filter>SwitchTools</Filter>
     </ClCompile>
-    <ClCompile Include="Libs\SOIL\image_helper.c">
-      <Filter>Libs\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="Libs\SOIL\SOIL.c">
-      <Filter>Libs\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="Libs\SOIL\image_DXT.c">
-      <Filter>Libs\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDSconv\DDSConv.cpp">
-      <Filter>SwitchThemesCommon\Btnx\DDSConv</Filter>
-    </ClCompile>
-    <ClCompile Include="Libs\SOIL\stb_image_aug.c">
-      <Filter>Libs\SOIL</Filter>
-    </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Layouts\Bflyt\Bflyt.cpp">
       <Filter>SwitchThemesCommon\Layouts\Bflyt</Filter>
     </ClCompile>
@@ -443,6 +476,27 @@
     </ClCompile>
     <ClCompile Include="source\SwitchThemesCommon\Generated\TextureReplacement.g.cpp">
       <Filter>SwitchThemesCommon\Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS_conversion.cpp">
+      <Filter>SwitchThemesCommon\Btnx</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL2\image_DXT.c">
+      <Filter>Libs\SOIL2</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL2\image_helper.c">
+      <Filter>Libs\SOIL2</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL2\SOIL2.c">
+      <Filter>Libs\SOIL2</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL2\wfETC.c">
+      <Filter>Libs\SOIL2</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\SOIL2\image_array.c">
+      <Filter>Libs\SOIL2</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\stb_image\stb_image_impl.c">
+      <Filter>Libs\stb_image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

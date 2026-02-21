@@ -4,13 +4,14 @@
 #include <GLFW/glfw3.h>
 #include "glad.h"
 
-#include <SOIL/SOIL.h>
 #include <algorithm>
 
 #include "../Platform/Platform.hpp"
 
 #include "imgui/imgui_internal.h"
 #include "../ViewFunctions.hpp"
+
+#include "../../Libs/SOIL2/SOIL2.h"
 
 static_assert(std::is_same<GLuint, LoadedImage>::value);
 static_assert(sizeof(LoadedImage) <= sizeof(ImTextureID)); //We must not lose data when passing the image to ImGui
@@ -54,16 +55,17 @@ void Image::Free(LoadedImage img)
 
 LoadedImage Image::Load(const std::vector<u8>& data)
 {
-	auto img = SOIL_load_OGL_texture_from_memory
-	(
-		data.data(),
-		data.size(),
-		SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID,
-		0
-	);
-	if (img) ImageCount++;
-	return img;
+	int x, y, channels;
+	GLuint tex = SOIL_load_OGL_texture_from_memory(data.data(), data.size(), 4, 0, 0);
+	
+	if (!tex)
+	{
+		LOGf("Failed to load image, SOIL error: %s\n", SOIL_last_result());
+		return 0;
+	}
+
+	ImageCount++;
+	return tex;
 }
 
 void Image::Internal::AssertOnLeaks()

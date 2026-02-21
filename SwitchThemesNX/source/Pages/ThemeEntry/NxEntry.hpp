@@ -3,7 +3,7 @@
 #include "../../SwitchTools/PatchMng.hpp"
 #include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../SettingsPage.hpp"
-#include "../../SwitchThemesCommon/Bntx/DDSConv/DDSConv.hpp"
+#include "../../SwitchThemesCommon/Bntx/DDS_conversion.hpp"
 #include "../../SwitchTools/hactool.hpp"
 
 class NxEntry : public ThemeEntry
@@ -193,12 +193,12 @@ protected:
 							pResult = Patcher.PatchAppletIcon(SData.files[p.NxThemeName + ".dds"], p.NxThemeName);
 						else if (SData.files.count(p.NxThemeName + ".png"))
 						{
-							auto dds = DDSConv::ImageToDDS(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
-							if (dds.size() != 0)
-								pResult = Patcher.PatchAppletIcon(dds, p.NxThemeName);
+							auto dds = DDSConv::ConvertImage(SData.files[p.NxThemeName + ".png"], true, p.W, p.H);
+							if (dds.IsSuccess())
+								pResult = Patcher.PatchAppletIcon(dds.Data, p.NxThemeName);
 							else
 							{
-								DialogBlocking("Couldn't load the icon image for " + p.NxThemeName);
+								DialogBlocking("Failed to convert the image for: " + p.NxThemeName + "\n" + dds.ErrorMessage);
 								continue;
 							}
 						}
@@ -265,11 +265,11 @@ private:
 			return SData.files["image.dds"];
 		else if (SData.files.count("image.jpg"))
 		{
-			auto res = DDSConv::ImageToDDS(SData.files["image.jpg"], false, 1280, 720);
-			if (res.size() != 0)
+			auto res = DDSConv::ConvertImage(SData.files["image.jpg"], false, 1280, 720);
+			if (res.IsSuccess())
 			{
 				//HACK: don't save the nxtheme after this
-				SData.files["image.dds"] = res;
+				SData.files["image.dds"] = std::move(res.Data);
 				_HasPreview = true;
 				return SData.files["image.dds"];
 			}
@@ -277,9 +277,9 @@ private:
 			{
 				_HasPreview = false;
 				_CanInstall = false;
-				lblLine2 = DDSConv::GetError();
+				lblLine2 = res.ErrorMessage;
 				CannotInstallReason = "Couldn't convert the included image " + lblLine2;
-				return  ThemeEntry::_emtptyVec;
+				return ThemeEntry::_emtptyVec;
 			}
 		}
 		return ThemeEntry::_emtptyVec;
