@@ -42,7 +42,6 @@ CreditsPage::CreditsPage() :
 	Name = "Credits";
 }
 
-extern void ShowFirstTimeHelp(bool WelcomeScr); //from main.cpp
 void CreditsPage::Render(int X, int Y)
 {
 	Utils::ImGuiSetupPage(this, X, Y);
@@ -64,8 +63,6 @@ void CreditsPage::Render(int X, int Y)
 		"Everyone from the DearImgui github repo"
 	);
 
-	if (ImGui::Button("Show first startup info"))
-		PushFunction([]() {ShowFirstTimeHelp(false); });
 	PAGE_RESET_FOCUS;
 
 	ImGui::PopFont();

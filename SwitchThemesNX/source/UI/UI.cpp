@@ -55,7 +55,6 @@ void Image::Free(LoadedImage img)
 
 LoadedImage Image::Load(const std::vector<u8>& data)
 {
-	int x, y, channels;
 	GLuint tex = SOIL_load_OGL_texture_from_memory(data.data(), data.size(), 4, 0, 0);
 	
 	if (!tex)

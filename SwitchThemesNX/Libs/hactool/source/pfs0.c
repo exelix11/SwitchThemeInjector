@@ -122,9 +122,13 @@ static uint8_t* pfs0_copy_file(pfs0_ctx_t *ctx, const char* file_name, uint64_t 
 
 void pfs0_save(pfs0_ctx_t *ctx) {
     /* Extract single file to buffer */
-    if (ctx->is_exefs && ctx->tool_ctx->settings.exefs_main_out)
+    if (ctx->is_exefs && ctx->tool_ctx->settings.extraction_exefs && ctx->tool_ctx->settings.extraction_file_stream_cb)
     {
-        ctx->tool_ctx->settings.exefs_main_out->data = pfs0_copy_file(ctx, "main", &ctx->tool_ctx->settings.exefs_main_out->size);
+        size_t length = NULL;
+        uint8_t* data = pfs0_copy_file(ctx, "main", &length);
+
+		ctx->tool_ctx->settings.extraction_file_stream_cb(
+            ctx->tool_ctx->settings.extra_context, "main", data, length);
     }
 
     /* Extract to directory. */

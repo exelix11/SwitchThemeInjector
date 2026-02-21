@@ -11,9 +11,6 @@ namespace hactool {
 	void ExtractPlayerSelectMenu();
 	void ExtractUserPage();
 	void ExtractHomeMenu();
-	void ExtractTitle(u64 contentID, const std::string& Path);
-	
-	void ExtractHomeExefs();
 
 	std::array<u8, 32> GetTitleBuildID(u64 contentID);
 	std::string BuildIDToString(std::array<u8, 32> data);

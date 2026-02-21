@@ -82,12 +82,9 @@ typedef struct {
     titlekey_entry_t *titlekeys;
 } known_titlekeys_t;
 
-typedef bool (*file_filter_function)(const char*);
+typedef bool (*file_filter_function)(void* context, const char* file_name);
 
-typedef struct {
-    uint8_t *data;
-    uint64_t size;
-} file_output_t;
+typedef void (*file_stream_callback)(void* context, const char* file_name, unsigned char* file_data, size_t length);
 
 typedef struct {
     nca_keyset_t keyset;
@@ -130,7 +127,10 @@ typedef struct {
     filepath_t nax0_sd_path;
     filepath_t npdm_json_path;
 	file_filter_function romfs_filter;
-    file_output_t* exefs_main_out;
+	file_stream_callback extraction_file_stream_cb;
+	void* extra_context;
+    bool extraction_exefs;
+    bool extraction_romfs;
 } hactool_settings_t;
 
 enum hactool_file_type

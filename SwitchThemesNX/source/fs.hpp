@@ -38,7 +38,8 @@ namespace fs::path
 
 	std::string GetFreeDownloadFolder();
 
-	std::string Nca(u64 contentID);
+	// Modifies in-place
+	std::string& ToUnixSeparators(std::string& str);
 
 	const std::string Atmosphere = SD_PREFIX ATMOS_DIR;
 	const std::string Reinx = SD_PREFIX REINX_DIR;
@@ -98,6 +99,4 @@ namespace fs::theme {
 	void CreateMitmStructure(const std::string& id);
 	void CreateRomfsDir(const std::string& id);
 	void CreateStructure(const std::string& id);
-
-	bool DumpHomeMenuNca();
 }

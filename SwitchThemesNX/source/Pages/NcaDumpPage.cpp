@@ -26,17 +26,10 @@ void NcaDumpPage::Render(int X, int Y)
 	if (ImGui::Button("Extract home menu"))
 	{
 		PushFunction([]() {
-			if ((gamepad.buttons[GLFW_GAMEPAD_BUTTON_LEFT_BUMPER] && gamepad.buttons[GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER]))
-			{
-				DialogBlocking("Super secret combination entered, only the home menu NCA will be dumped (it won't be extracted)");
-				DisplayLoading("Extracting NCA...");
-				if (fs::theme::DumpHomeMenuNca())
-					Dialog("The home menu NCA was extracted, now use the injector to complete the setup.\nIf you didn't do this on purpose ignore this message.");
-				return;
-			}
 			if (!YesNoPage::Ask(
 				"To install custom themes you need to extract the home menu first, this process may take several minutes, don't let your console go to sleep mode and don't press the home button.\n"
 				"Do you want to continue ?")) return;
+
 			fs::RemoveSystemDataDir();
 			try
 			{				

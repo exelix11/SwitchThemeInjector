@@ -214,28 +214,6 @@ class QuitPage : public IPage
 		}
 };
 
-void ShowFirstTimeHelp(bool WelcomeScr)
-{	
-	if (WelcomeScr)
-		DialogBlocking("Welcome to NXThemes Installer " + Version::Name + "!\n\nThese pages contains some important informations, it's recommended to read them carefully.\nThis will only show up once, you can read it again from the Credits tab.");
-
-	DialogBlocking(
-		"Custom themes CANNOT brick your console because they're installed only on the SDcard. \n"
-		"If after installing a theme your console doesn't boot anymore manually delete the '0100000000001000' and '0100000000001013' folders in 'SDcard/atmosphere/contents'.\n\n"
-		"When you change the firmware your console (upgrade or downgrade) you must uninstall the theme first because the installed files on the sd are firmware-dependent.\n"
-		"If the firmware you installed supports themes you can install them back after the update.\n\n"
-		"Lockscreen themes after firmware version 9.0 are not supported on all CFWs because some lack support for patching titles via IPS."
-	);
-
-	DialogBlocking(
-		"You can find some themes on the /r/NXThemes subreddit and in the Qcean Discord server (invite: CUnHJgb) where you can also ask for support. \n\n"
-		"To make your own themes download the windows app at: https://git.io/fpxAS\n"
-		"Or use the online theme editor at: https://exelix11.github.io/SwitchThemeInjector/v2\n"
-		"\n"
-		"That's all, have fun with custom themes :)"
-	);
-}
-
 // Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
 static void SetCfwFolder()
 {
@@ -342,7 +320,7 @@ int main(int argc, char **argv)
 	SetupSysVer();
 	DisplayLoading("Loading system info...");
 
-	bool ThemesFolderExists = fs::EnsureThemesFolderExists();
+	fs::EnsureThemesFolderExists();
 	NcaDumpPage::CheckHomeMenuVer();
 	SetCfwFolder();
 
@@ -363,9 +341,6 @@ int main(int argc, char **argv)
 		TabRenderer *t = new TabRenderer();
 		PushPage(t);
 		
-		if (!ThemesFolderExists)
-			ShowFirstTimeHelp(true);
-
 		QlaunchPatchPage* patchPage = new QlaunchPatchPage();
 
 		// Internally calls patchmng

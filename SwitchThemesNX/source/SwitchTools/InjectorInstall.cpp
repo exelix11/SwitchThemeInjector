@@ -142,9 +142,9 @@ void InjectorInstall::Server::HostUpdate()
 		return;
 	}
 #else
-	if (std::filesystem::exists("F:/RemoteFile.bin"))
+	if (std::filesystem::exists(SD_PREFIX "/RemoteFile.bin"))
 	{
-		Data = fs::OpenFile("F:/RemoteFile.bin");
+		Data = fs::OpenFile(SD_PREFIX  "/RemoteFile.bin");
 		PayloadSize = Data.size();
 		Finished = true;
 		StopHosting();
@@ -164,7 +164,7 @@ std::string InjectorInstall::Server::GetHostname()
 	}
 	return hostname;
 #else
-	return "F:\\remoteFile.bin";
+	return "remoteFile.bin";
 #endif
 }
 

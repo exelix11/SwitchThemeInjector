@@ -49,32 +49,7 @@ std::string fs::path::GetFreeDownloadFolder()
 	return "";
 }
 
-string fs::path::Nca(u64 id)
-{
-#ifdef __SWITCH__
-	char path[FS_MAX_PATH] = { 0 };
-	auto rc = lrInitialize();
-	if (R_FAILED(rc))
-		throw std::runtime_error("lrInitialize : "s + std::to_string(rc));
-
-	LrLocationResolver res;
-	rc = lrOpenLocationResolver(NcmStorageId_BuiltInSystem, &res);
-	if (R_FAILED(rc))
-		throw std::runtime_error("lrOpenLocationResolver :"s + std::to_string(rc));
-
-	rc = lrLrResolveProgramPath(&res, id, path);
-	if (R_FAILED(rc))
-		throw std::runtime_error("lrLrResolveDataPath : "s + std::to_string(rc));
-
-	std::string result(path);
-	result.erase(0, ((std::string)"@SystemContent://").length());
-	return (std::string)"System:/Contents/" + result;
-#else
-	return "";
-#endif
-}
-
-static string &replaceWindowsPathChar(string& str)
+string& fs::path::ToUnixSeparators(string& str)
 {
 	char* c = str.data();
 	while (*c)
@@ -102,7 +77,7 @@ static vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 					continue;
 
 			auto path = p.path().string();
-			res.push_back(replaceWindowsPathChar(path));
+			res.push_back(fs::path::ToUnixSeparators(path));
 			auto v = GetThemeFilesInDirRecursive(p.path().string(), level + 1);
 			res.insert(res.end(), v.begin(), v.end());
 		}
@@ -110,7 +85,7 @@ static vector<string> GetThemeFilesInDirRecursive(const string &path, int level)
 		{
 			if (StrEndsWith(p.path().string(), ".szs") || StrEndsWith(p.path().string(), ".nxtheme") || StrEndsWith(p.path().string(), ".ttf")) {
 				auto str = p.path().string();
-				res.push_back(replaceWindowsPathChar(str));
+				res.push_back(fs::path::ToUnixSeparators(str));
 			}
 		}
 	}
@@ -312,32 +287,6 @@ void fs::theme::CreateStructure(const string &id)
 	CreateMitmStructure(id);
 	CreateRomfsDir(id);
 	mkdir((path::RomfsFolder(id) + "lyt").c_str(), ACCESSPERMS);
-}
-
-bool fs::theme::DumpHomeMenuNca()
-{	
-#ifdef __SWITCH__
-	FsFileSystem sys;
-    fsOpenBisFileSystem(&sys, FsBisPartitionId_System, "");
-	fsdevMountDevice("System", sys);
-	try {		
-		auto targetNca = path::Nca(0x0100000000001000);
-		WriteFile(path::SystemDataFolder + "home.nca",OpenFile(targetNca));
-		targetNca = path::Nca(0x0100000000001013);
-		WriteFile(path::SystemDataFolder + "user.nca",OpenFile(targetNca));
-	}
-	catch (...)
-	{
-		fsdevUnmountDevice("System");
-		fsFsClose(&sys);
-		return false;
-	}
-	fsdevUnmountDevice("System");
-	fsFsClose(&sys);
-	return true;
-#else
-	return false;
-#endif
 }
 
 bool fs::cfw::IsAms()

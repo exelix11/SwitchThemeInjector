@@ -49,7 +49,7 @@ namespace SwitchThemes.Common.Bntx
 				Reader.BaseStream.Seek(Reader.ReadInt64(), SeekOrigin.Begin);
 
 				Textures.Add(new Texture(Reader));
-				//File.WriteAllBytes("F:\\test", Textures[0].Write());
+				//File.WriteAllBytes("test", Textures[0].Write());
 			}
 
 			Reader.BaseStream.Position = RelocAddress;

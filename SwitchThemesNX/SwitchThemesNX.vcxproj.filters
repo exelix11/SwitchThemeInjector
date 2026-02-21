@@ -58,6 +58,12 @@
     <Filter Include="Libs\stb_image">
       <UniqueIdentifier>{59b44990-75cf-45d7-8ae1-f49c4ec30b5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Libs\mbedtls">
+      <UniqueIdentifier>{ed3ecc1a-e5bf-486b-b8d5-f8e203c1db60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\hactool">
+      <UniqueIdentifier>{533c2a6d-54dd-4d95-826e-7f132c98ce6d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\UI\imgui\imgui.h">
@@ -316,6 +322,87 @@
     <ClInclude Include="Libs\stb_image\stb_dxt.h">
       <Filter>Libs\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="Libs\hactool\source\hfs0.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\ivfc.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\kip.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\lz4.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\nax0.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\nca.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\nca0_romfs.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\npdm.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\nso.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\packages.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\pfs0.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\pki.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\rsa.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\save.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\settings.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\sha.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\types.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\utils.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\version.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\xci.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\aes.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\bktr.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\cJSON.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\ConvertUTF.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\extkeys.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="Libs\hactool\source\filepath.h">
+      <Filter>Libs\hactool</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SwitchTools\key_loader.hpp">
+      <Filter>SwitchTools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -498,8 +585,307 @@
     <ClCompile Include="Libs\stb_image\stb_image_impl.c">
       <Filter>Libs\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="Libs\hactool\source\kip.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\lz4.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\nax0.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\nca.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\nca0_romfs.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\npdm.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\nso.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\packages.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\pfs0.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\pki.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\romfs.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\rsa.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\save.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\sha.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\utils.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\xci.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\aes.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\bktr.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\cJSON.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\ConvertUTF.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\extkeys.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\filepath.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\hactool\source\hfs0.c">
+      <Filter>Libs\hactool</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\asn1write.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\base64.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\bignum.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\blowfish.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\camellia.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ccm.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\certs.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\cipher.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\cipher_wrap.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\cmac.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ctr_drbg.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\debug.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\des.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\dhm.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ecdh.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ecdsa.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ecjpake.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ecp.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ecp_curves.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\entropy.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\entropy_poll.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\error.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\gcm.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\havege.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\hmac_drbg.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\md.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\md_wrap.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\md2.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\md4.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\md5.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\memory_buffer_alloc.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\net_sockets.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\oid.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\padlock.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pem.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pk.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pk_wrap.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pkcs5.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pkcs11.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pkcs12.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pkparse.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\pkwrite.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\platform.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\platform_util.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ripemd160.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\rsa.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\rsa_internal.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\sha1.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\sha256.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\sha512.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_cache.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_ciphersuites.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_cli.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_cookie.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_srv.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_ticket.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\ssl_tls.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\threading.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\timing.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\version.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\version_features.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509_create.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509_crl.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509_crt.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509_csr.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509write_crt.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\x509write_csr.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\xtea.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\aes.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\aesni.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\arc4.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="Libs\mbedtls\source\asn1parse.c">
+      <Filter>Libs\mbedtls</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SwitchTools\key_loader.cpp">
+      <Filter>SwitchTools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Makefile" />
+    <None Include="Libs\hactool\source\LICENSE">
+      <Filter>Libs\hactool</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Libs\mbedtls\source\CMakeLists.txt">
+      <Filter>Libs\mbedtls</Filter>
+    </Text>
   </ItemGroup>
 </Project>
