@@ -10,6 +10,30 @@ namespace NxThemeTool
         void WriteString(string name, string data) => WriteFile(name, Encoding.UTF8.GetBytes(data));
     }
 
+    public class InMemoryFileProvider : IContentWriter, IContentProvider
+    {
+        readonly Dictionary<string, byte[]> files = new();
+
+        public void Dispose()
+        {
+            // Nothing to do here
+        }
+
+        public List<string> GetFiles() => files.Keys.ToList();
+
+        public bool HasFile(string name) => files.ContainsKey(name);
+
+        public void WriteFile(string name, byte[] data) => files[name] = data;
+
+        public byte[] GetFile(string name)
+        {
+            if (!files.ContainsKey(name))
+                throw new FileNotFoundException($"File '{name}' not found in in-memory provider.");
+
+            return files[name];
+        }
+    }
+
     public class DirectoryContentWriter : IContentWriter
     {
         private readonly string directoryPath;

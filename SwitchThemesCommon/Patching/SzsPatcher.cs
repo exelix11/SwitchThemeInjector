@@ -166,10 +166,10 @@ namespace SwitchThemes.Common.Patching
             bool appletPositionFixes = false;
             bool onlineBtnFix = false;
 
-            if (CompatFixes == LayoutCompatibilityOption.Firmware10 && PartName == "home")
+            if (CompatFixes == LayoutCompatibilityOption.Firmware10 && PartName == CommonInfo.PartHome)
                 Patch.HideOnlineBtn = true;
 
-            if (CompatFixes == LayoutCompatibilityOption.Firmware11 && PartName == "home")
+            if (CompatFixes == LayoutCompatibilityOption.Firmware11 && PartName == CommonInfo.PartHome)
             {
                 Patch.HideOnlineBtn = false;
                 Patch.TargetFirmwareValue = ConsoleFirmware.Fw11_0;
@@ -180,14 +180,14 @@ namespace SwitchThemes.Common.Patching
                 // Detect any compatibility patches we need
                 useLegacyFixes = TargetFirmware != ConsoleFirmware.Invariant && Patch.UsesOldFixes;
                 useModernFixes = !useLegacyFixes && Patch.ID != null;
-                appletPositionFixes = PartName == "home" && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, TargetFirmware);
+                appletPositionFixes = PartName == CommonInfo.PartHome && NewFirmFixes.ShouldApplyAppletPositionFix(Patch, TargetFirmware);
 
                 // The default for this on old layouts that don't specify it is true
-                onlineBtnFix = PartName == "home" && (Patch.HideOnlineBtn ?? true);
+                onlineBtnFix = PartName == CommonInfo.PartHome && (Patch.HideOnlineBtn ?? true);
             }
 
             // Apply legacy PatchAppletColorAttrib patch
-            if (PartName == "home" && Patch.PatchAppletColorAttrib)
+            if (PartName == CommonInfo.PartHome && Patch.PatchAppletColorAttrib)
                 PatchBntxTextureAttribs(new Tuple<string, uint>("RdtIcoPvr_00^s", 0x5050505),
                    // News icon before 20.0.0:
                    new Tuple<string, uint>("RdtIcoNews_00^s", 0x5050505), new Tuple<string, uint>("RdtIcoNews_01^s", 0x5050505),

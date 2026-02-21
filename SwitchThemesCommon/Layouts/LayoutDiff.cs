@@ -104,7 +104,7 @@ namespace SwitchThemes.Common
 				Files = Patches.ToArray(),
 				Anims = AnimPatches?.ToArray(),
 				ID = $"Generated_{Guid.NewGuid()}",
-				HideOnlineBtn = targetPatch?.NXThemeName != "home" ? null : opt?.HideOnlineButton,
+				HideOnlineBtn = targetPatch?.NXThemeName != CommonInfo.PartHome ? null : opt?.HideOnlineButton,
 				TargetFirmwareValue = target
 			};
 		}

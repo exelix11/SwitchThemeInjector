@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SARCExt;
 using SwitchThemes.Common;
+using SwitchThemes.Common.Patching;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

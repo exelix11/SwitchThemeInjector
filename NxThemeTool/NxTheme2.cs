@@ -2,7 +2,7 @@
 using SwitchThemes.Common.Images;
 using System.Text.Json;
 
-namespace NxThemeTool.Nxtheme2
+namespace NxThemeTool
 {
     public class NxTheme2Manifest
     {
@@ -20,7 +20,8 @@ namespace NxThemeTool.Nxtheme2
     {
         public record class Part(
             string PartName,
-            Dictionary<string, byte[]> ExtraImages)
+            Dictionary<string, byte[]> ExtraImages // Indexed by NxThemeName + extension, e.g. "home.png"
+        )
         {
             public string? LayoutJson { get; set; }
             public byte[]? MainImage { get; set; }
@@ -36,15 +37,16 @@ namespace NxThemeTool.Nxtheme2
         public readonly List<Part> Parts = new();
         public readonly NxTheme2Manifest Manifest;
 
-        public NxTheme2()
+        public NxTheme2(string? id = null)
         {
             Manifest = new NxTheme2Manifest()
             {
                 FormatVersion = CommonInfo.NxTheme2FormatVersion,
-                Id = Guid.NewGuid().ToString()
+                Id = id ?? Guid.NewGuid().ToString()
             };
         }
 
+        // This does not take ownership of the provider
         public NxTheme2(IContentProvider provider, ProcessResult? validation)
         {
             Manifest = provider.GetJson<NxTheme2Manifest>("manifest.json");

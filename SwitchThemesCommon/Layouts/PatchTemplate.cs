@@ -34,19 +34,21 @@ namespace SwitchThemes.Common
 		public string LayoutInfo;
 		public string Target;
 
-		public string Serialize()
+		public string Serialize(bool indent = false)
 		{
 			if (string.IsNullOrWhiteSpace(Target) || string.IsNullOrWhiteSpace(ThemeName))
 				throw new Exception("Invalid target or theme name");
+
 			JsonSerializerSettings settings = new JsonSerializerSettings()
 			{
 				DefaultValueHandling = DefaultValueHandling.Ignore,
 				NullValueHandling = NullValueHandling.Ignore,
-				Formatting = Formatting.None,
+				Formatting = indent ? Formatting.None : Formatting.Indented,
 				ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
 			};
 			return JsonConvert.SerializeObject(this, settings);
 		}
+
 		public static ThemeFileManifest Deserialize(string json) { return JsonConvert.DeserializeObject<ThemeFileManifest>(json); }
 	}
 
@@ -142,7 +144,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixBG",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1^r",
-				NXThemeName = "home",
+				NXThemeName = CommonInfo.PartHome,
 			},
 		//Residentmenu:
 			new PatchTemplate() { TemplateName = "home menu" , SzsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
@@ -153,7 +155,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixBG",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1A64^t",
-				NXThemeName = "home"
+				NXThemeName = CommonInfo.PartHome
 			},
 			new PatchTemplate() { TemplateName = "home menu only" , SzsName = "ResidentMenu.szs", TitleId = "0100000000001000",  FirmName = "<= 5.X",
 				FnameIdentifier = new string[] { @"anim/RdtBtnShop_LimitB.bflan" ,@"blyt/IconError.bflyt"},
@@ -163,7 +165,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixResBG",
 				targetPanels = new string[] { "L_BgNml" },
 				SecondaryTexReplace = "White1x1A64^t",
-				NXThemeName = "home"
+				NXThemeName = CommonInfo.PartHome
 			},
 		//Entrance:
 			new PatchTemplate() { TemplateName = "lock screen" , SzsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = ">= 9.0",
@@ -174,7 +176,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixLK",
 				targetPanels = new string[] { "P_BgL", "P_BgR" },
 				SecondaryTexReplace ="White1x1^r",
-				NXThemeName = "lock",
+				NXThemeName = CommonInfo.PartLock,
 				RequiresCodePatch = true,
 			},
 			new PatchTemplate() { TemplateName = "lock screen" , SzsName = "Entrance.szs", TitleId = "0100000000001000",  FirmName = "<= 8.0",
@@ -185,7 +187,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixLK",
 				targetPanels = new string[] { "P_BgL", "P_BgR" },
 				SecondaryTexReplace ="White1x1^r",
-				NXThemeName = "lock"
+				NXThemeName = CommonInfo.PartLock
 			},
 		//MyPage:
 			new PatchTemplate() { TemplateName = "user page" , SzsName = "MyPage.szs", TitleId = "0100000000001013",  FirmName = "all firmwares",
@@ -196,8 +198,8 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixMY",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1A0^t",
-				NXThemeName = "user"
-			},
+				NXThemeName = CommonInfo.PartUser
+            },
 		//Flaunch:
 			new PatchTemplate() { TemplateName = "all apps menu" , SzsName = "Flaunch.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/FlcBtnIconGame.bflyt", @"anim/BaseBg_Loading.bflan", @"blyt/BgNav_Root.bflyt" }, //anim/BaseBg_Loading.bflan for 6.0
@@ -207,7 +209,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixFBG",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1^r",
-				NXThemeName = "apps"
+				NXThemeName = CommonInfo.PartApps
 			},
 		//Set:
 			new PatchTemplate() { TemplateName = "settings applet" , SzsName = "Set.szs", TitleId = "0100000000001000",  FirmName = ">= 6.0",
@@ -218,8 +220,8 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixSET",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1A0^t",
-				NXThemeName = "set"
-			},
+				NXThemeName = CommonInfo.PartSet
+            },
 		//Notification:
 			new PatchTemplate() { TemplateName = "news applet" , SzsName = "Notification.szs", TitleId = "0100000000001000", FirmName = ">= 6.0",
 				FnameIdentifier = new string[] { @"blyt/BgNavNoHeader.bflyt", @"blyt/BgNav_Root.bflyt", @"blyt/NtfBase.bflyt", @"blyt/NtfImage.bflyt" }, //blyt/NtfImage.bflyt for 6.0
@@ -229,8 +231,8 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixNEW",
 				targetPanels = new string[] { "P_Bg_00" },
 				SecondaryTexReplace = "White1x1^r",
-				NXThemeName = "news"
-			},
+				NXThemeName = CommonInfo.PartNews
+            },
 		//PSL:
 			new PatchTemplate() { TemplateName = "player selection" , SzsName = "Psl.szs", TitleId = "0100000000001007", FirmName = "all firmwares",
 				FnameIdentifier = new string[] { @"blyt/IconGame.bflyt", @"blyt/BgNavNoHeader.bflyt" },
@@ -240,7 +242,7 @@ namespace SwitchThemes.Common
 				PatchIdentifier = "exelixPSL",
 				targetPanels = new string[] { "P_Bg" },
 				SecondaryTexReplace = "White1x1^r",
-				NXThemeName = "psl",
+				NXThemeName = CommonInfo.PartPlayerSelect,
 			},
 		};
 	}
@@ -421,8 +423,8 @@ namespace SwitchThemes.Common
 
 		readonly public static Dictionary<string, List<TextureReplacement>> NxNameToList = new Dictionary<string, List<TextureReplacement>>
 		{
-			{ "home", ResidentMenu},
-			{ "lock", Entrance}
+			{ CommonInfo.PartHome, ResidentMenu},
+			{ CommonInfo.PartLock, Entrance}
 		};
 
 #if WIN && DEBUG

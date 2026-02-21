@@ -195,7 +195,12 @@ namespace SwitchThemes.Common.Images
                     while ((marker = bin.ReadByte()) != 0xFF) ;
                     while ((marker = bin.ReadByte()) == 0xFF) ;
 
-                    if (marker == 0xC0)
+                    if (marker == 0xC2)
+                    {
+                        Progressive = true;
+                    }
+
+                    if (marker == 0xC0 || marker == 0xC2)
                     {
                         bin.ReadByte();
                         bin.ReadByte();
@@ -203,10 +208,6 @@ namespace SwitchThemes.Common.Images
 
                         h = bin.ReadUInt16();
                         w = bin.ReadUInt16();
-                    }
-                    if (marker == 0xC2)
-                    {
-                        Progressive = true;
                     }
                 }
             }

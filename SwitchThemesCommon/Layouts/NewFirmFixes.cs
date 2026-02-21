@@ -53,14 +53,14 @@ namespace SwitchThemes.Common
 		public static LayoutPatch GetFixLegacy(string LayoutName, ConsoleFirmware fw, string nxName)
 		{
 			// Check PatchRevision definitions in PatchTemplte.cs for firmware version
-			if (fw >= ConsoleFirmware.Fw9_0 && nxName == "lock")
+			if (fw >= ConsoleFirmware.Fw9_0 && nxName == CommonInfo.PartLock)
 			{
 				if (LayoutName.ToLower().Contains("clear lockscreen"))
 					return LoadFromFixName(Fix_Legacy_ClearLock);
 			}
 
 			// These are have all been updated in the builtins as of 4.4
-			if (fw >= ConsoleFirmware.Fw8_0 && nxName == "home") // >= 8.0 home menu
+			if (fw >= ConsoleFirmware.Fw8_0 && nxName == CommonInfo.PartHome) // >= 8.0 home menu
 			{
 				if (LayoutName.ToLower().Contains("dogelayout") || LayoutName.ToLower().Contains("clearlayout"))
 					return LoadFromFixName(Fix_Legacy_DogeLayout);

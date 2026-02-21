@@ -1,7 +1,7 @@
 ﻿using NxThemeTool;
-using NxThemeTool.Nxtheme2;
 using SARCExt;
 using SwitchThemes.Common;
+using System.Text.Json;
 
 Console.WriteLine("NxThemeTool - https://github.com/exelix11/SwitchThemeInjector");
 Console.WriteLine();
@@ -42,7 +42,7 @@ else if (args[0] == "validate")
             return 1;
         }
 
-        if (ManagedYaz0.IsYaz0(PeekFormat(stream)))
+        if (NxTheme1.IsNxTheme1(stream))
         {
             Console.WriteLine("This file is an old-style nxtheme and it is not supported for validation");
             return 1;
@@ -118,7 +118,7 @@ else if (args[0] == "unpack" || File.Exists(args[0]))
     var dest = args[0] == "unpack" ? args[2] : Path.GetFileNameWithoutExtension(args[0]) + "_unpacked";
 
     using var sourceStream = File.OpenRead(source);
-    if (ManagedYaz0.IsYaz0(PeekFormat(sourceStream)))
+    if (NxTheme1.IsNxTheme1(sourceStream))
     {
         // Compatibility with nxtheme format 1, unpack anyway
         Console.ForegroundColor = ConsoleColor.Red;
@@ -129,23 +129,8 @@ else if (args[0] == "unpack" || File.Exists(args[0]))
 
         sourceStream.Dispose();
 
-        var decompressed = ManagedYaz0.Decompress(File.ReadAllBytes(source));
-        var sarc = SARC.Unpack(decompressed);
-
-        foreach (var entry in sarc.Files)
-        {
-            var filePath = Path.Combine(dest, entry.Key);
-
-            if (filePath.Contains("../") || filePath.Contains("..\\"))
-                continue;
-
-            var fileDir = Path.GetDirectoryName(filePath);
-            if (fileDir != null)
-                Directory.CreateDirectory(fileDir);
-
-            Console.WriteLine($"Writing {filePath} ...");
-            File.WriteAllBytes(filePath, entry.Value);
-        }
+        var theme = new NxTheme1(File.ReadAllBytes(source));
+        theme.UnpackToDirectory(dest);
     }
     else
     {
@@ -170,6 +155,22 @@ else if (args[0] == "install")
         Console.WriteLine(result);
         return 1;
     }
+}
+else if (args[0] == "convert")
+{
+    if (args.Length < 3)
+    {
+        Console.WriteLine("Not enough arguments.");
+        return 1;
+    }
+
+    var source = new NxTheme1(File.ReadAllBytes(args[1]));
+    using var dest = new ZipContentWriter(File.Create(args[2]));
+
+    var validation = new ProcessResult();
+    source.ConvertToNxtheme2(dest, validation);
+
+    PrintValidation(validation);
 }
 else if (args[0] == "cppgen")
 {
@@ -226,16 +227,9 @@ void PrintHelp()
     Console.WriteLine("  unpack <file> <output directory>   Extracts the content of an nxtheme file to the given directory");
     Console.WriteLine("  install <file> <ip address>        Perform remote install to NXThemesInstaller running on a console");
     Console.WriteLine("  apply <nxtheme> <szs> <output>     Apply an nxthme file to one or more szs files. Szs must be the the path to the systemData folder of the theme installer.");
+    Console.WriteLine("  convert <nxtheme> <output>         Convert an nxtheme1 format to a nxtheme2");
     Console.WriteLine("Extra:");
     Console.WriteLine("  <nxtheme file>                     If the only specified argument is a valid nxtheme file it will be unpacked. This is a convenience feature which allows dragging nxtheme files on this binary to unpack them automatically.");
     Console.WriteLine("Development:");
     Console.WriteLine("  cppgen <output foler>              Generate C++ data tables needed by the NxThemesInstaller codease");
-}
-
-byte[] PeekFormat(Stream stream)
-{
-    var bytes = new byte[10];
-    stream.Read(bytes, 0, bytes.Length);
-    stream.Seek(0, SeekOrigin.Begin);
-    return bytes;
 }

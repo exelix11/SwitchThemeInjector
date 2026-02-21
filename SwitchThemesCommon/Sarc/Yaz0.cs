@@ -1,8 +1,13 @@
-﻿namespace SwitchThemes.Common
+﻿using System;
+using System.IO;
+
+namespace SwitchThemes.Common
 {
 	static class ManagedYaz0
 	{
-		public static byte[] Compress(string FileName, int level = 3, int res1 = 0, int res2 = 0) => Compress(File.ReadAllBytes(FileName), level, res1, res2);
+		public static byte[] Compress(string FileName, int level = 3, int res1 = 0, int res2 = 0) => 
+			Compress(File.ReadAllBytes(FileName), level, res1, res2);
+
 		public static byte[] Compress(byte[] Data, int level = 3, int reserved1 = 0, int reserved2 = 0)
 		{
 			int maxBackLevel = (int)(0x10e0 * (level / 9.0) - 0x0e0);

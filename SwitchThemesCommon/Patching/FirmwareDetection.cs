@@ -31,7 +31,7 @@ namespace SwitchThemes.Common
 
 		readonly static IReadOnlyDictionary<string, FirmInfo[]> FirmwareInfo = new Dictionary<string, FirmInfo[]>
 		{
-			{ "home", new FirmInfo[] {
+			{ CommonInfo.PartHome, new FirmInfo[] {
                 new FirmInfo() {
                     Version = ConsoleFirmware.Fw20_0,
                     MustContain = new string[] { @"blyt/RdtBtnSplay.bflyt" },
@@ -56,7 +56,7 @@ namespace SwitchThemes.Common
 					MustContain = new string[] { @"anim/RdtBtnShop_LimitB.bflan" ,@"blyt/IconError.bflyt"}
 				} }
 			},
-			{ "lock", new FirmInfo[] {
+			{ CommonInfo.PartLock, new FirmInfo[] {
 				new FirmInfo() {
 					Version = ConsoleFirmware.Fw9_0,
 					MustContain = new string[] { @"blyt/PageindicatorAlarm.bflyt", @"blyt/EntBtnResumeSystemApplet.bflyt" },

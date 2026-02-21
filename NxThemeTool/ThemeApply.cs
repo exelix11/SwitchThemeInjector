@@ -1,5 +1,4 @@
-﻿using NxThemeTool.Nxtheme2;
-using SARCExt;
+﻿using SARCExt;
 using SwitchThemes.Common;
 using SwitchThemes.Common.Images;
 using SwitchThemes.Common.Patching;
@@ -15,6 +14,25 @@ namespace NxThemeTool
 
         public static ThemeApply FromFiles(string nxtheme, string szs, ProcessResult result)
         {
+            // Nxtheme v1 compatibility check
+            if (File.Exists(nxtheme))
+            {
+                using var stream = File.OpenRead(nxtheme);
+                if (NxTheme1.IsNxTheme1(stream)) 
+                {
+                    stream.Dispose();
+
+                    result.Warn(nxtheme, "This file uses the previous nxtheme format version, it has been implicitly converted");
+
+                    var theme = new NxTheme1(File.ReadAllBytes(nxtheme));
+                    using var theme2 = new InMemoryFileProvider();
+
+                    theme.ConvertToNxtheme2(theme2, result);
+
+                    return new ThemeApply(new NxTheme2(theme2, result), ProviderHelper.OpenFor(szs));
+                }
+            }
+
             using var source = ProviderHelper.OpenFor(nxtheme);
             return new ThemeApply(new NxTheme2(source, result), ProviderHelper.OpenFor(szs));
         }

@@ -8,6 +8,9 @@ namespace NxThemeTool
     public interface IContentProvider : IDisposable
     {
         List<string> GetFiles();
+
+        bool HasFile(string name);
+        
         byte[] GetFile(string name);
 
         string GetString(string name) => Encoding.UTF8.GetString(GetFile(name));
@@ -55,6 +58,12 @@ namespace NxThemeTool
         {
             // No resources to dispose in this implementation
         }
+
+        public bool HasFile(string name)
+        {
+            var filePath = Path.Combine(directoryPath, name);
+            return File.Exists(filePath);
+        }
     }
 
     public class SarcContentProvider : IContentProvider
@@ -80,6 +89,11 @@ namespace NxThemeTool
         public void Dispose()
         {
             // No resources to dispose in this implementation
+        }
+
+        public bool HasFile(string name)
+        {
+            return sarc.Files.ContainsKey(name);
         }
     }
 
@@ -111,6 +125,11 @@ namespace NxThemeTool
         public void Dispose()
         {
             zip.Dispose();
+        }
+
+        public bool HasFile(string name)
+        {
+            return zip.GetEntry(name) != null;
         }
     }
 }
