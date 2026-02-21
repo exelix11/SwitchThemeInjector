@@ -124,7 +124,7 @@ void pfs0_save(pfs0_ctx_t *ctx) {
     /* Extract single file to buffer */
     if (ctx->is_exefs && ctx->tool_ctx->settings.extraction_exefs && ctx->tool_ctx->settings.extraction_file_stream_cb)
     {
-        size_t length = NULL;
+        size_t length = 0;
         uint8_t* data = pfs0_copy_file(ctx, "main", &length);
 
 		ctx->tool_ctx->settings.extraction_file_stream_cb(

@@ -1,5 +1,8 @@
 #include "key_loader.hpp"
 #include <stdexcept>
+#include <string>
+
+using namespace std::string_literals;
 
 #include "../fs.hpp"
 
@@ -51,13 +54,17 @@ hactool::ExtractionContext::ExtractionContext()
 		throw std::runtime_error("fsdevMountDevice");
 }
 
-hactool::ExtractionContext::~ExtractionContext()
+hactool::ExtractionContext::~ExtractionContext() noexcept(false)
 {
 	if (fsdevUnmountDevice("System") == -1)
 		throw std::runtime_error("fsdevUnmountDevice");
 
 	fsFsClose(&sys);
+	ExitServices();
+}
 
+void hactool::ExtractionContext::ExitServices()
+{
 	pmdmntExit();
 	splCryptoExit();
 	splExit();
@@ -115,7 +122,7 @@ std::unique_ptr<hactool::ExtractionContext> hactool::Initialize()
 
 	if (R_FAILED(rc))
 	{
-		pritnf("Key extraction from FS failed\n");
+		printf("Key extraction from FS failed\n");
 		throw std::runtime_error("Key extraction from FS failed");
 	}
 
@@ -138,7 +145,7 @@ hactool::ExtractionContext::ExtractionContext()
 	// Nothing to do on windows
 }
 
-hactool::ExtractionContext::~ExtractionContext()
+hactool::ExtractionContext::~ExtractionContext() noexcept(false)
 {
 	// Nothing to do on windows
 }

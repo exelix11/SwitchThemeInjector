@@ -1659,7 +1659,7 @@ static void read_nca_entry(nca_section_ctx_t* ctx, romfs_fentry_t* entry, uint64
 {
 	unsigned char* buf = malloc(entry->size);
 	if (buf == NULL) {
-		fprintf(stderr, "Failed to allocate file extraction buffer of %llx bytes.\n", entry->size);
+		fprintf(stderr, "Failed to allocate file extraction buffer of %lx bytes.\n", entry->size);
 		exit(EXIT_FAILURE);
 	}
 

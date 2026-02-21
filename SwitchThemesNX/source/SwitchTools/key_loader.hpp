@@ -20,11 +20,12 @@ namespace hactool
 
 #if __SWITCH__
 		FsFileSystem sys;
+		void ExitServices();
 #endif
 		std::string getNcaPath(uint64_t id);
 
 		ExtractionContext();
-		~ExtractionContext();
+		~ExtractionContext() noexcept(false);
 	};
 
 	std::unique_ptr<ExtractionContext> Initialize();
