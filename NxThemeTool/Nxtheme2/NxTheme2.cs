@@ -159,7 +159,7 @@ namespace NxThemeTool.Nxtheme2
                     {
                         var image = ImageUtil.ParseImage(part.MainImage!);
 
-                        if (image is JpgInfo { IsProgressive: true })
+                        if (image is JpgInfo && !image.IsValidForBg)
                             validation.Err(part.PartName, $"The provided JPG image uses progressive encoding. This is not support and will fail to install.");
 
                         if (image is DDS dds && !dds.IsValidForBg)

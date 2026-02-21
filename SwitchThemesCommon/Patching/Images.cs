@@ -45,7 +45,7 @@ namespace SwitchThemes.Common.Images
         public string Extension => "jpg";
         public ImageFormat Format => ImageFormat.Jpg;
 
-        public bool IsValidForBg => !IsProgressive;
+        public bool IsValidForBg => true;
         public bool IsValidForIcons => false;
 
         public JpgInfo(bool isProgressive, uint width, uint height)
