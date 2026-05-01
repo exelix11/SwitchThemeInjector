@@ -36,7 +36,7 @@ Note that each file is a single home menu part (eg just the lockscreen or just t
 
 **To remove a theme** just select uninstall in the theme installer. You can just install a different theme to overwrite the currently installed one.
 
-When a new firmware comes out **before upgrading (or downgrading) remember to uninstall any theme you have installed** to avoid compatibility issues, if you forget your console may not boot untill the theme is removed as explained next. 
+When a new firmware comes out **before upgrading (or downgrading) remember to uninstall any theme you have installed** to avoid compatibility issues, if you forget your console may not boot until the theme is removed as explained next. 
 
 **In case your console doesn't boot anymore due to a bad theme** (mostly with szs themes) delete the `\atmosphere\contents\01000000001000` folder from your sd (it's `\<cfw name>\titles\01000000001000` for old atmosphere and other CFWs), now your console should be booting, launch the theme installer and select uninstall theme to finish the cleanup process.
 
