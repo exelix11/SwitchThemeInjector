@@ -68,7 +68,7 @@ SwitchThemes.exe install 192.168.X.Y "<nxtheme/szs file>"
 Where `192.168.X.Y` is your console IP address.
 
 # Custom layouts
-Custom layouts are JSON files that allow changing the appearence of the home menu by moving the UI components. \
+Custom layouts are JSON files that allow changing the appearance of the home menu by moving the UI components. \
 To create a custom layout you will need the original home menu szs files found in `/themes/systemData` on your sd (if you ever used the theme installer) and a tool capable of editing them like the [switch layout editor](https://github.com/FuryBaguette/SwitchLayoutEditor).
 
 [Here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) you can find more info about layouts and the supported properties.
