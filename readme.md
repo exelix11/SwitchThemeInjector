@@ -57,7 +57,7 @@ Then you should be able to launch the app by running `mono SwitchThemes.exe help
 ```
 SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>"  "out=<OutputPath>.nxtheme"
 ```
-this will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet and `news` for the news applet. Only the image and out file args are needed. \
+This will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet, `news` for the news applet, and `psl` for the player select menu. Only the image and out file args are needed. \
 Other options specific to the theme target such as applet icons are availbale as well, run `SwitchThemes.exe help` for more info
 
 #### Remote install
