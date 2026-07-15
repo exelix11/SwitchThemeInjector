@@ -26,7 +26,9 @@ jobs:
     - name: Build symodule
       run: |
         cd ThemeSysmodule
-        make -j 4
+        make
+        # Sanity check that the sysmodule contains the correct version flag
+        strings ThemeSysmodule.nsp | grep -oE "THEME_SYMODULE:[0-9]{1,2}=" || exit 1
         mkdir -p ../SwitchThemesNX/romfs/sysmodule/
         cp ThemeSysmodule.nsp toolbox.json ../SwitchThemesNX/romfs/sysmodule/
     - name: Generate C++ sources
