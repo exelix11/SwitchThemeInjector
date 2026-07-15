@@ -154,9 +154,10 @@ void fs::SetFlagFile(const std::string& name, bool value)
 {
 	auto target = SYSTEMDATA_PATH ".flag_" + name;
 	try {
-		if (value && !fs::Exists(target))
+		auto exists = fs::Exists(target);
+		if (value && !exists)
 			fs::WriteFile(target, {});
-		else if (!value && fs::Exists(target))
+		else if (!value && exists)
 			fs::Delete(target);
 	}
 	catch (...)

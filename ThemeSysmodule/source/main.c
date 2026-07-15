@@ -51,6 +51,8 @@ static FsFileSystem sdCard;
 static Event homeMenuLaunched;
 static SetSysFirmwareVersion fw;
 
+volatile char version_tag[] = "THEME_SYMODULE:2=";
+
 void __attribute__((weak)) __appInit(void)
 {
 	Result rc;
@@ -141,7 +143,10 @@ static bool should_delete_themes()
 
 int main(int argc, char* argv[])
 {
-	Result rc = eventWait(&homeMenuLaunched, 20E+9);
+	// Some bad sd cards are supid slow to boot. Even 2 minutes.
+	// https://discord.com/channels/643436008452521984/643456136887926813/1527002400588566528
+	// Use 5 minutes as timeout so we're sure to catch all cases. If a sd card takes that long it's beyond salvation.
+	Result rc = eventWait(&homeMenuLaunched, 300E+9);
 	u64 pid = 0;
 
 	if (R_SUCCEEDED(rc))
@@ -172,7 +177,8 @@ int main(int argc, char* argv[])
 		else
 		{
 			// Qlaunch is not running at all?
-			fatalThrow(MAKERESULT(Module_Libnx, LibnxError_ShouldNotHappen));
+			// Previously we would crash here but let's avoid all the support cases that come from this debug assert.
+			// fatalThrow(MAKERESULT(Module_Libnx, LibnxError_ShouldNotHappen));
 		}
 	}
 	else

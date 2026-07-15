@@ -3,6 +3,7 @@
 #include "../fs.hpp"
 #include "../ViewFunctions.hpp"
 #include "../SwitchThemesCommon/MyTypes.h"
+#include <algorithm>
 
 using namespace std;
 
@@ -12,29 +13,86 @@ namespace Settings {
 	SwitchThemesCommon::LayoutCompatibilityOption HomeMenuCompat = SwitchThemesCommon::LayoutCompatibilityOption::Default;
 };
 
+namespace 
+{
+	int ExtractVersionFromSysmodule(span<const u8> data, int fallbackVersion)
+	{
+		std::basic_string<u8> marker = static_cast<u8[]>("THEME_SYMODULE:");
+		auto found = std::search(data.begin(), data.end(), marker.begin(), marker.end());
+		
+		if (found == data.end())
+			return fallbackVersion;
+
+		auto marker_end = std::find(found, data.end(), '=');
+		if (marker_end == data.end()) // Shouldn't happen, but just in case
+			return fallbackVersion;
+
+		std::string version_str(found + marker.size(), marker_end);
+		return std::stoi(version_str);
+	}
+}
+
 SettingsPage::SettingsPage()
 {
 	Name = "Settings";
-	NotificationIcon = !fs::CheckFlagFile("sysmodule");
-	CheckSysmoduleInstalled();
+	ReloadSysmoduleInfo();
+
+	if (sysmoduleInstalled && bundledSysmodule && *sysmoduleInstalled < *bundledSysmodule)
+		NotificationIcon = true;
+	else
+		NotificationIcon = !fs::CheckFlagFile("sysmodule2");
 }
 
 #define SYSMODULE_ID "00FF007468656D65"
 
-bool SettingsPage::sysmoduleInstalled;
-bool SettingsPage::canInstallSysmodule;
+std::optional<int> SettingsPage::sysmoduleInstalled;
+std::optional<int> SettingsPage::bundledSysmodule;
 
-bool SettingsPage::CheckSysmoduleInstalled()
+void SettingsPage::ReloadSysmoduleInfo()
 {
-	sysmoduleInstalled = fs::Exists(fs::path::FsMitmFolder() + SYSMODULE_ID "/exefs.nsp");
-	canInstallSysmodule = fs::Exists(ASSET("sysmodule/ThemeSysmodule.nsp"));
+	if (fs::Exists(fs::path::FsMitmFolder() + SYSMODULE_ID "/exefs.nsp"))
+	{
+		try 
+		{
+			// Original version was 1 and did not have the marker tag, assume this is the case if we don't find it
+			sysmoduleInstalled = ExtractVersionFromSysmodule(fs::OpenFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/exefs.nsp"), 1);
+		}
+		catch (const std::exception& ex)
+		{
+			LOGf("Error reading sysmodule version: %s", ex.what());
+			sysmoduleInstalled = std::nullopt;
+		}
+	}
+	else
+	{
+		sysmoduleInstalled = std::nullopt;
+	}
 
-	return sysmoduleInstalled;
+	if (fs::Exists(ASSET("sysmodule/ThemeSysmodule.nsp")))
+	{
+		try
+		{
+			bundledSysmodule = ExtractVersionFromSysmodule(fs::OpenFile(ASSET("sysmodule/ThemeSysmodule.nsp")), -1);
+			
+			// We should always know the version bundled with the installer.
+			if (bundledSysmodule == -1)
+				bundledSysmodule = std::nullopt;
+		}
+		catch (const std::exception& ex)
+		{
+			LOGf("Error reading bundled sysmodule version: %s", ex.what());
+			bundledSysmodule = std::nullopt;
+		}
+	}
+	else
+	{
+		bundledSysmodule = std::nullopt;
+	}
 }
 
 bool SettingsPage::InstallSysmodule()
 {
-	if (!canInstallSysmodule)
+	if (!bundledSysmodule)
 	{
 		Dialog("Failed to install the sysmodule. This version of the theme installer was built without the sysmodule binary.");
 		return false;
@@ -46,9 +104,8 @@ bool SettingsPage::InstallSysmodule()
 		fs::WriteFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/exefs.nsp", fs::OpenFile(ASSET("sysmodule/ThemeSysmodule.nsp")));
 		fs::WriteFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/toolbox.json", fs::OpenFile(ASSET("sysmodule/toolbox.json")));
 		fs::WriteFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/flags/boot2.flag", std::vector<u8>{ 'a' });
-		fs::WriteFile(fs::path::FsMitmFolder() + SYSMODULE_ID "/ver.txt", std::vector<u8>{ '1' });
 		
-		CheckSysmoduleInstalled();
+		ReloadSysmoduleInfo();
 		Dialog("The sysmodule has been installed. Restart your console to apply the changes.");
 		
 		return true;
@@ -68,7 +125,7 @@ bool SettingsPage::RemoveSysmodule(bool dialogs)
 		if (fs::Exists(path))
 			fs::DeleteDirectory(path);
 
-		CheckSysmoduleInstalled();
+		ReloadSysmoduleInfo();
 
 		if (dialogs)
 			Dialog("The sysmodule has been uninstalled. Restart your console to apply the changes.");
@@ -82,12 +139,54 @@ bool SettingsPage::RemoveSysmodule(bool dialogs)
 	}
 }
 
+void SettingsPage::UISysmoduleAlreadyInstalled() 
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight);
+	ImGui::Text("The sysmodule v%d is currently installed.", *sysmoduleInstalled);
+	ImGui::PopStyleColor();
+	ImGui::SameLine();
+	if (ImGui::Button("Uninstall"))
+		PushFunction([]() { RemoveSysmodule(true); });
+}
+
+void SettingsPage::UISysmoduleUpdateAvailable() 
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight);
+	ImGui::Text("The sysmodule v%d is currently installed. A new version is available.", *sysmoduleInstalled);
+	ImGui::PopStyleColor();
+
+	if (ImGui::Button("Update now"))
+		PushFunction([]() { InstallSysmodule(); });
+
+	ImGui::SameLine();
+	if (ImGui::Button("Uninstall"))
+		PushFunction([]() { RemoveSysmodule(true); });
+}
+
+void SettingsPage::UISysmoduleBuildMissing()
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
+	ImGui::TextWrapped("This version of the theme installer does not contain the sysmodule binary.");
+	ImGui::PopStyleColor();
+}
+
+void SettingsPage::UISysmoduleNotInstalled() 
+{
+	ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
+	ImGui::Text("The sysmodule is currently not installed.");
+	ImGui::PopStyleColor();
+
+	ImGui::SameLine();
+	if (ImGui::Button("Install now"))
+		PushFunction([]() { InstallSysmodule(); });
+}
+
 void SettingsPage::Render(int X, int Y)
 {
 	if (NotificationIcon)
 	{
 		NotificationIcon = false;
-		fs::SetFlagFile("sysmodule", true);
+		fs::SetFlagFile("sysmodule2", true);
 	}
 
 	Utils::ImGuiSetupWin(Name.c_str(), X, Y, DefaultWinFlags);
@@ -98,36 +197,24 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::TextUnformatted("Update detection sysmodule (BETA)");
 	ImGui::PopFont();
 
-	ImGui::TextWrapped("There is a new experimental sysmodule that automatically uninstalls themes when the system firmware is updated. This fixes the common crashes caused by incompatible versions of the home menu.");
+	ImGui::TextWrapped("This is a sysmodule that automatically uninstalls themes when the system firmware is updated. This fixes the common crashes caused by incompatible versions of the home menu.");
 	if (sysmoduleInstalled)
 	{
-		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Highlight);
-		ImGui::Text("The sysmodule is currently installed.     ");
-		ImGui::PopStyleColor();
-		ImGui::SameLine();
-		if (ImGui::Button("Uninstall"))
-			PushFunction([]() { RemoveSysmodule(true); });
-	}
-	else
-	{
-		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-		ImGui::Text("The sysmodule is currently not installed.    ");
-		ImGui::PopStyleColor();
-
-		if (canInstallSysmodule) 
+		if (!bundledSysmodule)
 		{
-			ImGui::SameLine();
-			if (ImGui::Button("Install now"))
-				PushFunction([]() { InstallSysmodule(); });
+			UISysmoduleBuildMissing();
+			UISysmoduleAlreadyInstalled();
 		}
+		else if (*sysmoduleInstalled < *bundledSysmodule)
+			UISysmoduleUpdateAvailable();
 		else
-		{
-			ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-			ImGui::TextWrapped("This version of the theme installer does not contain the sysmodule binary.");
-			ImGui::PopStyleColor();
-			ImGui::TextWrapped("If this is a custom build, you forgot to compile the sysmodule and copy it to the romfs.");
-		}
+			UISysmoduleAlreadyInstalled();
 	}
+	else if (bundledSysmodule)
+		UISysmoduleNotInstalled();
+	else
+		UISysmoduleBuildMissing();
+
 	PAGE_RESET_FOCUS;
 
 	ImGui::NewLine();
