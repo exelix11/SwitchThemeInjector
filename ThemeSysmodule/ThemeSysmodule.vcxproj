@@ -60,6 +60,7 @@
   <ItemGroup>
     <None Include="cpp.nx.hint" />
     <None Include="Makefile" />
+    <None Include="Makefile.test" />
     <None Include="ThemeSysmodule.json" />
     <None Include="toolbox.json" />
   </ItemGroup>
