@@ -290,8 +290,26 @@ void fs::theme::UninstallTheme(bool full)
 	}
 	else
 	{
-		DeleteDirectory(path::FsMitmFolder() + "0100000000001000/romfs/lyt");
-		DeleteDirectory(path::FsMitmFolder() + "0100000000001013/romfs/lyt");
+		DeleteDirectory(path::FsMitmFolder() + "0100000000001000/romfs");
+		DeleteDirectory(path::FsMitmFolder() + "0100000000001013/romfs");
+
+		// Additionally, delete any backup folders that have been created by the update check sysmodule
+		if (std::filesystem::is_directory(path::FsMitmFolder() + "0100000000001000"))
+		{
+			for (auto& p : std::filesystem::directory_iterator(path::FsMitmFolder() + "0100000000001000"))
+			{
+				if (!p.is_directory())
+					continue;
+					
+				if (!fs::GetFileName(p.path().string()).starts_with("bak_"))
+					continue;
+
+				if (Exists((p.path() / "old_version_hash.bin").string()))
+				{
+					DeleteDirectory(p.path().string());
+				}
+			}
+		}
 	}
 
 	DeleteDirectory(path::FsMitmFolder() + "0100000000001007"); //Player select
