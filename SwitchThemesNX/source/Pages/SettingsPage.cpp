@@ -15,9 +15,11 @@ namespace Settings {
 
 namespace 
 {
+	const char* MarkerMagic = "THEME_SYMODULE:";
+
 	int ExtractVersionFromSysmodule(span<const u8> data, int fallbackVersion)
 	{
-		std::basic_string<u8> marker = static_cast<u8[]>("THEME_SYMODULE:");
+		std::basic_string<u8> marker = reinterpret_cast<const u8*>(MarkerMagic);
 		auto found = std::search(data.begin(), data.end(), marker.begin(), marker.end());
 		
 		if (found == data.end())

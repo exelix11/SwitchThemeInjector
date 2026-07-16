@@ -36,7 +36,6 @@ void CfwSelectPage::Render(int X, int Y)
 		ImGui::PushFont(font30);
 		ImGui::SetCursorPos({ (float)XCursorBtn, ImGui::GetCursorPosY() + 30 });
 
-		int count = 0;
 		for (const auto& e : Folders)
 		{
 			ImGui::SetCursorPosX((float)XCursorBtn);
@@ -45,7 +44,6 @@ void CfwSelectPage::Render(int X, int Y)
 				fs::cfw::SetFolder(e);
 				PopPage(this);
 			}
-			count++;
 		}
 
 		ImGui::PopFont();
