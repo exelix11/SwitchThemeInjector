@@ -18,7 +18,7 @@ class ThemeEntry
 		{
 			None,
 			Enter,
-			Preview
+			Options
 		};
 
 		static std::unique_ptr<ThemeEntry> FromFile(const std::string& fileName);
@@ -30,7 +30,8 @@ class ThemeEntry
 
 		virtual bool IsFolder() = 0;
 		virtual bool CanInstall() = 0;		
-		virtual bool HasPreview() { return false; }
+		virtual bool HasOptions() { return false; }
+		virtual void OpenOptions() { }
 		
 		bool Install(bool ShowDialogs = true);
 
@@ -43,11 +44,6 @@ class ThemeEntry
 		std::string CannotInstallReason;
 	protected:
 		virtual bool DoInstall(bool ShowDialogs = true) = 0;
-		
-		virtual ImageRef GetPreview()
-		{
-			throw std::runtime_error("Preview is not available");
-		}
 
 		void AppendInstallMessage(const std::string& msg)
 		{
@@ -76,11 +72,11 @@ public:
 
 	bool IsFolder() override { return false; }
 	bool CanInstall() override { return _CanInstall; }
-	bool HasPreview() override { return _HasPreview; }
+	bool HasOptions() override { return true; }
 
 protected:
 	bool DoInstall(bool ShowDialogs = true) override;
-	ImageRef GetPreview() override;
+	void OpenOptions() override;
 
 private:
 	bool _CanInstall = true;
@@ -133,10 +129,8 @@ public:
 
 	bool IsFolder() override { return false; }
 	bool CanInstall() override { return CannotInstallReason.empty(); }
-	bool HasPreview() override { return CannotInstallReason.empty(); }
 protected:
 	bool DoInstall(bool ShowDialogs = true) override;
-	ImageRef GetPreview() override { return GetConvertedImage(); }
 
 private:
 	ImageRef _previewImage = nullptr;

@@ -5,6 +5,7 @@
 #include <span>
 #include <utility>
 #include <string_view>
+#include <format>
 
 #include "MyTypes.h"
 #include "NXTheme.hpp"
@@ -176,10 +177,15 @@ FileResult NxTheme::ConvertToDDS(const FileData& image, bool transparent, int wi
 	}
 }
 
+FileData NxTheme::GetRawManifest() const
+{
+	return files.at("info.json");
+}
+
 FileResult NxTheme::GetMainImage() const
 {
 	if (files.count("image.dds")) return files.at("image.dds");
-	if (!files.count("image.jpg")) return "No main image found in the theme";		
+	if (!files.count("image.jpg")) return "This theme does not have an image";		
 	return ConvertToDDS(files.at("image.jpg"), false, 1280, 720);
 }
 
@@ -196,16 +202,39 @@ FileResult NxTheme::GetImagePart(std::string_view partName, int width, int heigh
 	return ConvertToDDS(data, true, width, height);
 }
 
+FileData NxTheme::GetRawMainLayout() const
+{
+	return files.at("layout.json");
+}
+
 std::string_view NxTheme::GetMainLayout() const
 {
 	if (!HasMainLayout()) return "";
 	return GetStringView(files.at("layout.json"));
 }
 
+FileData NxTheme::GetRawCommonLayout() const
+{
+	return files.at("common.json");
+}
+
 std::string_view NxTheme::GetCommonLayout() const
 {
 	if (!HasCommonLayout()) return "";
 	return GetStringView(files.at("common.json"));
+}
+
+FileData ThemeFileManifest::ForInternalUse(const std::string& target)
+{
+	std::string msg = std::format(
+		R"({{
+				"Target": "{}",
+				"ThemeName": "New Theme",
+				"Version": {}
+			}})",
+		target, SwitchThemesCommon::NXThemeVer);
+
+	return FileData(msg.begin(), msg.end());
 }
 
 ThemeFileManifest ThemeFileManifest::FromJson(std::string_view json)

@@ -3,11 +3,12 @@
 #include <utility>
 #include <variant>
 #include <optional>
+#include <string_view>
 
 #include "ThemeEntry.hpp"
 
-#include "../../Platform/Platform.hpp"
 #include "../../fs.hpp"
+#include "../../ViewFunctions.hpp"
 #include "../../SwitchTools/PatchMng.hpp"
 #include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../../SwitchThemesCommon/Common.hpp"
@@ -15,7 +16,7 @@
 #include "../../SwitchThemesCommon/MyTypes.h"
 #include "../../Dialogs.hpp"
 #include "../SettingsPage.hpp"
-#include <string_view>
+#include "ThemeOptions.hpp"
 
 namespace 
 {
@@ -242,26 +243,6 @@ bool NxEntry::DoInstall(bool ShowDialogs)
 	return true;
 }
 
-ImageRef NxEntry::GetPreview()
-{
-	if (!_HasPreview) return 0;
-
-	auto image = GetBackgroundImage();
-	if (!image) return 0;
-
-	auto Preview = UseLowMemory ? 
-		std::make_shared<RenderImage>(*image) : 
-		ImageCache::Load(*image, FileName);
-
-	if (!Preview->IsValid())
-	{
-		_HasPreview = false;
-		DialogBlocking("Failed to load the preview image");
-	}
-
-	return Preview;
-}
-
 std::optional<FileData> NxEntry::GetBackgroundImage()
 {
 	if (!theme.HasMainImage())
@@ -311,6 +292,11 @@ bool NxEntry::PatchLayout(SwitchThemesCommon::SzsPatcher& patcher, std::string_v
 	}
 
 	return true;
+}
+
+void NxEntry::OpenOptions()
+{
+	PushPage(new ThemeOptionsDialog(FileName, theme));
 }
 
 void NxEntry::Initialize()

@@ -61,7 +61,7 @@ void ExternalInstallPage::Render(int X, int Y)
 		for (int i = 0; i < (int)ArgEntries.size(); i++)
 		{
 			ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2 - ThemeEntry::EntryW / 2);
-			if (ArgEntries[i]->Render() == ThemeEntry::UserAction::Preview)
+			if (ArgEntries[i]->Render() == ThemeEntry::UserAction::Options)
 				break;
 			if (ImGui::IsItemActive())
 			{

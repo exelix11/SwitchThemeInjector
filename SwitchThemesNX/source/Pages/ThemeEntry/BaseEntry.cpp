@@ -206,14 +206,10 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	RenderNavHighlight(bb, id);
 	RenderFrame(bb.Min, bb.Max, col, true, style.FrameRounding);
 	
-	if (HasPreview() && (hovered || held) && KeyPressed(GLFW_GAMEPAD_BUTTON_X))
+	if (HasOptions() && (hovered || held) && KeyPressed(GLFW_GAMEPAD_BUTTON_X))
 	{
-		auto Preview = GetPreview();
-		if (Preview && Preview->IsValid())
-		{
-			PushPage(new ImagePreview(Preview, fs::GetFileName(FileName)));
-			return UserAction::Preview;
-		}
+		OpenOptions();
+		return UserAction::Options;
 	}
 
 	ImGui::PushFont(font30);

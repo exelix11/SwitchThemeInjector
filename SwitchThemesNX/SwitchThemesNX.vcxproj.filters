@@ -418,6 +418,12 @@
     <ClInclude Include="source\Pages\ThemeEntry\ImageEntry.hpp">
       <Filter>Pages\ThemeEntry</Filter>
     </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry\BaseImageOptionsDialog.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pages\ThemeEntry\ThemeOptions.hpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\UI\imgui\imgui_demo.cpp">
@@ -907,6 +913,12 @@
       <Filter>Pages</Filter>
     </ClCompile>
     <ClCompile Include="source\Pages\ThemeEntry\ImageEntry.cpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry\BaseImageOptionsDialog.cpp">
+      <Filter>Pages\ThemeEntry</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pages\ThemeEntry\ThemeOptions.cpp">
       <Filter>Pages\ThemeEntry</Filter>
     </ClCompile>
   </ItemGroup>

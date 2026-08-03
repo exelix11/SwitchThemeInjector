@@ -1,22 +1,28 @@
 #pragma once
+#include "../../SwitchThemesCommon/MyTypes.h"
 #include "../../UI/UI.hpp"
-#include <string>
-#include <vector>
-#include <tuple>
-#include <span>
-#include <unordered_map>
+#include "BaseImageOptionsDialog.hpp"
 
-class InstallImageDialog : public IUIControlObj
+#include <string>
+#include <span>
+
+class InstallImageDialog : public BaseImageOptionsDialog
 {
 public:
 	InstallImageDialog(ImageRef preview, const std::vector<u8>& ddsImage, bool resizeWarning, bool showInstallDialogs, bool* outSuccess);
 
-	void Render(int X, int Y) override;
 	void Update() override {};
-private:
-	std::vector<std::tuple<std::string, std::string>> targetParts;
+protected:
+	void RenderTop() override;
+	void RenderLeftPanel(float allowedWidth) override;
+	void RenderRightPanel(float x, float allowedWidth, float endY) override;
+	void RenderBottom() override;
 
+private:
 	ImageRef previewImage;
+	ImageRef previewOverlay;
+	std::string currentPreviewOverlay;
+
 	std::span<const u8> ddsImage;
 	bool resizeWarning;
 	bool showInstallDialogs;

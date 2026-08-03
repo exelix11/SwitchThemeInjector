@@ -225,7 +225,7 @@ void ThemesPage::Render(int X, int Y)
 				
 				Utils::ImGuiDragWithLastElement();
 
-				if (res == ThemeEntry::UserAction::Preview)
+				if (res == ThemeEntry::UserAction::Options)
 					break;
 				else if (res == ThemeEntry::UserAction::Enter)
 					PushFunction([count, &e, this]()
@@ -295,7 +295,13 @@ void ThemesPage::UpdateBottomText()
 	
 	lblPage = ss.str();
 
-	lblCommands = (SelectedFiles.size() == 0 ? CommandsTextNormal : CommandsTextSelected);
+	if (SelectedFiles.size() != 0) 
+		lblCommands = CommandsTextSelected;
+	else 
+	{
+		auto options = DisplayEntries.size() > menuIndex && DisplayEntries[menuIndex]->HasOptions();
+		lblCommands = options ? CommandsTextWithOptions : CommandsTextNormal;
+	}
 }
 
 void ThemesPage::SelectCurrent()

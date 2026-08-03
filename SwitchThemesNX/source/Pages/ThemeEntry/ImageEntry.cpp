@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <tuple>
 #include <memory>
 #include <utility>
 #include <format>
@@ -15,18 +16,15 @@
 
 namespace 
 {
-	FileData BuildManifest(const std::string& target) 
-	{
-		std::string msg = std::format(
-			R"({{
-				"Target": "{}",
-				"ThemeName": "New Theme",
-				"Version": {}
-			}})",
-			target, SwitchThemesCommon::NXThemeVer);
-
-		return FileData(msg.begin(), msg.end());
-	}
+	std::vector<std::tuple<std::string, std::string>> TargetInstallParts = {
+		{ "Home menu",		"home"},
+		{ "Lock screen",	"lock"},
+		{ "All apps menu",	"apps"},
+		{ "Settings applet","set"},
+		{ "News applet",	"news"},
+		{ "User page",		"user"},
+		{ "Player selection", "psl"},
+	};
 }
 
 ImageEntry::ImageEntry(const std::string& fileName, std::vector<u8>&& RawData)
@@ -105,24 +103,16 @@ bool ImageEntry::DoInstall(bool ShowDialogs)
 }
 
 InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& ddsImage, bool resizeWarning, bool showInstallDialogs, bool* outSuccess) :
-	previewImage(preview), ddsImage(ddsImage), resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs), outSuccess(outSuccess)
+	previewImage(preview), ddsImage(ddsImage), resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs), 
+	outSuccess(outSuccess)
 {
-	*outSuccess = false;
-	targetParts = 
-	{
-		{ "Home menu",		"home"},
-		{ "Lock screen",	"lock"},
-		{ "All apps menu",	"apps"},
-		{ "Settings applet","set"},
-		{ "News applet",	"news"},
-		{ "User page",		"user"},
-		{ "Player selection", "psl"},
-	};
+	PageName = "InstallImageDialog";
+	if (outSuccess) *outSuccess = false;
 
 	if (!UseLowMemory)
 	{
 		// Warmup all the overlays in the image cache
-		for (const auto& [_, part] : targetParts)
+		for (const auto& [_, part] : TargetInstallParts)
 			LoadOverlayPart(part);
 	}
 }
@@ -166,7 +156,7 @@ void InstallImageDialog::ApplyToPart(const std::string& part)
 	// Hacky impl: build an nxtheme in memory and start the installation process
 	FileContainer files =
 	{
-		{"info.json", BuildManifest(part) },
+		{"info.json", ThemeFileManifest::ForInternalUse(part) },
 		{"image.dds", FileData(ddsImage.begin(), ddsImage.end()) },
 	};
 
@@ -177,60 +167,50 @@ void InstallImageDialog::ApplyToPart(const std::string& part)
 		return;
 	}
 
-	*outSuccess = entry.Install(showInstallDialogs);
+	auto res = entry.Install(showInstallDialogs);
+	
+	if (outSuccess) *outSuccess = res;
 	PopPage(this);
 }
 
-void InstallImageDialog::Render(int X, int Y)
+void InstallImageDialog::RenderTop() 
 {
-	Utils::ImGuiNextFullScreen();
-	ImGui::Begin("ThemeInstall", nullptr, DefaultWinFlags);
-
-	ImGui::NewLine();
 	ImGui::PushFont(font40);
 	Utils::ImGuiCenterString("Set theme wallpaper");
 	ImGui::PopFont();
-
-	if (resizeWarning)
-	{
-		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-		Utils::ImGuiCenterString("This image was automatically resized. For optimal resuls use 1280x720 images.");
-		ImGui::PopStyleColor();
-	}
-
 	Utils::ImGuiCenterString("Select where you want to apply this image");
-	
-	if (!resizeWarning)
-		ImGui::NewLine();
+	PaddingLine();
+}
 
-	auto startY = ImGui::GetCursorPosY();
-	auto padding = ImGui::GetStyle().ItemSpacing.x * 4;
+void InstallImageDialog::RenderLeftPanel(float allowedWidth) 
+{
+	auto cursor = ImGui::GetCursorPos();
 
-	// Three paddings: left, image to list, list to right
-	auto previewWidth = 2 * (SCR_W - padding * 3) / 3.0f;
 	auto previewRatio = (float)previewImage->Height / previewImage->Width;
-	auto previewHeight = previewWidth * previewRatio;
+	auto previewHeight = allowedWidth * previewRatio;
+	ImGui::Image(previewImage->TextureId, { allowedWidth, previewHeight });
 
-	ImGui::SetCursorPosX(padding);
-	ImGui::Image(previewImage->TextureId, { previewWidth, previewHeight });
-
-	ImGui::SetCursorPosY(startY);
-
-	auto itemStart = previewWidth + padding * 2;
-	auto itemSize = ImVec2(SCR_W - itemStart - padding, 0);
-
-	const std::string* currentPart = nullptr;
-	for (const auto& [label, part] : targetParts)
+	if (previewOverlay && previewOverlay->IsValid())
 	{
-		ImGui::SetCursorPosX(itemStart);
-		
+		ImGui::SetCursorPos(cursor);
+		ImGui::Image(previewOverlay->TextureId, { allowedWidth, previewHeight });
+	}
+}
+
+void InstallImageDialog::RenderRightPanel(float x, float allowedWidth, float endY) 
+{
+	const std::string* currentPart = nullptr;
+	for (const auto& [label, part] : TargetInstallParts)
+	{
+		ImGui::SetCursorPosX(x);
+
 		auto id = ImGui::GetID(label.c_str());
-		if (ImGui::Selectable(label.c_str(), false, ImGuiSelectableFlags_DontClosePopups, itemSize))
+		if (Selectable(label.c_str()))
 		{
 			PushFunction([this, part]()
-			{
-				ApplyToPart(part);
-			});
+				{
+					ApplyToPart(part);
+				});
 		}
 
 		if (ImGui::GetFocusID() == id)
@@ -240,28 +220,28 @@ void InstallImageDialog::Render(int X, int Y)
 	if (ImGui::GetFocusID() == 0)
 		ImGui::SetFocusID(ImGui::GetID("Home menu"), ImGui::GetCurrentWindow());
 
-	if (currentPart)
+	if (currentPart && *currentPart != currentPreviewOverlay)
 	{
-		auto overlay = LoadOverlayPart(*currentPart);
-		if (overlay && overlay->IsValid())
-		{
-			ImGui::SetCursorPosY(startY);
-			ImGui::SetCursorPosX(padding);
-			ImGui::Image(overlay->TextureId, { previewWidth, previewHeight });
-		}
+		currentPreviewOverlay = *currentPart;
+		previewOverlay = LoadOverlayPart(*currentPart);
 	}
-		
-	auto textSize = ImGui::CalcTextSize("Cancel");
+}
 
-	ImGui::SetCursorPosY(startY + previewHeight - textSize.y);
-	ImGui::SetCursorPosX(previewWidth + padding * 2);
-	
-	if (ImGui::Selectable("Cancel", false, ImGuiSelectableFlags_DontClosePopups, itemSize))
-		PopPage(this);
+void InstallImageDialog::RenderBottom() 
+{	
+	if (resizeWarning)
+	{
+		auto x = ImGui::GetCursorPosX();
+		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
+		ImGui::Text("This image was automatically resized. For optimal resuls use 1280x720 images.");
+		ImGui::PopStyleColor();
+
+		ImGui::SetCursorPosX(x);
+	}
 
 	if (previewLoadFailure)
 	{
-		ImGui::SetCursorPosX(padding);
+		auto x = ImGui::GetCursorPosX();
 		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
 		if (UseLowMemory)
 			ImGui::Text("Failed to load previews. You are running in applet mode, this is not supported. Relaunch with title takeover");
@@ -270,17 +250,12 @@ void InstallImageDialog::Render(int X, int Y)
 
 		if (!previewError.empty())
 		{
-			ImGui::SetCursorPosX(padding);
-			ImGui::PushTextWrapPos(SCR_W - padding);
-			ImGui::Text(previewError.c_str());
+			ImGui::SetCursorPosX(x);
+			ImGui::PushTextWrapPos(SCR_W - PaddingSizeX);
+			ImGui::TextWrapped("%s", previewError.c_str());
 			ImGui::PopTextWrapPos();
 		}
 
 		ImGui::PopStyleColor();
 	}
-
-	if (Utils::PageLeaveFocusInput(false))
-		PopPage(this);
-
-	ImGui::End();
 }

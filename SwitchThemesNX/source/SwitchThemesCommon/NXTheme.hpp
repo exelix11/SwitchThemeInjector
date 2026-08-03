@@ -33,6 +33,7 @@ struct ThemeFileManifest
 	std::string Target;
 
 	static ThemeFileManifest FromJson(std::string_view json);
+	static FileData ForInternalUse(const std::string& target);
 };
 
 class NxTheme 
@@ -55,11 +56,15 @@ public:
 
 	bool HasMainImage() const { return files.count("image.dds") || files.count("image.jpg"); }
 	FileResult GetMainImage() const;
+	
+	FileData GetRawManifest() const;
 
 	bool HasMainLayout() const { return files.count("layout.json"); }
+	FileData GetRawMainLayout() const;
 	std::string_view GetMainLayout() const;
 	
 	bool HasCommonLayout() const { return files.count("common.json"); }
+	FileData GetRawCommonLayout() const;
 	std::string_view GetCommonLayout() const;
 		
 	bool HasImagePart(std::string_view partName) const;
