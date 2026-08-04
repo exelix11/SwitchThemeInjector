@@ -75,6 +75,12 @@ void ImageEntry::PerformConversion()
 		lblLine1 = "Error loading file";
 		imageData.clear();
 	}
+	else if (converted.Data.size() == 0)
+	{
+		CannotInstallReason = "Image conversion failed";
+		lblLine1 = "Error loading file";
+		imageData.clear();
+	}
 	else
 	{
 		imageData = std::move(converted.Data);

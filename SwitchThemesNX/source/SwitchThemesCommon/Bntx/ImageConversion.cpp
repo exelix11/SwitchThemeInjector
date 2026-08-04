@@ -111,8 +111,10 @@ namespace
 
 		StbImageHolder(std::span<const u8> image)
 		{
-			data = stbi_load_from_memory(image.data(), image.size(), &width, &height, &channels, 4);
+			int original_channels;
+			data = stbi_load_from_memory(image.data(), image.size(), &width, &height, &original_channels, 4);
 			isStb = true;
+			channels = 4;
 
 			if (!data)
 				error = stbi_failure_reason();
@@ -224,6 +226,9 @@ ImageConversion::ConversionResult ImageConversion::ToJPG(BitmapRef imgData, int 
 {
 	auto casted = dynamic_cast<StbImageHolder*>(imgData.get());
 	auto image = Resize(std::move(*casted), Width, Height, ResizeIfNeeded);
+
+	if (image.error.size())
+		return ImageConversion::ConversionResult::Fail(image.error);
 
 	std::vector<u8> result = {};
 	stbi_write_jpg_to_func(StbiWrite, &result, image.width, image.height, image.channels, image.data, 95);
