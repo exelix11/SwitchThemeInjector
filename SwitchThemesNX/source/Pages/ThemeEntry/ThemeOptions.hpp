@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "BaseImageOptionsDialog.hpp"
-#include "../../SwitchThemesCommon/NxTheme.hpp"
+#include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../../SwitchThemesCommon/MyTypes.h"
 
 class ThemeOptionsDialog : public BaseImageOptionsDialog
