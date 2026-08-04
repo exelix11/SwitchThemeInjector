@@ -181,6 +181,7 @@ void InstallImageDialog::ApplyToBootloader()
 	try {
 		auto image = ImageConversion::ToBootloaderBMP(imageBytes);
 		fs::WriteFile(fs::path::BootlogoPath, image.Data);
+		Dialog("Image installed to the bootloader successfully. Reboot to see the changes.");
 	}
 	catch (const std::exception& ex)
 	{

@@ -221,8 +221,8 @@ void Buffer::Write(const std::vector<unsigned char>& vec)
 
 void Buffer::Write(const std::vector<unsigned char>& vec, int start, int lenght)
 {
-    if (start > vec.size()) return;
-	if (start + lenght > vec.size()) lenght = vec.size() - start;
+    if ((size_t)start > vec.size()) return;
+	if ((size_t)start + lenght > vec.size()) lenght = vec.size() - start;
 
     // Insert any overwirten bytes at the current position
     auto overwrite = std::min((size_t)lenght, buffer.size() - Position);

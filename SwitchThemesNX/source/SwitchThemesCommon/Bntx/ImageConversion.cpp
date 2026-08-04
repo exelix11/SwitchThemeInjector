@@ -111,9 +111,11 @@ namespace
 
 		StbImageHolder(std::span<const u8> image)
 		{
-			data = stbi_load_from_memory(image.data(), image.size(), &width, &height, nullptr, 4);
-			channels = 4;
+			data = stbi_load_from_memory(image.data(), image.size(), &width, &height, &channels, 4);
 			isStb = true;
+
+			if (channels != 4)
+				error = "Image was loaded with the wrong channel count";
 
 			if (!data)
 				error = stbi_failure_reason();
@@ -147,7 +149,7 @@ namespace
 			return result;
 		}
 
-		StbImageHolder Rotate90Degrees() 
+		StbImageHolder Rotate90DegreesCounterclockwise() 
 		{
 			if (channels != 4)
 				return StbImageHolder("Only ARGB images are supported for rotation");
@@ -161,7 +163,7 @@ namespace
 			{
 				for (int w = 0; w < width; w++)
 				{
-					dest[(w * height) + (height - h - 1)] = source[(h * width) + w]; 
+					dest[(width - 1 - w) * height + h] = source[h * width + w];
 				}
 			}
 
@@ -255,7 +257,7 @@ ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<con
 
 	if (image.width == 1280 && image.height == 720)
 	{
-		image = image.Rotate90Degrees();
+		image = image.Rotate90DegreesCounterclockwise();
 		if (image.error.size())
 			return ImageConversion::ConversionResult::Fail("Failed to rotate image: " + image.error);
 	}

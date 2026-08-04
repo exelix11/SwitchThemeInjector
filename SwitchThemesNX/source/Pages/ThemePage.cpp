@@ -311,7 +311,7 @@ void ThemesPage::UpdateCommandText()
 		lblCommands = CommandsTextSelected.c_str();
 	else 
 	{
-		auto options = DisplayEntries.size() > currentMenuIndex && DisplayEntries[currentMenuIndex]->HasOptions();
+		auto options = (int)DisplayEntries.size() > currentMenuIndex && DisplayEntries[currentMenuIndex]->HasOptions();
 		lblCommands = options ? CommandsTextWithOptions.c_str() : CommandsTextNormal.c_str();
 	}
 }

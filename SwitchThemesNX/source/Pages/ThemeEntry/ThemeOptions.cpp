@@ -30,9 +30,7 @@ void ThemeOptionsDialog::RenderLeftPanel(float allowedWidth)
 	}
 	else
 	{
-		auto previewRatio = 1280.0f/720.0f;
-		auto previewHeight = allowedWidth * previewRatio;
-
+		ImGui::NewLine();
 		ImGui::NewLine();
 		ImGui::NewLine();
 		ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + allowedWidth);
@@ -43,8 +41,6 @@ void ThemeOptionsDialog::RenderLeftPanel(float allowedWidth)
 
 void ThemeOptionsDialog::RenderRightPanel(float x, float allowedWidth, float endY) 
 {
-	const std::string* currentPart = nullptr;
-	
 	ImGui::SetCursorPosX(x);
 	if (previewImage) 
 	{
