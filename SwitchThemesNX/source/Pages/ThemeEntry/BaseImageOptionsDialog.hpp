@@ -7,6 +7,7 @@ class BaseImageOptionsDialog : public IUIControlObj
 	void Render(int X, int Y) override;
 private:
 	float MaxItemWidth = 0;
+	bool FirstInteractionFocus = false;
 protected:
 	bool LockExit = false;
 	bool SkipCancelButton = false;
@@ -14,7 +15,13 @@ protected:
 	float PaddingSizeX = 0;
 	float PaddingSizeY = 0;
 
+	u32 FirstItemId;
+	u32 LastItemId;
+
 	void PaddingLine();
+	
+	void FirstItemHere();
+	void LastItemHere();
 
 	bool Selectable(const char* label);
 

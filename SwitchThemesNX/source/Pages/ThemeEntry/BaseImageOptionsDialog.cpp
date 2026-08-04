@@ -11,6 +11,9 @@ bool BaseImageOptionsDialog::Selectable(const char* label)
 	return ImGui::Selectable(label, false, ImGuiSelectableFlags_DontClosePopups, { MaxItemWidth, 0 });
 }
 
+void BaseImageOptionsDialog::FirstItemHere() { FirstItemId = ImGui::GetItemID();} 
+void BaseImageOptionsDialog::LastItemHere() { LastItemId = ImGui::GetItemID(); }
+
 void BaseImageOptionsDialog::Render(int X, int Y) 
 {
 	Utils::ImGuiNextFullScreen();
@@ -53,6 +56,8 @@ void BaseImageOptionsDialog::Render(int X, int Y)
 
 		if (Selectable("Cancel"))
 			PopPage(this);
+
+		LastItemHere();
 	}
 
 	ImGui::SetCursorPos({ PaddingSizeX, endY });
@@ -60,6 +65,24 @@ void BaseImageOptionsDialog::Render(int X, int Y)
 
 	if (!LockExit && Utils::PageLeaveFocusInput(false))
 		PopPage(this);
+
+	// Handle cursor interactions
+	if (FirstItemId && !FirstInteractionFocus)
+	{
+		if (ImGui::GetFocusID() == 0)
+		{
+			ImGui::SetFocusID(FirstItemId, ImGui::GetCurrentWindow());
+			FirstInteractionFocus = true;
+		}
+	}
+
+	if (LastItemId && FirstItemId && ImGui::GetFocusID())
+	{
+		if (ImGui::GetFocusID() == FirstItemId && NAV_UP)
+			ImGui::SetFocusID(LastItemId, ImGui::GetCurrentWindow());
+		if (ImGui::GetFocusID() == LastItemId && NAV_DOWN)
+			ImGui::SetFocusID(FirstItemId, ImGui::GetCurrentWindow());
+	}
 
 	ImGui::End();
 }

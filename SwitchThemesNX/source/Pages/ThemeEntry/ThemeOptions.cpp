@@ -46,9 +46,7 @@ void ThemeOptionsDialog::RenderRightPanel(float x, float allowedWidth, float end
 	{
 		if (Selectable("Preview")) 
 			Preview();
-
-		if (ImGui::GetFocusID() == 0)
-			ImGui::SetFocusID(ImGui::GetItemID(), ImGui::GetCurrentWindow());
+		FirstItemHere();
 
 		ImGui::SetCursorPosX(x);
 		if (Selectable("Install image only"))
@@ -57,9 +55,7 @@ void ThemeOptionsDialog::RenderRightPanel(float x, float allowedWidth, float end
 	else
 	{
 		Selectable("This theme has no image");
-
-		if (ImGui::GetFocusID() == 0)
-			ImGui::SetFocusID(ImGui::GetItemID(), ImGui::GetCurrentWindow());
+		FirstItemHere();
 	}
 
 	ImGui::SetCursorPosX(x);

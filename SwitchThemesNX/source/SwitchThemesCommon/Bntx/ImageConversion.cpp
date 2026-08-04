@@ -114,9 +114,6 @@ namespace
 			data = stbi_load_from_memory(image.data(), image.size(), &width, &height, &channels, 4);
 			isStb = true;
 
-			if (channels != 4)
-				error = "Image was loaded with the wrong channel count";
-
 			if (!data)
 				error = stbi_failure_reason();
 		}
@@ -254,6 +251,9 @@ ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<con
 		if (image.error.size())
 			return ImageConversion::ConversionResult::Fail("Failed to resize image: " + image.error);
 	}
+
+	if (image.channels != 4)
+		return ImageConversion::ConversionResult::Fail("The image does not have the right amount of color channels");
 
 	if (image.width == 1280 && image.height == 720)
 	{

@@ -255,6 +255,7 @@ void InstallImageDialog::RenderLeftPanel(float allowedWidth)
 void InstallImageDialog::RenderRightPanel(float x, float allowedWidth, float endY) 
 {
 	const std::string* currentPart = nullptr;
+	bool first = true;
 	for (const auto& [label, part] : TargetInstallParts)
 	{
 		ImGui::SetCursorPosX(x);
@@ -271,12 +272,15 @@ void InstallImageDialog::RenderRightPanel(float x, float allowedWidth, float end
 				});
 		}
 
+		if (first)
+		{
+			FirstItemHere();
+			first = false;
+		}
+
 		if (ImGui::GetFocusID() == id)
 			currentPart = &part;
 	}
-
-	if (ImGui::GetFocusID() == 0)
-		ImGui::SetFocusID(ImGui::GetID("Home menu"), ImGui::GetCurrentWindow());
 
 	if (currentPart && *currentPart != currentPreviewOverlay)
 	{
