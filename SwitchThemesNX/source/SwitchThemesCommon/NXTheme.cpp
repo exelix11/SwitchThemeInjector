@@ -12,7 +12,7 @@
 #include "json.hpp"
 #include "SarcLib/Sarc.hpp"
 #include "SarcLib/Yaz0.hpp"
-#include "Bntx/DDS_conversion.hpp"
+#include "Bntx/ImageConversion.hpp"
 #include "../../Libs/zip/zip.h"
 #include <exception>
 #include "Common.hpp"
@@ -162,7 +162,7 @@ FileResult NxTheme::ConvertToDDS(const FileData& image, bool transparent, int wi
 	try
 	{
 #ifndef SWITCHTHEMESCOMMON_TESTS
-		auto dds = DDSConv::ConvertImage(image, transparent, width, height);
+		auto dds = ImageConversion::ToDDS(image, transparent, width, height);
 		if (dds.IsSuccess())
 			return dds.Data;
 
@@ -182,11 +182,18 @@ FileData NxTheme::GetRawManifest() const
 	return files.at("info.json");
 }
 
-FileResult NxTheme::GetMainImage() const
+FileResult NxTheme::GetConvertedMainImage() const
 {
 	if (files.count("image.dds")) return files.at("image.dds");
 	if (!files.count("image.jpg")) return "This theme does not have an image";		
 	return ConvertToDDS(files.at("image.jpg"), false, 1280, 720);
+}
+
+FileResult NxTheme::GetRawMainImage() const
+{
+	if (files.count("image.dds")) return files.at("image.dds");
+	if (!files.count("image.jpg")) return "This theme does not have an image";		
+	return files.at("image.jpg");
 }
 
 FileResult NxTheme::GetImagePart(std::string_view partName, int width, int height) const

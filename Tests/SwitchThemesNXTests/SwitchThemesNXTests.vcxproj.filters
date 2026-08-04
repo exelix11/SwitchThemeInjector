@@ -49,9 +49,6 @@
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Generated\TextureReplacement.g.cpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS_conversion.cpp">
-      <Filter>SwitchThemesCommon</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Layouts\LayoutDeserializer.cpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClCompile>
@@ -143,9 +140,6 @@
       <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp">
-      <Filter>SwitchThemesCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS_conversion.hpp">
       <Filter>SwitchThemesCommon</Filter>
     </ClInclude>
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Common.hpp">

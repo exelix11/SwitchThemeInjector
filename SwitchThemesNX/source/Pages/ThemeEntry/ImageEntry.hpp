@@ -9,7 +9,7 @@
 class InstallImageDialog : public BaseImageOptionsDialog
 {
 public:
-	InstallImageDialog(ImageRef preview, const std::vector<u8>& ddsImage, bool resizeWarning, bool showInstallDialogs, bool* outSuccess);
+	InstallImageDialog(ImageRef preview, const std::vector<u8>& imageBytes, bool resizeWarning, bool showInstallDialogs, bool* outSuccess);
 
 	void Update() override {};
 protected:
@@ -23,7 +23,7 @@ private:
 	ImageRef previewOverlay;
 	std::string currentPreviewOverlay;
 
-	std::span<const u8> ddsImage;
+	std::span<const u8> imageBytes;
 	bool resizeWarning;
 	bool showInstallDialogs;
 	bool* outSuccess;
@@ -32,5 +32,6 @@ private:
 	std::string previewError = "";
 
 	void ApplyToPart(const std::string& part);
+	void ApplyToBootloader();
 	ImageRef LoadOverlayPart(const std::string& part);
 };

@@ -88,7 +88,7 @@ class IUIControlObj
 		virtual void Update() = 0;
 		//Draw the control in the existing Imgui frame
 		virtual void Render(int X, int Y) = 0;
-		virtual ~IUIControlObj();
+		virtual ~IUIControlObj() = default;
 };
 
 class TabRenderer;
@@ -97,7 +97,7 @@ class IPage : public IUIControlObj
 	public:
 		IPage() = default;
 		IPage(std::string_view name) : Name(name) {}
-		virtual ~IPage();
+		virtual ~IPage() = default;
 		
 		TabRenderer* Parent = nullptr;
 		std::string Name = "";

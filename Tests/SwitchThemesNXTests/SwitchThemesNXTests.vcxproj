@@ -92,7 +92,6 @@
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.cpp" />
-    <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS_conversion.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Common.cpp" />
     <ClCompile Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.cpp" />
@@ -119,7 +118,6 @@
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\BRTI.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDSConv\stb_dxt.h" />
-    <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\DDS_conversion.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Common.hpp" />
     <ClInclude Include="..\..\SwitchThemesNX\source\SwitchThemesCommon\Fonts\TTF.hpp" />

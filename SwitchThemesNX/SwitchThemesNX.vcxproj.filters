@@ -247,7 +247,7 @@
     <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp">
       <Filter>SwitchThemesCommon\Generated</Filter>
     </ClInclude>
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS_conversion.hpp">
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\ImageConversion.hpp">
       <Filter>SwitchThemesCommon\Btnx</Filter>
     </ClInclude>
     <ClInclude Include="Libs\SOIL2\image_array_helper.h">
@@ -579,7 +579,7 @@
     <ClCompile Include="source\SwitchThemesCommon\Generated\TextureReplacement.g.cpp">
       <Filter>SwitchThemesCommon\Generated</Filter>
     </ClCompile>
-    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS_conversion.cpp">
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\ImageConversion.cpp">
       <Filter>SwitchThemesCommon\Btnx</Filter>
     </ClCompile>
     <ClCompile Include="Libs\SOIL2\image_DXT.c">

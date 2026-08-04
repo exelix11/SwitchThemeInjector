@@ -86,7 +86,7 @@
     <ClInclude Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\BRTI.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS.hpp" />
-    <ClInclude Include="source\SwitchThemesCommon\Bntx\DDS_conversion.hpp" />
+    <ClInclude Include="source\SwitchThemesCommon\Bntx\ImageConversion.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Bntx\QuickBntx.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Fonts\TTF.hpp" />
     <ClInclude Include="source\SwitchThemesCommon\Generated\NewFirmFixes.g.hpp" />
@@ -456,7 +456,7 @@
     <ClCompile Include="source\SwitchThemesCommon\BinaryReadWrite\Buffer.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\BRTI.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS.cpp" />
-    <ClCompile Include="source\SwitchThemesCommon\Bntx\DDS_conversion.cpp" />
+    <ClCompile Include="source\SwitchThemesCommon\Bntx\ImageConversion.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Bntx\QuickBntx.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Fonts\TTF.cpp" />
     <ClCompile Include="source\SwitchThemesCommon\Generated\PatchTemplates.g.cpp" />

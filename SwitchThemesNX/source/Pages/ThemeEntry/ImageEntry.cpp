@@ -7,7 +7,7 @@
 #include "ThemeEntry.hpp"
 #include "ImageEntry.hpp"
 #include "../../SwitchThemesCommon/MyTypes.h"
-#include "../../SwitchThemesCommon/Bntx/DDS_conversion.hpp"
+#include "../../SwitchThemesCommon/Bntx/ImageConversion.hpp"
 #include "../../SwitchThemesCommon/Common.hpp"
 #include "../../SwitchThemesCommon/NXTheme.hpp"
 #include "../../UI/UI.hpp"
@@ -24,6 +24,7 @@ namespace
 		{ "News applet",	"news"},
 		{ "User page",		"user"},
 		{ "Player selection", "psl"},
+		{ "Hekate boot image", "__boot"},
 	};
 }
 
@@ -33,33 +34,51 @@ ImageEntry::ImageEntry(const std::string& fileName, std::vector<u8>&& RawData)
 	lblFname = fs::GetFileName(fileName);
 	lblLine1 = fileName;
 	lblLine2 = "Image file";
-	_originalData = std::move(RawData);
+	imageData = std::move(RawData);
 }
 
 void ImageEntry::PerformConversion()
 {
-	if (CannotInstallReason.size() || _convertedDds.size())
+	if (CannotInstallReason.size() || conversionDone)
 		return;
 
-	if (_originalData.empty())
+	// Regardless of the result don't try again
+	conversionDone = true;
+
+	if (imageData.empty())
 	{
-		CannotInstallReason = "No data to convert";
+		CannotInstallReason = "The image file or format conversion failed";
 		lblLine1 = "Error loading file";
 		return;
 	}
 
-	auto dds = DDSConv::ConvertImage(_originalData, false, 1280, 720, true);
-	_originalData.clear();
-
-	if (dds.ErrorMessage.size())
+	// We want to allow installing images both to hekate and qlaunch
+	// Previously we converted images to dds here directly but that would reduce the quality for the bootloader
+	// Instead now we load the image and check the size, if the size is correct we continue with the raw image from the SD, otherwise we convert to JPG at an acceptable quality
+	// We do need this conversion step to avoid trying to preview huge images which opengl might not like
+	auto loaded = ImageConversion::LoadBitmap(imageData, CannotInstallReason);
+	if (!loaded)
 	{
-		CannotInstallReason = dds.ErrorMessage;
+		lblLine1 = "Error loading image";
+		imageData.clear();
+		return;
+	}
+
+	// Exact resolution, do nothing
+	if (loaded->Width() == 1280 && loaded->Height() == 720)
+		return;
+	
+	auto converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true);
+	if (converted.ErrorMessage.size())
+	{
+		CannotInstallReason = converted.ErrorMessage;
 		lblLine1 = "Error loading file";
+		imageData.clear();
 	}
 	else
 	{
-		_convertedDds = std::move(dds.Data);
-		_resizeWarning = dds.resized;
+		imageData = std::move(converted.Data);
+		resizeWarning = converted.resized;
 	}
 }
 
@@ -67,20 +86,20 @@ ImageRef ImageEntry::GetConvertedImage()
 {
 	PerformConversion();
 
-	if (_previewImage)
-		return _previewImage;
+	if (previewImage)
+		return previewImage;
 
-	auto res = std::make_shared<RenderImage>(_convertedDds);
+	auto res = std::make_shared<RenderImage>(imageData);
 	if (!res || !res->IsValid())
 	{
 		CannotInstallReason = "Failed to load the image after conversion";
 		lblLine1 = "Error loading file";
-		_convertedDds.clear();
+		imageData.clear();
 	}
 
 	// Cache previews only when not in applet mode
 	if (!UseLowMemory)
-		_previewImage = res;
+		previewImage = res;
 
 	return res;
 }
@@ -89,7 +108,7 @@ bool ImageEntry::DoInstall(bool ShowDialogs)
 {
 	PerformConversion();
 
-	if (!CanInstall() || _convertedDds.empty())
+	if (!CanInstall() || imageData.empty())
 		return false;
 
 	auto preview = GetConvertedImage();
@@ -97,13 +116,13 @@ bool ImageEntry::DoInstall(bool ShowDialogs)
 		return false;
 
 	bool result;
-	PushPageBlocking(new InstallImageDialog(preview, _convertedDds, _resizeWarning, ShowDialogs, &result));
+	PushPageBlocking(new InstallImageDialog(preview, imageData, resizeWarning, ShowDialogs, &result));
 
 	return result;
 }
 
-InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& ddsImage, bool resizeWarning, bool showInstallDialogs, bool* outSuccess) :
-	previewImage(preview), ddsImage(ddsImage), resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs), 
+InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& imageBytes, bool resizeWarning, bool showInstallDialogs, bool* outSuccess) :
+	previewImage(preview), imageBytes(imageBytes), resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs), 
 	outSuccess(outSuccess)
 {
 	PageName = "InstallImageDialog";
@@ -119,7 +138,7 @@ InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& 
 
 ImageRef InstallImageDialog::LoadOverlayPart(const std::string& part)
 {
-	if (previewLoadFailure)
+	if (previewLoadFailure || part == "__boot")
 		return nullptr;
 
 	std::string cacheKey = "preview_overlay://";
@@ -149,16 +168,51 @@ ImageRef InstallImageDialog::LoadOverlayPart(const std::string& part)
 	return res;
 }
 
+void InstallImageDialog::ApplyToBootloader()
+{
+	if (!fs::DirectoryExists(fs::path::BootloaderDir))
+	{
+		Dialog("Bootloader directory not found. Make sure hekate is installed and try again.");
+		return;
+	}
+
+	DisplayLoading("Installing...");
+
+	try {
+		auto image = ImageConversion::ToBootloaderBMP(imageBytes);
+		fs::WriteFile(fs::path::BootlogoPath, image.Data);
+	}
+	catch (const std::exception& ex)
+	{
+		Dialog("Failed to install the image to the bootloader: " + std::string(ex.what()));
+		return;
+	}
+}
+
 void InstallImageDialog::ApplyToPart(const std::string& part)
 {
 	DisplayLoading("Installing...");
-
+		
 	// Hacky impl: build an nxtheme in memory and start the installation process
 	FileContainer files =
 	{
 		{"info.json", ThemeFileManifest::ForInternalUse(part) },
-		{"image.dds", FileData(ddsImage.begin(), ddsImage.end()) },
 	};
+
+	// But only convert if needed
+	if (ImageConversion::IsDDS(imageBytes))
+		files["image.dds"] = FileData(imageBytes.begin(), imageBytes.end());
+	else
+	{
+		auto conversion = ImageConversion::ToDDS(imageBytes, false, 1280, 720, true);
+		if (!conversion.IsSuccess())
+		{
+			Dialog("Failed to convert the image to dds: " + conversion.ErrorMessage);
+			return;
+		}
+
+		files["image.dds"] = std::move(conversion.Data);
+	}
 
 	auto entry = NxEntry("theme", std::move(files));
 	if (!entry.CanInstall())
@@ -209,7 +263,10 @@ void InstallImageDialog::RenderRightPanel(float x, float allowedWidth, float end
 		{
 			PushFunction([this, part]()
 				{
-					ApplyToPart(part);
+					if (part == "__boot")
+						ApplyToBootloader();
+					else
+						ApplyToPart(part);
 				});
 		}
 

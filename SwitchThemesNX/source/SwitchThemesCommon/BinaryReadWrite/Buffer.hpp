@@ -29,11 +29,14 @@ public:
     // This copies the data
     Buffer(std::span<const unsigned char>) ;
 
-    void setBuffer(std::vector<unsigned char>&) ;
     const std::vector<unsigned char> &getBuffer() const ;
-    void clear() ;
 
-    std::string byteStr(bool LE = true) const ;
+    void moveOutBuffer(std::vector<unsigned char>& target);
+    void clear();
+
+    std::span<unsigned char> getExpandedSlice(size_t bytes);
+
+    std::string byteStr(bool LE = true) const;
 
 	size_t Length();
 	size_t Position = 0;
@@ -125,8 +128,6 @@ public:
 	std::vector<int> ReadS32Array(int count);
 
 	std::vector<unsigned char> readBytes(unsigned int count);
-
-    ~Buffer();
 private:
     std::vector<unsigned char> buffer;
 	void putByte(unsigned char b);

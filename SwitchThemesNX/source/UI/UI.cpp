@@ -234,6 +234,3 @@ ImageRef ImageCache::Load(const std::vector<u8> &data, const std::string &name)
 	
 	return image;
 }
-
-IPage::~IPage(){}
-IUIControlObj::~IUIControlObj(){}

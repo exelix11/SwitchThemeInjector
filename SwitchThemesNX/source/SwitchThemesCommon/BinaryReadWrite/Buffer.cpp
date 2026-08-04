@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <sstream> 
-#include <memory>
+#include <algorithm>
 #include <span>
 #include <string>
 #include <cstring>
@@ -19,15 +19,29 @@ Buffer::Buffer(std::span<const unsigned char> _buffer) :
 
 size_t Buffer::Length() { return buffer.size(); }
 
-void Buffer::setBuffer(std::vector<unsigned char> &_buffer)  {
-    buffer = _buffer;
-}
 const std::vector<unsigned char> &Buffer::getBuffer() const  {
     return buffer;
 }
+
+void Buffer::moveOutBuffer(std::vector<unsigned char>& target) {
+	target = std::move(buffer);
+    clear();
+}
+
 void Buffer::clear()  {
     buffer.clear();
     Position = 0;
+}
+
+std::span<unsigned char> Buffer::getExpandedSlice(size_t bytes)
+{
+	if (Position != buffer.size())
+		throw std::out_of_range("Position is not at the end of the buffer");
+
+	buffer.resize(buffer.size() + bytes);
+	Position += bytes;
+
+	return std::span<unsigned char>(buffer.data() + buffer.size() - bytes, bytes);
 }
 
 std::string Buffer::byteStr(bool LE) const {
@@ -83,6 +97,7 @@ void Buffer::WriteFixedLengthString(const std::string& str, unsigned int maxLen)
 void Buffer::Write(char val)  {
 	putByte(*(unsigned char*)&val);
 }
+
 void Buffer::Write(unsigned char val)  {
 	putByte(val);
 }
@@ -201,15 +216,29 @@ void Buffer::writeDouble_BE(double val)  {
 
 void Buffer::Write(const std::vector<unsigned char>& vec)
 {
-	int size = vec.size();
-	for (int i = 0; i < size; i++)
-		Write(vec[i]);
+	Write(vec, 0, vec.size());
 }
 
 void Buffer::Write(const std::vector<unsigned char>& vec, int start, int lenght)
 {
-	for (int i = start; i < start + lenght; i++)
-		Write(vec[i]);
+    if (start > vec.size()) return;
+	if (start + lenght > vec.size()) lenght = vec.size() - start;
+
+    // Insert any overwirten bytes at the current position
+    auto overwrite = std::min((size_t)lenght, buffer.size() - Position);
+    if (overwrite)
+    {
+        std::memcpy(buffer.data() + Position, vec.data(), overwrite);
+        Position += overwrite;
+        lenght -= overwrite;
+    }
+
+    if (lenght)
+    {
+        auto begin = vec.begin() + start + overwrite;
+        buffer.insert(buffer.end(), begin, begin + lenght);
+        Position += lenght;
+    }
 }
 
 /************************* READING *************************/
@@ -385,8 +414,4 @@ std::vector<unsigned char> Buffer::readBytes(unsigned int count)
 	for (unsigned i = 0; i < count; i++)
 		res[i] = buffer[Position++];
 	return res;
-}
-
-Buffer::~Buffer() {
-    clear();
 }

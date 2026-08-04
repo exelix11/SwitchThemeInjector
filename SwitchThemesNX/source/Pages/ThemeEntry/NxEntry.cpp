@@ -248,7 +248,7 @@ std::optional<FileData> NxEntry::GetBackgroundImage()
 	if (!theme.HasMainImage())
 		return std::nullopt;
 
-	auto image = theme.GetMainImage();
+	auto image = theme.GetConvertedMainImage();
 	if (std::holds_alternative<std::string>(image))
 	{
 		_HasPreview = false;
@@ -296,7 +296,10 @@ bool NxEntry::PatchLayout(SwitchThemesCommon::SzsPatcher& patcher, std::string_v
 
 void NxEntry::OpenOptions()
 {
-	PushPage(new ThemeOptionsDialog(FileName, theme));
+	if (!theme.HasMainImage())
+		Dialog("This theme has no wallpaper image");
+	else
+		PushPage(new ThemeOptionsDialog(FileName, theme));
 }
 
 void NxEntry::Initialize()

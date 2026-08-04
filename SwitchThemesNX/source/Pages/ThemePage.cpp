@@ -20,7 +20,7 @@ ThemesPage::ThemesPage() : lblPage("")
 		LimitLoad = 15;
 
 	Name = "Themes";
-	lblCommands = CommandsTextNormal;
+	lblCommands = CommandsTextNormal.c_str();
 
 	RefreshThemesList();
 }
@@ -76,7 +76,7 @@ ThemesPage::~ThemesPage()
 void ThemesPage::SetDir(const string &dir)
 {
 	if (pageNum >= 0)
-		CursorMemory[CurrentDir] = tuple<int,int>(pageNum, menuIndex);
+		CursorMemory[CurrentDir] = tuple<int,int>(pageNum, currentMenuIndex);
 
 	CurrentDir = dir;
 	if (!StrEndsWith(dir, "/"))
@@ -117,7 +117,7 @@ void ThemesPage::SetPage(int num, int index)
 	ImGui::NavMoveRequestCancel();
 
 	// Reset scroll if we're changing the page or the menu index
-	ResetScroll = num != pageNum || index != menuIndex;
+	ResetScroll = num != pageNum || index != currentMenuIndex;
 
 	if (num < 0) // Just clear the current page
 	{
@@ -152,11 +152,17 @@ void ThemesPage::SetPage(int num, int index)
 				DisplayEntries.push_back(ThemeEntry::FromFile(DirectoryFiles[baseIndex + i]));
 		}
 
-		UpdateBottomText();
+		UpdatePageText();
 	}
 
 	// Set the menu index
-	menuIndex = index < 0 ? PageItemsCount() - 1 : index;
+	setMenuIndex(index < 0 ? PageItemsCount() - 1 : index);
+}
+
+void ThemesPage::setMenuIndex(int index)
+{
+	currentMenuIndex = index;
+	UpdateCommandText();
 }
 
 void ThemesPage::Render(int X, int Y)
@@ -191,14 +197,14 @@ void ThemesPage::Render(int X, int Y)
 		goto QUIT_RENDERING;
 
 	ImGui::SetCursorPosY(570);
-	ImGui::TextUnformatted(lblCommands.c_str());
+	ImGui::TextUnformatted(lblCommands ? lblCommands : "");
 
 	{
 		Utils::ImGuiSetupPage("ThemesList", X, Y, DefaultWinFlags & ~ImGuiWindowFlags_NoScrollbar);
 		int setNewMenuIndex = 0;
 		if (ResetScroll || ImGui::GetCurrentWindow()->Appearing)
 		{
-			setNewMenuIndex = menuIndex;
+			setNewMenuIndex = currentMenuIndex;
 			ImGui::NavMoveRequestCancel();
 			ImGui::SetScrollY(0);
 			FocusEvent.Set();
@@ -213,7 +219,7 @@ void ThemesPage::Render(int X, int Y)
 					ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x366e64ff);
 
 				if (e->IsHighlighted())
-					menuIndex = count;
+					setMenuIndex(count);
 				
 				auto res = e->Render(Selected);
 
@@ -238,8 +244,8 @@ void ThemesPage::Render(int X, int Y)
 									e->Install();
 								else
 								{
-									if (menuIndex != count)
-										menuIndex = count;
+									if (currentMenuIndex != count)
+										setMenuIndex(count);
 									SelectCurrent();
 								}
 							}
@@ -275,14 +281,15 @@ inline bool ThemesPage::IsSelected(const std::string &fname)
 void ThemesPage::ClearSelection()
 {
 	SelectedFiles.clear();
-	UpdateBottomText();
+	UpdatePageText();
 }
 
-void ThemesPage::UpdateBottomText()
+void ThemesPage::UpdatePageText()
 {
 	if (pageCount <= 0)
 	{
 		lblPage = "";
+		lblCommands = "";
 		return;
 	}
 
@@ -292,23 +299,28 @@ void ThemesPage::UpdateBottomText()
 		ss << "(" << SelectedFiles.size() << " selected) ";
 
 	ss << CurrentDir << " - Page " << pageNum + 1 << "/" << pageCount;
-	
+
 	lblPage = ss.str();
 
+	UpdateCommandText();
+}
+
+void ThemesPage::UpdateCommandText()
+{
 	if (SelectedFiles.size() != 0) 
-		lblCommands = CommandsTextSelected;
+		lblCommands = CommandsTextSelected.c_str();
 	else 
 	{
-		auto options = DisplayEntries.size() > menuIndex && DisplayEntries[menuIndex]->HasOptions();
-		lblCommands = options ? CommandsTextWithOptions : CommandsTextNormal;
+		auto options = DisplayEntries.size() > currentMenuIndex && DisplayEntries[currentMenuIndex]->HasOptions();
+		lblCommands = options ? CommandsTextWithOptions.c_str() : CommandsTextNormal.c_str();
 	}
 }
 
 void ThemesPage::SelectCurrent()
 {
-	if (DisplayEntries[menuIndex]->IsFolder() || !DisplayEntries[menuIndex]->CanInstall()) return;
+	if (DisplayEntries[currentMenuIndex]->IsFolder() || !DisplayEntries[currentMenuIndex]->CanInstall()) return;
 
-	auto fname = DisplayEntries[menuIndex]->GetPath();
+	auto fname = DisplayEntries[currentMenuIndex]->GetPath();
 	auto position = std::find(SelectedFiles.begin(), SelectedFiles.end(), fname);
 
 	if (position != SelectedFiles.end())
@@ -316,7 +328,7 @@ void ThemesPage::SelectCurrent()
 	else 
 		SelectedFiles.push_back(fname);
 	
-	UpdateBottomText();
+	UpdatePageText();
 }
 
 void ThemesPage::Update()
@@ -336,7 +348,7 @@ void ThemesPage::Update()
 	if (menuCount <= 0 || pageNum < 0)
 		return;
 
-	if ((NAV_UP && menuIndex <= 0) || KeyPressed(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
+	if ((NAV_UP && currentMenuIndex <= 0) || KeyPressed(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
 	{
 		if (pageNum != 0) // If not the first page go to the previous
 			SetPage(pageNum - 1, -1);
@@ -345,7 +357,7 @@ void ThemesPage::Update()
 		else // If there's only one page go to the last entry
 			SetPage(pageNum, -1);
 	}
-	else if ((NAV_DOWN && menuIndex >= PageItemsCount() - 1) || KeyPressed(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
+	else if ((NAV_DOWN && currentMenuIndex >= PageItemsCount() - 1) || KeyPressed(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
 	{
 		if (pageNum + 1 < pageCount) // If we can go to the next page 
 			SetPage(pageNum + 1);
@@ -354,7 +366,7 @@ void ThemesPage::Update()
 	}
 	else if (KeyPressed(GLFW_GAMEPAD_BUTTON_Y))
 	{
-		if (SelectedFiles.size() == 0 && menuIndex >= 0)
+		if (SelectedFiles.size() == 0 && currentMenuIndex >= 0)
 			SelectCurrent();
 		else
 			ClearSelection();

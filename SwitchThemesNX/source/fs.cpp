@@ -74,8 +74,8 @@ static vector<string> GetThemeFilesInDirRecursive(const string& path, int level)
 		if (p.is_directory())
 		{
 			// Folders excluded from search
-			if (p.path().filename() == SYSTEMDATA_DIR ||
-				p.path().filename() == SYSTEMPATCHES_DIR)
+			if (p.path().filename() == "systemData" ||
+				p.path().filename() == "systemPatches")
 				continue;
 
 			auto path = p.path().string();
@@ -141,18 +141,20 @@ void fs::WriteFile(const string& name, std::span<const u8> data)
 
 bool fs::Exists(const std::string& name) { return std::filesystem::exists(name); }
 
+bool fs::DirectoryExists(const std::string& name) { return std::filesystem::is_directory(name); }
+
 void fs::Delete(const std::string& path) { std::filesystem::remove(path); }
 
 void fs::CreateDirectory(const std::string& path) { std::filesystem::create_directories(path); }
 
 bool fs::CheckFlagFile(const std::string& name)
 {
-	return Exists(SYSTEMDATA_PATH ".flag_" + name);
+	return Exists(fs::path::SystemDataFolder + ".flag_" + name);
 }
 
 void fs::SetFlagFile(const std::string& name, bool value)
 {
-	auto target = SYSTEMDATA_PATH ".flag_" + name;
+	auto target = fs::path::SystemDataFolder + ".flag_" + name;
 	try {
 		auto exists = fs::Exists(target);
 		if (value && !exists)
@@ -414,10 +416,10 @@ std::vector<std::string> fs::patches::GetSdPatches()
 {
 	std::vector<std::string> result;
 
-	if (!fs::Exists(SYSTEMPATCHES_PATH))
+	if (!fs::Exists(fs::path::PatchesDir))
 		return result;
 
-	for (auto p : filesystem::directory_iterator(SYSTEMPATCHES_PATH))
+	for (auto p : filesystem::directory_iterator(fs::path::PatchesDir))
 	{
 		if (!p.is_regular_file() || p.path().extension() != ".ips")
 			continue;
@@ -431,22 +433,22 @@ std::vector<std::string> fs::patches::GetSdPatches()
 
 void fs::patches::CreateFolder()
 {
-	if (Exists(SYSTEMPATCHES_PATH) && std::filesystem::is_regular_file(SYSTEMPATCHES_PATH))
-		Delete(SYSTEMPATCHES_PATH);
-	CreateDirectory(SYSTEMPATCHES_PATH);
+	if (Exists(fs::path::PatchesDir) && std::filesystem::is_regular_file(fs::path::PatchesDir))
+		Delete(fs::path::PatchesDir);
+	CreateDirectory(fs::path::PatchesDir);
 }
 
 void fs::patches::WritePatchForBuild(const std::string& buildId, const std::vector<u8>& data)
 {
-	return WriteFile(SYSTEMPATCHES_PATH + buildId + ".ips", data);
+	return WriteFile(fs::path::PatchesDir + buildId + ".ips", data);
 }
 
 std::vector<u8> fs::patches::OpenPatchForBuild(const std::string& buildId)
 {
-	return OpenFile(SYSTEMPATCHES_PATH + buildId + ".ips");
+	return OpenFile(fs::path::PatchesDir + buildId + ".ips");
 }
 
 bool fs::patches::hasPatchForBuild(const std::string& buildId)
 {
-	return fs::Exists(SYSTEMPATCHES_PATH + buildId + ".ips");
+	return fs::Exists(fs::path::PatchesDir + buildId + ".ips");
 }

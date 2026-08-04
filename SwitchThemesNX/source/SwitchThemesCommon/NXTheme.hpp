@@ -55,7 +55,8 @@ public:
 	static FileResult ConvertToDDS(const FileData& image, bool transparent, int width, int height);
 
 	bool HasMainImage() const { return files.count("image.dds") || files.count("image.jpg"); }
-	FileResult GetMainImage() const;
+	FileResult GetConvertedMainImage() const;
+	FileResult GetRawMainImage() const;
 	
 	FileData GetRawManifest() const;
 

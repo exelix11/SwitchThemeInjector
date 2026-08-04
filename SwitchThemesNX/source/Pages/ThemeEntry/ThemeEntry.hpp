@@ -133,10 +133,10 @@ protected:
 	bool DoInstall(bool ShowDialogs = true) override;
 
 private:
-	ImageRef _previewImage = nullptr;
-	std::vector<u8> _originalData{};
-	std::vector<u8> _convertedDds{};
-	bool _resizeWarning = false;
+	ImageRef previewImage = nullptr;
+	std::vector<u8> imageData {};
+	bool resizeWarning = false;
+	bool conversionDone = false;
 
 	// Lazy conversion, only when needed for preview or installation, and the result is cached
 	void PerformConversion();

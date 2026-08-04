@@ -32,20 +32,23 @@ class ThemesPage : public IPage
 		std::vector<std::string> ThemeFiles;
 		bool IsSelected(const std::string &fname);
 		void ClearSelection();
-		void UpdateBottomText();
+		
+		void UpdatePageText();
+		void UpdateCommandText();
 
 		std::string CurrentDir;
 		std::vector<std::string> DirectoryFiles;
 		
 		std::vector<std::unique_ptr<ThemeEntry>> DisplayEntries;
 		std::string lblPage;
-		std::string lblCommands;
+		const char* lblCommands;
 		int pageNum = -1;
 		int pageCount = -1;
 		
 		//Will reset the scroll and force the selected item on the ui
 		bool ResetScroll = false;
-		int menuIndex = 0;
+		int currentMenuIndex = 0;
+		void setMenuIndex(int number);
 
 		std::vector<std::string> SelectedFiles;
 		

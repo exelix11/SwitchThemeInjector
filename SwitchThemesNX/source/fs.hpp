@@ -6,29 +6,19 @@
 
 #include "Platform/PlatformFs.hpp"
 
-#define ATMOS_DIR "/atmosphere/"
-#define REINX_DIR "/reinx/"
-#define SX_DIR "/sxos/"
-
-#define THEMES_DIR "themes"
-#define THEMES_PATH SD_PREFIX "/" THEMES_DIR "/"
-#define SYSTEMDATA_DIR "systemData"
-#define SYSTEMDATA_PATH THEMES_PATH SYSTEMDATA_DIR "/"
-#define PROVIDERS_NAME "providers.json"
-
-#define SYSTEMPATCHES_DIR "systemPatches"
-#define SYSTEMPATCHES_PATH THEMES_PATH SYSTEMPATCHES_DIR "/"
-
 bool StrEndsWith(const std::string &str, const std::string &suffix);
 bool StrStartsWith(const std::string& str, const std::string& prefix);
 
 namespace fs::path
 {
-	const std::string ThemesFolder = THEMES_PATH;
-	const std::string SystemDataFolder = SYSTEMDATA_PATH;
-	const std::string DownloadsFolder = THEMES_PATH "Downloads/";
-	const std::string ProvidersFile = THEMES_PATH PROVIDERS_NAME;
-	const std::string PatchesDir = SYSTEMPATCHES_PATH;
+	const std::string ThemesFolder = SD_PREFIX "/themes/";
+	const std::string SystemDataFolder = SD_PREFIX "/themes/systemData/";
+	const std::string DownloadsFolder = SD_PREFIX "/themes/Downloads/";
+	const std::string ProvidersFile = SD_PREFIX "/themes/providers.json";
+	const std::string PatchesDir = SD_PREFIX "/themes/systemPatches/";
+	
+	const std::string BootloaderDir = SD_PREFIX "/bootloader/";
+	const std::string BootlogoPath = SD_PREFIX "/bootloader/bootlogo.bmp";
 
 	const std::string& CfwFolder();
 	std::string FsMitmFolder();
@@ -39,9 +29,9 @@ namespace fs::path
 	// Modifies in-place
 	std::string& ToUnixSeparators(std::string& str);
 
-	const std::string Atmosphere = SD_PREFIX ATMOS_DIR;
-	const std::string Reinx = SD_PREFIX REINX_DIR;
-	const std::string SX = SD_PREFIX SX_DIR;
+	const std::string Atmosphere = SD_PREFIX "/atmosphere/";
+	const std::string Reinx = SD_PREFIX "/reinx/";
+	const std::string SX = SD_PREFIX "/sxos/";
 }
 
 namespace fs {
@@ -50,6 +40,7 @@ namespace fs {
 	void WriteFile(const std::string& name, std::span<const u8> data);
 
 	bool Exists(const std::string& name);
+	bool DirectoryExists(const std::string& name);
 	void Delete(const std::string& path);
 	void CreateDirectory(const std::string& path);
 	void DeleteDirectory(const std::string& path);

@@ -50,24 +50,31 @@ void ThemeOptionsDialog::RenderRightPanel(float x, float allowedWidth, float end
 	{
 		if (Selectable("Preview")) 
 			Preview();
-		ImGui::SetCursorPosX(x);
 
 		if (ImGui::GetFocusID() == 0)
 			ImGui::SetFocusID(ImGui::GetItemID(), ImGui::GetCurrentWindow());
 
+		ImGui::SetCursorPosX(x);
 		if (Selectable("Install image only"))
 			PushFunction([this]() { InstallOnlyImage(); });
-		ImGui::SetCursorPosX(x);
+	}
+	else
+	{
+		Selectable("This theme has no image");
+
+		if (ImGui::GetFocusID() == 0)
+			ImGui::SetFocusID(ImGui::GetItemID(), ImGui::GetCurrentWindow());
 	}
 
+	ImGui::SetCursorPosX(x);
 	if (theme.HasMainLayout() || theme.HasCommonLayout())
 	{
 		if (Selectable("Install layout only"))
 			PushFunction([this]() { InstallOnlyLayout(); });
-		ImGui::SetCursorPosX(x);
-
-		if (ImGui::GetFocusID() == 0)
-			ImGui::SetFocusID(ImGui::GetItemID(), ImGui::GetCurrentWindow());
+	}
+	else
+	{
+		Selectable("This theme has no layout");
 	}
 }
 
@@ -78,7 +85,7 @@ void ThemeOptionsDialog::RenderBottom()
 
 void ThemeOptionsDialog::Initialize() 
 {
-	auto img = theme.GetMainImage();
+	auto img = theme.GetRawMainImage();
 	if (std::holds_alternative<std::string>(img))
 	{
 		previewError = std::get<std::string>(img);
