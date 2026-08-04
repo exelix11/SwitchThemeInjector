@@ -196,10 +196,10 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
-	ImGui::TextUnformatted("Update detection sysmodule (BETA)");
+	ImGui::TextUnformatted("Update detection sysmodule v2 (BETA)");
 	ImGui::PopFont();
 
-	ImGui::TextWrapped("This is a sysmodule that automatically uninstalls themes when the system firmware is updated. This fixes the common crashes caused by incompatible versions of the home menu.");
+	ImGui::TextWrapped("This is a sysmodule that automatically uninstalls themes when the system firmware is updated. This fixes crashes after updates or when switching emummc.\nVersion 2 fixes a number of bugs reported by users.");
 	if (sysmoduleInstalled)
 	{
 		if (!bundledSysmodule)
