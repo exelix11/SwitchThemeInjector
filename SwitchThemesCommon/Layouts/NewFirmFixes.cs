@@ -18,7 +18,7 @@ namespace SwitchThemes.Common
 		const string Fix_Legacy_Diamond = "Fix_Legacy_Diamond";
 		const string Fix_Legacy_DogeLayout = "Fix_Legacy_DogeLayout";
 
-		public static readonly Dictionary<string, string> FixResources = new() {
+		public static readonly Dictionary<string, string> FixResources = new Dictionary<string, string>() {
 			{ Fix_11_NoMoveApplets, "11_NoMoveApplets.json"},
             { Fix_11_NoOnlineButton, "11_NoOnlineButton.json"},
             { Fix_20_CarefulLayout, "20_CarefulLayout.json"},
