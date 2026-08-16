@@ -218,7 +218,7 @@ void ThemesPage::Render(int X, int Y)
 				if (Selected)
 					ImGui::PushStyleColor(ImGuiCol_WindowBg, 0x366e64ff);
 
-				if (e->IsHighlighted())
+				if (e->IsHighlighted() && currentMenuIndex != count)
 					setMenuIndex(count);
 				
 				auto res = e->Render(Selected);
@@ -309,10 +309,16 @@ void ThemesPage::UpdateCommandText()
 {
 	if (SelectedFiles.size() != 0) 
 		lblCommands = CommandsTextSelected.c_str();
+	else if (currentMenuIndex >= (int)DisplayEntries.size())
+		lblCommands = CommandsTextNormal.c_str();
 	else 
 	{
-		auto options = (int)DisplayEntries.size() > currentMenuIndex && DisplayEntries[currentMenuIndex]->HasOptions();
-		lblCommands = options ? CommandsTextWithOptions.c_str() : CommandsTextNormal.c_str();
+		if (DisplayEntries[currentMenuIndex]->IsFolder())
+			lblCommands = CommandsTextFolder.c_str();
+		else if (DisplayEntries[currentMenuIndex]->HasOptions())
+			lblCommands = CommandsTextWithOptions.c_str();
+		else 
+			lblCommands = CommandsTextNormal.c_str();
 	}
 }
 
