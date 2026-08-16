@@ -28,4 +28,8 @@ class SettingsPage : public IPage
 		void UISysmoduleBuildMissing();
 		void UISysmoduleUpdateAvailable();
 		void UISysmoduleNotInstalled();
+
+		void UISetupFirstItem();
+		u32 firstUiItem;
+		bool focusItemPreventsLeft;
 };

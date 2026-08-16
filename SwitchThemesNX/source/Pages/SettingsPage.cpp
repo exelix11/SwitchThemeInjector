@@ -157,12 +157,20 @@ void SettingsPage::UISysmoduleUpdateAvailable()
 	ImGui::Text("The sysmodule v%d is currently installed. A new version is available.", *sysmoduleInstalled);
 	ImGui::PopStyleColor();
 
+	if (ImGui::Button("Uninstall"))
+		PushFunction([]() { RemoveSysmodule(true); });
+	
+	// Cursor hack, this should be the first item
+	UISetupFirstItem();
+
+	ImGui::SameLine();
+
+	// TODO: actually due to imgui handling events together as our tab manager using the dpan right input to switch to the settings page will focus this instead
+	// It's an edge case and fixing it is probably more trouble than it's worth.
 	if (ImGui::Button("Update now"))
 		PushFunction([]() { InstallSysmodule(); });
 
-	ImGui::SameLine();
-	if (ImGui::Button("Uninstall"))
-		PushFunction([]() { RemoveSysmodule(true); });
+	focusItemPreventsLeft = ImGui::GetFocusID() == ImGui::GetCurrentWindow()->DC.LastItemId;
 }
 
 void SettingsPage::UISysmoduleBuildMissing()
@@ -183,8 +191,19 @@ void SettingsPage::UISysmoduleNotInstalled()
 		PushFunction([]() { InstallSysmodule(); });
 }
 
+void SettingsPage::UISetupFirstItem()
+{
+	if (firstUiItem == 0)
+		firstUiItem = ImGui::GetCurrentWindow()->DC.LastItemId;
+
+	ImGui::SetItemDefaultFocus();
+}
+
 void SettingsPage::Render(int X, int Y)
 {
+	firstUiItem = 0;
+	focusItemPreventsLeft = false;
+
 	if (NotificationIcon)
 	{
 		NotificationIcon = false;
@@ -216,8 +235,14 @@ void SettingsPage::Render(int X, int Y)
 		UISysmoduleNotInstalled();
 	else
 		UISysmoduleBuildMissing();
+	
+	UISetupFirstItem();
 
-	PAGE_RESET_FOCUS;
+	PAGE_RESET_FOCUS_FOR(firstUiItem);
+
+	// Fix scrolling: when the first item gets focused return at the top
+	if (ImGui::GetScrollY() > 0 && ImGui::GetFocusID() == firstUiItem)
+		ImGui::SetScrollY(0);
 
 	ImGui::NewLine();
 
@@ -246,7 +271,7 @@ void SettingsPage::Render(int X, int Y)
 
 void SettingsPage::Update()
 {
-	if (Utils::PageLeaveFocusInput(true))
+	if (Utils::PageLeaveFocusInput(!focusItemPreventsLeft))
 	{
 		Parent->PageLeaveFocus(this);
 		return;
