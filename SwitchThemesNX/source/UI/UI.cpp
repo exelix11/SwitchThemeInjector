@@ -5,12 +5,13 @@
 #include "glad.h"
 
 #include <algorithm>
-
-#include "../Platform/Platform.hpp"
+#include <unordered_map>
 
 #include "imgui/imgui_internal.h"
-#include "../ViewFunctions.hpp"
 
+#include "../ViewFunctions.hpp"
+#include "../fs.hpp"
+#include "../Platform/Platform.hpp"
 #include "../../Libs/SOIL2/SOIL2.h"
 
 static_assert(sizeof(GLuint) <= sizeof(ImTextureID)); //We must not lose data when passing the image to ImGui
@@ -132,6 +133,7 @@ using CacheEntry = std::pair<std::string, ImageRef>;
 
 namespace 
 {
+	std::unordered_map<Icons::Type, ImageRef> IconCache;
 	std::vector<CacheEntry> ImagePool;
 	size_t CurrentCacheSize = 0;
 
@@ -233,4 +235,52 @@ ImageRef ImageCache::Load(const std::vector<u8> &data, const std::string &name)
 		AddValue(name, image);
 	
 	return image;
+}
+
+ImageRef Icons::GetIcon(Icons::Type type)
+{
+	if (IconCache.count(type))
+		return IconCache[type];
+
+	auto name = ASSET("icons/xmark.png");
+	switch (type)
+	{
+		case Type::Folder: name = ASSET("icons/folder-open.png"); break;
+		case Type::File: name = ASSET("icons/file.png"); break;
+		case Type::Theme: name = ASSET("icons/palette.png"); break;
+		case Type::Font: name = ASSET("icons/font.png"); break;
+		case Type::Image: name = ASSET("icons/image.png"); break;
+		case Type::Question: name = ASSET("icons/question.png"); break;
+	}
+
+	auto image = std::make_shared<RenderImage>(fs::OpenFile(name));
+	IconCache[type] = image;
+
+	return image;
+}
+
+void Icons::DropCache()
+{
+	IconCache.clear();
+}
+
+void Icons::RenderRaw(Icons::Type type, float x, float y, float width, float height)
+{
+	auto icon = GetIcon(type);
+	if (!icon->IsValid())
+		return;
+
+	auto window = ImGui::GetCurrentWindow();
+	window->DrawList->AddImage(icon->TextureId, ImVec2(x, y), ImVec2(x, y) + ImVec2(width, height));
+}
+
+void Icons::Render(Icons::Type type, float x, float y)
+{
+	auto icon = GetIcon(type);
+	if (!icon->IsValid())
+		ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(x, y));
+	else 
+		ImGui::Image(icon->TextureId, { x, y });
+
+	ImGui::SameLine();
 }

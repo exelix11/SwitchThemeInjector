@@ -33,8 +33,9 @@ ImageEntry::ImageEntry(const std::string& fileName, std::vector<u8>&& RawData)
 	FileName = fileName;
 	lblFname = fs::GetFileName(fileName);
 	lblLine1 = fileName;
-	lblLine2 = "Image file";
 	imageData = std::move(RawData);
+	Icon = Icons::Type::Image;
+	canInstallInternal = true;
 }
 
 void ImageEntry::PerformConversion()
@@ -47,8 +48,7 @@ void ImageEntry::PerformConversion()
 
 	if (imageData.empty())
 	{
-		CannotInstallReason = "The image file or format conversion failed";
-		lblLine1 = "Error loading file";
+		MakeError("The image file or format conversion failed");
 		return;
 	}
 
@@ -59,7 +59,7 @@ void ImageEntry::PerformConversion()
 	auto loaded = ImageConversion::LoadBitmap(imageData, CannotInstallReason);
 	if (!loaded)
 	{
-		lblLine1 = "Error loading image";
+		MakeError("Error loading image");
 		imageData.clear();
 		return;
 	}
@@ -71,14 +71,12 @@ void ImageEntry::PerformConversion()
 	auto converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true);
 	if (converted.ErrorMessage.size())
 	{
-		CannotInstallReason = converted.ErrorMessage;
-		lblLine1 = "Error loading file";
+		MakeError("Error processing file: "+ converted.ErrorMessage);
 		imageData.clear();
 	}
 	else if (converted.Data.size() == 0)
 	{
-		CannotInstallReason = "Image conversion failed";
-		lblLine1 = "Error loading file";
+		MakeError("Image conversion failed");
 		imageData.clear();
 	}
 	else
@@ -98,8 +96,7 @@ ImageRef ImageEntry::GetConvertedImage()
 	auto res = std::make_shared<RenderImage>(imageData);
 	if (!res || !res->IsValid())
 	{
-		CannotInstallReason = "Failed to load the image after conversion";
-		lblLine1 = "Error loading file";
+		MakeError("Failed to load the image after conversion");
 		imageData.clear();
 	}
 

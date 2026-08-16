@@ -59,10 +59,9 @@ NxEntry::NxEntry(const std::string& fileName, FileContainer&& container) :
 	Initialize();
 }
 
-
 bool NxEntry::DoInstall(bool ShowDialogs)
 {
-	if (!TargetInfo || !_CanInstall)
+	if (!TargetInfo || !canInstallInternal)
 		return false;
 
 	if (!PatchMng::ExefsCompatAsk(fs::GetFileName(TargetInfo->SzsFile)))
@@ -252,10 +251,8 @@ std::optional<FileData> NxEntry::GetBackgroundImage()
 	if (std::holds_alternative<std::string>(image))
 	{
 		_HasPreview = false;
-		_CanInstall = false;
 
-		lblLine2 = std::get<std::string>(image);
-		CannotInstallReason = "Failed to load the background image: " + lblLine2;
+		MakeError("Failed to load the background image: " + std::get<std::string>(image));
 		DialogBlocking(CannotInstallReason);
 
 		return std::nullopt;
@@ -307,22 +304,19 @@ void NxEntry::Initialize()
 	// In case of errors, initialize the first line with the file name.
 	// If not needed this will be overwritten later
 	lblLine1 = FileName;
+	Icon = Icons::Type::Theme;
 
 	if (!theme.IsValid())
 	{
 		lblFname = "Error: Invalid theme";
-		lblLine2 = "Tap for details";
-		CannotInstallReason = theme.error.value();
-		_CanInstall = false;
+		MakeError(theme.error.value());
 		return;
 	}
 
 	if (theme.manifest->Version > SwitchThemesCommon::NXThemeVer)
 	{
 		lblFname = "Error: New theme format";
-		lblLine2 = "Update the installer to install this theme.";
-		CannotInstallReason = "This theme requres a newer version of the theme installer. Download latest version from GitHub.";
-		_CanInstall = false;
+		MakeError("This theme requres a newer version of the theme installer. Download latest version from GitHub.");
 		return;
 	}
 
@@ -331,14 +325,12 @@ void NxEntry::Initialize()
 
 	if (!TargetInfo)
 	{
-		lblLine2 = "Error: invalid target";
-		CannotInstallReason = "The target home menu part is not valid";
-		_CanInstall = false;
+		MakeError("The target home menu part is not valid");
 		return;
 	}
 
 	lblFname = theme.manifest->ThemeName;
-	lblLine2 = TargetInfo->PartName;
+	lblRightSide = TargetInfo->PartName;
 
 	lblLine1 = "";
 	if (theme.manifest->Author != "")
@@ -350,4 +342,6 @@ void NxEntry::Initialize()
 	// In case all metadata is missing
 	if (lblLine1 == "")
 		lblLine1 = FileName;
+
+	canInstallInternal = true;
 }

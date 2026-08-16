@@ -112,6 +112,7 @@ void ImguiExit()
 
 void GFX::Exit()
 {
+	Icons::DropCache();
 	ImguiExit();
 	glfwTerminate();
 }

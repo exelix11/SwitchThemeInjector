@@ -126,3 +126,20 @@ class TabRenderer : public IUIControlObj
 		std::vector<IPage*> Pages;
 		std::string Title;
 };
+
+namespace Icons {
+	enum class Type {
+		Folder,
+		Image,
+		Theme,
+		File,
+		Font,
+		Question,
+		Error
+	};
+
+	ImageRef GetIcon(Type type);
+	void Render(Type type, float width, float height);
+	void RenderRaw(Type type, float x, float y, float width, float height);
+	void DropCache();
+}

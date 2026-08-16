@@ -29,7 +29,7 @@ class ThemeEntry
 		static constexpr int EntryW = 860;
 
 		virtual bool IsFolder() = 0;
-		virtual bool CanInstall() = 0;		
+		virtual bool CanInstall() { return canInstallInternal; }
 		virtual bool HasOptions() { return false; }
 		virtual void OpenOptions() { }
 		
@@ -43,7 +43,16 @@ class ThemeEntry
 		std::string InstallLog;
 		std::string CannotInstallReason;
 	protected:
+		bool canInstallInternal = false;
 		virtual bool DoInstall(bool ShowDialogs = true) = 0;
+
+		void MakeError(const std::string& reason)
+		{
+			canInstallInternal = false;
+			CannotInstallReason = reason;
+			lblRightSide = "Error - open for details";
+			Icon = Icons::Type::Error;
+		}
 
 		void AppendInstallMessage(const std::string& msg)
 		{
@@ -58,7 +67,8 @@ class ThemeEntry
 		std::string FileName;
 		std::string lblFname;
 		std::string lblLine1;
-		std::string lblLine2;
+		std::string lblRightSide;
+		Icons::Type Icon = Icons::Type::Question;
 
 		//Used to return by reference for the background image
 		const static std::vector<u8> _emtptyVec;
@@ -71,7 +81,6 @@ public:
 	NxEntry(const std::string& fileName, FileContainer&& container);
 
 	bool IsFolder() override { return false; }
-	bool CanInstall() override { return _CanInstall; }
 	bool HasOptions() override { return true; }
 
 protected:
@@ -79,7 +88,6 @@ protected:
 	void OpenOptions() override;
 
 private:
-	bool _CanInstall = true;
 	bool _HasPreview = false;
 	NxTheme theme;
 	const ThemeTargetInfo* TargetInfo = nullptr;
@@ -96,12 +104,10 @@ public:
 	LegacyEntry(const std::string& fileName, SARC::SarcData&& _SData);
 
 	bool IsFolder() override { return false; }
-	bool CanInstall() override { return _CanInstall; }
 protected:
 	bool DoInstall(bool ShowDialogs = true) override;
 
 private:
-	bool _CanInstall = true;
 	SARC::SarcData SData;
 
 	void ParseLegacyTheme(SARC::SarcData&& _Sdata);
@@ -113,12 +119,10 @@ public:
 	FontEntry(const std::string& fileName, std::vector<u8>&& RawData);
 
 	bool IsFolder() override { return false; }
-	bool CanInstall() override { return _CanInstall; }
 protected:
 	bool DoInstall(bool ShowDialogs = true) override;
 
 private:
-	bool _CanInstall = true;
 	void ParseFont();
 };
 
@@ -128,7 +132,6 @@ public:
 	ImageEntry(const std::string& fileName, std::vector<u8>&& RawData);
 
 	bool IsFolder() override { return false; }
-	bool CanInstall() override { return CannotInstallReason.empty(); }
 protected:
 	bool DoInstall(bool ShowDialogs = true) override;
 

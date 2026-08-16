@@ -8,6 +8,7 @@ FontEntry::FontEntry(const std::string& fileName, std::vector<u8>&& RawData)
 {
 	FileName = fileName;
 	file = RawData;
+	Icon = Icons::Type::Font;
 	ParseFont();
 }
 
@@ -28,10 +29,12 @@ bool FontEntry::DoInstall(bool ShowDialogs)
 
 void FontEntry::ParseFont()
 {
-	lblLine2 = ("Custom font");
 	auto fontName = SwitchThemesCommon::TTF::GetFontName(file);
-	_CanInstall = fontName != "";
-	CannotInstallReason = "Invalid font file";
-	lblFname = (CanInstall() ? fontName : "Invalid font :(");
+	canInstallInternal = true;
+
+	if (fontName == "")
+		MakeError("Invalid font file");
+
+	lblFname = (CanInstall() ? fontName : "Invalid font");
 	lblLine1 = (fs::GetFileName(FileName));
 }

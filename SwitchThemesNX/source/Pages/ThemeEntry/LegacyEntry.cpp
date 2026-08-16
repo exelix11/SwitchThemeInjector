@@ -8,6 +8,7 @@ LegacyEntry::LegacyEntry(const std::string& fileName, std::vector<u8>&& RawData)
 {
 	FileName = fileName;
 	file = RawData;
+	Icon = Icons::Type::File;
 	auto DecompressedFile = Yaz0::Decompress(file);
 	ParseLegacyTheme(SARC::Unpack(DecompressedFile));
 }
@@ -57,11 +58,9 @@ void LegacyEntry::ParseLegacyTheme(SARC::SarcData&& _Sdata)
 
 	auto patch = SwitchThemesCommon::SzsPatcher::DetectSarc(SData);
 	if (!patch)
-	{
-		lblLine2 = "Invalid theme";
-		CannotInstallReason = "Couldn't find a compatible patch template";
-		_CanInstall = false;
-	}
+		MakeError("Couldn't find a compatible patch template");
+	else 
+		lblRightSide = (patch->TemplateName + " for " + patch->FirmName);
 
-	else lblLine2 = (patch->TemplateName + " for " + patch->FirmName);
+	canInstallInternal = true;
 }

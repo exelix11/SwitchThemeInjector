@@ -1,5 +1,5 @@
 #include <filesystem>
-#include <stdexcept>
+#include <memory>
 #include <exception>
 #include <vector>
 #include <utility>
@@ -20,22 +20,34 @@ void ThemeEntry::DisplayInstallDialog(const std::string& path)
 	DisplayLoading({ "Installing " + path + " ...", "CFW folder: " + fs::path::CfwFolder() });
 }
 
-class DummyEntry : public ThemeEntry 
+class DummyEntry : public ThemeEntry
 {
 public:
-	bool Folder = false;
+	static std::unique_ptr<DummyEntry> CreateError(const string& name, const string& description)
+	{
+		return std::make_unique<DummyEntry>(name, "Couldn't open this file", name, Icons::Type::Error, "Error");
+	}
 
-	DummyEntry(const string& fname, const string& _lblFname, const string& description, const string& rightlabel)
+	static std::unique_ptr<DummyEntry> CreateDirectory(const string& fullPath, const string& fileName)
+	{
+		auto res = std::make_unique<DummyEntry>(fullPath, fs::GetFileName(fileName), fileName, Icons::Type::Folder);
+		res->Folder = true;
+		return res;
+	}
+
+	DummyEntry(const string& fname, const string& labelName, const string& labelLine1, Icons::Type icon, const string& rightLabel = "")
 	{
 		FileName = fname;
-		lblFname = _lblFname;
-		lblLine1 = description;
-		lblLine2 = rightlabel;
+		lblFname = labelName;
+		lblLine1 = labelLine1;
+		lblRightSide = rightLabel;
+		Icon = icon;
 	}
 
 	bool IsFolder() override { return Folder; }
 	bool CanInstall() override { return false; }
 protected:
+	bool Folder = false;
 	bool DoInstall(bool ShowDialogs = true) override { return false; }
 };
 
@@ -90,15 +102,13 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 			if (!StrEndsWith(fullPath, "/"))
 				fullPath += "/";
 
-			auto&& e = make_unique<DummyEntry>(fullPath, fs::GetFileName(fileName), fileName, "folder");
-			e->Folder = true;
-			return move(e);
+			return DummyEntry::CreateDirectory(fullPath, fileName);
 		}
 
 		auto data = fs::OpenFile(fileName);
 
 		if (data.size() == 0)
-			return make_unique<DummyEntry>(fileName, "Couldn't open this file", fileName, "ERROR");
+			return DummyEntry::CreateError(fileName, "Couldn't open this file");
 
 		if (StrEndsWith(fileName, ".ttf"))
 			return make_unique<FontEntry>(fileName, move(data));
@@ -111,16 +121,16 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 	}
 	catch (std::exception &ex)
 	{
-		auto err = make_unique<DummyEntry>(fileName, "Error - Open for details", fileName, "ERROR");
+		auto err = DummyEntry::CreateError(fileName, "Error - Open for details");
 		err->CannotInstallReason = ex.what();
 		return err;
 	}
 	catch (...)
 	{
-		return make_unique<DummyEntry>(fileName, "Unknown exception while opening this file", fileName, "ERROR");
+		return DummyEntry::CreateError(fileName, "Unknown exception while opening this file");
 	}
 
-	return make_unique<DummyEntry>(fileName, "Unknown file type", fileName, "ERROR");
+	return DummyEntry::CreateError(fileName, "Unknown file type");
 }
 
 unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
@@ -161,7 +171,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
 	}	
 
 hande_error:
-	return make_unique<DummyEntry>("Error", "Failed to load", error, "");
+	return DummyEntry::CreateError("Error", "Failed to load");
 }
 
 using namespace ImGui;
@@ -180,12 +190,14 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	const ImGuiStyle& style = g.Style;
 	const ImGuiID id = window->GetID(FileName.c_str());
 
+	const float LeadImageSize = 30;
+
 	ImGui::PushFont(font30);
 	const ImVec2 name_size = CalcTextSize(lblFname.c_str(), NULL, false);
 	ImGui::PopFont();
 	ImGui::PushFont(font25);
-	const ImVec2 line1_size = CalcTextSize(lblLine1.c_str(), NULL, false, EntryW - 5);
-	const ImVec2 line2_size = CalcTextSize(lblLine2.c_str(), NULL, false);
+	const ImVec2 line1_size = CalcTextSize(lblLine1.c_str(), NULL, false, EntryW - 5 - LeadImageSize);
+	const ImVec2 rightSide_size = CalcTextSize(lblRightSide.c_str(), NULL, false);
 	ImGui::PopFont();
 
 	ImVec2 pos = window->DC.CursorPos;
@@ -213,11 +225,14 @@ ThemeEntry::UserAction ThemeEntry::Render(bool OverrideColor)
 	}
 
 	ImGui::PushFont(font30);
-	RenderText({ pos.x + 2, pos.y + 2 }, lblFname.c_str(), 0, false);
+	Icons::RenderRaw(Icon, pos.x + 8, pos.y + 5, LeadImageSize, LeadImageSize);
+	RenderText({ pos.x + 8 + LeadImageSize + 8, pos.y + 2 }, lblFname.c_str(), 0, false);
 	ImGui::PopFont();
 	ImGui::PushFont(font25);
-	RenderText({ pos.x + EntryW - line2_size.x - 2, pos.y + 2 }, lblLine2.c_str(), 0, false);
+	ImGui::PushStyleColor(ImGuiCol_Text, 0xffbfbfbf);
+	RenderText({ pos.x + EntryW - rightSide_size.x - 2, pos.y + 2 }, lblRightSide.c_str(), 0, false);
 	RenderTextWrapped({ pos.x + 2, pos.y + name_size.y + 2 }, lblLine1.c_str(), 0, EntryW - 5);
+	ImGui::PopStyleColor();
 	ImGui::PopFont();
 	
 	window->DrawList->AddRectFilled({ bb.Min.x + 20, bb.Max.y }, { bb.Max.x - 20, bb.Max.y + 1}, 0xff4e4e4e);
