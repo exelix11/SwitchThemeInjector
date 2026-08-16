@@ -251,6 +251,7 @@ ImageRef Icons::GetIcon(Icons::Type type)
 		case Type::Font: name = ASSET("icons/font.png"); break;
 		case Type::Image: name = ASSET("icons/image.png"); break;
 		case Type::Question: name = ASSET("icons/question.png"); break;
+		default: break;
 	}
 
 	auto image = std::make_shared<RenderImage>(fs::OpenFile(name));
