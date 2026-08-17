@@ -1,0 +1,28 @@
+name: NXThemeTool
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - SwitchThemesCommon/**
+      - NxThemeTool/**
+  pull_request:
+    branches: [ master ]
+    paths:
+      - SwitchThemesCommon/**
+      - NxThemeTool/**
+jobs:
+  Build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '8.0.x'
+    - name: Build
+      working-directory: NxThemeTool/
+      run: dotnet publish
+    - uses: actions/upload-artifact@v4
+      with:
+        name: NxThemeTool
+        path: NxThemeTool/bin/Release/net8.0/publish
