@@ -3,11 +3,19 @@
 
 #define QLAUNCH_ID 0x0100000000001000
 
+// Additional config options represented as files in the config folder.
+
+// If this file exists the theme is deleted regardless of version checks. This file is also deleted afterwards.
+#define CONFIG_FILE_FORCE_DELETE "/config/themes/force_delete"
+
+// If this file exists theme backup/restore functionality is disabled and themes are only deleted on version mismatch.
+#define CONFIG_FILE_NO_BACKUP "/config/themes/no_backups"
+
 static FsFileSystem sdCard;
 static SetSysFirmwareVersion fw;
 
 // This version tag is used by the theme installer to detect the version of the sysmodule from the binary
-volatile char version_tag[] = "THEME_SYMODULE:2=";
+volatile char version_tag[] = "THEME_SYMODULE:3=";
 
 static void sd_open() 
 {
@@ -224,6 +232,17 @@ static void path_join_to(char* destination, int size, const char* root, const ch
 	*destination = 0;
 	strncat(destination, root, size - 1);
 	path_join(destination, size, name);
+}
+
+static bool check_config_file(const char* fileName)
+{
+	FsFile file;
+	Result rc = fsFsOpenFile(&sdCard, fileName, FsOpenMode_Read, &file);
+	if (R_FAILED(rc))
+		return false;
+
+	fsFileClose(&file);
+	return true;
 }
 
 typedef struct {
@@ -556,6 +575,19 @@ static bool remove_old()
 
 static void process_qlaunch()
 {
+	if (check_config_file(CONFIG_FILE_FORCE_DELETE))
+	{
+		debug("Force delete flag detected");
+		fsFsDeleteFile(&sdCard, CONFIG_FILE_FORCE_DELETE);
+
+	handle_failure:
+		debug("Deleting QLAUNCH_ROOT\n\n");
+		fsFsDeleteDirectoryRecursively(&sdCard, QLAUNCH_ROOT);
+		return;
+	}
+
+	bool disable_backups = check_config_file(CONFIG_FILE_NO_BACKUP);
+
 	// We prevented the home menu from launching
 	VersionHash installed = { 0 };
 	switch (version_check(&installed)) 
@@ -565,13 +597,14 @@ static void process_qlaunch()
 			return;
 		case VersionCheck_Failure:
 			debug("Version check failure.\n");
-		handle_failure:
-			debug("Deleting QLAUNCH_ROOT\n\n");
-			fsFsDeleteDirectoryRecursively(&sdCard, QLAUNCH_ROOT);
+			goto handle_failure;
 			return;
 		case VersionCheck_NoThemes: {
 			debug("Version reports no themes.\n");
 			// If no themes are detected, just try to restore a previous version in case it exists
+			if (disable_backups)
+				return;
+
 			if (!restore_current())
 			{
 				debug("Failed to restore current version\n");
@@ -581,6 +614,13 @@ static void process_qlaunch()
 		}
 		case VersionCheck_ThemeMismatch: {
 			debug("Version reports theme version mismatch.\n");
+			
+			if (disable_backups)
+			{
+				debug("Backups are disabled, deleting everything\n");
+				goto handle_failure;
+			}
+
 			// If we're on a different firmware version, first backup the current version.
 			if (!backup_romfs(&installed))
 			{

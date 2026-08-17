@@ -215,10 +215,10 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
-	ImGui::TextUnformatted("Update detection sysmodule v2 (BETA)");
+	ImGui::TextUnformatted("Update detection sysmodule v3");
 	ImGui::PopFont();
 
-	ImGui::TextWrapped("This is a sysmodule that automatically uninstalls themes when the system firmware is updated. This fixes crashes after updates or when switching emummc.\nVersion 2 fixes a number of bugs reported by users.");
+	ImGui::TextWrapped("This sysmodule automatically removes themes when the system firmware changes. This prevents crashes after updates but you still need to remove leftover files from the uninstall page after updating.");
 	if (sysmoduleInstalled)
 	{
 		if (!bundledSysmodule)
@@ -226,8 +226,11 @@ void SettingsPage::Render(int X, int Y)
 			UISysmoduleBuildMissing();
 			UISysmoduleAlreadyInstalled();
 		}
-		else if (*sysmoduleInstalled < *bundledSysmodule)
+		else if (*sysmoduleInstalled < *bundledSysmodule) 
+		{
 			UISysmoduleUpdateAvailable();
+			ImGui::TextWrapped("This update fixes a number of bugs reported by users.");
+		}
 		else
 			UISysmoduleAlreadyInstalled();
 	}
