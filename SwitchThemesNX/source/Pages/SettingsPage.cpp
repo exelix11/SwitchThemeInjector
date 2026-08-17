@@ -253,16 +253,18 @@ void SettingsPage::Render(int X, int Y)
 	ImGui::PopFont();
 
 	ImGui::TextWrapped("These settings only apply for installing nxthemes and are not saved, you have to switch them back every time you launch this app");
-	ImGui::Checkbox("Enable custom icons", &Settings::UseIcons);
-	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
 
-	ImGui::NewLine();
-	ImGui::Text("Home menu compatibility options.");
-	ImGui::TextWrapped("Changing this could help solve install issues with old themes on latest firmware.");
+	ImGui::Text("Home menu layout compatibility options");
 	ImGui::RadioButton("Decide automatically (default)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Default);
 	ImGui::RadioButton("Force original home menu applet icons (firmware <= 10.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware10);
 	ImGui::RadioButton("Force home menu layout with the NS online icon (firmware 11.0)", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::Firmware11);
 	ImGui::RadioButton("Do not apply compatibility fixes", (int*)&Settings::HomeMenuCompat, (int)SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes);
+
+	ImGui::NewLine();
+
+	ImGui::Text("Layout parts options");
+	ImGui::Checkbox("Enable custom icons", &Settings::UseIcons);
+	ImGui::Checkbox("Enable extra layouts (eg. common.szs)", &Settings::UseCommon);
 
 	ImGui::NewLine();
 
