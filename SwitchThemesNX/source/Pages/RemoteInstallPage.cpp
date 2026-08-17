@@ -91,7 +91,7 @@ void RemoteInstallPage::Render(int X, int Y)
 		ImGui::Separator();
 		ImGui::Spacing();
 		ImGui::PushFont(font40);
-		ImGui::Text("Remote install from the theme injector");
+		ImGui::Text("Remote install from NxThemeTool");
 		ImGui::PopFont();
 	}
 
@@ -112,7 +112,7 @@ void RemoteInstallPage::Render(int X, int Y)
 	}
 	else 
 	{
-		ImGui::TextWrapped("You can install a theme directly from your pc with the theme injector, go to the 'NXTheme builder' tab and click on 'Remote install...'");
+		ImGui::TextWrapped("You can install a theme directly from your pc with NxThemeTool, use the install command line option.");
 		if (ImGui::Button(BtnStart.c_str()))
 		{
 			if (!server.IsHosting())
