@@ -298,7 +298,7 @@ void InstallImageDialog::RenderBottom()
 	{
 		auto x = ImGui::GetCursorPosX();
 		ImGui::PushStyleColor(ImGuiCol_Text, Colors::Red);
-		ImGui::Text("This image was automatically resized. For optimal resuls use 1280x720 images.");
+		ImGui::Text("This image was automatically resized. For optimal results use 1280x720 images.");
 		ImGui::PopStyleColor();
 
 		ImGui::SetCursorPosX(x);
