@@ -9,63 +9,35 @@
 
 This repo contains tools to create and install custom themes for the home menu "qlaunch" of the nintendo switch. You will need a modded console with the atmosphere CFW.
 
-These tools are:
-- NXThemes installer: Homebrew app that runs on the switch itself and can be used to install and manage themes.
-- Switch theme injector: The windows application to create and edit custom themes
-- [Switch theme injector online](http://exelix11.github.io/SwitchThemeInjector/v2) (also called WebInjector): A port of the windows injector as a web app, it lacks some features like custom applet icons and common.szs layouts support.
-
-You can download the binaries from the [releases tab](https://github.com/exelix11/SwitchThemeInjector/releases).
+To install themes download **NXThemes installer** from the [releases page](https://github.com/exelix11/SwitchThemeInjector/releases) and run it on your console, to create themes you can use the tools provided by [themezer.net](themezer.net) or the standalone [online theme creator](https://themezernx.github.io/nxtheme-editor/).
 
 Since the console OS doesn't implement custom themes natively this tool patches the system layout files stored in the SZS in the romfs of qlaunch.
 
 SZS files extracted from the console are considered copyrighted data and can't be shared online that's why the **nxtheme format** has been developed, it contains only differential info and can be freely shared. Unless you're dealing with making your own patches and custom layouts you should only use nxtheme files.
 
 # Getting started
-To use custom themes you need as hacked switch that's at least on firmware 5.0
+To use custom themes you need as hacked switch on a recent firmware.
 
 You can find some themes on the [themezer website](https://themezer.net/)
 
 ## Installing themes
 This is the most common scenario, you just need the theme installer homebrew. 
 
-Make a folder called `themes` in the root of your sd card and copy your themes in either nxtheme or szs format in it. Then launch the theme installer and you should be able to select and install them.
+Make a folder called `themes` in the root of your sd card and copy your themes, accepted formats are `.nxtheme`, `.szs`, `.jpg` and `.png`. Launch the theme installer and select the theme you want to install.
 
-Reboot and your theme should be applied.
+Reboot your console and your theme should be applied.
 
 Note that each file is a single home menu part (eg just the lockscreen or just the main menu), a full home menu theme is composed by multiple nxtheme files.
 
-**To remove a theme** just select uninstall in the theme installer. You can just install a different theme to overwrite the currently installed one.
+**Layout modifications**: Some themes may alter the UI layout of the home menu via custom layouts. These can be version specific and may look broken on different firmware versions, if you find a theme that doesn't look right it probably needs to be updated by the author. Themezer maintains a number of common layouts for all firmware versions.
 
-When a new firmware comes out **before upgrading (or downgrading) remember to uninstall any theme you have installed** to avoid compatibility issues, if you forget your console may not boot until the theme is removed as explained next. 
+## Uninstalling themes
+Themes live only on the SD card. To remove installed themes, select uninstall in the theme installer. You can also install a different theme to overwrite the currently installed one.
 
-**In case your console doesn't boot anymore due to a bad theme** (mostly with szs themes) delete the `\atmosphere\contents\01000000001000` folder from your sd (it's `\<cfw name>\titles\01000000001000` for old atmosphere and other CFWs), now your console should be booting, launch the theme installer and select uninstall theme to finish the cleanup process.
+## Crashes on boot
+If you install a bad theme or update your firmware without removing the current theme your console may crash on boot, to fix this you need to delete the `\atmosphere\contents\01000000001000` folder from your sd scard.
 
-## Making themes
-To make themes you need either the Theme injector application or the web version.
-
-### Creating a nxtheme file
-Open the injector and go to the NXThemes builder tab, open any **720p JPG image** (1280x720 pixels), select a custom layout and click on build nxtheme.
-
-For making themes you can only use JPG images or DXT1-encoded DDS images. For best quality it's better to manually encode the image to DDS so you can have a preview of how will it look like with the compression applied. 
-
-### Linux Support
-The GUI only works on windows, on linux you can use the CLI through mono, you will need the `mono-complete` package.\
-Then you should be able to launch the app by running `mono SwitchThemes.exe help`.
-
-### Command line usage (CLI)
-#### Building nxthemes
-```
-SwitchThemes.exe buildNX home "<your image.png/jpg/dds>" "<json layout file, optional>" "name=<theme name>" "author=<author name>"  "out=<OutputPath>.nxtheme"
-```
-This will build a theme for the home menu, instead of `home` you can use: `lock` for lockscreen, `apps` for the all apps screen, `set` for the settings applet, `user` for the user page applet, `news` for the news applet, and `psl` for the player select menu. Only the image and out file args are needed. \
-Other options specific to the theme target such as applet icons are availbale as well, run `SwitchThemes.exe help` for more info
-
-#### Remote install
-Launch the theme installer and select remote install, then run the following command:
-```
-SwitchThemes.exe install 192.168.X.Y "<nxtheme/szs file>"
-```
-Where `192.168.X.Y` is your console IP address.
+Starting with version 2.9 the theme installer provides an **update detection sysmodule** that automatically uninstall themes when the firmware is updated, you can install it from the settings page of the theme installer.
 
 # Custom layouts
 Custom layouts are JSON files that allow changing the appearance of the home menu by moving the UI components. \
@@ -74,3 +46,11 @@ To create a custom layout you will need the original home menu szs files found i
 [Here](https://github.com/exelix11/SwitchThemeInjector/blob/master/CustomLayouts.md) you can find more info about layouts and the supported properties.
 
 For layout editing read the [Layout editor wiki](https://github.com/FuryBaguette/SwitchLayoutEditor/wiki) to get started, parts of the main home menu layout are documented in this repo [wiki](https://github.com/exelix11/SwitchThemeInjector/wiki/ResidentMenu.szs).
+
+# Additional projects
+
+This repository also provides NXThemeTool which is a PC command line application to create and edit nxtheme files, it also supports the remote install feature of the theme installer. You can run it on any OS with .NET 8 installed.
+
+The following tools previously provided by this reporsitory have been deprecated:
+- Switch theme injector: was the original Windows-only theme creator application, it has been replaced by the online theme creator and NXThemeTool. The source code can be found in the history of this repo and previous releases are still available.
+- [Switch theme injector online](http://exelix11.github.io/SwitchThemeInjector/v2) (also called WebInjector): it was an early port of the theme injector to the web, the old links still work but the project is no longer maintained and has been replaced by the themezer online theme creator.
