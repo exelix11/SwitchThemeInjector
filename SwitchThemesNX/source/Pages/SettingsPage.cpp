@@ -210,8 +210,7 @@ void SettingsPage::Render(int X, int Y)
 		fs::SetFlagFile("sysmodule2", true);
 	}
 
-	Utils::ImGuiSetupWin(Name.c_str(), X, Y, DefaultWinFlags);
-	ImGui::SetWindowSize(ImVec2(SCR_W - (float)X - 30, SCR_H - (float)Y - 70));
+	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font25);
 
 	ImGui::PushFont(font30);
