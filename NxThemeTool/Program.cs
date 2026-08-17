@@ -30,7 +30,7 @@ if (args[0] == "list")
         Console.WriteLine($"\t {item.Description} is {item.SzsName} in {item.TitleId}");
     }
 }
-if (args[0] == "new")
+else if (args[0] == "new")
 {
     NeedArgs(2);
 
@@ -105,7 +105,7 @@ else if (args[0] == "install")
 {
     NeedArgs(2);
 
-    var result = RemoteInstall.DoRemoteInstall(args[1], File.ReadAllBytes(args[2]));
+    var result = RemoteInstall.DoRemoteInstall(args[2], File.ReadAllBytes(args[1]));
     if (result != null)
     {
         Console.WriteLine(result);
