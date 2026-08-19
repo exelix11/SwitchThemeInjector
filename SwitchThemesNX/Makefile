@@ -53,7 +53,7 @@ ROMFS	:=	romfs
 
 APP_TITLE	:=	NXThemes Installer
 APP_AUTHOR	:=	exelix
-APP_VERSION := 3
+APP_VERSION := 3.0.1
 
 GITVER ?= Unknown
 #---------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ ARCH	:=	-march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS	:=	-O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
-CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror -DGITVER=\"$(GITVER)\"  -DMINIZ_NO_STDIO=1
+CFLAGS	+=	$(INCLUDE) -D__SWITCH__ -Wall -Werror -DGITVER=\"$(GITVER)\"  -DMINIZ_NO_STDIO=1 -DVER_NUM=\"$(APP_VERSION)\"
 
 ifneq ($(DEVBUILD),)         
 	CFLAGS	+=	-DDEVBUILD=1

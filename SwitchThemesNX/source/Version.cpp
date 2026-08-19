@@ -1,11 +1,15 @@
 #include "Version.hpp"
 
-#define VER_NUM "3.0"
-#define VER_NAME "Ver. " VER_NUM
+#ifdef _MSC_VER
+	#define VER_NUM "Development"
+#endif
 
 #ifndef GITVER
 	#define GITVER "Unknown version"
 #endif
+
+// VER_NUM and GITVER come from the makefile
+#define VER_NAME "Ver. " VER_NUM
 
 #ifdef DEVBUILD
 	const std::string Version::Name = VER_NAME " - DEV BUILD";
