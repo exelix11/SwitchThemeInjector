@@ -166,8 +166,17 @@ namespace NxThemeTool
             }
         }
 
+        static readonly Dictionary<Type, string> CppRequiresType = new()
+        {
+            { typeof(Vector3), "Vector3" },
+            { typeof(Vector2), "Vector2" },
+        };
+
         void WriteObjectType(CodeBuilder sb, object obj, FieldInfo[] fields, PropertyInfo[] properties)
         {
+            if (CppRequiresType.TryGetValue(obj.GetType(), out var cppTypeSpecifier))
+                sb.Append(cppTypeSpecifier);
+
             sb.FinishLine("{ ");
             using (var _ = sb.WithIndentation())
                 for (int i = 0; i < fields.Length; i++)
@@ -178,6 +187,7 @@ namespace NxThemeTool
                         continue;
 
                     sb.StartLine($".{field.Name} = ");
+
                     WriteCppValue(sb, value);
 
                     if (i != fields.Length - 1 || properties.Length != 0)

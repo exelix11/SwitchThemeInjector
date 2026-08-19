@@ -40,70 +40,62 @@ bool BflytPatcher::ApplyLayoutPatch(const std::vector<PanePatch>& Patches)
 		auto p = Patches[i];
 		auto e = dynamic_pointer_cast<Pan1Pane>(target);
 
-		if (p.ApplyFlags & (u32)PanePatch::Flags::Visible)
-			e->SetVisible(p.Visible);
+		if (p.Visible)
+			e->SetVisible(*p.Visible);
 
-		if (p.ApplyFlags & (u32)PanePatch::Flags::Position)
+		if (p.Position)
 		{
-			e->Position.X = p.Position.X;
-			e->Position.Y = p.Position.Y;
-			e->Position.Z = p.Position.Z;
+			e->Position.X = p.Position->X;
+			e->Position.Y = p.Position->Y;
+			e->Position.Z = p.Position->Z;
 		}
-		if (p.ApplyFlags & (u32)PanePatch::Flags::Rotation)
+		if (p.Rotation)
 		{
-			e->Rotation.X = p.Rotation.X;
-			e->Rotation.Y = p.Rotation.Y;
-			e->Rotation.Z = p.Rotation.Z;
+			e->Rotation.X = p.Rotation->X;
+			e->Rotation.Y = p.Rotation->Y;
+			e->Rotation.Z = p.Rotation->Z;
 		}
-		if (p.ApplyFlags & (u32)PanePatch::Flags::Scale)
+		if (p.Scale)
 		{
-			e->Scale.X = p.Scale.X;
-			e->Scale.Y = p.Scale.Y;
+			e->Scale.X = p.Scale->X;
+			e->Scale.Y = p.Scale->Y;
 		}
-		if (p.ApplyFlags & (u32)PanePatch::Flags::Size)
+		if (p.Size)
 		{
-			e->Size.X = p.Size.X;
-			e->Size.Y = p.Size.Y;
+			e->Size.X = p.Size->X;
+			e->Size.Y = p.Size->Y;
 		}
 
-		if (p.ApplyFlags & (u32)PanePatch::Flags::OriginX)
-			e->SetOriginX((OriginX)p.OriginX);
-		if (p.ApplyFlags & (u32)PanePatch::Flags::OriginY)
-			e->SetOriginY((OriginY)p.OriginY);
-		if (p.ApplyFlags & (u32)PanePatch::Flags::ParentOriginX)
-			e->SetParentOriginX((OriginX)p.ParentOriginX);
-		if (p.ApplyFlags & (u32)PanePatch::Flags::ParentOriginY)
-			e->SetParentOriginY((OriginY)p.ParentOriginY);
+		if (p.OriginX)
+			e->SetOriginX((OriginX)*p.OriginX);
+		if (p.OriginY)
+			e->SetOriginY((OriginY)*p.OriginY);
+		if (p.ParentOriginX)
+			e->SetParentOriginX((OriginX)*p.ParentOriginX);
+		if (p.ParentOriginY)
+			e->SetParentOriginY((OriginY)*p.ParentOriginY);
 
 		if (e->name == "pic1")
 		{
 			auto ee = dynamic_pointer_cast<Pic1Pane>(e);
 
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific0)
-				ee->ColorTopLeft = RGBAColor(p.PaneSpecific0());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific1)
-				ee->ColorTopRight = RGBAColor(p.PaneSpecific1());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific2)
-				ee->ColorBottomLeft = RGBAColor(p.PaneSpecific2());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific3)
-				ee->ColorBottomRight = RGBAColor(p.PaneSpecific3());
+			if (p.PaneSpecific0()) ee->ColorTopLeft = RGBAColor(*p.PaneSpecific0());
+			if (p.PaneSpecific1()) ee->ColorTopRight = RGBAColor(*p.PaneSpecific1());
+			if (p.PaneSpecific2()) ee->ColorBottomLeft = RGBAColor(*p.PaneSpecific2());
+			if (p.PaneSpecific3()) ee->ColorBottomRight = RGBAColor(*p.PaneSpecific3());
 		}
 
 		if (e->name == "txt1")
 		{
 			auto ee = dynamic_pointer_cast<Txt1Pane>(e);
 
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific0)
-				ee->FontTopColor = RGBAColor(p.PaneSpecific0());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific1)
-				ee->ShadowTopColor = RGBAColor(p.PaneSpecific1());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific2)
-				ee->FontBottomColor = RGBAColor(p.PaneSpecific2());
-			if (p.ApplyFlags & (u32)PanePatch::Flags::PaneSpecific3)
-				ee->ShadowBottomColor = RGBAColor(p.PaneSpecific3());
+			if (p.PaneSpecific0()) ee->FontTopColor = RGBAColor(*p.PaneSpecific0());
+			if (p.PaneSpecific1()) ee->ShadowTopColor = RGBAColor(*p.PaneSpecific1());
+			if (p.PaneSpecific2()) ee->FontBottomColor = RGBAColor(*p.PaneSpecific2());
+			if (p.PaneSpecific3()) ee->ShadowBottomColor = RGBAColor(*p.PaneSpecific3());
 		}
 
-		if ((p.ApplyFlags & (u32)PanePatch::Flags::UsdPatches) && target->UserData)
+		if (p.UsdPatches.size() && target->UserData)
 		{
 			auto usd = dynamic_cast<Usd1Pane*>(target->UserData.get());
 			for (const auto& patch : p.UsdPatches)

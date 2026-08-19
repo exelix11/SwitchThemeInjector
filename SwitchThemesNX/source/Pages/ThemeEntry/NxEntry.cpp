@@ -172,7 +172,7 @@ bool NxEntry::DoInstall(bool ShowDialogs)
 		}
 
 		return true;
-		};
+	};
 
 	if (theme.manifest->Version <= 8)
 	{

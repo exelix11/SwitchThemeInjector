@@ -52,6 +52,8 @@ namespace SwitchThemesNXTests
 				Util::ReadTestString("Source/" + name + ".json") : "";
 
 			SwitchThemesCommon::SzsPatcher p(std::move(src));
+			p.CompatFixes = SwitchThemesCommon::LayoutCompatibilityOption::DisableFixes;
+
 			if (!p.PatchMainBG(DDS))
 				throw std::runtime_error("");
 

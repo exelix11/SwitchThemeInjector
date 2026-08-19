@@ -18,14 +18,15 @@ using nlohmann::json;
 #define get_if_else(n, def) get_if_s_else(#n, p.n, p.n = def)
 
 template<typename T>
-static inline std::optional<T> GetOptionalHelper(const json& j, const char* name)
+static inline void GetToOptionalHelper(std::optional<T>& value, const json& j, const char* name)
 {
 	if (j.count(name))
-		return j.at(name).get<T>();
-	return std::nullopt;
+		value = j.at(name).get<T>();
+	else 
+		value = std::nullopt;
 }
 
-#define get_optional_s(s, f) f = GetOptionalHelper<decltype(f)::value_type>(j, s)
+#define get_optional_s(s, f) GetToOptionalHelper(f, j, s)
 #define get_optional(n) get_optional_s(#n, p.n)
 
 void from_json(const json& j, Vector2& p) {
@@ -52,14 +53,9 @@ void from_json(const json& j, PanePatch& p) {
 	p = {};
 	get(PaneName);
 
-	#define get_assign_member(jname, field, flag) do { \
-		if (j.count(jname)) { \
-			j.at(jname).get_to(field); \
-			p.ApplyFlags |= (u32)PanePatch::Flags::flag; \
-		} } while(0)
-
+	#define get_assign_member(jname, field, flag) GetToOptionalHelper(field, j, jname)
 	#define get_assign(name) get_assign_member(#name, p.name, name)
-	
+
 	get_assign(Position);
 	get_assign(Rotation);
 	get_assign(Scale);
@@ -76,7 +72,8 @@ void from_json(const json& j, PanePatch& p) {
 	get_assign_member("ColorBL", p.PaneSpecific2(), PaneSpecific2);
 	get_assign_member("ColorBR", p.PaneSpecific3(), PaneSpecific3);
 
-	get_assign(UsdPatches);
+	if (j.count("UsdPatches"))
+		j.at("UsdPatches").get_to(p.UsdPatches);
 
 	#undef get_assign
 	#undef get_assign_member
