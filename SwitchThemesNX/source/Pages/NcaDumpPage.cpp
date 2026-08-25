@@ -19,6 +19,16 @@ static void WriteExtracted(const std::string& basePath, const FileContainer& fil
 	}
 }
 
+static void WriteExtractedVersion()
+{
+	const auto version = std::to_string(hos::Version.major) + "." +
+		std::to_string(hos::Version.minor) + "." +
+		std::to_string(hos::Version.micro);
+	const FileData data(version.begin(), version.end());
+
+	fs::WriteFile(fs::path::SystemDataFolder + "extracted/ver.cfg", data);
+}
+
 NcaDumpPage::NcaDumpPage()
 {
 	Name = "Extract home menu";
@@ -51,6 +61,8 @@ void NcaDumpPage::Render(int X, int Y)
 
 				DisplayLoading("Extracting mypage...");
 				WriteExtracted("extracted/mypage", RomfsCache::GetContent(ThemeTargetInfo::UserPageID));
+
+				WriteExtractedVersion();
 
 				Dialog("The files have been extracted to the themes/systemData/extracted/ folder on your SD card.");
 			}
@@ -105,6 +117,3 @@ void NcaDumpPage::Update()
 		Parent->PageLeaveFocus(this);
 	}
 }
-
-
-
