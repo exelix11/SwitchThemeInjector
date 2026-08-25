@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <string_view>
 #include <memory>
 
 #include "../MyTypes.h"
@@ -44,6 +45,8 @@ namespace ImageConversion
 
 	BitmapRef LoadBitmap(std::span<const u8> imgData, std::string& error);
 
+	std::string_view GetSupportedImageExtension(std::span<const u8> imgData, std::string& error);
+
 	ConversionResult ToDDS(std::span<const u8> imgData,
 		bool DXT5 = false,
 		int Width = 1280,
@@ -53,7 +56,8 @@ namespace ImageConversion
 	ConversionResult ToJPG(BitmapRef imgData,
 		int Width = 1280,
 		int Height = 720,
-		bool ResizeIfNeeded = false);
+		bool ResizeIfNeeded = false,
+		bool RotatePortrait = false);
 
 	ConversionResult ToBootloaderBMP(std::span<const u8> imgData);
 }

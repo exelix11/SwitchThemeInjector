@@ -9,7 +9,14 @@
 class InstallImageDialog : public BaseImageOptionsDialog
 {
 public:
-	InstallImageDialog(ImageRef preview, const std::vector<u8>& imageBytes, bool resizeWarning, bool showInstallDialogs, bool* outSuccess);
+	InstallImageDialog(ImageRef preview,
+		const std::vector<u8>& imageBytes,
+		bool resizeWarning,
+		bool showInstallDialogs,
+		bool* outSuccess,
+		std::span<const u8> bootImageBytes = {},
+		bool showBootloaderSuccessDialog = true,
+		std::string* outInstallWarning = nullptr);
 
 	void Update() override {};
 protected:
@@ -24,9 +31,12 @@ private:
 	std::string currentPreviewOverlay;
 
 	std::span<const u8> imageBytes;
+	std::span<const u8> bootImageBytes;
 	bool resizeWarning;
 	bool showInstallDialogs;
+	bool showBootloaderSuccessDialog;
 	bool* outSuccess;
+	std::string* outInstallWarning;
 
 	bool previewLoadFailure = false;
 	std::string previewError = "";

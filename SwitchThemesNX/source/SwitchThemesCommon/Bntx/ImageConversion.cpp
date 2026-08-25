@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <span>
+#include <optional>
+#include <cstdint>
 #include "ImageConversion.hpp"
 #include "../MyTypes.h"
 #include "../BinaryReadWrite/Buffer.hpp"
@@ -15,6 +17,98 @@
 
 namespace 
 {
+	struct BootloaderBMPInfo
+	{
+		int width;
+		int height;
+	};
+
+	u16 ReadLE16(std::span<const u8> data, size_t offset)
+	{
+		return static_cast<u16>(data[offset]) |
+			(static_cast<u16>(data[offset + 1]) << 8);
+	}
+
+	u32 ReadLE32(std::span<const u8> data, size_t offset)
+	{
+		return static_cast<u32>(data[offset]) |
+			(static_cast<u32>(data[offset + 1]) << 8) |
+			(static_cast<u32>(data[offset + 2]) << 16) |
+			(static_cast<u32>(data[offset + 3]) << 24);
+	}
+
+	u32 ReadBE32(std::span<const u8> data, size_t offset)
+	{
+		return (static_cast<u32>(data[offset]) << 24) |
+			(static_cast<u32>(data[offset + 1]) << 16) |
+			(static_cast<u32>(data[offset + 2]) << 8) |
+			static_cast<u32>(data[offset + 3]);
+	}
+
+	bool HasCompletePngContainer(std::span<const u8> data)
+	{
+		size_t offset = 8;
+		while (offset <= data.size() && data.size() - offset >= 12)
+		{
+			const auto chunkSize = static_cast<size_t>(ReadBE32(data, offset));
+			if (chunkSize > data.size() - offset - 12)
+				return false;
+
+			const bool isEnd = data[offset + 4] == 'I' && data[offset + 5] == 'E' &&
+				data[offset + 6] == 'N' && data[offset + 7] == 'D';
+			offset += chunkSize + 12;
+			if (isEnd)
+				return chunkSize == 0 && offset == data.size();
+		}
+
+		return false;
+	}
+
+	std::optional<BootloaderBMPInfo> ParseBootloaderBMP(std::span<const u8> data)
+	{
+		// Validate canonical bootlogo files before preserving them verbatim.
+		constexpr size_t FileHeaderSize = 14;
+		constexpr size_t InfoHeaderSize = 40;
+		constexpr size_t MinimumHeaderSize = FileHeaderSize + InfoHeaderSize;
+		if (data.size() < MinimumHeaderSize || data[0] != 'B' || data[1] != 'M')
+			return std::nullopt;
+
+		const auto dibSize = static_cast<size_t>(ReadLE32(data, FileHeaderSize));
+		if (dibSize < InfoHeaderSize || dibSize > data.size() - FileHeaderSize)
+			return std::nullopt;
+
+		const auto pixelOffset = static_cast<size_t>(ReadLE32(data, 10));
+		if (pixelOffset < FileHeaderSize + dibSize || pixelOffset > data.size())
+			return std::nullopt;
+
+		const auto width = static_cast<std::int32_t>(ReadLE32(data, 18));
+		const auto height = static_cast<std::int32_t>(ReadLE32(data, 22));
+		if (width <= 0 || height <= 0 || width > 720 || height > 1280)
+			return std::nullopt;
+
+		const auto compression = ReadLE32(data, 30);
+		if (ReadLE16(data, 26) != 1 || ReadLE16(data, 28) != 32 ||
+			(compression != 0 && compression != 3))
+			return std::nullopt;
+
+		const auto rowSize = static_cast<size_t>(width) * 4;
+		const auto pixelSize = rowSize * static_cast<size_t>(height);
+		if (pixelSize > data.size() - pixelOffset)
+			return std::nullopt;
+
+		const auto imageSize = static_cast<size_t>(ReadLE32(data, 34));
+		if (imageSize != 0 && imageSize != pixelSize)
+			return std::nullopt;
+
+		const auto fileSize = static_cast<size_t>(ReadLE32(data, 2));
+		const auto requiredFileSize = pixelOffset + pixelSize;
+		// Reject a valid BMP header followed by response data.
+		if (fileSize != data.size() || fileSize < requiredFileSize)
+			return std::nullopt;
+
+		return BootloaderBMPInfo{ width, height };
+	}
+
 	int imin(int x, int y) { return (x < y) ? x : y; }
 
 	void extractBlock(const unsigned char* src, int x, int y, int w, int h, unsigned char* block)
@@ -169,6 +263,27 @@ namespace
 			return result;
 		}
 
+		StbImageHolder Rotate90DegreesClockwise()
+		{
+			if (channels != 4)
+				return StbImageHolder("Only ARGB images are supported for rotation");
+
+			StbImageHolder result(height, width, channels);
+
+			u32* source = (u32*)data;
+			u32* dest = (u32*)result.data;
+
+			for (int h = 0; h < height; h++)
+			{
+				for (int w = 0; w < width; w++)
+				{
+					dest[w * height + (height - 1 - h)] = source[h * width + w];
+				}
+			}
+
+			return result;
+		}
+
 	private:
 		bool isStb = false;
 	};
@@ -222,22 +337,84 @@ ImageConversion::BitmapRef ImageConversion::LoadBitmap(std::span<const u8> imgDa
 	return res;
 }
 
-ImageConversion::ConversionResult ImageConversion::ToJPG(BitmapRef imgData, int Width, int Height, bool ResizeIfNeeded)
+std::string_view ImageConversion::GetSupportedImageExtension(std::span<const u8> imgData, std::string& error)
+{
+	error.clear();
+
+	std::string_view extension;
+	if (imgData.size() >= 2 && imgData[0] == 'B' && imgData[1] == 'M')
+	{
+		if (imgData.size() < 14 || ReadLE32(imgData, 2) != imgData.size())
+		{
+			error = "The BMP file size is invalid";
+			return {};
+		}
+		extension = ".bmp";
+	}
+	else if (imgData.size() >= 8 &&
+		imgData[0] == 0x89 && imgData[1] == 'P' && imgData[2] == 'N' && imgData[3] == 'G' &&
+		imgData[4] == 0x0D && imgData[5] == 0x0A && imgData[6] == 0x1A && imgData[7] == 0x0A)
+	{
+		if (!HasCompletePngContainer(imgData))
+		{
+			error = "The PNG container is incomplete or contains trailing data";
+			return {};
+		}
+		extension = ".png";
+	}
+	else if (imgData.size() >= 3 && imgData[0] == 0xFF && imgData[1] == 0xD8 && imgData[2] == 0xFF)
+	{
+		if (imgData.size() < 4 || imgData[imgData.size() - 2] != 0xFF || imgData.back() != 0xD9)
+		{
+			error = "The JPEG container is incomplete or contains trailing data";
+			return {};
+		}
+		extension = ".jpg";
+	}
+	else
+	{
+		error = "Only BMP, PNG, and JPEG images are supported";
+		return {};
+	}
+
+	auto image = LoadBitmap(imgData, error);
+	if (!image)
+	{
+		if (error.empty())
+			error = "The image could not be decoded";
+		return {};
+	}
+
+	return extension;
+}
+
+ImageConversion::ConversionResult ImageConversion::ToJPG(BitmapRef imgData, int Width, int Height, bool ResizeIfNeeded, bool RotatePortrait)
 {
 	auto casted = dynamic_cast<StbImageHolder*>(imgData.get());
-	auto image = Resize(std::move(*casted), Width, Height, ResizeIfNeeded);
+	auto image = std::move(*casted);
+	if (RotatePortrait && image.width < image.height)
+		image = image.Rotate90DegreesClockwise();
+
+	const bool imageResized = image.width != Width || image.height != Height;
+	auto resizeAllowed = ResizeIfNeeded;
+	image = Resize(std::move(image), Width, Height, resizeAllowed);
 
 	if (image.error.size())
 		return ImageConversion::ConversionResult::Fail(image.error);
 
 	std::vector<u8> result = {};
 	stbi_write_jpg_to_func(StbiWrite, &result, image.width, image.height, image.channels, image.data, 95);
+	if (result.empty())
+		return ImageConversion::ConversionResult::Fail("Failed to encode image as JPG");
 
-	return ImageConversion::ConversionResult::Success(std::move(result), ResizeIfNeeded);
+	return ImageConversion::ConversionResult::Success(std::move(result), imageResized);
 }
 
 ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<const u8> imgData)
 {
+	if (auto bmp = ParseBootloaderBMP(imgData); bmp && bmp->width == 720 && bmp->height == 1280)
+		return ImageConversion::ConversionResult::Success(std::vector<u8>(imgData.begin(), imgData.end()), false);
+
 	StbImageHolder image{ imgData };
 	if (image.error.size())
 		return ImageConversion::ConversionResult::Fail("Failed to load image: " + image.error);
@@ -269,6 +446,8 @@ ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<con
 
 	std::vector<u8> result = {};
 	stbi_write_bmp_to_func(StbiWrite, &result, image.width, image.height, image.channels, image.data);
+	if (result.empty())
+		return ImageConversion::ConversionResult::Fail("Failed to encode image as BMP");
 
 	return ImageConversion::ConversionResult::Success(std::move(result), false /*don't care*/);
 }

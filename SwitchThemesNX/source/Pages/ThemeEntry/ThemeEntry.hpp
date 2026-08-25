@@ -137,6 +137,7 @@ protected:
 
 private:
 	ImageRef previewImage = nullptr;
+	std::vector<u8> originalImageData {};
 	std::vector<u8> imageData {};
 	bool resizeWarning = false;
 	bool conversionDone = false;

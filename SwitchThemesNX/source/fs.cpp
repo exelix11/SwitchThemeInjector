@@ -90,6 +90,7 @@ static vector<string> GetThemeFilesInDirRecursive(const string& path, int level)
 				StrEndsWith(p.path().string(), ".jpg") ||
 				StrEndsWith(p.path().string(), ".jpeg") ||
 				StrEndsWith(p.path().string(), ".png") ||
+				StrEndsWith(p.path().string(), ".bmp") ||
 				StrEndsWith(p.path().string(), ".nxtheme") ||
 				StrEndsWith(p.path().string(), ".zip") ||
 				StrEndsWith(p.path().string(), ".ttf")) {

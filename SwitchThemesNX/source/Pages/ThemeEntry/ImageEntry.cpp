@@ -1,7 +1,11 @@
 #include <string>
+#include <string_view>
 #include <vector>
 #include <tuple>
 #include <memory>
+#include <cctype>
+#include <cstdlib>
+#include <sstream>
 #include <utility>
 #include <format>
 #include "ThemeEntry.hpp"
@@ -16,6 +20,8 @@
 
 namespace 
 {
+	constexpr std::string_view HekateBootTarget = "__boot";
+
 	std::vector<std::tuple<std::string, std::string>> TargetInstallParts = {
 		{ "Home menu",		"home"},
 		{ "Lock screen",	"lock"},
@@ -24,8 +30,73 @@ namespace
 		{ "News applet",	"news"},
 		{ "User page",		"user"},
 		{ "Player selection", "psl"},
-		{ "Hekate boot image", "__boot"},
+		{ "Hekate boot image", std::string(HekateBootTarget)},
 	};
+
+	std::string TrimIniValue(std::string_view value)
+	{
+		size_t start = 0;
+		while (start < value.size() && std::isspace(static_cast<unsigned char>(value[start])))
+			start++;
+
+		size_t end = value.size();
+		while (end > start && std::isspace(static_cast<unsigned char>(value[end - 1])))
+			end--;
+
+		return std::string(value.substr(start, end - start));
+	}
+
+	bool HekateBootSplashEnabled()
+	{
+		try
+		{
+			const auto path = fs::path::BootloaderDir + "hekate_ipl.ini";
+			if (!fs::Exists(path))
+				return false;
+
+			const auto data = fs::OpenFile(path);
+			std::istringstream lines(std::string(data.begin(), data.end()));
+			std::string line;
+			bool inConfigSection = false;
+			while (std::getline(lines, line))
+			{
+				if (const auto comment = line.find_first_of("#;"); comment != std::string::npos)
+					line.resize(comment);
+				const auto trimmedLine = TrimIniValue(line);
+				if (trimmedLine.size() >= 2 && trimmedLine.front() == '[' && trimmedLine.back() == ']')
+				{
+					inConfigSection = trimmedLine == "[config]";
+					continue;
+				}
+				if (!inConfigSection)
+					continue;
+
+				const auto equals = trimmedLine.find('=');
+				if (equals == std::string::npos)
+					continue;
+
+				if (TrimIniValue(std::string_view(trimmedLine).substr(0, equals)) != "bootwait")
+					continue;
+
+				const auto value = TrimIniValue(std::string_view(trimmedLine).substr(equals + 1));
+				return std::atoi(value.c_str()) > 0;
+			}
+
+			return false;
+		}
+		catch (...)
+		{
+			return false;
+		}
+	}
+
+	std::string HekateBootSplashWarning()
+	{
+		if (HekateBootSplashEnabled())
+			return {};
+
+		return "Don't forget to enable boot splash in Hekate: set the global bootwait setting to a value greater than 0.";
+	}
 }
 
 ImageEntry::ImageEntry(const std::string& fileName, std::vector<u8>&& RawData)
@@ -68,7 +139,10 @@ void ImageEntry::PerformConversion()
 	if (loaded->Width() == 1280 && loaded->Height() == 720)
 		return;
 	
-	auto converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true);
+	const bool rotatePortrait = loaded->Width() < loaded->Height();
+	originalImageData = std::move(imageData);
+	auto converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true,
+		rotatePortrait);
 	if (converted.ErrorMessage.size())
 	{
 		MakeError("Error processing file: "+ converted.ErrorMessage);
@@ -119,17 +193,34 @@ bool ImageEntry::DoInstall(bool ShowDialogs)
 		return false;
 
 	bool result;
-	PushPageBlocking(new InstallImageDialog(preview, imageData, resizeWarning, ShowDialogs, &result));
+	std::string installWarning;
+	const auto& bootSource = originalImageData.empty() ? imageData : originalImageData;
+	PushPageBlocking(new InstallImageDialog(preview, imageData, resizeWarning, ShowDialogs, &result,
+		bootSource, false, &installWarning));
+	if (!installWarning.empty())
+		AppendInstallMessage(installWarning);
 
 	return result;
 }
 
-InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& imageBytes, bool resizeWarning, bool showInstallDialogs, bool* outSuccess) :
-	previewImage(preview), imageBytes(imageBytes), resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs), 
-	outSuccess(outSuccess)
+InstallImageDialog::InstallImageDialog(ImageRef preview,
+	const std::vector<u8>& imageBytes,
+	bool resizeWarning,
+	bool showInstallDialogs,
+	bool* outSuccess,
+	std::span<const u8> bootImageBytes,
+	bool showBootloaderSuccessDialog,
+	std::string* outInstallWarning) :
+	previewImage(preview), imageBytes(imageBytes), bootImageBytes(bootImageBytes),
+	resizeWarning(resizeWarning), showInstallDialogs(showInstallDialogs),
+	showBootloaderSuccessDialog(showBootloaderSuccessDialog),
+	outSuccess(outSuccess), outInstallWarning(outInstallWarning)
 {
 	PageName = "InstallImageDialog";
 	if (outSuccess) *outSuccess = false;
+	if (outInstallWarning) outInstallWarning->clear();
+	if (this->bootImageBytes.empty())
+		this->bootImageBytes = imageBytes;
 
 	if (!UseLowMemory)
 	{
@@ -141,7 +232,7 @@ InstallImageDialog::InstallImageDialog(ImageRef preview, const std::vector<u8>& 
 
 ImageRef InstallImageDialog::LoadOverlayPart(const std::string& part)
 {
-	if (previewLoadFailure || part == "__boot")
+	if (previewLoadFailure || part == HekateBootTarget)
 		return nullptr;
 
 	std::string cacheKey = "preview_overlay://";
@@ -175,20 +266,37 @@ void InstallImageDialog::ApplyToBootloader()
 {
 	if (!fs::DirectoryExists(fs::path::BootloaderDir))
 	{
-		Dialog("Bootloader directory not found. Make sure hekate is installed and try again.");
+		DialogBlocking("Bootloader directory not found. Make sure hekate is installed and try again.");
 		return;
 	}
 
 	DisplayLoading("Installing...");
 
 	try {
-		auto image = ImageConversion::ToBootloaderBMP(imageBytes);
+		auto image = ImageConversion::ToBootloaderBMP(bootImageBytes);
+		if (!image.IsSuccess() || image.Data.empty())
+		{
+			DialogBlocking("Failed to convert the image to a bootloader BMP: " +
+				(image.ErrorMessage.empty() ? "conversion returned no data" : image.ErrorMessage));
+			return;
+		}
+
 		fs::WriteFile(fs::path::BootlogoPath, image.Data);
-		Dialog("Image installed to the bootloader successfully. Reboot to see the changes.");
+		if (outSuccess) *outSuccess = true;
+		const auto warning = HekateBootSplashWarning();
+		if (outInstallWarning) *outInstallWarning = warning;
+		if (showBootloaderSuccessDialog)
+		{
+			std::string message = "Image installed to the bootloader successfully. Reboot to see the changes.";
+			if (!warning.empty())
+				message += "\n\n" + warning;
+			Dialog(message);
+		}
+		PopPage(this);
 	}
 	catch (const std::exception& ex)
 	{
-		Dialog("Failed to install the image to the bootloader: " + std::string(ex.what()));
+		DialogBlocking("Failed to install the image to the bootloader: " + std::string(ex.what()));
 		return;
 	}
 }
@@ -234,7 +342,7 @@ void InstallImageDialog::ApplyToPart(const std::string& part)
 void InstallImageDialog::RenderTop() 
 {
 	ImGui::PushFont(font40);
-	Utils::ImGuiCenterString("Set theme wallpaper");
+	Utils::ImGuiCenterString("Select Target");
 	ImGui::PopFont();
 	Utils::ImGuiCenterString("Select where you want to apply this image");
 	PaddingLine();
@@ -268,7 +376,7 @@ void InstallImageDialog::RenderRightPanel(float x, float allowedWidth, float end
 		{
 			PushFunction([this, part]()
 				{
-					if (part == "__boot")
+					if (part == HekateBootTarget)
 						ApplyToBootloader();
 					else
 						ApplyToPart(part);

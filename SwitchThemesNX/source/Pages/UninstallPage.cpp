@@ -35,6 +35,28 @@ namespace
 		}
 		return true;
 	}
+
+	void RemoveHekateBootLogo()
+	{
+		if (!fs::Exists(fs::path::BootlogoPath))
+		{
+			Dialog("No Hekate boot image is installed.");
+			return;
+		}
+
+		if (!YesNoPage::Ask("Remove /bootloader/bootlogo.bmp?"))
+			return;
+
+		try
+		{
+			fs::Delete(fs::path::BootlogoPath);
+			Dialog("The Hekate boot image has been removed.");
+		}
+		catch (const std::exception& ex)
+		{
+			Dialog("Error removing the Hekate boot image: " + std::string(ex.what()));
+		}
+	}
 }
 
 UninstallPage::UninstallPage()
@@ -81,6 +103,12 @@ void UninstallPage::Render(int X, int Y)
 			}
 		});
 	}
+
+	ImGui::Spacing();
+	Utils::ImGuiCenterString("Boot image");
+	ImGui::Spacing();
+	if (Utils::ImGuiCenterButton("Uninstall Hekate boot image"))
+		PushFunction([]() { RemoveHekateBootLogo(); });
 	
 	PAGE_RESET_FOCUS_FOR(firstBtn);
 	ImGui::PopStyleColor();
@@ -96,7 +124,3 @@ void UninstallPage::Update()
 		Parent->PageLeaveFocus(this);
 	}
 }
-
-
-
-
