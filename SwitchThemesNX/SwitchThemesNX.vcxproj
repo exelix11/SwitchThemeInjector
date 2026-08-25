@@ -71,6 +71,7 @@
     <ClInclude Include="source\Pages\RemoteInstall\Detail.hpp" />
     <ClInclude Include="source\Pages\RemoteInstall\List.hpp" />
     <ClInclude Include="source\Pages\RemoteInstall\RemoteInstall.hpp" />
+    <ClInclude Include="source\Pages\RemoteInstall\RemoteTarget.hpp" />
     <ClInclude Include="source\Pages\RemoteInstall\Worker.hpp" />
     <ClInclude Include="source\Pages\SettingsPage.hpp" />
     <ClInclude Include="source\Pages\TextPage.hpp" />

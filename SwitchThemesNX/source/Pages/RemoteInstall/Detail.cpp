@@ -1,16 +1,19 @@
 #include "Detail.hpp"
 #include "Worker.hpp"
+#include "RemoteTarget.hpp"
 #include "../../fs.hpp"
 #include "../../ViewFunctions.hpp"
-#include "../../SwitchThemesCommon/Common.hpp"
 #include "../ThemeEntry/ThemeEntry.hpp"
+#include "../ThemeEntry/ImageEntry.hpp"
 #include "../ImagePreview.hpp"
 #include "../ThemePage.hpp"
+#include "../../SwitchThemesCommon/Bntx/ImageConversion.hpp"
+
+#include <utility>
 
 RemoteInstall::DetailPage::DetailPage(const RemoteInstall::API::Entry& entry, ImageRef i) : entry(entry), img(i)
 {
-	auto info = ThemeTargetInfo::Find(entry.Target);
-	PartName = info ? info->PartName : "Unknown part name";
+	PartName = RemoteInstall::TargetLabel(entry.Target);
 }
 
 void RemoteInstall::DetailPage::Update() {}
@@ -55,12 +58,29 @@ void RemoteInstall::DetailPage::Render(int X, int Y)
 
 void RemoteInstall::DetailPage::UserDownload(Action action)
 {
-	PushFunction([this, action]() {
+	const bool isImage = RemoteInstall::IsImage(entry.Target);
+	PushFunction([this, action, isImage]() {
 		auto theme = DownloadData();
 		if (theme.size() == 0) return;
-		
-		auto entry = ThemeEntry::FromMemory(theme);
-		if (!entry->CanInstall())
+
+		std::string imageError;
+		const auto imageExtension = isImage ?
+			ImageConversion::GetSupportedImageExtension(theme, imageError) : std::string_view{};
+		if (isImage && imageExtension.empty())
+		{
+			DialogBlocking("The downloaded image is not valid: " + imageError);
+			return;
+		}
+
+		std::unique_ptr<ThemeEntry> themeEntry;
+		if (isImage)
+		{
+			themeEntry = std::make_unique<ImageEntry>(this->entry.Name + std::string(imageExtension), std::move(theme));
+		}
+		else
+			themeEntry = ThemeEntry::FromMemory(theme);
+
+		if (!themeEntry->CanInstall())
 		{
 			DialogBlocking("This theme is not valid");
 			return;
@@ -69,7 +89,8 @@ void RemoteInstall::DetailPage::UserDownload(Action action)
 		if ((int)action & (int)Action::Download)
 		{
 			fs::EnsureDownloadsFolderExists();
-			std::string name = fs::path::DownloadsFolder + fs::SanitizeName(this->entry.Name) + ".nxtheme";
+			const auto extension = isImage ? imageExtension : std::string_view(".nxtheme");
+			std::string name = fs::path::DownloadsFolder + fs::SanitizeName(this->entry.Name) + std::string(extension);
 			if (fs::Exists(name) && !YesNoPage::Ask("A file called " + name + " already exists on the sd card, do you want to replace it ?"))
 			{
 				if (action == Action::Download) // If the user asked to download the theme don't close the page, otherwise just install it
@@ -77,14 +98,21 @@ void RemoteInstall::DetailPage::UserDownload(Action action)
 			}
 			else
 			{
-				fs::WriteFile(name, theme);
+				fs::WriteFile(name, isImage ? DownloadedTheme : theme);
 				fs::theme::RequestThemeListRefresh();
 				ThemesPage::Instance->SelectElementOnRescan(name);
 			}
 		}
 
 		if ((int)action & (int)Action::Install)
-			entry->Install(true);
+		{
+			if (!themeEntry->Install(true) && isImage)
+			{
+				if (!themeEntry->CanInstall() && !themeEntry->CannotInstallReason.empty())
+					DialogBlocking(themeEntry->CannotInstallReason);
+				return;
+			}
+		}
 
 		PopPage(this);
 	});

@@ -227,6 +227,9 @@
     <ClInclude Include="source\Pages\RemoteInstall\RemoteInstall.hpp">
       <Filter>Pages\RemoteInstall</Filter>
     </ClInclude>
+    <ClInclude Include="source\Pages\RemoteInstall\RemoteTarget.hpp">
+      <Filter>Pages\RemoteInstall</Filter>
+    </ClInclude>
     <ClInclude Include="source\Platform\PlatformFs.hpp">
       <Filter>Platform</Filter>
     </ClInclude>

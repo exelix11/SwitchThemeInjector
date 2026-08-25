@@ -30,7 +30,6 @@ namespace RemoteInstall
 		void ApplySelection(bool all);
 		void ToggleSelected(size_t i);
 		bool IsSelected(size_t i);
-		std::vector<std::string> GetSelectedUrls();
 
 		std::string DownloadBtnText = "Download";
 		void SelectionChanged();

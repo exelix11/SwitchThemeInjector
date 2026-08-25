@@ -1,13 +1,15 @@
 #include <sstream>
 #include <filesystem>
+#include <utility>
 #include "List.hpp"
 #include "Worker.hpp"
+#include "RemoteTarget.hpp"
 #include "../ImagePreview.hpp"
 #include "../ThemePage.hpp"
 #include "../../fs.hpp"
 #include "../../ViewFunctions.hpp"
 #include "../../UI/UI.hpp"
-#include "../../SwitchThemesCommon/Common.hpp"
+#include "../../SwitchThemesCommon/Bntx/ImageConversion.hpp"
 
 const ImVec2 ImageSize = { 398, 224 };
 
@@ -114,14 +116,6 @@ bool RemoteInstall::ListPage::IsSelected(size_t i)
 	return Selection[i];
 }
 
-std::vector<std::string> RemoteInstall::ListPage::GetSelectedUrls()
-{
-	std::vector<std::string> Urls;
-	for (size_t i = 0; i < response.Entries.size(); i++)
-		if (IsSelected(i)) Urls.push_back(response.Entries[i].Url);
-	return Urls;
-}
-
 void RemoteInstall::ListPage::SelectionChanged()
 {
 	std::stringstream ss;
@@ -173,14 +167,29 @@ void RemoteInstall::ListPage::DownloadClicked()
 
 			folderName += '/';
 
-			auto urls = GetSelectedUrls();
+			std::vector<std::string> urls;
+			std::vector<bool> imageEntries;
+			for (size_t i = 0; i < response.Entries.size(); i++)
+			{
+				if (!IsSelected(i))
+					continue;
+
+				urls.push_back(response.Entries[i].Url);
+				imageEntries.push_back(RemoteInstall::IsImage(response.Entries[i].Target));
+			}
 
 			size_t numFailed;			
 			std::string OutFirstFilaName = "";			
 
-			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName](std::vector<u8>&& _invec, uintptr_t index) -> bool {
-				std::vector<u8> vec = _invec;
-				std::string name = folderName + std::to_string(index) + ".nxtheme";
+			auto worker = new Worker::ActionOnItemFinish(urls, numFailed, [&folderName, &OutFirstFilaName, imageEntries = std::move(imageEntries)](std::vector<u8>&& vec, uintptr_t index) -> bool {
+				std::string imageError;
+				const auto imageExtension = imageEntries[index] ?
+					ImageConversion::GetSupportedImageExtension(vec, imageError) : std::string_view{};
+				if (imageEntries[index] && imageExtension.empty())
+					return false;
+
+				const auto extension = imageEntries[index] ? imageExtension : std::string_view(".nxtheme");
+				std::string name = folderName + std::to_string(index) + std::string(extension);
 
 				try {
 					fs::WriteFile(name, vec);
@@ -230,8 +239,7 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 	const bool selected = IsSelected(index);
 	const std::string& Name = response.Entries[index].Name;
 
-	auto targetInfo = ThemeTargetInfo::Find(response.Entries[index].Target);
-	const char* Target = targetInfo ? targetInfo->PartName.c_str() : "Unknown part name";
+	const auto Target = RemoteInstall::TargetLabel(response.Entries[index].Target);
 
 	const auto& img = images.List[index];
 
@@ -244,12 +252,13 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 	const ImGuiID id = window->GetID(ScrollIDs[index].c_str());
 
 	const ImVec2 name_size = ImGui::CalcTextSize(Name.c_str(), NULL, false, ImageSize.x - 6);
-	const ImVec2 target_size = ImGui::CalcTextSize(Target, NULL, false, ImageSize.x - 6);
+	const ImVec2 target_size = ImGui::CalcTextSize(Target.data(), NULL, false, ImageSize.x - 6);
 
 	ImVec2 pos = window->DC.CursorPos;
 	ImVec2 sz = { ImageSize.x, ImageSize.y + 6 + name_size.y };
 
-	if (Target)	sz += {0, target_size.y + 6};
+	if (!Target.empty())
+		sz += {0, target_size.y + 6};
 
 	const ImRect imageBox(pos, pos + ImageSize);
 
@@ -284,8 +293,8 @@ RemoteInstall::ListPage::Result RemoteInstall::ListPage::RenderWidget(size_t ind
 
 	ImGui::PushFont(font25);
 	ImGui::RenderTextWrapped({ pos.x + 3, pos.y + ImageSize.y + 3 }, Name.c_str(), 0, ImageSize.x - 6);
-	if (Target)
-		ImGui::RenderTextWrapped({ pos.x + 3, pos.y + ImageSize.y + name_size.y + 6 }, Target, 0, ImageSize.x - 6);
+	if (!Target.empty())
+		ImGui::RenderTextWrapped({ pos.x + 3, pos.y + ImageSize.y + name_size.y + 6 }, Target.data(), 0, ImageSize.x - 6);
 	ImGui::PopFont();
 
 	IMGUI_TEST_ENGINE_ITEM_INFO(id, label, window->DC.LastItemStatusFlags);

@@ -52,7 +52,8 @@ void RemoteInstall::Worker::BaseWorker::Update()
             curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &index);
             curl_easy_getinfo(e, CURLINFO_RESPONSE_CODE, &httpCode);
 
-            if (msg->data.result != CURLE_OK || !OnFinished(index, httpCode))
+            const bool httpSuccess = httpCode >= 200 && httpCode < 300;
+            if (msg->data.result != CURLE_OK || !httpSuccess || !OnFinished(index, httpCode))
             {
                 if (appendUrlToError) {
                     if (index < urls.size())
@@ -66,6 +67,8 @@ void RemoteInstall::Worker::BaseWorker::Update()
 
                 if (msg->data.result != CURLE_OK)
                     Errors << " failed: " << curl_easy_strerror(msg->data.result) << "(" << msg->data.result << ")" << std::endl;
+                else if (!httpSuccess)
+                    Errors << " failed with HTTP status " << httpCode << std::endl;
                 else
                     Errors << " failed due to handler error" << std::endl;
 

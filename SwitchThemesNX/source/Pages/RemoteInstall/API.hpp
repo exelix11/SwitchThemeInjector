@@ -72,8 +72,12 @@ namespace RemoteInstall::API
 		The name should be a short name describing the theme, layout info and author name are already part of the NXTheme file and not needed there.
 		When saving on the sd card the installer will normalize and, if needed, shorten the name obtained from the NXTheme manifest.
 
-  		Valid falues for the `target` field are the internal nxtheme target strings, currently these are the following:
+		Valid values for the `target` field are the internal nxtheme target strings, currently these are the following:
 		"home", "lock", "user", "apps", "set", "news" and "psl".
+		The special target "__image" is used for raw image files rather than
+		nxtheme archives. The installer validates the downloaded bytes, saves them
+		with their real image extension, and opens the standard image installation
+		dialog so the user can choose a theme wallpaper or boot-screen destination.
 	
 		The entry must have at least one preview image between `preview` and `thumbnail`, having both is ideal but not needed.
 		`preview` is downloaded for full screen previewing, `thumbnail` for lists.
