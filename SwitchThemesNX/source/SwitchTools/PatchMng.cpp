@@ -20,10 +20,8 @@ namespace {
 
 	string GetExefsPatchesPath()
 	{
-		if (fs::cfw::IsAms() || fs::cfw::IsSX())
+		if (fs::cfw::IsAms())
 			return fs::path::CfwFolder() + "exefs_patches/NxThemesInstaller/";
-		else if (fs::cfw::IsRnx())
-			return fs::path::CfwFolder() + "patches/NxThemesInstaller/";
 		else return "";
 	}
 

@@ -251,11 +251,12 @@ class QuitPage : public IPage
 		}
 };
 
-// Note that CfwFolder is set after the constructor of any page pushed before CheckCFWDir is called, CfwFolder shouldn't be used until the theme is actually being installed
 static void SetCfwFolder()
 {
 	auto f = fs::cfw::SearchFolders();
 	if (f.size() != 1)
+		// Previously this page would let the user select between multiple CFW folders, but now they're all deprecated.
+		// This check can either be 0 or 1, in case ams is not installed the user is shown an error.
 		PushPageBlocking(new CfwSelectPage(f));
 	else
 		fs::cfw::SetFolder(f[0]);

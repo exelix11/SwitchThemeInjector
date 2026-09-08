@@ -30,8 +30,6 @@ namespace fs::path
 	std::string& ToUnixSeparators(std::string& str);
 
 	const std::string Atmosphere = SD_PREFIX "/atmosphere/";
-	const std::string Reinx = SD_PREFIX "/reinx/";
-	const std::string SX = SD_PREFIX "/sxos/";
 }
 
 namespace fs {
@@ -68,8 +66,6 @@ namespace fs {
 
 namespace fs::cfw {
 	bool IsAms();
-	bool IsSX();
-	bool IsRnx();
 
 	std::vector<std::string> SearchFolders();
 	void SetFolder(const std::string&);

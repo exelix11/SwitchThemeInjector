@@ -371,25 +371,13 @@ bool fs::cfw::IsAms()
 	return CfwFolder == path::Atmosphere;
 }
 
-bool fs::cfw::IsSX()
-{
-	return CfwFolder == path::SX;
-}
-
-bool fs::cfw::IsRnx()
-{
-	return CfwFolder == path::Reinx;
-}
-
 std::vector<std::string> fs::cfw::SearchFolders()
 {
 	vector<string> res;
-#define CHECKFOLDER(f) \
-	if (fs::Exists(f) && std::filesystem::is_directory(f)) res.push_back(f)
-	CHECKFOLDER(path::Atmosphere);
-	CHECKFOLDER(path::Reinx);
-	CHECKFOLDER(path::SX);
-#undef CHECKFOLDER
+	
+	if (std::filesystem::is_directory(path::Atmosphere)) 
+		res.push_back(path::Atmosphere);
+
 	return res;
 }
 
@@ -397,20 +385,7 @@ void fs::cfw::SetFolder(const std::string& s)
 {
 	// Should probably normalize all path code to use unix style path separators
 	CfwFolder = std::strchr("/\\", s[s.size() - 1]) ? s : s + '/';
-
-	bool useContents = false;
-
-	if (cfw::IsAms())
-		// Since 0.19.0 ams doesn't come with a contents folder anymore, to simplify the logic support for the titles folder has been dropped.
-		useContents = true;
-	else if (cfw::IsRnx())
-		// Use contents if titles doesn't exist
-		useContents = !filesystem::exists(CfwFolder + "titles/");
-	else if (cfw::IsSX())
-		// Sx still uses titles
-		useContents = false;
-
-	TitlesFolder = useContents ? "contents/" : "titles/";
+	TitlesFolder = "contents/";
 }
 
 std::vector<std::string> fs::patches::GetSdPatches()

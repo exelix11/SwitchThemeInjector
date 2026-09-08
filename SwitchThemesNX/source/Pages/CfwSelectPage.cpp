@@ -28,9 +28,11 @@ void CfwSelectPage::Render(int X, int Y)
 		ImGui::NewLine();
 		ImGui::TextWrapped(
 			"Make sure you have the \"atmosphere\" folder in the root of your sd card.\n\n"
-			"If the folder is there there is probably something wrong with your sd card.\n");
+			"If you do have the atmosphere folder, there is probably an issue with your sd card.\nCheck for corruption or reinstall your CFW.\n");
 	}	
-	else {
+	else 
+	{
+		// In practice this codepath is not used anymore.
 		Utils::ImGuiCenterString("Multiple cfw folders detected, which one do you want to use ?");
 
 		ImGui::PushFont(font30);
