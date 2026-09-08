@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <string_view>
 #include <array>
 #include <vector>
 #include <unordered_map>
@@ -70,6 +71,9 @@ struct ThemeTargetInfo
 	static constexpr u64 QlaunchID = 0x0100000000001000;
 	static constexpr u64 PslID = 0x0100000000001007;
 	static constexpr u64 UserPageID = 0x0100000000001013;
+	
+	// Not a real part name but used as internal identifier for image files
+	static constexpr const char* ImagePartName = "__image";
 
 	// Not part of target names but needed for extraction
 	static const ThemeTargetInfo QlaunchCommon;
@@ -77,6 +81,9 @@ struct ThemeTargetInfo
 	// May be null if part name is not valid
 	static const ThemeTargetInfo* Find(std::string nxThemeName);
 	static const ThemeTargetInfo* FindBySzsName(std::string szsName, std::string& outNxPartName);
+	
+	// Additionally supports the fake image part name, unlike the other Find functions
+	static std::string_view FindName(std::string nxPartName);
 
 	static std::vector<std::string> GetTargetsForTitleId(u64 tid);
 	static std::string TitleIdToString(u64 tid);

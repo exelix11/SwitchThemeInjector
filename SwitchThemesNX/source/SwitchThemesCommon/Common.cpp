@@ -60,6 +60,18 @@ std::string ThemeTargetInfo::StringContentId() const
 	return TitleIdToString(TitleId);
 }
 
+std::string_view ThemeTargetInfo::FindName(std::string nxPartName)
+{
+	if (nxPartName == ImagePartName)
+		return "Image file";
+
+	const auto info = Find(nxPartName);
+	if (info)
+		return info->PartName;
+
+	return "Unknown part name";
+}
+
 const ThemeTargetInfo* ThemeTargetInfo::Find(std::string nxThemeName)
 {
 	// TODO: Do we even need to support older firmware anymore?
