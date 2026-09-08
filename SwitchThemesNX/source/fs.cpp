@@ -1,6 +1,8 @@
 #include <cstring>
 #include <sstream>
 #include <filesystem>
+#include <iostream>
+#include <regex>
 
 #include "fs.hpp"
 #include "SwitchThemesCommon/Common.hpp"
@@ -220,6 +222,11 @@ bool fs::EnsureThemesFolderExists()
 	return Result;
 }
 
+bool fs::BootloaderDirectoryExists()
+{
+	return filesystem::exists(path::BootloaderDir);
+}
+
 void fs::EnsureDownloadsFolderExists()
 {
 	if (!filesystem::exists(path::DownloadsFolder))
@@ -369,6 +376,37 @@ void fs::theme::WriteSystemVersionFile()
 bool fs::cfw::IsAms()
 {
 	return CfwFolder == path::Atmosphere;
+}
+
+bool fs::cfw::IsHekateBootWaitSet()
+{
+	try 
+	{
+		if (!fs::Exists(path::BootloaderDir + "hekate_ipl.ini"))
+			return false;
+
+		auto data = fs::OpenFile(path::BootloaderDir + "hekate_ipl.ini");
+		auto string = std::string(data.begin(), data.end());
+
+		// Approximate parsing the ini file, we just need to check if the bootwait option is set to 0
+		std::regex bootwaitRegex("\\s*bootwait\\s*=\\s*0\\s*", std::regex::ECMAScript);
+
+		std::smatch match;
+		if (std::regex_search(string, match, bootwaitRegex))
+		{
+			auto pos = match.position(0);
+			if (pos > 0 && string[pos - 1] == ';')
+				return false;
+
+			return true;
+		}
+
+		return false;
+	}
+	catch (...)
+	{
+		return false;
+	}
 }
 
 std::vector<std::string> fs::cfw::SearchFolders()

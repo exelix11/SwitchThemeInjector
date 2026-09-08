@@ -16,6 +16,9 @@
 
 namespace 
 {
+	// Global value so we check this only once
+	std::optional<bool> hekateBootWarning = std::nullopt;
+
 	std::vector<std::tuple<std::string, std::string>> TargetInstallParts = {
 		{ "Home menu",		"home"},
 		{ "Lock screen",	"lock"},
@@ -180,7 +183,7 @@ ImageRef InstallImageDialog::LoadOverlayPart(const std::string& part)
 
 void InstallImageDialog::ApplyToBootloader()
 {
-	if (!fs::DirectoryExists(fs::path::BootloaderDir))
+	if (!fs::BootloaderDirectoryExists())
 	{
 		Dialog("Bootloader directory not found. Make sure hekate is installed and try again.");
 		return;
@@ -189,6 +192,15 @@ void InstallImageDialog::ApplyToBootloader()
 	DisplayLoading("Installing...");
 
 	try {
+		if (!hekateBootWarning)
+			hekateBootWarning = fs::cfw::IsHekateBootWaitSet();
+
+		if (*hekateBootWarning)
+		{
+			Dialog("Warning: bootwait is set to 0 in your hekate_ipl.ini config file.\n\nThis will cause the bootloader to not display the boot image. To use boot images you need to set bootwait to at least 1.");;
+			hekateBootWarning = false;
+		}
+
 		auto image = ImageConversion::ToBootloaderBMP(imageBytes);
 		fs::WriteFile(fs::path::BootlogoPath, image.Data);
 		Dialog("Image installed to the bootloader successfully. Reboot to see the changes.");

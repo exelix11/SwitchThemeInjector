@@ -60,6 +60,7 @@ namespace fs {
 	std::string SanitizeName(const std::string& name);
 
 	bool EnsureThemesFolderExists();
+	bool BootloaderDirectoryExists();
 	void EnsureDownloadsFolderExists();
 	void RemoveSystemDataDir();
 }
@@ -69,6 +70,8 @@ namespace fs::cfw {
 
 	std::vector<std::string> SearchFolders();
 	void SetFolder(const std::string&);
+
+	bool IsHekateBootWaitSet();
 }
 
 namespace fs::patches {
