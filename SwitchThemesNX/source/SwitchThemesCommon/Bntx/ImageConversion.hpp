@@ -40,7 +40,17 @@ namespace ImageConversion
 		virtual int Channels() = 0;
 	};
 
+	enum class ImageFormat {
+		NotSupported,
+		Bmp,
+		Png,
+		Jpg,
+		Dds
+	};
+
 	bool IsDDS(std::span<const u8> imgData);
+	
+	ImageFormat CheckFormat(std::span<const u8> imgData);
 
 	BitmapRef LoadBitmap(std::span<const u8> imgData, std::string& error);
 
@@ -54,6 +64,8 @@ namespace ImageConversion
 		int Width = 1280,
 		int Height = 720,
 		bool ResizeIfNeeded = false);
+
+	ConversionResult ToJPGFromBootloaderImage(BitmapRef imgData);
 
 	ConversionResult ToBootloaderBMP(std::span<const u8> imgData);
 }

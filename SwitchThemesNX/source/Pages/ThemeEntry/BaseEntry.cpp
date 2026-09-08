@@ -11,6 +11,7 @@
 #include "../../Platform/Platform.hpp"
 #include "../../UI/UI.hpp"
 #include "../../SwitchThemesCommon/MyTypes.h"
+#include "../../SwitchThemesCommon/Bntx/ImageConversion.hpp"
 
 using namespace std;
 using namespace SwitchThemesCommon;
@@ -116,7 +117,7 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 			return make_unique<LegacyEntry>(fileName, move(data));
 		if (StrEndsWith(fileName, ".nxtheme") || StrEndsWith(fileName, ".zip"))
 			return make_unique<NxEntry>(fileName, move(data));
-		if (StrEndsWith(fileName, ".jpg") || StrEndsWith(fileName, ".jpeg") || StrEndsWith(fileName, ".png"))
+		if (StrEndsWith(fileName, ".jpg") || StrEndsWith(fileName, ".jpeg") || StrEndsWith(fileName, ".png") || StrEndsWith(fileName, ".bmp"))
 			return make_unique<ImageEntry>(fileName, move(data));
 	}
 	catch (std::exception &ex)
@@ -131,6 +132,26 @@ unique_ptr<ThemeEntry> ThemeEntry::FromFile(const std::string& fileName)
 	}
 
 	return DummyEntry::CreateError(fileName, "Unknown file type");
+}
+
+std::string ThemeEntry::GuessExtension(const std::vector<u8>& binary, std::string_view preferredYaz0)
+{
+	if (zip::IsZip(binary))
+		return ".zip";
+	if (Yaz0::IsYaz0(binary))
+		return std::string(preferredYaz0);
+
+	auto image = ImageConversion::CheckFormat(binary);
+	if (image == ImageConversion::ImageFormat::Bmp)
+		return ".bmp";
+	if (image == ImageConversion::ImageFormat::Png)
+		return ".png";
+	if (image == ImageConversion::ImageFormat::Jpg)
+		return  ".jpg";
+	if (image == ImageConversion::ImageFormat::Dds)
+		return ".dds";
+
+	return "";
 }
 
 unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
@@ -164,11 +185,11 @@ unique_ptr<ThemeEntry> ThemeEntry::FromMemory(const std::vector<u8>& binary)
 		if (data.count("info.json"))
 			return make_unique<NxEntry>("", move(data));
 		else
-		{
-			std::vector<u8> copy = binary;
-			return make_unique<LegacyEntry>("", move(copy));
-		}
+			return make_unique<LegacyEntry>("", std::vector<u8>(binary));
 	}	
+
+	if (ImageConversion::CheckFormat(binary) != ImageConversion::ImageFormat::NotSupported) 
+		return make_unique<ImageEntry>("", std::vector<u8>(binary));
 
 hande_error:
 	return DummyEntry::CreateError("Error", "Failed to load");

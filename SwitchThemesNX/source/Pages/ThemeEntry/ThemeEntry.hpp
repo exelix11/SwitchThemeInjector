@@ -23,6 +23,7 @@ class ThemeEntry
 
 		static std::unique_ptr<ThemeEntry> FromFile(const std::string& fileName);
 		static std::unique_ptr<ThemeEntry> FromMemory(const std::vector<u8>& RawData);
+		static std::string GuessExtension(const std::vector<u8>& RawData, std::string_view preferredYaz0 = ".nxtheme");
 
 		virtual ~ThemeEntry();
 		

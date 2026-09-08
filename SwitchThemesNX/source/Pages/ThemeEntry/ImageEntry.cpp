@@ -67,8 +67,15 @@ void ImageEntry::PerformConversion()
 	// Exact resolution, do nothing
 	if (loaded->Width() == 1280 && loaded->Height() == 720)
 		return;
-	
-	auto converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true);
+
+	ImageConversion::ConversionResult converted;
+
+	// Bootloader image exact resolution, rotate for internal use
+	if (loaded->Height() == 1280 && loaded->Width() == 720)
+		converted = ImageConversion::ToJPGFromBootloaderImage(std::move(loaded));
+	else // Otherwise resize and stretch to fit
+		converted = ImageConversion::ToJPG(std::move(loaded), 1280, 720, true);
+
 	if (converted.ErrorMessage.size())
 	{
 		MakeError("Error processing file: "+ converted.ErrorMessage);

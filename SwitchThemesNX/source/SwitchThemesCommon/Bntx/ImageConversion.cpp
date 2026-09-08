@@ -169,11 +169,32 @@ namespace
 			return result;
 		}
 
+		StbImageHolder Rotate90DegreesClockwise()
+		{
+			if (channels != 4)
+				return StbImageHolder("Only ARGB images are supported for rotation");
+
+			StbImageHolder result(height, width, channels);
+
+			u32* source = (u32*)data;
+			u32* dest = (u32*)result.data;
+
+			for (int h = 0; h < height; h++)
+			{
+				for (int w = 0; w < width; w++)
+				{
+					dest[w * height + (height - 1 - h)] = source[h * width + w];
+				}
+			}
+
+			return result;
+		}
+
 	private:
 		bool isStb = false;
 	};
 
-	StbImageHolder Resize(StbImageHolder image, int width, int height, bool& resize)
+	StbImageHolder CheckSizeOrResize(StbImageHolder image, int width, int height, bool& resize)
 	{
 		if (image.error.size())
 			return StbImageHolder("Failed to load the source image: " + image.error);
@@ -200,7 +221,7 @@ namespace
 		if (image.error.size())
 			return StbImageHolder("Failed to load the source image: " + image.error);
 
-		return Resize(std::move(image), width, height, resize);
+		return CheckSizeOrResize(std::move(image), width, height, resize);
 	}
 
 	void StbiWrite(void* context, void* data, int size)
@@ -224,8 +245,11 @@ ImageConversion::BitmapRef ImageConversion::LoadBitmap(std::span<const u8> imgDa
 
 ImageConversion::ConversionResult ImageConversion::ToJPG(BitmapRef imgData, int Width, int Height, bool ResizeIfNeeded)
 {
-	auto casted = dynamic_cast<StbImageHolder*>(imgData.get());
-	auto image = Resize(std::move(*casted), Width, Height, ResizeIfNeeded);
+	auto casted = dynamic_cast<StbImageHolder*>(imgData.get());	
+	if (!casted)
+		return ImageConversion::ConversionResult::Fail("Invalid data type supplied");
+
+	auto image = CheckSizeOrResize(std::move(*casted), Width, Height, ResizeIfNeeded);
 
 	if (image.error.size())
 		return ImageConversion::ConversionResult::Fail(image.error);
@@ -234,6 +258,23 @@ ImageConversion::ConversionResult ImageConversion::ToJPG(BitmapRef imgData, int 
 	stbi_write_jpg_to_func(StbiWrite, &result, image.width, image.height, image.channels, image.data, 95);
 
 	return ImageConversion::ConversionResult::Success(std::move(result), ResizeIfNeeded);
+}
+
+ImageConversion::ConversionResult ImageConversion::ToJPGFromBootloaderImage(BitmapRef imgData)
+{
+	auto casted = dynamic_cast<StbImageHolder*>(imgData.get());
+	if (!casted)
+		return ImageConversion::ConversionResult::Fail("Invalid data type supplied");
+
+	if (casted->height != 1280 || casted->width != 720)
+		return ImageConversion::ConversionResult::Fail("The image does not have the right resolution");
+
+	auto rotated = casted->Rotate90DegreesClockwise();
+
+	std::vector<u8> result = {};
+	stbi_write_jpg_to_func(StbiWrite, &result, rotated.width, rotated.height, rotated.channels, rotated.data, 95);
+
+	return ImageConversion::ConversionResult::Success(std::move(result), false);
 }
 
 ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<const u8> imgData)
@@ -276,6 +317,26 @@ ImageConversion::ConversionResult ImageConversion::ToBootloaderBMP(std::span<con
 bool ImageConversion::IsDDS(std::span<const u8> imgData)
 {
 	return imgData.size() >= 4 && imgData[0] == 'D' && imgData[1] == 'D' && imgData[2] == 'S' && imgData[3] == ' ';
+}
+
+ImageConversion::ImageFormat ImageConversion::CheckFormat(std::span<const u8> imgData)
+{
+	if (imgData.size() < 4)
+		return ImageFormat::NotSupported;
+
+	if (imgData[0] == 0xFF && imgData[1] == 0xD8 && imgData[2] == 0xFF)
+		return ImageFormat::Jpg;
+
+	if (imgData[0] == 'P' && imgData[1] == 'N' && imgData[2] == 'G')
+		return ImageFormat::Png;
+
+	if (imgData[0] == 'B' && imgData[1] == 'M')
+		return ImageFormat::Bmp;
+
+	if (IsDDS(imgData))
+		return ImageFormat::Dds;
+
+	return ImageFormat::NotSupported;
 }
 
 ImageConversion::ConversionResult ImageConversion::ToDDS(std::span<const u8> imgData, bool DXT5, int Width, int Height, bool ResizeIfNeeded)

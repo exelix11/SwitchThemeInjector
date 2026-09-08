@@ -68,8 +68,10 @@ void RemoteInstall::DetailPage::UserDownload(Action action)
 
 		if ((int)action & (int)Action::Download)
 		{
+			auto extension = ThemeEntry::GuessExtension(theme, ".nxtheme");
+
 			fs::EnsureDownloadsFolderExists();
-			std::string name = fs::path::DownloadsFolder + fs::SanitizeName(this->entry.Name) + ".nxtheme";
+			std::string name = fs::path::DownloadsFolder + fs::SanitizeName(this->entry.Name) + extension;
 			if (fs::Exists(name) && !YesNoPage::Ask("A file called " + name + " already exists on the sd card, do you want to replace it ?"))
 			{
 				if (action == Action::Download) // If the user asked to download the theme don't close the page, otherwise just install it
