@@ -1,7 +1,10 @@
 ﻿using NxThemeTool;
 using SARCExt;
 using SwitchThemes.Common;
-using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+
+// Fix float parsing and serialization issues
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
 Console.WriteLine("NxThemeTool - https://github.com/exelix11/SwitchThemeInjector");
 Console.WriteLine($"Using ThemesCommon {CommonInfo.CoreVer}");
