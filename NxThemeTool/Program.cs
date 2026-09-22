@@ -2,12 +2,13 @@
 using SARCExt;
 using SwitchThemes.Common;
 using System.Globalization;
+using System.Reflection;
 
 // Fix float parsing and serialization issues
 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
 Console.WriteLine("NxThemeTool - https://github.com/exelix11/SwitchThemeInjector");
-Console.WriteLine($"Using ThemesCommon {CommonInfo.CoreVer}");
+Console.WriteLine($"Version {Assembly.GetExecutingAssembly().GetName().Version} (Themes common {CommonInfo.CoreVer})");
 
 if (args.Length == 0 || args.Any(x => x == "help" || x == "-h" || x == "--help" || x == "-help"))
 {
