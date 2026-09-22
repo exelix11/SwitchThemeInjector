@@ -6,11 +6,11 @@
 #include "../SwitchTools/PatchMng.hpp"
 #include "../fs.hpp"
 
-namespace 
+namespace
 {
-	bool RemoveTheme(bool full) 
+	bool RemoveTheme(bool full)
 	{
-		try 
+		try
 		{
 			fs::theme::UninstallTheme(full);
 		}
@@ -22,7 +22,22 @@ namespace
 		return true;
 	}
 
-	bool RemovePatches() 
+	bool RemoveBootlogo()
+	{
+		try
+		{
+			if (fs::Exists(fs::path::BootlogoPath))
+				fs::Delete(fs::path::BootlogoPath);
+		}
+		catch (const std::exception& ex)
+		{
+			Dialog("Error removing boot logo file: " + std::string(ex.what()));
+			return false;
+		}
+		return true;
+	}
+
+	bool RemovePatches()
 	{
 		try
 		{
@@ -47,42 +62,74 @@ void UninstallPage::Render(int X, int Y)
 	Utils::ImGuiSetupPage(this, X, Y);
 	ImGui::PushFont(font30);
 
-	ImGui::TextWrapped("Use this to uninstall the currently installed themes.\nIf you are facing issues, you can try removing the whole LayeredFS folder and code patches.");
+	ImGui::TextWrapped("Use these options to uninstall the currently installed themes.");
 
-	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x6B70000ff));
-	
-	auto i = Utils::ImGuiCenterButtons({ "Uninstall the current theme", "Uninstall everything" } , &firstBtn);
-	if (i != -1)
+	ImGui::PushStyleColor(ImGuiCol_Button, u32(0x5B700009f));
+
+	if (Utils::ImGuiCenterButton("Remove the current theme", 550))
 	{
-		PushFunction([i]() {
-			if (!YesNoPage::Ask("Are you sure ?")) return;
-			if (i == 1)
-			{
-				DisplayLoading("Clearing custom themes data...");
+		PushFunction([]() {
+			if (!YesNoPage::Ask(
+				"This will remove the installed theme for all the supported home menu parts.\n"
+				"Do you want to continue ?"
+			))
+				return;
 
-				bool success = SettingsPage::RemoveSysmodule(false);
-				success &= RemoveTheme(true);
-				success &= RemovePatches();
-				
-				if (success) 
-				{
-					Dialog(
-						"Done, everything theme-related has been removed, restart your console to apply the changes.\n"
-						"As this removed the home menu patches as well you should restart this app before installing any theme."
-					);
-				}
-			}
-			else
-			{
-				DisplayLoading("Loading...");
+			DisplayLoading("Loading...");
 
-				if (RemoveTheme(false))
-					Dialog("Done, all the installed themes have been removed, restart your console to apply the changes");
+			if (RemoveTheme(false))
+				Dialog("Done, all the installed themes have been removed, restart your console to apply the changes");
+		});
+	}
+	PAGE_RESET_FOCUS;
+
+	if (Utils::ImGuiCenterButton("Remove the hekate boot logo", 550))
+	{
+		PushFunction([]() {
+			if (!YesNoPage::Ask(
+				"This will remove the custom hekate boot screen.\n"
+				"Do you want to continue ?"
+			))
+				return;
+
+			if (RemoveBootlogo())
+				Dialog("The hekate boot logo has been removed, restart your console to apply the changes");
+		});
+	}
+
+	ImGui::NewLine();
+	ImGui::TextWrapped("In case you're facing unexpected crashes, use the following option to remove everything related to themes including fsmitm folders, the version check sysmodule and theme patches.");
+
+	if (Utils::ImGuiCenterButton("Uninstall everything", 550))
+	{
+		PushFunction([]() {
+			if (!YesNoPage::Ask(
+				"This will remove everything related to custom themes, such as:\n"
+				"- The currently installed theme\n"
+				"- Applied theme patches\n"
+				"- The theme update check sysmodule\n"
+				"- Any custom hekate boot logo\n\n"
+				"Do you want to continue ?"
+			))
+				return;
+
+			DisplayLoading("Clearing custom themes data...");
+
+			bool success = SettingsPage::RemoveSysmodule(false);
+			success &= RemoveTheme(true);
+			success &= RemovePatches();
+			success &= RemoveBootlogo();
+
+			if (success)
+			{
+				Dialog(
+					"Done, everything theme-related has been removed, restart your console to apply the changes.\n"
+					"This removed any home menu patches as well, you should restart this app before installing themes again."
+				);
 			}
 		});
 	}
-	
-	PAGE_RESET_FOCUS_FOR(firstBtn);
+
 	ImGui::PopStyleColor();
 
 	ImGui::PopFont();
@@ -91,8 +138,8 @@ void UninstallPage::Render(int X, int Y)
 }
 
 void UninstallPage::Update()
-{	
-	if (Utils::PageLeaveFocusInput() && ImGui::GetFocusID() == firstBtn){
+{
+	if (Utils::PageLeaveFocusInput()) {
 		Parent->PageLeaveFocus(this);
 	}
 }

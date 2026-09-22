@@ -3,8 +3,6 @@
 
 class UninstallPage : public IPage
 {
-	private:
-		ImGuiID firstBtn = 0;
 	public:
 		UninstallPage();	
 		

@@ -118,9 +118,19 @@ namespace Utils
 		return res;
 	}
 
-	static inline bool ImGuiCenterButton(const std::string& button)
+	static inline bool ImGuiCenterButton(const std::string& button, float width = 0)
 	{
-		return ImGuiCenterButtons({ button }) == 0;
+		const ImGuiStyle& style = GImGui->Style;
+		auto win = ImGui::GetWindowWidth();
+
+		if (width <= 0)
+		{
+			auto sz = ImGui::CalcTextSize(button.data(), nullptr, false, win);
+			width = ImGui::CalcItemSize({}, sz.x + style.FramePadding.x * 2.0f, sz.y + style.FramePadding.y * 2.0f).x;
+		}
+
+		ImGui::SetCursorPosX((win / 2 - width / 2));
+		return ImGui::Button(button.c_str(), { width, 0 });
 	}
 
 	static inline void ImGuiRightString(std::string_view str)
