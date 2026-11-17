@@ -180,10 +180,10 @@ bool BflytPatcher::AddGroupNames(const std::vector<ExtraGroup>& Groups)
 	//Populate list of group and pane names
 	lyt.FindPane([&groupNames, &paneNames](const PanePtr& cur)
 		{
-			if (cur->PaneName == "") return false;
+			// Group panes have no PaneName, so look for them before skipping unnamed panes
 			if (cur->name == "grp1")
 				groupNames.push_back(dynamic_pointer_cast<Grp1Pane>(cur)->GroupName);
-			else
+			else if (cur->PaneName != "")
 				paneNames.push_back(cur->PaneName);
 			return false;
 		});

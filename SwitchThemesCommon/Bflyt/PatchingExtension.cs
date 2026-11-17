@@ -167,7 +167,7 @@ namespace SwitchThemes.Common.Bflyt
 			if (f.RootGroup == null) return false;
 
 			var PanesWithNames = f.EnumeratePanes().Where(x => x is INamedPane).Cast<INamedPane>();
-			var GroupNames = PanesWithNames.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).name).ToArray();
+			var GroupNames = PanesWithNames.Where(x => x is Grp1Pane).Select(x => ((Grp1Pane)x).GroupName).ToArray();
 			var PaneNames = PanesWithNames.Where(x => !(x is Grp1Pane)).Select(x => x.PaneName);
 
 			foreach (var g in Groups)
