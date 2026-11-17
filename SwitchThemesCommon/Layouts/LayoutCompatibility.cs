@@ -149,9 +149,11 @@ namespace SwitchThemes.Common
 
             var layoutPatch = layout.Files.Where(x => x.FileName == bflytName).ToArray();
 
-            // Target groups might also be added via a patch
+            // Target groups might also be added via a patch, unless a new group lists a pane this firmware lacks:
+            // AddGroupNames then fails and that whole file patch is discarded
             var addedGroups = layoutPatch
-                .Where(x => x.AddGroups != null).SelectMany(x => x.AddGroups)
+                .Where(x => x.AddGroups != null && x.AddGroups.All(g => groupNames.Contains(g.GroupName) || g.Panes.All(paneNames.Contains)))
+                .SelectMany(x => x.AddGroups)
                 .Select(x => x.GroupName)
                 .ToHashSet();
 

@@ -91,8 +91,15 @@ void SwitchThemesCommon::Compatibility::CheckAnimationCompatibility(std::vector<
 		if (patch.FileName != bflytName)
 			continue;
 
+		// AddGroupNames fails, discarding this file patch, if a new group lists a pane this firmware lacks
+		bool addable = true;
 		for (auto& grp : patch.AddGroups)
-			addedGroups.insert(grp.GroupName);
+			if (!groupNames.count(grp.GroupName))
+				for (auto& pane : grp.Panes)
+					addable &= paneNames.count(pane) > 0;
+		if (addable)
+			for (auto& grp : patch.AddGroups)
+				addedGroups.insert(grp.GroupName);
 	}
 
 	auto patData = bflan.FindSectionByType<Pat1Section>();
